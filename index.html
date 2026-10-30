@@ -89,8 +89,8 @@ button, input, select { font: inherit; color: inherit; }
 .tab[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
 @media (max-width: 640px) {
   .top .wrap { flex-wrap: wrap; gap: 6px; padding-block: 8px 6px; }
-  .tabs { flex-basis: 100%; }
-  .tab { padding: 7px 11px; font-size: .88rem; }
+  .tabs { flex-basis: 100%; flex-wrap: wrap; gap: 2px 4px; }
+  .tab { padding: 6px 10px; font-size: .86rem; }
 }
 
 main { padding-block: 28px 56px; }
@@ -130,15 +130,32 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .example-banner { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; background: var(--sunk); border: 1px dashed var(--muted); border-radius: var(--r); padding: 12px 16px; margin-bottom: 20px; font-size: .93rem; }
 
 /* Today */
-.ring-wrap { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+/* Two columns on wide screens; on narrow ones the columns dissolve and panels reorder by priority. */
+.today-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.today-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.today-grid .panel-head { align-items: center; }
+@media (max-width: 900px) {
+  .today-grid { display: flex; flex-direction: column; align-items: stretch; }
+  .today-col { display: contents; }
+  .t-fuel { order: 1; } .t-water { order: 2; } .t-meals { order: 3; } .t-train { order: 4; } .t-weight { order: 5; }
+}
+.ring-wrap { display: flex; gap: 28px; align-items: center; }
 .ring { width: 156px; height: 156px; flex: none; }
+@media (max-width: 480px) { .ring-wrap { gap: 16px; } .ring { width: 116px; height: 116px; } }
 .ring-text { font-family: var(--f-mono); }
-.macro { display: grid; grid-template-columns: 74px 1fr auto; gap: 10px; align-items: center; font-size: .9rem; }
+.macro { display: flex; flex-direction: column; gap: 6px; font-size: .9rem; }
+.macro-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.macro-top .num { font-size: .85rem; white-space: nowrap; }
 .bar { height: 10px; border-radius: 99px; background: var(--sunk); overflow: hidden; }
 .bar > i { display: block; height: 100%; border-radius: 99px; transition: width .4s ease; }
-.macros { flex: 1; min-width: 210px; display: flex; flex-direction: column; gap: 12px; }
-.water-glasses { display: flex; gap: 5px; flex-wrap: wrap; margin-block: 10px 14px; }
-.glass { width: 20px; height: 28px; border: 2px solid var(--water); border-top-width: 0; border-radius: 0 0 6px 6px; position: relative; overflow: hidden; }
+.macros { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.fuel-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; margin-top: 18px; }
+.fuel-stats div { background: var(--surface); padding: 8px 10px; text-align: center; }
+.fuel-stats b { display: block; font-family: var(--f-mono); font-weight: 500; font-size: 1.05rem; }
+.fuel-stats span { font-size: .74rem; color: var(--muted); }
+.water-bar { height: 8px; margin-bottom: 14px; }
+.water-glasses { display: grid; grid-template-columns: repeat(auto-fill, minmax(18px, 1fr)); gap: 6px; margin-bottom: 10px; }
+.glass { height: 30px; border: 2px solid var(--water); border-top-width: 0; border-radius: 0 0 6px 6px; position: relative; overflow: hidden; }
 .glass > i { position: absolute; inset: auto 0 0 0; background: var(--water); opacity: .75; }
 .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
 .day { text-align: center; padding: 8px 0 10px; border-radius: 10px; background: var(--sunk); font-size: .78rem; color: var(--muted); }
@@ -155,6 +172,11 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .delta-down { color: var(--good); } .delta-up { color: var(--warn); }
 .next-card { background: var(--berry-soft); border-color: transparent; }
 .next-card .eyebrow { color: var(--berry); }
+.next-card .week { margin-top: 18px; }
+.next-card .day { background: var(--surface); }
+.next-card .day.done { background: var(--berry); }
+.week-head { display: flex; justify-content: space-between; align-items: baseline; margin-top: 20px; font-size: .85rem; }
+.week-head + .week { margin-top: 8px; }
 
 /* Charts */
 .chart { width: 100%; height: auto; display: block; }
@@ -830,9 +852,9 @@ function ring(val, target) {
 }
 function macroRow(label, val, target, color) {
   const pct = target ? Math.min(100, (val / target) * 100) : 0;
-  return `<div class="macro"><span><span class="dot" style="background:${color}"></span>${label}</span>
-    <div class="bar"><i style="width:${pct}%;background:${color}"></i></div>
-    <span class="num">${Math.round(val)}<span class="muted"> / ${target} g</span></span></div>`;
+  return `<div class="macro"><div class="macro-top"><span><span class="dot" style="background:${color}"></span>${label}</span>
+    <span class="num">${Math.round(val)}<span class="muted"> / ${target} g</span></span></div>
+    <div class="bar"><i style="width:${pct}%;background:${color}"></i></div></div>`;
 }
 function macroStrip(per) {
   const pk = per.p * 4, ck = per.c * 4, fk = per.f * 9, t = pk + ck + fk || 1;
@@ -849,7 +871,7 @@ function weightChart(days, h = 220, compact = false) {
   const vals = pts.map((p) => showW(p.kg));
   let lo = Math.min(...vals), hi = Math.max(...vals);
   const span = Math.max(hi - lo, us() ? 2 : 1); const mid = (hi + lo) / 2; lo = mid - span * 0.65; hi = mid + span * 0.65;
-  const t0 = parseKey(start).getTime(), t1 = parseKey(end).getTime();
+  const t0 = parseKey(compact ? pts[0].date : start).getTime(), t1 = parseKey(end).getTime();
   const x = (k) => padL + ((parseKey(k).getTime() - t0) / (t1 - t0 || 1)) * (W - padL - padR);
   const y = (v) => padT + (1 - (v - lo) / (hi - lo)) * (h - padT - padB);
   const line = pts.map((p, i) => `${i ? 'L' : 'M'}${x(p.date).toFixed(1)},${y(showW(p.kg)).toFixed(1)}`).join('');
@@ -926,48 +948,52 @@ function viewToday() {
   const hour = new Date().getHours();
   const greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 
+  const pLeft = Math.round(T.p - tot.p);
+  const plan = planById(S.activePlan) || PLANS[0];
+
   return `${exampleBanner()}
   <div class="page-head"><div><div class="eyebrow">${fmtDay(t, { weekday: 'long', month: 'long', day: 'numeric' })}</div><h1>${greet}.</h1></div>
     <div class="row"><a class="btn" href="#log">Log food</a><a class="btn btn-primary" href="#recipes">Find a recipe</a></div></div>
-  <div class="grid">
-    <section class="panel span-7" aria-labelledby="h-fuel">
-      <div class="panel-head"><h2 id="h-fuel">Fuel</h2><span class="muted num">${Math.round(tot.kcal).toLocaleString()} / ${T.kcal.toLocaleString()} kcal</span></div>
-      <div class="ring-wrap">${ring(tot.kcal, T.kcal)}
-        <div class="macros">${macroRow('Protein', tot.p, T.p, 'var(--protein)')}${macroRow('Carbs', tot.c, T.c, 'var(--carbs)')}${macroRow('Fat', tot.f, T.f, 'var(--fat)')}</div>
-      </div>
-    </section>
-    <section class="panel span-5" aria-labelledby="h-water">
-      <div class="panel-head"><h2 id="h-water">Water</h2><span class="num"><b>${showWater(water)}</b><span class="muted"> / ${showWater(T.waterMl)} ${wUnitWater()}</span></span></div>
-      <div class="water-glasses">${glasses}</div>
-      <div class="row">
-        <button class="btn btn-sm" data-act="water" data-ml="${us() ? 8 * ML_OZ : 250}">+ ${us() ? '8 oz' : '250 ml'}</button>
-        <button class="btn btn-sm" data-act="water" data-ml="${us() ? 16 * ML_OZ : 500}">+ ${us() ? '16 oz' : '500 ml'}</button>
-        <button class="btn btn-sm btn-ghost" data-act="water" data-ml="${us() ? -8 * ML_OZ : -250}" ${water ? '' : 'disabled'}>Undo</button>
-      </div>
-    </section>
-
-    <section class="panel span-7" aria-labelledby="h-meals">
-      <div class="panel-head"><h2 id="h-meals">Today's meals</h2><a class="btn btn-sm" href="#log">Add food</a></div>
-      ${meals.length ? `<ul class="list">${meals.map((m) => `<li><div class="grow"><div><b>${esc(m.name)}</b></div><div class="muted" style="font-size:.85rem">${esc(m.meal)} · P ${m.p}g · C ${m.c}g · F ${m.f}g</div></div><span class="num">${m.kcal}</span></li>`).join('')}</ul>`
-        : `<p class="muted">Nothing logged yet today. Add a meal from the <a href="#log">Log</a> or tap “Log a serving” on any recipe.</p>`}
-    </section>
-    <section class="panel span-5 next-card" aria-labelledby="h-next">
-      <div class="eyebrow">Next workout · ${esc(nx.plan.title)}</div>
-      <h2 id="h-next" style="margin-block:6px 4px">${esc(nx.day.name)}: ${esc(nx.day.focus)}</h2>
-      <p class="muted" style="margin-bottom:14px">${nx.day.ex.length} exercises · about ${nx.plan.minutes} min</p>
-      <div class="row"><button class="btn btn-berry" data-act="start" data-plan="${nx.plan.id}" data-day="${nx.idx}">Start session</button><a class="btn" href="#plan-${nx.plan.id}">View plan</a></div>
-    </section>
-
-    <section class="panel span-6" aria-labelledby="h-week">
-      <div class="panel-head"><h2 id="h-week">This week</h2><span class="muted">${weekCount} of ${(planById(S.activePlan) || PLANS[0]).perWeek} workouts</span></div>
-      <div class="week">${week.map((k) => `<div class="day ${doneDays.has(k) ? 'done' : ''} ${k === t ? 'today' : ''}">${fmtDay(k, { weekday: 'narrow' })}<b>${parseKey(k).getDate()}</b></div>`).join('')}</div>
-    </section>
-    <section class="panel span-6" aria-labelledby="h-weight">
-      <div class="panel-head"><h2 id="h-weight">Weight</h2><a class="btn btn-sm btn-ghost" href="#log">Log weight</a></div>
-      ${lastW ? `<div class="row" style="justify-content:space-between;align-items:baseline"><span class="big-stat">${showW(lastW.kg)} <span class="muted" style="font-size:1rem">${wUnit()}</span></span>
-        ${delta !== null ? `<span class="num ${delta <= 0 ? 'delta-down' : 'delta-up'}">${delta > 0 ? '+' : ''}${delta.toFixed(1)} ${wUnit()} <span class="muted">· 2 wk</span></span>` : ''}</div>
-        <div style="margin-top:8px">${weightChart(30, 90, true)}</div>` : `<p class="muted">No weigh-ins yet. Weigh in at the same time each morning for the clearest trend.</p>`}
-    </section>
+  <div class="today-grid">
+    <div class="today-col">
+      <section class="panel t-fuel" aria-labelledby="h-fuel">
+        <div class="panel-head"><h2 id="h-fuel">Fuel</h2><a class="btn btn-sm btn-ghost" href="#targets">Targets</a></div>
+        <div class="ring-wrap">${ring(tot.kcal, T.kcal)}
+          <div class="macros">${macroRow('Protein', tot.p, T.p, 'var(--protein)')}${macroRow('Carbs', tot.c, T.c, 'var(--carbs)')}${macroRow('Fat', tot.f, T.f, 'var(--fat)')}</div>
+        </div>
+        <div class="fuel-stats"><div><b>${Math.round(tot.kcal).toLocaleString()}</b><span>eaten</span></div><div><b>${T.kcal.toLocaleString()}</b><span>target</span></div><div><b style="color:var(--protein)">${Math.max(0, pLeft)} g</b><span>${pLeft > 0 ? 'protein to go' : 'protein hit'}</span></div></div>
+      </section>
+      <section class="panel t-meals" aria-labelledby="h-meals">
+        <div class="panel-head"><h2 id="h-meals">Today's meals</h2><a class="btn btn-sm" href="#log">Add food</a></div>
+        ${meals.length ? `<ul class="list">${meals.map((m) => `<li><div class="grow"><div><b>${esc(m.name)}</b></div><div class="muted" style="font-size:.85rem">${esc(m.meal)} · P ${m.p}g · C ${m.c}g · F ${m.f}g</div></div><span class="num">${m.kcal}<span class="muted" style="font-size:.75rem"> kcal</span></span></li>`).join('')}</ul>`
+          : `<p class="muted">Nothing logged yet today. Add a meal from the <a href="#log">Log</a> or tap “Log a serving” on any recipe.</p>`}
+      </section>
+    </div>
+    <div class="today-col">
+      <section class="panel next-card t-train" aria-labelledby="h-next">
+        <div class="eyebrow">Next workout · ${esc(nx.plan.title)}</div>
+        <h2 id="h-next" style="margin-block:6px 4px">${esc(nx.day.name)}: ${esc(nx.day.focus)}</h2>
+        <p class="muted" style="margin-bottom:14px">${nx.day.ex.length} exercises · about ${nx.plan.minutes} min</p>
+        <div class="row"><button class="btn btn-berry" data-act="start" data-plan="${nx.plan.id}" data-day="${nx.idx}">Start session</button><a class="btn" href="#plan-${nx.plan.id}">View plan</a></div>
+        <div class="week-head"><b>This week</b><span class="muted">${weekCount} of ${plan.perWeek} workouts</span></div>
+        <div class="week">${week.map((k) => `<div class="day ${doneDays.has(k) ? 'done' : ''} ${k === t ? 'today' : ''}">${fmtDay(k, { weekday: 'narrow' })}<b>${parseKey(k).getDate()}</b></div>`).join('')}</div>
+      </section>
+      <section class="panel t-water" aria-labelledby="h-water">
+        <div class="panel-head"><h2 id="h-water">Water</h2><span class="num"><b>${showWater(water)}</b><span class="muted"> / ${showWater(T.waterMl)} ${wUnitWater()}</span></span></div>
+        ${nGlasses <= 16 ? `<div class="water-glasses">${glasses}</div>` : `<div class="bar water-bar"><i style="width:${Math.min(100, water / T.waterMl * 100)}%;background:var(--water)"></i></div>`}
+        <div class="row">
+          <button class="btn btn-sm" data-act="water" data-ml="${us() ? 8 * ML_OZ : 250}">+ ${us() ? '8 oz' : '250 ml'}</button>
+          <button class="btn btn-sm" data-act="water" data-ml="${us() ? 16 * ML_OZ : 500}">+ ${us() ? '16 oz' : '500 ml'}</button>
+          <button class="btn btn-sm btn-ghost" data-act="water" data-ml="${us() ? -8 * ML_OZ : -250}" ${water ? '' : 'disabled'}>Undo</button>
+        </div>
+      </section>
+      <section class="panel t-weight" aria-labelledby="h-weight">
+        <div class="panel-head"><h2 id="h-weight">Weight</h2><a class="btn btn-sm btn-ghost" href="#log">Log weight</a></div>
+        ${lastW ? `<div class="row" style="justify-content:space-between;align-items:baseline"><span class="big-stat">${showW(lastW.kg)} <span class="muted" style="font-size:1rem">${wUnit()}</span></span>
+          ${delta !== null ? `<span class="num ${delta <= 0 ? 'delta-down' : 'delta-up'}">${delta > 0 ? '+' : ''}${delta.toFixed(1)} ${wUnit()} <span class="muted">· 2 wk</span></span>` : ''}</div>
+          <div style="margin-top:10px">${weightChart(30, 90, true)}</div>` : `<p class="muted">No weigh-ins yet. Weigh in at the same time each morning for the clearest trend.</p>`}
+      </section>
+    </div>
   </div>`;
 }
 
