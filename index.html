@@ -1,0 +1,1421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- BEGIN PAGE -->
+<title>Rep &amp; Ration</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Recipes, workout plans and a daily tracker for food, water, weight and training.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: sticky header with a scrolling tab strip; one centered column (max 1120px) that splits into a 12-col grid of panels on wide screens. */
+:root {
+  --bg: #eef3ef;
+  --surface: #ffffff;
+  --sunk: #e3ebe5;
+  --ink: #142019;
+  --muted: #56675c;
+  --line: #d2ddd5;
+  --accent: #1d6a45;
+  --accent-soft: #d5eadd;
+  --on-accent: #ffffff;
+  --berry: #9a2b59;
+  --berry-soft: #f3dbe5;
+  --protein: #2c66a8;
+  --carbs: #b07a10;
+  --fat: #9a2b59;
+  --water: #1f7f9c;
+  --good: #1d6a45;
+  --warn: #a35a00;
+  --shadow: 0 1px 2px rgba(20, 32, 25, .06), 0 4px 16px rgba(20, 32, 25, .05);
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r: 14px;
+  --r-sm: 9px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1411; --surface: #151f1a; --sunk: #1c2822; --ink: #e4eee7; --muted: #94a89b; --line: #2a3a31;
+    --accent: #5cc48a; --accent-soft: #1d3a2a; --on-accent: #08130d; --berry: #e17ca7; --berry-soft: #3a1d2a;
+    --protein: #7fb1ec; --carbs: #e2b04a; --fat: #e17ca7; --water: #5bc0dc; --good: #5cc48a; --warn: #f0a24a;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1411; --surface: #151f1a; --sunk: #1c2822; --ink: #e4eee7; --muted: #94a89b; --line: #2a3a31;
+  --accent: #5cc48a; --accent-soft: #1d3a2a; --on-accent: #08130d; --berry: #e17ca7; --berry-soft: #3a1d2a;
+  --protein: #7fb1ec; --carbs: #e2b04a; --fat: #e17ca7; --water: #5bc0dc; --good: #5cc48a; --warn: #f0a24a;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 16px/1.55 var(--f-body);
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface);
+}
+h1, h2, h3, h4 { font-family: var(--f-display); line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+h1 { font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.6rem); font-weight: 800; }
+h2 { font-size: 1.35rem; font-weight: 700; }
+h3 { font-size: 1.08rem; font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.eyebrow { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; gap: 20px; padding-block: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); flex: none; }
+.brand-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--accent); display: grid; place-items: center; }
+.brand-name { font-family: var(--f-display); font-weight: 800; font-size: 1.15rem; letter-spacing: -.02em; }
+.brand-name span { color: var(--accent); }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { padding: 8px 14px; border-radius: 999px; text-decoration: none; color: var(--muted); font-weight: 700; font-size: .93rem; white-space: nowrap; }
+.tab:hover { color: var(--ink); background: var(--sunk); }
+.tab[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
+@media (max-width: 640px) {
+  .top .wrap { flex-wrap: wrap; gap: 6px; padding-block: 8px 6px; }
+  .tabs { flex-basis: 100%; }
+  .tab { padding: 7px 11px; font-size: .88rem; }
+}
+
+main { padding-block: 28px 56px; }
+.page-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; margin-bottom: 22px; }
+.page-head p { max-width: 62ch; margin-top: 6px; }
+
+/* Panels & grid */
+.grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.span-4 { grid-column: span 4; } .span-5 { grid-column: span 5; } .span-6 { grid-column: span 6; }
+.span-7 { grid-column: span 7; } .span-8 { grid-column: span 8; } .span-12 { grid-column: span 12; }
+@media (max-width: 900px) { .span-4, .span-5, .span-6, .span-7, .span-8 { grid-column: span 12; } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; min-width: 0; }
+.panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* Buttons & inputs */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 9px 15px; border-radius: 10px; font-weight: 700; font-size: .93rem; cursor: pointer; text-decoration: none; line-height: 1.2; }
+.btn:hover { border-color: var(--muted); }
+.btn-primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn-primary:hover { filter: brightness(1.08); border-color: var(--accent); }
+.btn-berry { background: var(--berry); color: var(--surface); border-color: var(--berry); }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 6px 8px; }
+.btn-ghost:hover { color: var(--ink); background: var(--sunk); }
+.btn-sm { padding: 6px 11px; font-size: .85rem; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; font-weight: 700; color: var(--muted); min-width: 0; }
+.input, select.input { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: var(--r-sm); padding: 9px 11px; font-size: 1rem; color: var(--ink); min-width: 0; }
+.input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+.form-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 13px; font-size: .88rem; font-weight: 700; color: var(--muted); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tag { display: inline-block; font-size: .74rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; background: var(--sunk); color: var(--muted); }
+.tag-accent { background: var(--accent-soft); color: var(--accent); }
+.tag-berry { background: var(--berry-soft); color: var(--berry); }
+
+.example-banner { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; background: var(--sunk); border: 1px dashed var(--muted); border-radius: var(--r); padding: 12px 16px; margin-bottom: 20px; font-size: .93rem; }
+
+/* Today */
+.ring-wrap { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.ring { width: 156px; height: 156px; flex: none; }
+.ring-text { font-family: var(--f-mono); }
+.macro { display: grid; grid-template-columns: 74px 1fr auto; gap: 10px; align-items: center; font-size: .9rem; }
+.bar { height: 10px; border-radius: 99px; background: var(--sunk); overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 99px; transition: width .4s ease; }
+.macros { flex: 1; min-width: 210px; display: flex; flex-direction: column; gap: 12px; }
+.water-glasses { display: flex; gap: 5px; flex-wrap: wrap; margin-block: 10px 14px; }
+.glass { width: 20px; height: 28px; border: 2px solid var(--water); border-top-width: 0; border-radius: 0 0 6px 6px; position: relative; overflow: hidden; }
+.glass > i { position: absolute; inset: auto 0 0 0; background: var(--water); opacity: .75; }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.day { text-align: center; padding: 8px 0 10px; border-radius: 10px; background: var(--sunk); font-size: .78rem; color: var(--muted); }
+.day b { display: block; font-family: var(--f-mono); font-size: 1rem; color: var(--ink); font-weight: 500; }
+.day.done { background: var(--berry); color: var(--surface); }
+.day.done b { color: var(--surface); }
+.day.today { outline: 2px solid var(--ink); outline-offset: -2px; }
+.list { list-style: none; padding: 0; margin: 0; }
+.list li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.list li:first-child { border-top: 0; }
+.list .grow { flex: 1; min-width: 0; }
+.list .grow > * { overflow-wrap: anywhere; }
+.big-stat { font-family: var(--f-mono); font-size: 1.9rem; font-weight: 500; letter-spacing: -.02em; }
+.delta-down { color: var(--good); } .delta-up { color: var(--warn); }
+.next-card { background: var(--berry-soft); border-color: transparent; }
+.next-card .eyebrow { color: var(--berry); }
+
+/* Charts */
+.chart { width: 100%; height: auto; display: block; }
+.chart text { fill: var(--muted); font: 11px var(--f-mono); }
+.chart-wrap { overflow-x: auto; }
+
+/* Recipes */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 18px; }
+.filters .input { max-width: 260px; }
+.cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.rcard { display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; transition: transform .15s ease, box-shadow .15s ease; }
+.rcard:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.rcard-top { padding: 16px 18px 14px; background: var(--sunk); display: flex; justify-content: space-between; align-items: start; gap: 10px; }
+.rcard-kcal { font-family: var(--f-mono); font-size: 2rem; line-height: 1; font-weight: 500; }
+.rcard-kcal small { font-size: .8rem; color: var(--muted); margin-left: 3px; }
+.rcard-body { padding: 14px 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.macro-strip { display: flex; height: 6px; border-radius: 99px; overflow: hidden; gap: 2px; }
+.macro-legend { display: flex; gap: 12px; font-family: var(--f-mono); font-size: .78rem; color: var(--muted); flex-wrap: wrap; }
+.macro-legend b { font-weight: 500; color: var(--ink); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: 1px; }
+
+.recipe-hero { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: end; margin-bottom: 24px; }
+@media (max-width: 800px) { .recipe-hero { grid-template-columns: 1fr; } }
+.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.facts div { background: var(--surface); padding: 12px; text-align: center; }
+.facts b { display: block; font-family: var(--f-mono); font-size: 1.3rem; font-weight: 500; }
+.facts span { font-size: .75rem; color: var(--muted); }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.stepper button { border: 0; background: transparent; width: 36px; height: 36px; cursor: pointer; font-size: 1.1rem; font-weight: 700; }
+.stepper button:hover { background: var(--sunk); }
+.stepper output { min-width: 34px; text-align: center; font-family: var(--f-mono); }
+.ing { list-style: none; padding: 0; margin: 0; }
+.ing li { border-top: 1px solid var(--line); }
+.ing li:first-child { border-top: 0; }
+.ing label { display: grid; grid-template-columns: 22px 92px 1fr; gap: 10px; padding: 9px 0; align-items: baseline; cursor: pointer; }
+.ing input { accent-color: var(--accent); transform: translateY(2px); }
+.ing .q { font-family: var(--f-mono); font-size: .92rem; }
+.ing input:checked ~ span { color: var(--muted); text-decoration: line-through; }
+.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 34px 1fr; gap: 12px; max-width: 68ch; }
+.steps li::before { content: counter(s); font-family: var(--f-mono); font-weight: 600; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font-size: .9rem; }
+.tip { background: var(--accent-soft); border-radius: var(--r-sm); padding: 12px 14px; font-size: .93rem; }
+
+/* Workouts */
+.plans { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+.pcard { display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: inherit; }
+.pcard:hover { border-color: var(--muted); }
+.pmeta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.pmeta div { background: var(--sunk); border-radius: var(--r-sm); padding: 8px 10px; }
+.pmeta b { display: block; font-family: var(--f-mono); font-weight: 500; }
+.pmeta span { font-size: .74rem; color: var(--muted); }
+.ex-table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+.ex-table th { text-align: left; font-family: var(--f-mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--line); }
+.ex-table td { padding: 11px 10px 11px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.ex-table tr:last-child td { border-bottom: 0; }
+.ex-table .num { white-space: nowrap; }
+.ex-name { font-weight: 700; }
+.ex-cue { font-size: .85rem; color: var(--muted); margin-top: 2px; }
+.table-wrap { overflow-x: auto; }
+.day-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+
+/* Session */
+.session-ex { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; padding: 16px 0; border-top: 1px solid var(--line); align-items: center; }
+.session-ex:first-child { border-top: 0; }
+.sets { display: flex; gap: 6px; flex-wrap: wrap; }
+.set { width: 42px; height: 42px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); font-family: var(--f-mono); font-weight: 600; cursor: pointer; color: var(--muted); }
+.set[aria-pressed="true"] { background: var(--berry); border-color: var(--berry); color: var(--surface); }
+.load { width: 92px; }
+.restbar { position: sticky; bottom: 0; margin-top: 20px; background: var(--ink); color: var(--bg); border-radius: var(--r) var(--r) 0 0; padding: 14px 18px calc(14px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; justify-content: space-between; }
+.restbar .num { font-size: 1.4rem; }
+.restbar .btn { background: transparent; color: var(--bg); border-color: color-mix(in srgb, var(--bg) 40%, transparent); }
+.restbar .btn-primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.rest-active { color: var(--carbs); }
+
+/* Shopping list */
+.shop-groups { columns: 2 260px; column-gap: 28px; }
+.shop-group h3 { break-after: avoid; }
+.shop-list li { break-inside: avoid; }
+.shop-group h3 { font-family: var(--f-mono); font-size: .74rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); font-weight: 500; padding-block: 14px 4px; }
+.shop-list { list-style: none; padding: 0; margin: 0; }
+.shop-list li { border-top: 1px solid var(--line); }
+.shop-list label { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; padding: 9px 0; cursor: pointer; align-items: baseline; }
+.shop-list input { accent-color: var(--accent); transform: translateY(2px); }
+.shop-list .q { font-family: var(--f-mono); font-size: .9rem; margin-right: 6px; }
+.shop-list .from { display: block; font-size: .78rem; color: var(--muted); }
+.shop-list input:checked ~ span { color: var(--muted); text-decoration: line-through; }
+.shop-recipes li { gap: 10px; }
+.copy-fallback { width: 100%; min-height: 160px; font: .85rem/1.5 var(--f-mono); }
+
+/* Toast & footer */
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: .92rem; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 40; max-width: calc(100% - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size: .85rem; color: var(--muted); }
+.confirm { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#today" aria-label="Rep &amp; Ration home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--on-accent)" stroke-width="2.4" stroke-linecap="round"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg>
+      </span>
+      <span class="brand-name">Rep <span>&amp;</span> Ration</span>
+    </a>
+    <nav class="tabs" aria-label="Sections">
+      <a class="tab" href="#today" data-tab="today">Today</a>
+      <a class="tab" href="#recipes" data-tab="recipes">Recipes</a>
+      <a class="tab" href="#shopping" data-tab="shopping">Shopping list</a>
+      <a class="tab" href="#workouts" data-tab="workouts">Workouts</a>
+      <a class="tab" href="#log" data-tab="log">Log</a>
+      <a class="tab" href="#targets" data-tab="targets">Targets</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="app" tabindex="-1"></main>
+
+<footer>
+  <div class="wrap">
+    Rep &amp; Ration offers general guidance, not medical advice. Check with a doctor or registered dietitian before starting a new diet or training program, especially if you are pregnant or have a health condition. Your entries are saved only in this browser.
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+'use strict';
+
+/* ---------- Content: recipes ---------- */
+// Ingredients: [quantity for listed servings, unit, item]. Macros are per serving.
+const RECIPES = [
+  { id: 'berry-overnight-oats', title: 'Berry Protein Overnight Oats', meal: 'Breakfast',
+    tags: ['Vegetarian', 'High protein', 'Meal prep'], prep: 5, cook: 0, extra: 'Chill 4 h or overnight', servings: 2,
+    per: { kcal: 410, p: 30, c: 54, f: 8, fiber: 9 },
+    blurb: 'A no-cook breakfast you mix in five minutes the night before. Greek yogurt and protein powder push it past 30 g of protein.',
+    ingredients: [[1, 'cup', 'rolled oats'], [1, 'cup', 'plain nonfat Greek yogurt'], [0.75, 'cup', 'unsweetened almond milk'],
+      [2, 'tbsp', 'chia seeds'], [1, 'scoop', 'vanilla protein powder (about 30 g)'], [1, 'cup', 'mixed berries, fresh or frozen'],
+      [2, 'tsp', 'honey or maple syrup'], [null, '', 'pinch of salt and cinnamon']],
+    steps: ['In a bowl, whisk the protein powder into the almond milk until no lumps remain.',
+      'Stir in the Greek yogurt, oats, chia seeds, honey, salt and cinnamon.',
+      'Divide between two jars. Top each with half the berries.',
+      'Cover and refrigerate at least 4 hours. Eat cold, or microwave 60–90 seconds if you prefer it warm.'],
+    tip: 'Keeps 4 days in the fridge. Make four jars on Sunday and breakfast is done through Thursday.' },
+  { id: 'spinach-feta-egg-muffins', title: 'Spinach & Feta Egg Muffins', meal: 'Breakfast',
+    tags: ['Vegetarian', 'High protein', 'Meal prep', 'Low carb'], prep: 10, cook: 22, servings: 4,
+    per: { kcal: 230, p: 22, c: 3, f: 14, fiber: 1 },
+    blurb: 'Twelve grab-and-go muffins. Three make a serving, and they reheat in 30 seconds.',
+    ingredients: [[8, 'large', 'eggs'], [1, 'cup', 'liquid egg whites'], [2, 'cup', 'baby spinach, chopped'],
+      [0.5, 'cup', 'crumbled feta'], [0.5, 'cup', 'red bell pepper, diced'], [0.25, 'cup', 'green onion, sliced'],
+      [0.25, 'tsp', 'salt'], [0.25, 'tsp', 'black pepper'], [null, '', 'cooking spray']],
+    steps: ['Heat the oven to 350°F (175°C). Grease a 12-cup muffin tin well with cooking spray.',
+      'Divide the spinach, bell pepper, green onion and feta evenly between the cups.',
+      'Whisk the eggs, egg whites, salt and pepper in a large measuring jug.',
+      'Pour the egg mixture over the vegetables, filling each cup about three-quarters full.',
+      'Bake 20–22 minutes, until the centers are set and no longer jiggle.',
+      'Cool 5 minutes, then run a knife around each muffin to release it.'],
+    tip: 'Refrigerate up to 4 days or freeze up to 2 months. Reheat from frozen for 60–75 seconds.' },
+  { id: 'chicken-burrito-bowls', title: 'Chicken Burrito Bowls', meal: 'Lunch',
+    tags: ['High protein', 'Meal prep'], prep: 15, cook: 25, servings: 4,
+    per: { kcal: 565, p: 49, c: 62, f: 15, fiber: 11 },
+    blurb: 'Four lunches from one pan: spiced chicken, brown rice, black beans, corn and salsa.',
+    ingredients: [[24, 'oz', 'boneless skinless chicken breast'], [1, 'tbsp', 'chili powder'], [1, 'tsp', 'ground cumin'],
+      [1, 'tsp', 'garlic powder'], [0.5, 'tsp', 'salt'], [1, 'tbsp', 'olive oil'], [3, 'cup', 'cooked brown rice'],
+      [1, 'can', 'black beans (15 oz), rinsed'], [1, 'cup', 'corn kernels'], [1, 'cup', 'tomato salsa'],
+      [1, '', 'avocado, sliced'], [1, '', 'lime'], [0.5, 'cup', 'fresh cilantro, chopped']],
+    steps: ['Pat the chicken dry. Mix the chili powder, cumin, garlic powder and salt, and rub it over the chicken.',
+      'Heat the oil in a large skillet over medium-high. Cook the chicken 6–7 minutes per side, until it reaches 165°F (74°C) inside.',
+      'Rest the chicken 5 minutes, then slice or dice it.',
+      'Warm the beans and corn together in the same pan for 2–3 minutes, scraping up the spices.',
+      'Divide the rice, chicken, beans and corn between four containers.',
+      'Top with salsa, cilantro and a squeeze of lime. Add avocado just before eating so it stays green.'],
+    tip: 'Swap rice for cauliflower rice to cut about 120 kcal and 25 g carbs per bowl.' },
+  { id: 'lemon-herb-salmon', title: 'Lemon-Herb Salmon Sheet Pan', meal: 'Dinner',
+    tags: ['High protein', 'Gluten free'], prep: 10, cook: 25, servings: 2,
+    per: { kcal: 545, p: 36, c: 38, f: 28, fiber: 6 },
+    blurb: 'Salmon, crispy baby potatoes and green beans on one tray. Rich in omega-3 fats.',
+    ingredients: [[2, '', 'salmon fillets (5 oz each)'], [12, 'oz', 'baby potatoes, halved'], [8, 'oz', 'green beans, trimmed'],
+      [1.5, 'tbsp', 'olive oil'], [1, '', 'lemon, half sliced and half juiced'], [2, 'clove', 'garlic, minced'],
+      [1, 'tsp', 'dried dill'], [0.5, 'tsp', 'salt'], [0.25, 'tsp', 'black pepper']],
+    steps: ['Heat the oven to 425°F (220°C). Line a sheet pan with parchment.',
+      'Toss the potatoes with 1 tbsp of the oil and half the salt. Roast cut-side down for 12 minutes.',
+      'Mix the remaining oil with the lemon juice, garlic, dill, pepper and remaining salt.',
+      'Push the potatoes to the edges. Add the green beans and salmon, brush both with the lemon mixture, and lay lemon slices on the fish.',
+      'Roast 11–13 minutes more, until the salmon flakes easily and reaches 145°F (63°C).'],
+    tip: 'For a lighter plate, use half the potatoes and double the green beans (about 460 kcal).' },
+  { id: 'turkey-black-bean-chili', title: 'Turkey & Black Bean Chili', meal: 'Dinner',
+    tags: ['High protein', 'Meal prep', 'Gluten free'], prep: 15, cook: 35, servings: 6,
+    per: { kcal: 380, p: 31, c: 36, f: 12, fiber: 12 },
+    blurb: 'A big pot of high-fiber chili that freezes well. Six hearty bowls.',
+    ingredients: [[24, 'oz', '93% lean ground turkey'], [1, 'tbsp', 'olive oil'], [1, '', 'yellow onion, diced'],
+      [1, '', 'bell pepper, diced'], [3, 'clove', 'garlic, minced'], [2, 'tbsp', 'chili powder'], [1, 'tsp', 'ground cumin'],
+      [1, 'tsp', 'smoked paprika'], [1, 'can', 'crushed tomatoes (28 oz)'], [2, 'can', 'black beans (15 oz), rinsed'],
+      [1, 'cup', 'low-sodium chicken broth'], [0.75, 'tsp', 'salt']],
+    steps: ['Heat the oil in a large pot over medium-high. Add the turkey and cook, breaking it up, until browned, about 7 minutes.',
+      'Add the onion and bell pepper. Cook 5 minutes until softened, then stir in the garlic for 30 seconds.',
+      'Add the chili powder, cumin and paprika and stir for 1 minute to toast the spices.',
+      'Add the tomatoes, beans, broth and salt. Bring to a boil, then lower to a simmer.',
+      'Simmer uncovered 20–25 minutes, stirring now and then, until thick. Taste and adjust the salt.'],
+    tip: 'Top with a spoon of Greek yogurt instead of sour cream for extra protein. Freezes up to 3 months.' },
+  { id: 'tofu-peanut-stir-fry', title: 'Crispy Tofu Peanut Stir-Fry', meal: 'Dinner',
+    tags: ['Vegetarian', 'Vegan', 'High protein'], prep: 15, cook: 20, servings: 3,
+    per: { kcal: 490, p: 29, c: 47, f: 21, fiber: 7 },
+    blurb: 'Cornstarch-crisped tofu and crunchy vegetables in a quick peanut-ginger sauce.',
+    ingredients: [[14, 'oz', 'extra-firm tofu, pressed and cubed'], [1, 'tbsp', 'cornstarch'], [1, 'tbsp', 'avocado oil'],
+      [3, 'cup', 'broccoli florets'], [1, '', 'red bell pepper, sliced'], [1, 'cup', 'snap peas'],
+      [2, 'tbsp', 'natural peanut butter'], [2, 'tbsp', 'low-sodium soy sauce'], [1, 'tbsp', 'rice vinegar'],
+      [1, 'tbsp', 'maple syrup'], [1, 'tsp', 'fresh ginger, grated'], [1, 'clove', 'garlic, grated'], [1.5, 'cup', 'cooked jasmine rice']],
+    steps: ['Press the tofu for 10 minutes between towels under something heavy. Cut into 3/4-inch cubes and toss with the cornstarch.',
+      'Whisk the peanut butter, soy sauce, vinegar, maple syrup, ginger, garlic and 2 tbsp warm water into a smooth sauce.',
+      'Heat the oil in a large nonstick pan over medium-high. Fry the tofu 8–10 minutes, turning, until golden on most sides. Remove.',
+      'Add the broccoli, pepper and snap peas with a splash of water. Cook 4–5 minutes until bright and crisp-tender.',
+      'Return the tofu, pour in the sauce and toss for 1 minute until glossy. Serve over the rice.'],
+    tip: 'The sauce thickens as it cools. Loosen leftovers with a teaspoon of water when reheating.' },
+  { id: 'tuna-white-bean-salad', title: 'Mediterranean Tuna & White Bean Salad', meal: 'Lunch',
+    tags: ['High protein', 'No cook', 'Gluten free'], prep: 10, cook: 0, servings: 2,
+    per: { kcal: 425, p: 39, c: 40, f: 11, fiber: 11 },
+    blurb: 'Ten minutes, no stove. Pantry tuna and beans brightened with lemon, cucumber and herbs.',
+    ingredients: [[2, 'can', 'tuna in water (5 oz), drained'], [1, 'can', 'cannellini beans (15 oz), rinsed'],
+      [1, 'cup', 'cherry tomatoes, halved'], [0.5, '', 'cucumber, diced'], [0.25, '', 'red onion, finely diced'],
+      [2, 'tbsp', 'fresh parsley, chopped'], [1.5, 'tbsp', 'extra-virgin olive oil'], [1, 'tbsp', 'lemon juice or red wine vinegar'],
+      [1, 'tsp', 'Dijon mustard'], [null, '', 'salt and pepper to taste']],
+    steps: ['Whisk the olive oil, lemon juice and Dijon in a large bowl with a pinch of salt and pepper.',
+      'Add the beans, tomatoes, cucumber and red onion. Toss to coat.',
+      'Flake in the tuna in large pieces and fold gently so it stays chunky.',
+      'Scatter with parsley. Eat right away, or pack for lunch. It keeps 2 days in the fridge.'],
+    tip: 'Serve over greens or stuff into a whole-wheat pita for a heartier lunch.' },
+  { id: 'chocolate-pb-smoothie', title: 'Chocolate PB Recovery Smoothie', meal: 'Snack',
+    tags: ['Vegetarian', 'High protein', 'No cook'], prep: 5, cook: 0, servings: 1,
+    per: { kcal: 370, p: 30, c: 36, f: 13, fiber: 6 },
+    blurb: 'A milkshake-thick post-workout shake with carbs to refuel and protein to recover.',
+    ingredients: [[1, 'cup', 'unsweetened almond milk'], [1, 'scoop', 'chocolate protein powder (about 30 g)'],
+      [1, '', 'medium banana, frozen in chunks'], [1, 'tbsp', 'peanut butter'], [1, 'tbsp', 'unsweetened cocoa powder'],
+      [0.5, 'cup', 'ice']],
+    steps: ['Add the almond milk to the blender first so the blades turn freely.',
+      'Add the protein powder, banana, peanut butter, cocoa and ice.',
+      'Blend on high 45–60 seconds until completely smooth. Add a splash more milk if it is too thick.'],
+    tip: 'Peel and freeze ripe bananas in chunks. They make the shake thick without extra ice.' },
+  { id: 'banana-protein-pancakes', title: 'Banana Cottage Cheese Pancakes', meal: 'Breakfast',
+    tags: ['Vegetarian', 'High protein'], prep: 5, cook: 12, servings: 2,
+    per: { kcal: 440, p: 31, c: 45, f: 16, fiber: 5 },
+    blurb: 'Fluffy blender pancakes with no flour. Cottage cheese and eggs give them a custardy center.',
+    ingredients: [[1, 'cup', 'rolled oats'], [1, 'cup', 'low-fat cottage cheese'], [4, 'large', 'eggs'], [1, '', 'ripe banana'],
+      [1, 'tsp', 'baking powder'], [1, 'tsp', 'vanilla extract'], [null, '', 'pinch of salt and cinnamon'], [1, 'tsp', 'butter']],
+    steps: ['Add the oats to a blender and blitz into a coarse flour.',
+      'Add the cottage cheese, eggs, banana, baking powder, vanilla, salt and cinnamon. Blend until smooth, then rest 5 minutes to thicken.',
+      'Heat a nonstick pan over medium-low and wipe it with a little butter.',
+      'Pour 1/4 cup of batter per pancake. Cook until bubbles appear and the edges look set, about 2 minutes.',
+      'Flip and cook 1 minute more. Repeat with the remaining batter (about 10 pancakes).'],
+    tip: 'Keep the heat low. The batter is high in protein, so it browns faster than regular pancakes.' },
+  { id: 'greek-chicken-quinoa-bowls', title: 'Greek Chicken Quinoa Bowls', meal: 'Lunch',
+    tags: ['High protein', 'Meal prep', 'Gluten free'], prep: 20, cook: 20, servings: 4,
+    per: { kcal: 520, p: 53, c: 38, f: 18, fiber: 5 },
+    blurb: 'Lemon-oregano chicken over quinoa with a quick yogurt tzatziki, cucumber, tomato and feta.',
+    ingredients: [[24, 'oz', 'boneless skinless chicken breast'], [2, 'tbsp', 'olive oil'], [1, '', 'lemon, zested and juiced'],
+      [2, 'tsp', 'dried oregano'], [3, 'clove', 'garlic, minced'], [0.75, 'tsp', 'salt'], [3, 'cup', 'cooked quinoa'],
+      [1, 'cup', 'plain nonfat Greek yogurt'], [1, '', 'cucumber, half grated and half diced'], [1, 'cup', 'cherry tomatoes, halved'],
+      [0.25, '', 'red onion, thinly sliced'], [0.5, 'cup', 'crumbled feta']],
+    steps: ['Mix 1 tbsp of the oil, half the lemon juice, the zest, oregano, two-thirds of the garlic and 1/2 tsp salt. Coat the chicken and marinate 15 minutes (or up to a day).',
+      'Heat the remaining oil in a skillet over medium-high. Cook the chicken 6–7 minutes per side until it reaches 165°F (74°C). Rest 5 minutes, then slice.',
+      'For the tzatziki, squeeze the grated cucumber dry in a towel. Stir it into the yogurt with the remaining garlic, lemon juice and salt.',
+      'Divide the quinoa between four containers. Top with chicken, diced cucumber, tomatoes, red onion and feta.',
+      'Add a big spoon of tzatziki to each bowl, or pack it separately so the quinoa stays fluffy.'],
+    tip: 'Chicken thighs work too and stay juicier on reheating; they add about 60 kcal per bowl.' },
+  { id: 'lentil-vegetable-soup', title: 'Smoky Lentil & Vegetable Soup', meal: 'Lunch',
+    tags: ['Vegetarian', 'Vegan', 'Meal prep', 'Gluten free'], prep: 15, cook: 40, servings: 6,
+    per: { kcal: 260, p: 15, c: 42, f: 3, fiber: 14 },
+    blurb: 'A filling, budget-friendly soup with 14 g of fiber per bowl. Great for weight-loss phases.',
+    ingredients: [[1.5, 'cup', 'dry brown or green lentils, rinsed'], [1, 'tbsp', 'olive oil'], [1, '', 'yellow onion, diced'],
+      [2, '', 'carrots, diced'], [2, '', 'celery stalks, diced'], [3, 'clove', 'garlic, minced'], [1, 'tsp', 'ground cumin'],
+      [1, 'tsp', 'smoked paprika'], [1, 'can', 'diced tomatoes (14.5 oz)'], [6, 'cup', 'low-sodium vegetable broth'],
+      [3, 'cup', 'kale, chopped'], [1, 'tbsp', 'lemon juice'], [0.75, 'tsp', 'salt']],
+    steps: ['Heat the oil in a large pot over medium. Cook the onion, carrots and celery for 6–8 minutes until soft.',
+      'Stir in the garlic, cumin and paprika and cook 1 minute until fragrant.',
+      'Add the lentils, tomatoes, broth and salt. Bring to a boil, then cover and simmer 25–30 minutes until the lentils are tender.',
+      'Stir in the kale and cook 3 minutes more until wilted.',
+      'Turn off the heat and add the lemon juice. Taste and adjust the salt.'],
+    tip: 'Blend a third of the soup for a creamier texture. Freezes well for up to 3 months.' },
+  { id: 'beef-broccoli', title: 'Beef & Broccoli with Brown Rice', meal: 'Dinner',
+    tags: ['High protein'], prep: 15, cook: 15, servings: 4,
+    per: { kcal: 440, p: 31, c: 48, f: 13, fiber: 5 },
+    blurb: 'Better than takeout in 30 minutes, with about half the sodium and twice the broccoli.',
+    ingredients: [[16, 'oz', 'flank steak, thinly sliced against the grain'], [4, 'cup', 'broccoli florets'],
+      [0.25, 'cup', 'low-sodium soy sauce'], [1, 'tbsp', 'honey'], [1, 'tbsp', 'cornstarch'], [3, 'clove', 'garlic, minced'],
+      [1, 'tbsp', 'fresh ginger, grated'], [1, 'tbsp', 'sesame oil'], [3, 'cup', 'cooked brown rice'], [null, '', 'sliced green onion and sesame seeds to serve']],
+    steps: ['Whisk the soy sauce, honey, cornstarch, garlic, ginger and 1/3 cup water to make the sauce.',
+      'Heat half the oil in a large skillet or wok over high heat. Sear the beef in one layer for 1–2 minutes per side, then remove.',
+      'Add the remaining oil and the broccoli with 2 tbsp water. Cover and steam-fry 3 minutes until bright green.',
+      'Return the beef, pour in the sauce and toss for 1–2 minutes until it thickens and coats everything.',
+      'Serve over the rice with green onion and sesame seeds.'],
+    tip: 'Freeze the steak for 20 minutes before slicing; it firms up and cuts into thin strips easily.' },
+  { id: 'turkey-taco-lettuce-wraps', title: 'Turkey Taco Lettuce Wraps', meal: 'Dinner',
+    tags: ['High protein', 'Low carb', 'Gluten free'], prep: 10, cook: 12, servings: 4,
+    per: { kcal: 325, p: 28, c: 9, f: 20, fiber: 4 },
+    blurb: 'Crunchy butter-lettuce cups filled with spiced turkey, pico, cheddar and avocado.',
+    ingredients: [[16, 'oz', '93% lean ground turkey'], [2, 'tsp', 'chili powder'], [1, 'tsp', 'ground cumin'],
+      [0.5, 'tsp', 'garlic powder'], [0.5, 'tsp', 'salt'], [2, '', 'heads butter lettuce'], [1, 'cup', 'pico de gallo'],
+      [0.5, 'cup', 'shredded cheddar'], [0.5, 'cup', 'plain nonfat Greek yogurt'], [1, '', 'avocado, diced'], [1, '', 'lime']],
+    steps: ['Brown the turkey in a nonstick skillet over medium-high, breaking it up, about 7 minutes.',
+      'Add the chili powder, cumin, garlic powder, salt and 1/4 cup water. Simmer 2–3 minutes until saucy.',
+      'Separate the lettuce leaves and pat them dry. Use two leaves together for sturdier cups.',
+      'Fill each cup with turkey, then top with pico, cheddar, avocado and a spoon of yogurt.',
+      'Finish with a squeeze of lime.'],
+    tip: 'Want more carbs around training? Serve the filling in corn tortillas (about 50 kcal each).' },
+  { id: 'shrimp-fajita-sheet-pan', title: 'Shrimp Fajita Sheet Pan', meal: 'Dinner',
+    tags: ['High protein', 'Gluten free'], prep: 10, cook: 15, servings: 3,
+    per: { kcal: 310, p: 31, c: 34, f: 7, fiber: 6 },
+    blurb: 'Shrimp, peppers and onions roasted hot in 15 minutes. Lean, fast and ready on a weeknight.',
+    ingredients: [[16, 'oz', 'large shrimp, peeled and deveined'], [2, '', 'bell peppers, sliced'], [1, '', 'red onion, sliced'],
+      [1, 'tbsp', 'olive oil'], [2, 'tsp', 'chili powder'], [1, 'tsp', 'ground cumin'], [1, 'tsp', 'smoked paprika'],
+      [0.5, 'tsp', 'salt'], [6, '', 'small corn tortillas'], [1, '', 'lime'], [0.25, 'cup', 'fresh cilantro, chopped']],
+    steps: ['Heat the oven to 425°F (220°C). Mix the chili powder, cumin, paprika and salt.',
+      'Toss the peppers and onion with the oil and half the spice mix. Roast 8 minutes.',
+      'Toss the shrimp with the remaining spices, add to the pan and roast 6–7 minutes until pink and opaque.',
+      'Warm the tortillas in a dry pan or wrapped in foil in the oven.',
+      'Squeeze the lime over the pan, scatter the cilantro, and fill the tortillas at the table.'],
+    tip: 'Thawing frozen shrimp? Put it in a colander under cold running water for 5–8 minutes, then pat it very dry.' },
+  { id: 'chickpea-spinach-curry', title: 'Chickpea & Spinach Curry', meal: 'Dinner',
+    tags: ['Vegetarian', 'Vegan', 'Meal prep', 'Gluten free'], prep: 10, cook: 25, servings: 4,
+    per: { kcal: 450, p: 15, c: 66, f: 14, fiber: 13 },
+    blurb: 'A creamy, mild coconut curry that uses mostly pantry staples and tastes even better the next day.',
+    ingredients: [[2, 'can', 'chickpeas (15 oz), rinsed'], [1, 'can', 'light coconut milk (13.5 oz)'], [1, 'can', 'diced tomatoes (14.5 oz)'],
+      [1, '', 'yellow onion, diced'], [3, 'clove', 'garlic, minced'], [1, 'tbsp', 'fresh ginger, grated'], [2, 'tbsp', 'curry powder'],
+      [5, 'oz', 'baby spinach'], [1, 'tbsp', 'olive oil'], [0.75, 'tsp', 'salt'], [2, 'cup', 'cooked basmati rice']],
+    steps: ['Heat the oil in a large pan over medium. Cook the onion for 6 minutes until soft and golden.',
+      'Add the garlic, ginger and curry powder. Stir for 1 minute until fragrant.',
+      'Add the tomatoes, coconut milk, chickpeas and salt. Simmer 15 minutes, stirring now and then, until thickened.',
+      'Stir in the spinach a handful at a time until it wilts.',
+      'Serve over the rice.'],
+    tip: 'For more protein, stir in a cup of cooked lentils or serve with a side of Greek yogurt (if not vegan).' },
+  { id: 'pb-protein-bites', title: 'Peanut Butter Protein Bites', meal: 'Snack',
+    tags: ['Vegetarian', 'No cook', 'Meal prep'], prep: 15, cook: 0, extra: 'Chill 30 min', servings: 6,
+    per: { kcal: 300, p: 12, c: 33, f: 15, fiber: 4 },
+    blurb: 'Twelve no-bake bites. Two make a serving: a quick snack before training or a better dessert.',
+    ingredients: [[1, 'cup', 'rolled oats'], [0.5, 'cup', 'natural peanut butter'], [0.33, 'cup', 'honey'],
+      [1, 'scoop', 'vanilla protein powder (about 30 g)'], [2, 'tbsp', 'ground flaxseed'], [0.25, 'cup', 'mini dark chocolate chips']],
+    steps: ['Stir the peanut butter and honey together in a bowl until smooth. Warm 15 seconds in the microwave if stiff.',
+      'Add the oats, protein powder, flaxseed and chocolate chips. Mix until evenly combined.',
+      'If the mixture is crumbly, add water a teaspoon at a time until it holds together when squeezed.',
+      'Roll into 12 balls, about 1 heaped tablespoon each.',
+      'Chill 30 minutes to firm up. Keep in the fridge up to a week.'],
+    tip: 'Freeze half the batch on a tray, then bag them. They thaw in about 10 minutes.' },
+  { id: 'cottage-cheese-parfait', title: 'Cottage Cheese Berry Parfait', meal: 'Snack',
+    tags: ['Vegetarian', 'High protein', 'No cook'], prep: 3, cook: 0, servings: 1,
+    per: { kcal: 285, p: 30, c: 31, f: 5, fiber: 3 },
+    blurb: 'Thirty grams of protein in three minutes. A good evening snack because it keeps you full.',
+    ingredients: [[1, 'cup', 'low-fat cottage cheese'], [0.5, 'cup', 'mixed berries, fresh or frozen'], [2, 'tbsp', 'granola'],
+      [1, 'tsp', 'honey'], [null, '', 'pinch of salt and cinnamon']],
+    steps: ['Spoon the cottage cheese into a bowl or jar. Whip it smooth with a fork or quick blend if you dislike the curds.',
+      'Top with the berries, then the granola.',
+      'Drizzle with honey and a pinch of cinnamon.'],
+    tip: 'Add the granola just before eating so it stays crunchy.' }
+];
+
+/* ---------- Content: workout plans ---------- */
+// Exercise: [name, sets, reps, rest seconds, cue]
+const PLANS = [
+  { id: 'foundations', title: 'Foundations Full Body', level: 'Beginner', perWeek: 3, minutes: 45, equipment: 'Dumbbells, bench, band',
+    goal: 'Learn the main movement patterns and build a strength base.',
+    schedule: 'Mon, Wed, Fri. Alternate days A and B (week 1: A-B-A, week 2: B-A-B).',
+    warmup: '5 minutes of brisk walking or cycling, then one light set of the first exercise.',
+    progression: 'When you finish every set at the top of the rep range with 2 reps still in the tank, add 5 lb next session.',
+    days: [
+      { name: 'Day A', focus: 'Squat · Push · Pull', ex: [
+        ['Goblet squat', 3, '8–12', 90, 'Hold the dumbbell at your chest, sit between your heels, keep your chest tall.'],
+        ['Dumbbell bench press', 3, '8–12', 90, 'Shoulder blades pinched, lower to mid-chest, press up and slightly back.'],
+        ['One-arm dumbbell row', 3, '10 / side', 60, 'Flat back, pull the elbow toward your hip, pause at the top.'],
+        ['Dumbbell Romanian deadlift', 3, '10–12', 90, 'Soft knees, push your hips back until you feel the hamstrings, back stays flat.'],
+        ['Front plank', 3, '30–45 s', 45, 'Squeeze glutes and brace like you are about to be poked in the stomach.']] },
+      { name: 'Day B', focus: 'Lunge · Press · Hinge', ex: [
+        ['Dumbbell reverse lunge', 3, '8 / side', 90, 'Step back long, front knee tracks over the toes, push through the front heel.'],
+        ['Seated dumbbell shoulder press', 3, '8–12', 90, 'Ribs down, press straight overhead without arching your lower back.'],
+        ['Band or cable lat pulldown', 3, '10–12', 60, 'Lead with the elbows, bring hands to upper chest, control the way up.'],
+        ['Glute bridge (weighted)', 3, '12–15', 60, 'Drive through heels, squeeze at the top for one second.'],
+        ['Dead bug', 3, '8 / side', 45, 'Lower back pressed to the floor the whole time; move slowly.']] }
+    ] },
+  { id: 'upper-lower', title: 'Upper/Lower Strength', level: 'Intermediate', perWeek: 4, minutes: 60, equipment: 'Barbell, rack, dumbbells, cables',
+    goal: 'Build strength and muscle with heavy compound lifts and targeted accessories.',
+    schedule: 'Mon Upper 1, Tue Lower 1, Thu Upper 2, Fri Lower 2.',
+    warmup: '5 minutes easy cardio, then 2–3 ramp-up sets on the first lift (empty bar, 50%, 75%).',
+    progression: 'Double progression: hit the top of the rep range on all sets, then add 5 lb (upper) or 10 lb (lower). Deload every 6th week at 60% volume.',
+    days: [
+      { name: 'Upper 1', focus: 'Strength', ex: [
+        ['Barbell bench press', 4, '6–8', 150, 'Feet planted, slight arch, touch the lower chest, press in a slight arc.'],
+        ['Barbell bent-over row', 4, '6–8', 120, 'Torso about 45°, pull the bar to your belly button.'],
+        ['Standing overhead press', 3, '8–10', 120, 'Squeeze glutes, press the bar past your face, then push your head through.'],
+        ['Pull-up (assisted if needed)', 3, '6–10', 120, 'Start from a dead hang, drive elbows down, chin over the bar.'],
+        ['Dumbbell lateral raise', 3, '12–15', 60, 'Slight bend in elbows, raise to shoulder height, control down.'],
+        ['Cable triceps pushdown', 3, '10–12', 60, 'Elbows pinned to your sides; only the forearms move.']] },
+      { name: 'Lower 1', focus: 'Squat', ex: [
+        ['Barbell back squat', 4, '5–6', 180, 'Brace, break at hips and knees together, hit at least parallel.'],
+        ['Romanian deadlift', 3, '8', 120, 'Bar slides down the thighs, hips back, stop when the back would round.'],
+        ['Bulgarian split squat', 3, '10 / side', 90, 'Back foot on a bench, most of your weight in the front leg.'],
+        ['Lying leg curl', 3, '10–12', 60, 'Hips pressed down, curl fully, lower over 3 seconds.'],
+        ['Standing calf raise', 4, '10–15', 60, 'Full stretch at the bottom, pause one second at the top.']] },
+      { name: 'Upper 2', focus: 'Volume', ex: [
+        ['Incline dumbbell press', 4, '8–10', 120, 'Bench at 30°, lower to the upper chest, elbows about 45° from the body.'],
+        ['Chest-supported row', 4, '10–12', 90, 'Chest stays on the pad; squeeze shoulder blades together.'],
+        ['Lat pulldown', 3, '8–10', 90, 'Slight lean back, pull to the collarbone.'],
+        ['Seated Arnold press', 3, '10', 90, 'Rotate palms from facing you to facing forward as you press.'],
+        ['Cable face pull', 3, '15', 60, 'Rope to your forehead, pull the ends apart, elbows high.'],
+        ['Dumbbell curl', 3, '10–12', 60, 'No swinging; lower slowly.']] },
+      { name: 'Lower 2', focus: 'Hinge', ex: [
+        ['Conventional deadlift', 3, '5', 180, 'Bar over mid-foot, pull the slack out, push the floor away.'],
+        ['Leg press', 3, '10–12', 120, 'Feet shoulder-width, lower until hips start to tuck, do not lock knees.'],
+        ['Dumbbell walking lunge', 3, '12 / side', 90, 'Long steps, torso upright, back knee kisses the floor.'],
+        ['Barbell hip thrust', 3, '8–10', 90, 'Upper back on a bench, chin tucked, full lockout with glutes.'],
+        ['Hanging knee raise', 3, '10–15', 60, 'Curl your pelvis up; avoid swinging.']] }
+    ] },
+  { id: 'home-circuit', title: 'Home Bodyweight Circuit', level: 'All levels', perWeek: 3, minutes: 30, equipment: 'None (a chair and a towel)', noLoad: true,
+    goal: 'Improve fitness and burn calories at home with no equipment.',
+    schedule: '3 circuits per week (e.g. Mon, Wed, Sat) plus two 30-minute walks.',
+    warmup: '3 minutes: marching in place, arm circles, hip circles, 10 bodyweight squats.',
+    progression: 'Work 40 s, rest 20 s, move to the next exercise. Rest 1 minute between rounds. Start with 3 rounds; add a 4th round when 3 feel easy, then progress to harder variations.',
+    days: [
+      { name: 'Circuit 1', focus: 'Legs + core', ex: [
+        ['Bodyweight squat', 3, '40 s', 20, 'Sit back as if to a chair, weight in your heels.'],
+        ['Alternating reverse lunge', 3, '40 s', 20, 'Step back, lower under control, keep the front knee stable.'],
+        ['Single-leg glute bridge', 3, '40 s', 20, 'Switch legs halfway through; keep hips level.'],
+        ['Wall sit', 3, '40 s', 20, 'Thighs parallel to the floor, back flat against the wall.'],
+        ['Mountain climbers', 3, '40 s', 60, 'Hands under shoulders, drive the knees fast, hips low.']] },
+      { name: 'Circuit 2', focus: 'Upper body + core', ex: [
+        ['Push-up (incline on a counter if needed)', 3, '40 s', 20, 'Body in one straight line, chest to the surface.'],
+        ['Pike push-up', 3, '40 s', 20, 'Hips high, lower the top of your head toward the floor.'],
+        ['Towel row under a table', 3, '40 s', 20, 'Lie under a sturdy table, pull your chest up to the edge.'],
+        ['Chair triceps dip', 3, '40 s', 20, 'Hands behind you on a stable chair, elbows point back.'],
+        ['Plank shoulder taps', 3, '40 s', 60, 'Feet wide, hips still while you tap each shoulder.']] },
+      { name: 'Circuit 3', focus: 'Conditioning', ex: [
+        ['Jumping jacks (or step jacks)', 3, '40 s', 20, 'Land softly on the balls of your feet.'],
+        ['Squat to calf raise', 3, '40 s', 20, 'Stand up from the squat and rise onto your toes.'],
+        ['Step-back burpee', 3, '40 s', 20, 'Step back to plank, step in, stand and reach overhead.'],
+        ['Skater hops', 3, '40 s', 20, 'Bound side to side, land on one foot with a soft knee.'],
+        ['Bicycle crunch', 3, '40 s', 60, 'Elbow toward the opposite knee; slow and controlled.']] }
+    ] },
+  { id: 'push-pull-legs', title: 'Push / Pull / Legs', level: 'Advanced', perWeek: 6, minutes: 70, equipment: 'Full gym',
+    goal: 'Build as much muscle as possible with high weekly volume, training each muscle twice a week.',
+    schedule: 'Push, Pull, Legs, Push, Pull, Legs, rest. If time or recovery is limited, run it 3 days a week.',
+    warmup: '5 minutes easy cardio, dynamic stretches for the muscles you are training, then ramp-up sets on the first lift.',
+    progression: 'Stop most sets 1–2 reps before failure. Add a rep each week until you reach the top of the range, then add weight. Deload every 5th or 6th week.',
+    days: [
+      { name: 'Push', focus: 'Chest · Shoulders · Triceps', ex: [
+        ['Barbell bench press', 4, '6–8', 150, 'Bar path from lower chest to over the shoulders; keep your shoulder blades back.'],
+        ['Seated dumbbell shoulder press', 3, '8–10', 120, 'Forearms vertical; stop just short of locking out.'],
+        ['Incline dumbbell press', 3, '10–12', 90, 'Deep stretch at the bottom, squeeze the chest at the top.'],
+        ['Cable fly', 3, '12–15', 60, 'Slight elbow bend, hug a big tree, control the stretch.'],
+        ['Dumbbell lateral raise', 4, '15–20', 45, 'Lead with the elbows; no shrugging.'],
+        ['Overhead cable triceps extension', 3, '10–12', 60, 'Elbows by your ears; get a full stretch behind your head.']] },
+      { name: 'Pull', focus: 'Back · Rear delts · Biceps', ex: [
+        ['Weighted pull-up', 4, '6–8', 150, 'Full hang at the bottom, chest to the bar at the top.'],
+        ['Pendlay row', 3, '6–8', 120, 'Each rep starts from the floor; torso parallel to the ground.'],
+        ['Seated cable row', 3, '10–12', 90, 'Chest up, pull to your stomach, let the shoulders reach forward on the return.'],
+        ['Straight-arm pulldown', 3, '12–15', 60, 'Arms long; sweep the bar to your thighs using your lats.'],
+        ['Rear-delt fly', 3, '15–20', 45, 'Thumbs slightly down; move the weight with the back of the shoulder.'],
+        ['Incline dumbbell curl', 3, '10–12', 60, 'Arms hang behind you for a long stretch; no swinging.']] },
+      { name: 'Legs', focus: 'Quads · Hamstrings · Calves', ex: [
+        ['Barbell back squat', 4, '6–8', 180, 'Brace hard, sit down between your hips, drive up through mid-foot.'],
+        ['Romanian deadlift', 3, '8–10', 120, 'Hips back until the hamstrings are fully stretched; flat back.'],
+        ['Leg press', 3, '10–15', 120, 'Full depth you can control without your lower back lifting.'],
+        ['Leg extension', 3, '12–15', 60, 'Pause one second at the top.'],
+        ['Seated leg curl', 3, '10–12', 60, 'Lean forward slightly for a bigger hamstring stretch.'],
+        ['Seated calf raise', 4, '12–15', 45, 'Two-second pause at the bottom stretch.']] }
+    ] },
+  { id: 'walk-to-5k', title: 'Walk to 5K', level: 'Beginner', perWeek: 3, minutes: 30, equipment: 'Running shoes', noLoad: true,
+    goal: 'Go from walking to running 5 km (3.1 miles) without stopping in 8 weeks.',
+    schedule: '3 runs a week on non-consecutive days. Spend 2 weeks on each stage, and repeat a stage if it felt too hard.',
+    warmup: 'Every session starts with the 5-minute brisk walk listed first.',
+    progression: 'Move to the next stage after two weeks if you finished every interval. Run at a conversational pace: you should be able to speak in short sentences. Tap one box per round in a live session.',
+    days: [
+      { name: 'Stage 1', focus: 'Weeks 1–2', ex: [
+        ['Brisk walk warm-up', 1, '5 min', 0, 'Swing your arms and gradually pick up the pace.'],
+        ['Jog 60 s, walk 90 s', 8, '2.5 min', 0, 'Jog slowly enough that you could hold a conversation.'],
+        ['Cool-down walk', 1, '5 min', 0, 'Easy pace, then stretch your calves and hips.']] },
+      { name: 'Stage 2', focus: 'Weeks 3–4', ex: [
+        ['Brisk walk warm-up', 1, '5 min', 0, 'Swing your arms and gradually pick up the pace.'],
+        ['Jog 3 min, walk 90 s', 5, '4.5 min', 0, 'Short, quick steps; land with your feet under your hips.'],
+        ['Cool-down walk', 1, '5 min', 0, 'Easy pace, then stretch your calves and hips.']] },
+      { name: 'Stage 3', focus: 'Weeks 5–6', ex: [
+        ['Brisk walk warm-up', 1, '5 min', 0, 'Swing your arms and gradually pick up the pace.'],
+        ['Jog 8 min, walk 3 min', 2, '11 min', 0, 'Settle your breathing into a steady rhythm, such as in for 3 steps, out for 3.'],
+        ['Cool-down walk', 1, '5 min', 0, 'Easy pace, then stretch your calves and hips.']] },
+      { name: 'Stage 4', focus: 'Weeks 7–8', ex: [
+        ['Brisk walk warm-up', 1, '5 min', 0, 'Swing your arms and gradually pick up the pace.'],
+        ['Continuous jog', 1, '25–30 min', 0, 'Aim for 5 km or 30 minutes, whichever comes first. Slow down rather than stop.'],
+        ['Cool-down walk', 1, '5 min', 0, 'Easy pace, then stretch your calves and hips.']] }
+    ] },
+  { id: 'mobility-core', title: 'Mobility & Core Reset', level: 'All levels', perWeek: 3, minutes: 20, equipment: 'Yoga mat, light band', noLoad: true,
+    goal: 'Ease stiffness from sitting, improve range of motion and build a stable core. Pairs well with any other plan.',
+    schedule: '2–3 times a week, on rest days or right after a workout.',
+    warmup: '2 minutes of easy marching in place or slow cat-cow.',
+    progression: 'Move slowly and breathe. Add 5–10 seconds to holds or 2 reps per side each week, staying pain-free.',
+    days: [
+      { name: 'Hips & spine', focus: 'Lower body mobility', ex: [
+        ['Cat-cow', 2, '8 slow reps', 20, 'Move one vertebra at a time; exhale as you round.'],
+        ["World's greatest stretch", 2, '5 / side', 20, 'Lunge, place a hand inside the front foot, rotate your chest open.'],
+        ['90/90 hip switch', 2, '8 / side', 20, 'Sit tall and rotate both knees side to side.'],
+        ['Glute bridge march', 2, '10 / side', 30, 'Keep your hips level as you lift each foot.'],
+        ['Side plank', 2, '20–30 s / side', 30, 'Stack your hips and push the floor away.'],
+        ["Child's pose breathing", 1, '60 s', 0, 'Breathe slowly into your back ribs.']] },
+      { name: 'Shoulders & core', focus: 'Upper body mobility', ex: [
+        ['Open book rotation', 2, '8 / side', 20, 'Lie on your side, knees stacked, and open your top arm toward the floor behind you.'],
+        ['Wall slides', 2, '10', 20, 'Back and forearms on the wall; slide up without arching your back.'],
+        ['Bird dog', 2, '8 / side', 30, 'Reach long through the opposite hand and heel; keep your back flat.'],
+        ['Hollow body hold', 3, '20–30 s', 30, 'Lower back pressed down; bend your knees to make it easier.'],
+        ['Band Pallof press', 2, '10 / side', 30, 'Press the band straight out and resist the twist; hips stay square.'],
+        ['Doorway chest stretch', 1, '45 s / side', 0, 'Elbow at shoulder height, step through gently.']] }
+    ] }
+];
+
+/* ---------- Helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const app = $('#app');
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const z = (n) => String(n).padStart(2, '0');
+const dayKey = (d = new Date()) => d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate());
+const parseKey = (k) => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDays = (k, n) => { const d = parseKey(k); d.setDate(d.getDate() + n); return dayKey(d); };
+const fmtDay = (k, o = { weekday: 'short', month: 'short', day: 'numeric' }) => parseKey(k).toLocaleDateString(undefined, o);
+const uid = () => Math.random().toString(36).slice(2, 10);
+const round = (n, d = 0) => { const f = 10 ** d; return Math.round(n * f) / f; };
+const KG_LB = 2.20462, ML_OZ = 29.5735;
+
+/* ---------- State ---------- */
+const KEY = 'rep-ration-v1';
+function calcTargets(p) {
+  const bmr = 10 * p.weightKg + 6.25 * p.heightCm - 5 * p.age + (p.sex === 'male' ? 5 : -161);
+  const tdee = bmr * p.activity;
+  const adj = { lose: -500, maintain: 0, gain: 300 }[p.goal] || 0;
+  const kcal = Math.max(p.sex === 'male' ? 1500 : 1200, Math.round((tdee + adj) / 10) * 10);
+  const protein = Math.round(p.weightKg * (p.goal === 'lose' ? 2.0 : 1.8));
+  const fat = Math.round(kcal * 0.28 / 9);
+  const carbs = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4));
+  return { bmr: Math.round(bmr), tdee: Math.round(tdee), kcal, p: protein, c: carbs, f: fat };
+}
+function seed() {
+  const t = dayKey();
+  const profile = { sex: 'female', age: 34, heightCm: 167.6, weightKg: 74.4, activity: 1.55, goal: 'lose' };
+  const weights = [];
+  for (let i = 21; i >= 0; i -= 1) {
+    if (i % 3 === 1) continue;
+    const kg = 74.4 - (21 - i) * 0.075 + Math.sin(i * 1.7) * 0.35;
+    weights.push({ date: addDays(t, -i), kg: round(kg, 1) });
+  }
+  const r = (id) => RECIPES.find((x) => x.id === id);
+  const fromRecipe = (rec, date, meal) => ({ id: uid(), date, meal, name: rec.title, kcal: rec.per.kcal, p: rec.per.p, c: rec.per.c, f: rec.per.f });
+  const meals = [
+    fromRecipe(r('berry-overnight-oats'), t, 'Breakfast'),
+    fromRecipe(r('chicken-burrito-bowls'), t, 'Lunch'),
+    { id: uid(), date: t, meal: 'Snack', name: 'Apple + 1 oz almonds', kcal: 260, p: 7, c: 31, f: 14 }
+  ];
+  for (let i = 1; i <= 6; i += 1) {
+    const d = addDays(t, -i);
+    const base = [1640, 1820, 1710, 1950, 1580, 1760][i - 1];
+    meals.push({ id: uid(), date: d, meal: 'Day total', name: 'Logged meals', kcal: base, p: Math.round(base * 0.27 / 4), c: Math.round(base * 0.43 / 4), f: Math.round(base * 0.3 / 9) });
+  }
+  const workouts = [
+    { id: uid(), date: addDays(t, -4), planId: 'foundations', dayIdx: 0, minutes: 44, sets: 15, total: 15 },
+    { id: uid(), date: addDays(t, -2), planId: 'foundations', dayIdx: 1, minutes: 47, sets: 14, total: 15 },
+    { id: uid(), date: addDays(t, -9), planId: 'foundations', dayIdx: 0, minutes: 41, sets: 15, total: 15 }
+  ];
+  const water = {}; water[t] = 1250;
+  return { v: 1, example: true, units: 'us', profile, targets: { ...calcTargets(profile), waterMl: 2400 },
+    meals, weights, workouts, water, activePlan: 'foundations', session: null,
+    shopping: { recipes: [{ id: 'chicken-burrito-bowls', servings: 4 }, { id: 'berry-overnight-oats', servings: 4 }], checked: {}, extras: [] } };
+}
+function fresh() {
+  const s = seed();
+  return { ...s, example: false, meals: [], weights: [], workouts: [], water: {}, session: null, shopping: { recipes: [], checked: {}, extras: [] } };
+}
+let S;
+try { const raw = localStorage.getItem(KEY); S = raw ? JSON.parse(raw) : seed(); } catch (e) { S = seed(); }
+if (!S || S.v !== 1) S = seed();
+if (!S.shopping) S.shopping = { recipes: [], checked: {}, extras: [] };
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep in memory */ } }
+
+/* ---------- Units ---------- */
+const us = () => S.units === 'us';
+const wUnit = () => (us() ? 'lb' : 'kg');
+const showW = (kg, d = 1) => round(us() ? kg * KG_LB : kg, d);
+const toKg = (v) => (us() ? v / KG_LB : v);
+const wUnitWater = () => (us() ? 'oz' : 'ml');
+const showWater = (ml) => (us() ? Math.round(ml / ML_OZ) : Math.round(ml));
+
+/* ---------- Small UI pieces ---------- */
+let toastTimer;
+function toast(msg) {
+  const el = $('#toast'); el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+const dayMeals = (k) => S.meals.filter((m) => m.date === k);
+const totals = (list) => list.reduce((a, m) => ({ kcal: a.kcal + (+m.kcal || 0), p: a.p + (+m.p || 0), c: a.c + (+m.c || 0), f: a.f + (+m.f || 0) }), { kcal: 0, p: 0, c: 0, f: 0 });
+const planById = (id) => PLANS.find((p) => p.id === id);
+const recipeById = (id) => RECIPES.find((r) => r.id === id);
+
+function ring(val, target) {
+  const R = 64, C = 2 * Math.PI * R, pct = target ? Math.min(val / target, 1) : 0;
+  const over = val > target;
+  const left = Math.round(target - val);
+  return `<svg class="ring" viewBox="0 0 156 156" role="img" aria-label="${Math.round(val)} of ${target} calories">
+    <circle cx="78" cy="78" r="${R}" fill="none" stroke="var(--sunk)" stroke-width="13"/>
+    <circle cx="78" cy="78" r="${R}" fill="none" stroke="${over ? 'var(--warn)' : 'var(--accent)'}" stroke-width="13" stroke-linecap="round"
+      stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct)}" transform="rotate(-90 78 78)" style="transition: stroke-dashoffset .5s ease"/>
+    <text x="78" y="74" text-anchor="middle" class="ring-text" fill="var(--ink)" font-size="27" font-weight="500">${Math.abs(left).toLocaleString()}</text>
+    <text x="78" y="96" text-anchor="middle" class="ring-text" fill="var(--muted)" font-size="11">${over ? 'KCAL OVER' : 'KCAL LEFT'}</text>
+  </svg>`;
+}
+function macroRow(label, val, target, color) {
+  const pct = target ? Math.min(100, (val / target) * 100) : 0;
+  return `<div class="macro"><span><span class="dot" style="background:${color}"></span>${label}</span>
+    <div class="bar"><i style="width:${pct}%;background:${color}"></i></div>
+    <span class="num">${Math.round(val)}<span class="muted"> / ${target} g</span></span></div>`;
+}
+function macroStrip(per) {
+  const pk = per.p * 4, ck = per.c * 4, fk = per.f * 9, t = pk + ck + fk || 1;
+  return `<div class="macro-strip" aria-hidden="true"><i style="flex:${pk / t};background:var(--protein)"></i><i style="flex:${ck / t};background:var(--carbs)"></i><i style="flex:${fk / t};background:var(--fat)"></i></div>
+    <div class="macro-legend"><span><span class="dot" style="background:var(--protein)"></span>P <b>${per.p}g</b></span><span><span class="dot" style="background:var(--carbs)"></span>C <b>${per.c}g</b></span><span><span class="dot" style="background:var(--fat)"></span>F <b>${per.f}g</b></span></div>`;
+}
+
+/* Weight line chart: one x scale by date, one y scale by weight. */
+function weightChart(days, h = 220, compact = false) {
+  const end = dayKey(), start = addDays(end, -(days - 1));
+  const pts = S.weights.filter((w) => w.date >= start && w.date <= end).sort((a, b) => a.date.localeCompare(b.date));
+  if (pts.length < 2) return `<p class="muted">Log your weight on at least two days to see a trend line.</p>`;
+  const W = 640, padL = compact ? 8 : 44, padR = compact ? 8 : 16, padT = 16, padB = compact ? 8 : 28;
+  const vals = pts.map((p) => showW(p.kg));
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  const span = Math.max(hi - lo, us() ? 2 : 1); const mid = (hi + lo) / 2; lo = mid - span * 0.65; hi = mid + span * 0.65;
+  const t0 = parseKey(start).getTime(), t1 = parseKey(end).getTime();
+  const x = (k) => padL + ((parseKey(k).getTime() - t0) / (t1 - t0 || 1)) * (W - padL - padR);
+  const y = (v) => padT + (1 - (v - lo) / (hi - lo)) * (h - padT - padB);
+  const line = pts.map((p, i) => `${i ? 'L' : 'M'}${x(p.date).toFixed(1)},${y(showW(p.kg)).toFixed(1)}`).join('');
+  const area = `${line}L${x(pts[pts.length - 1].date).toFixed(1)},${h - padB}L${x(pts[0].date).toFixed(1)},${h - padB}Z`;
+  let grid = '';
+  if (!compact) {
+    for (let i = 0; i <= 3; i += 1) {
+      const v = lo + ((hi - lo) * i) / 3, yy = y(v);
+      grid += `<line x1="${padL}" x2="${W - padR}" y1="${yy}" y2="${yy}" stroke="var(--line)" stroke-width="1"/><text x="${padL - 8}" y="${yy + 4}" text-anchor="end">${v.toFixed(1)}</text>`;
+    }
+    [start, addDays(start, Math.floor(days / 2)), end].forEach((k, i) => {
+      grid += `<text x="${x(k)}" y="${h - 8}" text-anchor="${['start', 'middle', 'end'][i]}">${fmtDay(k, { month: 'short', day: 'numeric' })}</text>`;
+    });
+  }
+  const last = pts[pts.length - 1];
+  const dots = compact ? '' : pts.map((p) => `<circle cx="${x(p.date)}" cy="${y(showW(p.kg))}" r="3" fill="var(--surface)" stroke="var(--accent)" stroke-width="2"><title>${fmtDay(p.date)}: ${showW(p.kg)} ${wUnit()}</title></circle>`).join('');
+  return `<svg class="chart" viewBox="0 0 ${W} ${h}" role="img" aria-label="Weight trend over ${days} days">
+    ${grid}
+    <path d="${area}" fill="var(--accent)" opacity=".1"/>
+    <path d="${line}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}
+    <circle cx="${x(last.date)}" cy="${y(showW(last.kg))}" r="5.5" fill="var(--accent)"/>
+  </svg>`;
+}
+function calorieBars() {
+  const end = dayKey(), W = 640, h = 220, padL = 44, padR = 12, padT = 14, padB = 28;
+  const days = [...Array(7)].map((_, i) => addDays(end, i - 6));
+  const vals = days.map((k) => totals(dayMeals(k)).kcal);
+  const target = S.targets.kcal;
+  const max = Math.max(target * 1.25, ...vals);
+  const bw = (W - padL - padR) / 7;
+  const y = (v) => padT + (1 - v / max) * (h - padT - padB);
+  let s = '';
+  [0, 0.5, 1].forEach((f) => { const v = Math.round(max * f / 100) * 100; s += `<line x1="${padL}" x2="${W - padR}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${padL - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`; });
+  days.forEach((k, i) => {
+    const v = vals[i], bx = padL + i * bw + bw * 0.2, w = bw * 0.6;
+    const col = v > target * 1.05 ? 'var(--warn)' : 'var(--accent)';
+    if (v) s += `<rect x="${bx}" y="${y(v)}" width="${w}" height="${h - padB - y(v)}" rx="4" fill="${col}" opacity="${k === end ? 1 : 0.75}"><title>${fmtDay(k)}: ${v} kcal</title></rect>`;
+    s += `<text x="${bx + w / 2}" y="${h - 8}" text-anchor="middle">${fmtDay(k, { weekday: 'short' })}</text>`;
+  });
+  s += `<line x1="${padL}" x2="${W - padR}" y1="${y(target)}" y2="${y(target)}" stroke="var(--ink)" stroke-dasharray="5 4" stroke-width="1.5"/>
+    <text x="${W - padR}" y="${y(target) - 6}" text-anchor="end" style="fill:var(--ink)">target ${target}</text>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${h}" role="img" aria-label="Calories for the last 7 days">${s}</svg>`;
+}
+
+function exampleBanner() {
+  if (!S.example) return '';
+  return `<div class="example-banner"><span><b>You're looking at example data.</b> Explore freely, then clear it to start tracking your own days.</span>
+    <button class="btn btn-sm btn-primary" data-act="clear-example">Clear example data</button></div>`;
+}
+function nextWorkout() {
+  const plan = planById(S.activePlan) || PLANS[0];
+  const last = S.workouts.filter((w) => w.planId === plan.id).sort((a, b) => b.date.localeCompare(a.date))[0];
+  const idx = last ? (last.dayIdx + 1) % plan.days.length : 0;
+  return { plan, idx, day: plan.days[idx] };
+}
+
+/* ---------- Views ---------- */
+function viewToday() {
+  const t = dayKey(), meals = dayMeals(t), tot = totals(meals), T = S.targets;
+  const water = S.water[t] || 0;
+  const glassMl = us() ? 8 * ML_OZ : 250, nGlasses = Math.max(1, Math.round(T.waterMl / glassMl));
+  let glasses = '';
+  for (let i = 0; i < nGlasses; i += 1) { const fill = Math.max(0, Math.min(1, water / glassMl - i)); glasses += `<span class="glass" aria-hidden="true"><i style="height:${fill * 100}%"></i></span>`; }
+  const monday = addDays(t, -((parseKey(t).getDay() + 6) % 7));
+  const week = [...Array(7)].map((_, i) => addDays(monday, i));
+  const doneDays = new Set(S.workouts.map((w) => w.date));
+  const weekCount = week.filter((k) => doneDays.has(k)).length;
+  const ws = [...S.weights].sort((a, b) => a.date.localeCompare(b.date));
+  const lastW = ws[ws.length - 1];
+  const twoWkAgo = ws.filter((w) => w.date <= addDays(t, -14)).pop() || ws[0];
+  const delta = lastW && twoWkAgo && lastW !== twoWkAgo ? showW(lastW.kg) - showW(twoWkAgo.kg) : null;
+  const nx = nextWorkout();
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+
+  return `${exampleBanner()}
+  <div class="page-head"><div><div class="eyebrow">${fmtDay(t, { weekday: 'long', month: 'long', day: 'numeric' })}</div><h1>${greet}.</h1></div>
+    <div class="row"><a class="btn" href="#log">Log food</a><a class="btn btn-primary" href="#recipes">Find a recipe</a></div></div>
+  <div class="grid">
+    <section class="panel span-7" aria-labelledby="h-fuel">
+      <div class="panel-head"><h2 id="h-fuel">Fuel</h2><span class="muted num">${Math.round(tot.kcal).toLocaleString()} / ${T.kcal.toLocaleString()} kcal</span></div>
+      <div class="ring-wrap">${ring(tot.kcal, T.kcal)}
+        <div class="macros">${macroRow('Protein', tot.p, T.p, 'var(--protein)')}${macroRow('Carbs', tot.c, T.c, 'var(--carbs)')}${macroRow('Fat', tot.f, T.f, 'var(--fat)')}</div>
+      </div>
+    </section>
+    <section class="panel span-5" aria-labelledby="h-water">
+      <div class="panel-head"><h2 id="h-water">Water</h2><span class="num"><b>${showWater(water)}</b><span class="muted"> / ${showWater(T.waterMl)} ${wUnitWater()}</span></span></div>
+      <div class="water-glasses">${glasses}</div>
+      <div class="row">
+        <button class="btn btn-sm" data-act="water" data-ml="${us() ? 8 * ML_OZ : 250}">+ ${us() ? '8 oz' : '250 ml'}</button>
+        <button class="btn btn-sm" data-act="water" data-ml="${us() ? 16 * ML_OZ : 500}">+ ${us() ? '16 oz' : '500 ml'}</button>
+        <button class="btn btn-sm btn-ghost" data-act="water" data-ml="${us() ? -8 * ML_OZ : -250}" ${water ? '' : 'disabled'}>Undo</button>
+      </div>
+    </section>
+
+    <section class="panel span-7" aria-labelledby="h-meals">
+      <div class="panel-head"><h2 id="h-meals">Today's meals</h2><a class="btn btn-sm" href="#log">Add food</a></div>
+      ${meals.length ? `<ul class="list">${meals.map((m) => `<li><div class="grow"><div><b>${esc(m.name)}</b></div><div class="muted" style="font-size:.85rem">${esc(m.meal)} · P ${m.p}g · C ${m.c}g · F ${m.f}g</div></div><span class="num">${m.kcal}</span></li>`).join('')}</ul>`
+        : `<p class="muted">Nothing logged yet today. Add a meal from the <a href="#log">Log</a> or tap “Log a serving” on any recipe.</p>`}
+    </section>
+    <section class="panel span-5 next-card" aria-labelledby="h-next">
+      <div class="eyebrow">Next workout · ${esc(nx.plan.title)}</div>
+      <h2 id="h-next" style="margin-block:6px 4px">${esc(nx.day.name)}: ${esc(nx.day.focus)}</h2>
+      <p class="muted" style="margin-bottom:14px">${nx.day.ex.length} exercises · about ${nx.plan.minutes} min</p>
+      <div class="row"><button class="btn btn-berry" data-act="start" data-plan="${nx.plan.id}" data-day="${nx.idx}">Start session</button><a class="btn" href="#plan-${nx.plan.id}">View plan</a></div>
+    </section>
+
+    <section class="panel span-6" aria-labelledby="h-week">
+      <div class="panel-head"><h2 id="h-week">This week</h2><span class="muted">${weekCount} of ${(planById(S.activePlan) || PLANS[0]).perWeek} workouts</span></div>
+      <div class="week">${week.map((k) => `<div class="day ${doneDays.has(k) ? 'done' : ''} ${k === t ? 'today' : ''}">${fmtDay(k, { weekday: 'narrow' })}<b>${parseKey(k).getDate()}</b></div>`).join('')}</div>
+    </section>
+    <section class="panel span-6" aria-labelledby="h-weight">
+      <div class="panel-head"><h2 id="h-weight">Weight</h2><a class="btn btn-sm btn-ghost" href="#log">Log weight</a></div>
+      ${lastW ? `<div class="row" style="justify-content:space-between;align-items:baseline"><span class="big-stat">${showW(lastW.kg)} <span class="muted" style="font-size:1rem">${wUnit()}</span></span>
+        ${delta !== null ? `<span class="num ${delta <= 0 ? 'delta-down' : 'delta-up'}">${delta > 0 ? '+' : ''}${delta.toFixed(1)} ${wUnit()} <span class="muted">· 2 wk</span></span>` : ''}</div>
+        <div style="margin-top:8px">${weightChart(30, 90, true)}</div>` : `<p class="muted">No weigh-ins yet. Weigh in at the same time each morning for the clearest trend.</p>`}
+    </section>
+  </div>`;
+}
+
+let recipeFilter = 'All', recipeSearch = '';
+const FILTERS = ['All', 'Breakfast', 'Lunch', 'Dinner', 'Snack', 'High protein', 'Vegetarian', 'Vegan', 'Low carb', 'Meal prep'];
+function recipeCards() {
+  const q = recipeSearch.trim().toLowerCase();
+  const list = RECIPES.filter((r) => (recipeFilter === 'All' || r.meal === recipeFilter || r.tags.includes(recipeFilter))
+    && (!q || (r.title + ' ' + r.tags.join(' ') + ' ' + r.ingredients.map((i) => i[2]).join(' ')).toLowerCase().includes(q)));
+  if (!list.length) return `<p class="muted">No recipes match “${esc(recipeSearch)}”. Try another ingredient or clear the filter.</p>`;
+  return list.map((r) => `<a class="rcard" href="#recipe-${r.id}">
+    <div class="rcard-top"><div><div class="eyebrow">${r.meal}</div><div class="rcard-kcal">${r.per.kcal}<small>kcal</small></div></div>
+      <span class="stack" style="gap:4px;align-items:end"><span class="tag">${r.prep + r.cook} min</span>${onList(r.id) ? '<span class="tag tag-accent">On your list</span>' : ''}</span></div>
+    <div class="rcard-body"><h3>${esc(r.title)}</h3><p class="muted" style="font-size:.9rem">${esc(r.blurb)}</p>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">${macroStrip(r.per)}</div></div></a>`).join('');
+}
+function viewRecipes() {
+  return `<div class="page-head"><div><div class="eyebrow">${RECIPES.length} recipes · macros per serving</div><h1>Recipes</h1>
+    <p class="muted">High-protein meals built from everyday groceries. Every recipe lists calories and macros per serving and scales to the number of people you're feeding.</p></div></div>
+    <div class="filters" role="group" aria-label="Filter recipes">
+      ${FILTERS.map((f) => `<button class="chip" data-act="filter" data-f="${f}" aria-pressed="${f === recipeFilter}">${f}</button>`).join('')}
+      <input class="input" id="recipe-search" type="search" placeholder="Search by ingredient…" value="${esc(recipeSearch)}" aria-label="Search recipes">
+    </div>
+    <div class="cards" id="recipe-cards">${recipeCards()}</div>`;
+}
+
+const servingsState = {};
+function fmtQty(q, unit) {
+  if (q == null) return '';
+  if (unit === 'oz') return String(round(q, q < 10 ? 1 : 0));
+  const w = Math.floor(q + 1e-9), r = q - w;
+  const opts = [[0, ''], [0.125, '⅛'], [0.25, '¼'], [1 / 3, '⅓'], [0.5, '½'], [2 / 3, '⅔'], [0.75, '¾'], [1, '']];
+  let best = opts[0];
+  opts.forEach((o) => { if (Math.abs(r - o[0]) < Math.abs(r - best[0])) best = o; });
+  const whole = w + (best[0] === 1 ? 1 : 0);
+  const out = (whole ? whole : '') + best[1];
+  return out || '⅛';
+}
+function unitLabel(q, unit) {
+  if (!unit) return '';
+  const plural = q > 1 && !['oz', 'tbsp', 'tsp', 'large'].includes(unit);
+  return unit + (plural ? 's' : '');
+}
+function ingList(r) {
+  const n = servingsState[r.id] || r.servings, k = n / r.servings;
+  return r.ingredients.map((ing, i) => {
+    const q = ing[0] == null ? null : ing[0] * k;
+    return `<li><label><input type="checkbox" id="ing-${r.id}-${i}"><span class="q">${fmtQty(q, ing[1])} ${unitLabel(q, ing[1])}</span><span>${esc(ing[2])}</span></label></li>`;
+  }).join('');
+}
+function viewRecipe(id) {
+  const r = recipeById(id);
+  if (!r) return notFound('That recipe');
+  const n = servingsState[r.id] || r.servings;
+  return `<a class="btn btn-ghost" href="#recipes" style="margin-bottom:10px">← All recipes</a>
+  <div class="recipe-hero">
+    <div><div class="row" style="margin-bottom:10px"><span class="tag tag-accent">${r.meal}</span>${r.tags.map((t) => `<span class="tag">${t}</span>`).join('')}</div>
+      <h1>${esc(r.title)}</h1><p class="muted" style="margin-top:10px;max-width:58ch">${esc(r.blurb)}</p>
+      <p class="num muted" style="margin-top:12px;font-size:.9rem">Prep ${r.prep} min${r.cook ? ` · Cook ${r.cook} min` : ''}${r.extra ? ` · ${esc(r.extra)}` : ''}</p></div>
+    <div class="stack">
+      <div class="eyebrow">Per serving</div>
+      <div class="facts"><div><b>${r.per.kcal}</b><span>kcal</span></div><div><b style="color:var(--protein)">${r.per.p}g</b><span>protein</span></div><div><b style="color:var(--carbs)">${r.per.c}g</b><span>carbs</span></div><div><b style="color:var(--fat)">${r.per.f}g</b><span>fat</span></div></div>
+      <div class="row muted" style="font-size:.85rem;justify-content:space-between"><span>Fiber ${r.per.fiber} g</span><span>${Math.round(r.per.p * 4 / r.per.kcal * 100)}% of calories from protein</span></div>
+      <div class="row"><button class="btn btn-primary" data-act="log-recipe" data-id="${r.id}" style="flex:1">Log a serving to today</button><button class="btn" data-act="shop-add" data-id="${r.id}" style="flex:1">${onList(r.id) ? 'Update shopping list' : 'Add to shopping list'}</button></div>
+    </div>
+  </div>
+  <div class="grid">
+    <section class="panel span-5" aria-labelledby="h-ing">
+      <div class="panel-head"><h2 id="h-ing">Ingredients</h2>
+        <div class="stepper" role="group" aria-label="Servings"><button data-act="serv" data-id="${r.id}" data-d="-1" aria-label="Fewer servings">−</button><output id="serv-out" aria-live="polite">${n}</output><button data-act="serv" data-id="${r.id}" data-d="1" aria-label="More servings">+</button></div></div>
+      <p class="muted" style="font-size:.85rem;margin-bottom:8px">Serves <span id="serv-text">${n}</span>. Tick items off as you shop or cook.</p>
+      <ul class="ing" id="ing-list">${ingList(r)}</ul>
+    </section>
+    <section class="panel span-7" aria-labelledby="h-steps">
+      <h2 id="h-steps" style="margin-bottom:16px">Method</h2>
+      <ol class="steps">${r.steps.map((s) => `<li><p>${esc(s)}</p></li>`).join('')}</ol>
+      ${r.tip ? `<div class="tip" style="margin-top:20px"><b>Tip.</b> ${esc(r.tip)}</div>` : ''}
+    </section>
+  </div>`;
+}
+
+function viewWorkouts() {
+  return `<div class="page-head"><div><div class="eyebrow">${PLANS.length} programs</div><h1>Workout plans</h1>
+    <p class="muted">Pick the plan that fits your experience and equipment. Each day lists sets, reps, rest and a form cue, and you can run it as a live session that logs itself.</p></div></div>
+  <div class="plans">${PLANS.map((p) => `<a class="panel pcard" href="#plan-${p.id}">
+    <div class="row" style="justify-content:space-between"><span class="tag ${p.level === 'Beginner' ? 'tag-accent' : p.level === 'All levels' ? '' : 'tag-berry'}">${p.level}</span>${S.activePlan === p.id ? '<span class="eyebrow" style="color:var(--berry)">Your plan</span>' : ''}</div>
+    <h2>${esc(p.title)}</h2><p class="muted">${esc(p.goal)}</p>
+    <div class="pmeta"><div><b>${p.perWeek}×</b><span>per week</span></div><div><b>${p.minutes}</b><span>minutes</span></div><div><b>${p.days.length}</b><span>day types</span></div></div>
+    <p style="font-size:.86rem" class="muted">Equipment: ${esc(p.equipment)}</p></a>`).join('')}</div>
+  ${S.workouts.length ? `<section class="panel" style="margin-top:20px"><div class="panel-head"><h2>Recent sessions</h2><a class="btn btn-sm btn-ghost" href="#log">Full history</a></div>${workoutList(5)}</section>` : ''}`;
+}
+let planDayTab = 0;
+function viewPlan(id) {
+  const p = planById(id);
+  if (!p) return notFound('That plan');
+  if (planDayTab >= p.days.length) planDayTab = 0;
+  const d = p.days[planDayTab];
+  return `<a class="btn btn-ghost" href="#workouts" style="margin-bottom:10px">← All plans</a>
+  <div class="page-head"><div><div class="row" style="margin-bottom:8px"><span class="tag tag-berry">${p.level}</span><span class="tag">${p.perWeek}× / week</span><span class="tag">${p.minutes} min</span></div>
+    <h1>${esc(p.title)}</h1><p class="muted">${esc(p.goal)}</p></div>
+    ${S.activePlan === p.id ? `<span class="eyebrow" style="color:var(--berry)">This is your active plan</span>` : `<button class="btn" data-act="set-plan" data-plan="${p.id}">Make this my plan</button>`}</div>
+  <div class="grid">
+    <section class="panel span-8">
+      <div class="day-tabs" role="group" aria-label="Training days">${p.days.map((x, i) => `<button class="chip" data-act="plan-day" data-i="${i}" aria-pressed="${i === planDayTab}">${esc(x.name)}</button>`).join('')}</div>
+      <div class="panel-head"><h2>${esc(d.name)} <span class="muted" style="font-weight:500">· ${esc(d.focus)}</span></h2></div>
+      <div class="table-wrap"><table class="ex-table"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr></thead><tbody>
+        ${d.ex.map((e) => `<tr><td><div class="ex-name">${esc(e[0])}</div><div class="ex-cue">${esc(e[4])}</div></td><td class="num">${e[1]}</td><td class="num">${esc(e[2])}</td><td class="num">${e[3] ? e[3] + 's' : '—'}</td></tr>`).join('')}
+      </tbody></table></div>
+      <div class="row" style="margin-top:16px"><button class="btn btn-berry" data-act="start" data-plan="${p.id}" data-day="${planDayTab}">Start ${esc(d.name)}</button></div>
+    </section>
+    <aside class="span-4 stack">
+      <div class="panel"><div class="eyebrow">Schedule</div><p style="margin-top:6px">${esc(p.schedule)}</p></div>
+      <div class="panel"><div class="eyebrow">Warm-up</div><p style="margin-top:6px">${esc(p.warmup)}</p></div>
+      <div class="panel"><div class="eyebrow">How to progress</div><p style="margin-top:6px">${esc(p.progression)}</p></div>
+      <div class="panel"><div class="eyebrow">Equipment</div><p style="margin-top:6px">${esc(p.equipment)}</p></div>
+    </aside>
+  </div>`;
+}
+
+let restEnd = 0, ticker = null;
+function viewSession() {
+  const s = S.session;
+  if (!s) return `<div class="panel stack" style="max-width:520px"><h2>No session running</h2><p class="muted">Start one from any workout plan.</p><a class="btn btn-primary" href="#workouts" style="align-self:start">Choose a workout</a></div>`;
+  const p = planById(s.planId), d = p.days[s.dayIdx];
+  const total = d.ex.reduce((a, e) => a + e[1], 0), done = Object.values(s.checks).filter(Boolean).length;
+  const loadUnit = us() ? 'lb' : 'kg';
+  return `<div class="page-head"><div><div class="eyebrow">${esc(p.title)} · live session</div><h1>${esc(d.name)}: ${esc(d.focus)}</h1>
+    <p class="muted">Tap a set when you finish it. A rest timer starts automatically.</p></div></div>
+  <section class="panel">
+    ${d.ex.map((e, i) => `<div class="session-ex"><div style="min-width:0"><div class="ex-name">${esc(e[0])}</div><div class="ex-cue">${e[1]} × ${esc(e[2])} · ${e[3] ? 'rest ' + e[3] + 's' : 'no timed rest'} — ${esc(e[4])}</div></div>
+      ${p.noLoad || / s$/.test(e[2]) ? '<span></span>' : `<label class="field" style="flex-direction:row;align-items:center;gap:6px"><input class="input load num" id="load-${i}" inputmode="decimal" placeholder="${loadUnit}" value="${esc(s.loads[i] || '')}" data-load="${i}" aria-label="Weight used for ${esc(e[0])}"></label>`}
+      <div class="sets" style="grid-column:1/-1">${[...Array(e[1])].map((_, j) => `<button class="set" data-act="set" data-k="${i}-${j}" data-rest="${e[3]}" aria-pressed="${!!s.checks[i + '-' + j]}" aria-label="${esc(e[0])} set ${j + 1}">${j + 1}</button>`).join('')}</div></div>`).join('')}
+  </section>
+  <div class="restbar">
+    <div><div class="eyebrow" style="color:inherit;opacity:.7">Elapsed · Sets</div><span class="num" id="elapsed">0:00</span> <span class="num" style="opacity:.7">· ${done}/${total}</span></div>
+    <div><div class="eyebrow" style="color:inherit;opacity:.7">Rest</div><span class="num" id="rest">—</span></div>
+    <div class="row"><span id="cancel-wrap"><button class="btn btn-sm" data-act="cancel-session">Discard</button></span><button class="btn btn-primary" data-act="finish">Finish &amp; log</button></div>
+  </div>`;
+}
+function tick() {
+  const el = $('#elapsed'), rest = $('#rest');
+  if (!el || !S.session) { clearInterval(ticker); ticker = null; return; }
+  const sec = Math.floor((Date.now() - S.session.started) / 1000);
+  el.textContent = Math.floor(sec / 60) + ':' + z(sec % 60);
+  const left = Math.ceil((restEnd - Date.now()) / 1000);
+  if (left > 0) { rest.textContent = Math.floor(left / 60) + ':' + z(left % 60); rest.className = 'num rest-active'; }
+  else { rest.textContent = restEnd ? 'Go' : '—'; rest.className = 'num'; }
+}
+
+function workoutList(limit) {
+  const list = [...S.workouts].sort((a, b) => b.date.localeCompare(a.date)).slice(0, limit);
+  if (!list.length) return `<p class="muted">No workouts logged yet.</p>`;
+  return `<ul class="list">${list.map((w) => { const p = planById(w.planId); const d = p ? p.days[w.dayIdx] : null;
+    return `<li><span class="tag tag-berry">${fmtDay(w.date, { month: 'short', day: 'numeric' })}</span><div class="grow"><b>${esc(d ? d.name + ' · ' + d.focus : 'Workout')}</b><div class="muted" style="font-size:.85rem">${esc(p ? p.title : '')}</div></div>
+      <span class="num muted" style="font-size:.88rem">${w.minutes} min · ${w.sets}/${w.total} sets</span><button class="btn btn-ghost btn-sm" data-act="del-workout" data-id="${w.id}" aria-label="Delete workout">✕</button></li>`; }).join('')}</ul>`;
+}
+
+let logDate = null;
+function viewLog() {
+  const t = dayKey(); if (!logDate) logDate = t;
+  const meals = dayMeals(logDate), tot = totals(meals);
+  const wToday = S.weights.find((w) => w.date === logDate);
+  return `${exampleBanner()}
+  <div class="page-head"><div><div class="eyebrow">Tracker</div><h1>Log</h1></div>
+    <div class="row"><button class="btn btn-sm" data-act="log-day" data-d="-1" aria-label="Previous day">←</button>
+      <input class="input" type="date" id="log-date" value="${logDate}" max="${t}" style="width:auto">
+      <button class="btn btn-sm" data-act="log-day" data-d="1" aria-label="Next day" ${logDate >= t ? 'disabled' : ''}>→</button></div></div>
+  <div class="grid">
+    <section class="panel span-7" aria-labelledby="h-food">
+      <div class="panel-head"><h2 id="h-food">Food · ${logDate === t ? 'today' : fmtDay(logDate)}</h2><span class="num">${Math.round(tot.kcal)} <span class="muted">/ ${S.targets.kcal} kcal</span></span></div>
+      ${meals.length ? `<ul class="list" style="margin-bottom:16px">${meals.map((m) => `<li><div class="grow"><b>${esc(m.name)}</b><div class="muted" style="font-size:.85rem">${esc(m.meal)} · P ${m.p}g · C ${m.c}g · F ${m.f}g</div></div><span class="num">${m.kcal}</span><button class="btn btn-ghost btn-sm" data-act="del-meal" data-id="${m.id}" aria-label="Delete ${esc(m.name)}">✕</button></li>`).join('')}</ul>` : `<p class="muted" style="margin-bottom:16px">No food logged for this day.</p>`}
+      <form id="food-form" class="stack" autocomplete="off">
+        <div class="form-grid" style="grid-template-columns:minmax(0,2fr) minmax(0,1fr)">
+          <label class="field">Food<input class="input" id="f-name" required placeholder="e.g. Turkey sandwich"></label>
+          <label class="field">Meal<select class="input" id="f-meal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label>
+        </div>
+        <div class="form-grid">
+          <label class="field">Calories<input class="input num" id="f-kcal" type="number" min="0" inputmode="numeric" required></label>
+          <label class="field">Protein g<input class="input num" id="f-p" type="number" min="0" inputmode="numeric"></label>
+          <label class="field">Carbs g<input class="input num" id="f-c" type="number" min="0" inputmode="numeric"></label>
+          <label class="field">Fat g<input class="input num" id="f-f" type="number" min="0" inputmode="numeric"></label>
+        </div>
+        <div class="row"><button class="btn btn-primary" type="submit">Add food</button>
+          <span class="muted" style="font-size:.85rem">or</span>
+          <select class="input" id="f-recipe" style="width:auto;max-width:100%" aria-label="Add a recipe serving"><option value="">Add a recipe serving…</option>${RECIPES.map((r) => `<option value="${r.id}">${esc(r.title)} (${r.per.kcal})</option>`).join('')}</select></div>
+      </form>
+    </section>
+    <div class="span-5 stack">
+      <section class="panel" aria-labelledby="h-wlog">
+        <div class="panel-head"><h2 id="h-wlog">Weight</h2>${wToday ? `<span class="num">${showW(wToday.kg)} ${wUnit()}</span>` : ''}</div>
+        <form id="weight-form" class="row" autocomplete="off">
+          <input class="input num" id="w-val" type="number" step="0.1" min="40" max="900" inputmode="decimal" placeholder="${wUnit()}" required style="flex:1;min-width:100px" value="${wToday ? showW(wToday.kg) : ''}" aria-label="Weight in ${wUnit()}">
+          <button class="btn btn-primary" type="submit">${wToday ? 'Update' : 'Save'}</button>
+          ${wToday ? `<button class="btn btn-ghost" type="button" data-act="del-weight">Remove</button>` : ''}
+        </form>
+      </section>
+      <section class="panel" aria-labelledby="h-wat">
+        <div class="panel-head"><h2 id="h-wat">Water</h2><span class="num">${showWater(S.water[logDate] || 0)} <span class="muted">/ ${showWater(S.targets.waterMl)} ${wUnitWater()}</span></span></div>
+        <div class="row"><button class="btn btn-sm" data-act="water" data-ml="${us() ? 8 * ML_OZ : 250}">+ ${us() ? '8 oz' : '250 ml'}</button><button class="btn btn-sm" data-act="water" data-ml="${us() ? 16 * ML_OZ : 500}">+ ${us() ? '16 oz' : '500 ml'}</button><button class="btn btn-sm btn-ghost" data-act="water" data-ml="${us() ? -8 * ML_OZ : -250}">− ${us() ? '8 oz' : '250 ml'}</button></div>
+      </section>
+    </div>
+    <section class="panel span-6" aria-labelledby="h-wtrend"><div class="panel-head"><h2 id="h-wtrend">Weight · 30 days</h2><span class="muted">${wUnit()}</span></div><div class="chart-wrap">${weightChart(30)}</div></section>
+    <section class="panel span-6" aria-labelledby="h-cal"><div class="panel-head"><h2 id="h-cal">Calories · 7 days</h2><span class="muted">kcal</span></div><div class="chart-wrap">${calorieBars()}</div></section>
+    <section class="panel span-12" aria-labelledby="h-wh"><div class="panel-head"><h2 id="h-wh">Workout history</h2><a class="btn btn-sm" href="#workouts">Start a workout</a></div>${workoutList(20)}</section>
+  </div>`;
+}
+
+/* Shopping list: merges ingredients across recipes by item name (text before the first comma) and unit. */
+const AISLES = ['Produce', 'Meat & seafood', 'Dairy, eggs & tofu', 'Pantry & canned', 'Spices & baking', 'Frozen', 'Other'];
+function aisleOf(name, unit) {
+  const n = name.toLowerCase();
+  if (/frozen|\bice\b|corn kernels/.test(n)) return 'Frozen';
+  if (/\bsalt\b|black pepper|chili powder|cumin|paprika|dill|cinnamon|oregano|garlic powder|curry powder|baking powder|vanilla|cooking spray|sesame seeds/.test(n)) return 'Spices & baking';
+  if (unit === 'can' || /tuna|oats|rice|quinoa|lentil|tortilla|broth|salsa|pico|peanut butter|honey|maple|soy sauce|vinegar|\boil\b|cornstarch|chia|flax|cocoa|protein powder|granola|chocolate|mustard/.test(n)) return 'Pantry & canned';
+  if (/chicken|turkey|salmon|shrimp|steak|beef/.test(n)) return 'Meat & seafood';
+  if (/egg|yogurt|feta|cheddar|cheese|milk|butter|tofu/.test(n)) return 'Dairy, eggs & tofu';
+  if (/spinach|pepper|onion|garlic|lemon|lime|avocado|cilantro|parsley|berries|banana|potato|bean|broccoli|snap peas|ginger|tomato|cucumber|lettuce|kale|carrot|celery|apple/.test(n)) return 'Produce';
+  return 'Other';
+}
+const onList = (id) => S.shopping.recipes.some((x) => x.id === id);
+function shoppingItems() {
+  const map = new Map();
+  S.shopping.recipes.forEach(({ id, servings }) => {
+    const r = recipeById(id); if (!r) return;
+    const k = servings / r.servings;
+    r.ingredients.forEach(([q, unit, name]) => {
+      const base = name.split(',')[0].trim().replace(/^pinch of /, '').replace(/ to (taste|serve)$/, '');
+      const key = base.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '--' + (q == null ? 'staple' : unit || 'each');
+      let it = map.get(key);
+      if (!it) { it = { key, name: base, unit, qty: q == null ? null : 0, aisle: aisleOf(base, unit), from: [] }; map.set(key, it); }
+      if (q != null) it.qty += q * k;
+      if (!it.from.includes(r.title)) it.from.push(r.title);
+    });
+  });
+  return [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
+}
+// Whole items (limes, cans, cloves, eggs) round up, because you can't buy a quarter of one.
+const WHOLE_UNITS = ['', 'clove', 'can', 'large', 'oz'];
+const itemQty = (it) => {
+  if (it.qty == null) return 'as needed';
+  const q = WHOLE_UNITS.includes(it.unit) ? Math.ceil(it.qty - 0.01) : it.qty;
+  return `${fmtQty(q, it.unit)} ${unitLabel(q, it.unit)}`.trim();
+};
+function shoppingText() {
+  const items = shoppingItems(), sh = S.shopping;
+  const lines = ['Shopping list (Rep & Ration)', ''];
+  AISLES.forEach((a) => {
+    const g = items.filter((i) => i.aisle === a && !sh.checked[i.key]);
+    if (!g.length) return;
+    lines.push(a.toUpperCase());
+    g.forEach((i) => lines.push(`- ${i.qty == null ? i.name + ' (as needed)' : itemQty(i) + ' ' + i.name}`));
+    lines.push('');
+  });
+  const ex = sh.extras.filter((x) => !sh.checked['x-' + x.id]);
+  if (ex.length) { lines.push('EXTRAS'); ex.forEach((x) => lines.push('- ' + x.name)); }
+  return lines.join('\n').trim();
+}
+let shopClearArmed = false;
+function viewShopping() {
+  const sh = S.shopping, items = shoppingItems();
+  const total = items.length + sh.extras.length;
+  const done = items.filter((i) => sh.checked[i.key]).length + sh.extras.filter((x) => sh.checked['x-' + x.id]).length;
+  const notOn = RECIPES.filter((r) => !onList(r.id));
+  const recipePanel = `<section class="panel span-4" aria-labelledby="h-shop-r">
+      <div class="panel-head"><h2 id="h-shop-r">Recipes</h2><span class="muted">${sh.recipes.length}</span></div>
+      ${sh.recipes.length ? `<ul class="list shop-recipes">${sh.recipes.map((x) => { const r = recipeById(x.id); if (!r) return '';
+        return `<li><div class="grow"><a href="#recipe-${r.id}" style="font-weight:700;color:var(--ink)">${esc(r.title)}</a><div class="muted" style="font-size:.8rem">${r.per.kcal * x.servings} kcal total</div></div>
+          <div class="stepper" role="group" aria-label="Servings of ${esc(r.title)}"><button data-act="shop-serv" data-id="${r.id}" data-d="-1" aria-label="Fewer servings">−</button><output>${x.servings}</output><button data-act="shop-serv" data-id="${r.id}" data-d="1" aria-label="More servings">+</button></div>
+          <button class="btn btn-ghost btn-sm" data-act="shop-remove" data-id="${r.id}" aria-label="Remove ${esc(r.title)}">✕</button></li>`; }).join('')}</ul>`
+        : `<p class="muted">No recipes yet. Add one below or use “Add to shopping list” on any recipe.</p>`}
+      ${notOn.length ? `<label class="field" style="margin-top:14px">Add a recipe<select class="input" id="shop-add-recipe"><option value="">Choose a recipe…</option>${notOn.map((r) => `<option value="${r.id}">${esc(r.title)} (serves ${r.servings})</option>`).join('')}</select></label>` : ''}
+      <form id="extra-form" class="row" style="margin-top:14px" autocomplete="off">
+        <label class="field" style="flex:1">Add your own item<input class="input" id="extra-name" placeholder="e.g. Coffee, paper towels" required></label>
+        <button class="btn" type="submit" style="align-self:end">Add</button>
+      </form>
+    </section>`;
+  let groups = '';
+  AISLES.forEach((a) => {
+    const g = items.filter((i) => i.aisle === a);
+    if (!g.length) return;
+    groups += `<div class="shop-group"><h3>${a}</h3><ul class="shop-list">${g.map((i) => `<li><label><input type="checkbox" id="shop-${i.key}" data-shop="${i.key}" ${sh.checked[i.key] ? 'checked' : ''}>
+      <span>${i.qty == null ? `${esc(i.name)} <span class="muted">· as needed</span>` : `<span class="q">${esc(itemQty(i))}</span>${esc(i.name)}`}<span class="from">${esc(i.from.join(' · '))}</span></span></label></li>`).join('')}</ul></div>`;
+  });
+  if (sh.extras.length) {
+    groups += `<div class="shop-group"><h3>Your items</h3><ul class="shop-list">${sh.extras.map((x) => `<li style="display:flex;align-items:center;gap:6px"><label style="flex:1"><input type="checkbox" id="shop-x-${x.id}" data-shop="x-${x.id}" ${sh.checked['x-' + x.id] ? 'checked' : ''}><span>${esc(x.name)}</span></label><button class="btn btn-ghost btn-sm" data-act="extra-remove" data-id="${x.id}" aria-label="Remove ${esc(x.name)}">✕</button></li>`).join('')}</ul></div>`;
+  }
+  return `${exampleBanner()}
+  <div class="page-head"><div><div class="eyebrow">Built from your recipes</div><h1>Shopping list</h1>
+    <p class="muted">Add recipes and set how many servings you need. Ingredients are combined, totaled and sorted by store section. Tick items off as you shop.</p></div>
+    ${total ? `<div class="row"><button class="btn btn-primary" data-act="shop-copy">Copy list</button></div>` : ''}</div>
+  <div id="copy-box" hidden style="margin-bottom:16px"><p class="muted" style="margin-bottom:6px">Copying isn't available here. Select the text below and copy it yourself.</p><textarea class="input copy-fallback" id="copy-text" readonly></textarea></div>
+  <div class="grid">
+    ${recipePanel}
+    <section class="panel span-8" aria-labelledby="h-shop-i">
+      <div class="panel-head"><h2 id="h-shop-i">Items</h2><span class="num muted" id="shop-count">${done} of ${total} in cart</span></div>
+      ${total ? `<div class="bar"><i id="shop-bar" style="width:${total ? (done / total) * 100 : 0}%;background:var(--accent)"></i></div>
+        <div class="shop-groups">${groups}</div>
+        <div class="row" style="margin-top:18px">
+          <button class="btn btn-sm" data-act="shop-uncheck" ${done ? '' : 'disabled'}>Uncheck all</button>
+          <span class="confirm">${shopClearArmed ? `<span>Empty the whole list?</span><button class="btn btn-sm btn-berry" data-act="shop-clear">Yes, empty it</button><button class="btn btn-sm" data-act="shop-clear-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="shop-clear-arm">Empty list</button>`}</span>
+        </div>`
+        : `<p class="muted">Your list is empty. Pick a few recipes for the week and their ingredients will appear here, grouped by store section.</p>
+           <div class="row" style="margin-top:12px">${['chicken-burrito-bowls', 'turkey-black-bean-chili', 'berry-overnight-oats'].map((id) => `<button class="btn btn-sm" data-act="shop-add" data-id="${id}">+ ${esc(recipeById(id).title)}</button>`).join('')}</div>`}
+    </section>
+  </div>`;
+}
+function shopAdd(id, servings) {
+  const r = recipeById(id); if (!r) return;
+  const n = servings || r.servings, cur = S.shopping.recipes.find((x) => x.id === id);
+  if (cur) cur.servings = n; else S.shopping.recipes.push({ id, servings: n });
+  save(); toast(cur ? `Shopping list updated · ${n} servings` : `Added ${r.title} to your shopping list`);
+}
+
+let clearArmed = false;
+function viewTargets() {
+  const p = S.profile, T = S.targets;
+  const ft = Math.floor(p.heightCm / 2.54 / 12), inch = Math.round(p.heightCm / 2.54 - ft * 12);
+  const calc = calcTargets(p);
+  const acts = [[1.2, 'Mostly sitting, little exercise'], [1.375, 'Light: exercise 1–3 days/week'], [1.55, 'Moderate: exercise 3–5 days/week'], [1.725, 'Very active: hard training 6–7 days'], [1.9, 'Athlete or physical job + training']];
+  return `<div class="page-head"><div><div class="eyebrow">Mifflin-St Jeor equation</div><h1>Targets</h1>
+    <p class="muted">Enter your details to estimate daily calories and macros. These are starting points: track for two weeks, then adjust by about 100–200 kcal if your weight trend isn't moving the way you want.</p></div></div>
+  <div class="grid">
+    <section class="panel span-7">
+      <form id="profile-form" class="stack" autocomplete="off">
+        <div class="row"><span class="eyebrow" style="margin-right:6px">Units</span>
+          <button type="button" class="chip" data-act="units" data-u="us" aria-pressed="${us()}">US (lb, ft)</button>
+          <button type="button" class="chip" data-act="units" data-u="metric" aria-pressed="${!us()}">Metric (kg, cm)</button></div>
+        <div class="form-grid">
+          <label class="field">Sex<select class="input" id="p-sex"><option value="female" ${p.sex === 'female' ? 'selected' : ''}>Female</option><option value="male" ${p.sex === 'male' ? 'selected' : ''}>Male</option></select></label>
+          <label class="field">Age<input class="input num" id="p-age" type="number" min="14" max="100" value="${p.age}" required></label>
+          <label class="field">Weight (${wUnit()})<input class="input num" id="p-weight" type="number" step="0.1" value="${showW(p.weightKg)}" required></label>
+          ${us() ? `<label class="field">Height ft<input class="input num" id="p-ft" type="number" min="3" max="8" value="${ft}" required></label><label class="field">in<input class="input num" id="p-in" type="number" min="0" max="11" value="${inch}" required></label>`
+            : `<label class="field">Height (cm)<input class="input num" id="p-cm" type="number" min="100" max="250" value="${Math.round(p.heightCm)}" required></label>`}
+        </div>
+        <label class="field">Activity<select class="input" id="p-act">${acts.map((a) => `<option value="${a[0]}" ${p.activity === a[0] ? 'selected' : ''}>${a[1]}</option>`).join('')}</select></label>
+        <div class="row" role="group" aria-label="Goal"><span class="eyebrow" style="margin-right:6px">Goal</span>
+          ${[['lose', 'Lose fat (−500 kcal)'], ['maintain', 'Maintain'], ['gain', 'Build muscle (+300 kcal)']].map((g) => `<button type="button" class="chip" data-act="goal" data-g="${g[0]}" aria-pressed="${p.goal === g[0]}">${g[1]}</button>`).join('')}</div>
+        <label class="field">Daily water goal (${wUnitWater()})<input class="input num" id="p-water" type="number" min="0" value="${showWater(T.waterMl)}" style="max-width:180px"></label>
+        <div class="row"><button class="btn btn-primary" type="submit">Save targets</button><span class="muted" style="font-size:.85rem">Saving also logs today's weight.</span></div>
+      </form>
+    </section>
+    <section class="panel span-5 stack" aria-labelledby="h-res">
+      <h2 id="h-res">Your daily targets</h2>
+      <div class="facts" style="grid-template-columns:repeat(2,1fr)"><div><b>${T.kcal.toLocaleString()}</b><span>kcal / day</span></div><div><b>${showWater(T.waterMl)}</b><span>${wUnitWater()} water</span></div></div>
+      <div class="facts" style="grid-template-columns:repeat(3,1fr)"><div><b style="color:var(--protein)">${T.p}g</b><span>protein</span></div><div><b style="color:var(--carbs)">${T.c}g</b><span>carbs</span></div><div><b style="color:var(--fat)">${T.f}g</b><span>fat</span></div></div>
+      <p class="muted" style="font-size:.88rem">Resting burn (BMR) <span class="num">${calc.bmr}</span> kcal · with activity (TDEE) <span class="num">${calc.tdee}</span> kcal. Protein is set at about ${p.goal === 'lose' ? '0.9' : '0.8'} g per lb of body weight to protect muscle; fat at 28% of calories; carbs fill the rest.</p>
+      <hr style="border:0;border-top:1px solid var(--line);width:100%;margin:4px 0">
+      <div class="eyebrow">Your data</div>
+      <p class="muted" style="font-size:.88rem">Everything is stored in this browser only. Clearing removes all meals, weigh-ins and workouts.</p>
+      <div class="confirm">${clearArmed ? `<span>Delete everything?</span><button class="btn btn-sm btn-berry" data-act="clear-all">Yes, delete</button><button class="btn btn-sm" data-act="clear-cancel">Keep</button>` : `<button class="btn btn-sm" data-act="clear-arm">Clear all data</button>`}</div>
+    </section>
+  </div>`;
+}
+function notFound(what) {
+  return `<div class="panel stack" style="max-width:520px"><h2>${what} isn't here</h2><p class="muted">The link may be out of date.</p><a class="btn btn-primary" href="#today" style="align-self:start">Go to Today</a></div>`;
+}
+
+/* ---------- Router ---------- */
+let current = '';
+function render(keepScroll) {
+  const h = (location.hash || '#today').slice(1);
+  let html, tab;
+  if (h === 'today' || h === '') { html = viewToday(); tab = 'today'; }
+  else if (h === 'recipes') { html = viewRecipes(); tab = 'recipes'; }
+  else if (h.startsWith('recipe-')) { html = viewRecipe(h.slice(7)); tab = 'recipes'; }
+  else if (h === 'workouts') { html = viewWorkouts(); tab = 'workouts'; }
+  else if (h.startsWith('plan-')) { html = viewPlan(h.slice(5)); tab = 'workouts'; }
+  else if (h === 'session') { html = viewSession(); tab = 'workouts'; }
+  else if (h === 'shopping') { html = viewShopping(); tab = 'shopping'; }
+  else if (h === 'log') { html = viewLog(); tab = 'log'; }
+  else if (h === 'targets') { html = viewTargets(); tab = 'targets'; }
+  else { html = notFound('That page'); tab = ''; }
+  const y = window.scrollY;
+  app.innerHTML = html;
+  document.querySelectorAll('.tab').forEach((a) => { if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  if (keepScroll) window.scrollTo(0, y);
+  else if (h !== current) { window.scrollTo(0, 0); }
+  current = h;
+  if (h === 'session' && S.session && !ticker) { ticker = setInterval(tick, 250); }
+  if (h === 'session') tick();
+}
+window.addEventListener('hashchange', () => { clearArmed = false; shopClearArmed = false; render(false); });
+
+/* ---------- Actions ---------- */
+function addWater(ml, date) {
+  const k = date || dayKey();
+  S.water[k] = Math.max(0, Math.round((S.water[k] || 0) + ml));
+  save();
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const a = b.dataset.act;
+  if (a === 'water') { addWater(+b.dataset.ml, current === 'log' ? logDate : null); render(true); }
+  else if (a === 'clear-example') { const keep = { units: S.units, profile: S.profile, targets: S.targets, activePlan: S.activePlan }; S = { ...fresh(), ...keep }; save(); toast('Example data cleared. Ready for your first entry.'); render(true); }
+  else if (a === 'filter') { recipeFilter = b.dataset.f; render(true); }
+  else if (a === 'serv') {
+    const r = recipeById(b.dataset.id); const n = Math.min(24, Math.max(1, (servingsState[r.id] || r.servings) + +b.dataset.d));
+    servingsState[r.id] = n; $('#serv-out').textContent = n; $('#serv-text').textContent = n; $('#ing-list').innerHTML = ingList(r);
+  }
+  else if (a === 'log-recipe') {
+    const r = recipeById(b.dataset.id);
+    S.meals.push({ id: uid(), date: dayKey(), meal: r.meal, name: r.title, kcal: r.per.kcal, p: r.per.p, c: r.per.c, f: r.per.f });
+    save(); toast(`Logged 1 serving · ${r.per.kcal} kcal`);
+  }
+  else if (a === 'shop-add') { shopAdd(b.dataset.id, current.startsWith('recipe-') ? servingsState[b.dataset.id] : null); render(true); }
+  else if (a === 'shop-serv') { const x = S.shopping.recipes.find((y) => y.id === b.dataset.id); if (x) { x.servings = Math.min(48, Math.max(1, x.servings + +b.dataset.d)); save(); render(true); } }
+  else if (a === 'shop-remove') { S.shopping.recipes = S.shopping.recipes.filter((y) => y.id !== b.dataset.id); save(); render(true); }
+  else if (a === 'extra-remove') { S.shopping.extras = S.shopping.extras.filter((y) => y.id !== b.dataset.id); delete S.shopping.checked['x-' + b.dataset.id]; save(); render(true); }
+  else if (a === 'shop-uncheck') { S.shopping.checked = {}; save(); render(true); }
+  else if (a === 'shop-clear-arm') { shopClearArmed = true; render(true); }
+  else if (a === 'shop-clear-cancel') { shopClearArmed = false; render(true); }
+  else if (a === 'shop-clear') { S.shopping = { recipes: [], checked: {}, extras: [] }; shopClearArmed = false; save(); toast('Shopping list emptied'); render(true); }
+  else if (a === 'shop-copy') {
+    const text = shoppingText();
+    const fallback = () => { const box = $('#copy-box'), ta = $('#copy-text'); ta.value = text; box.hidden = false; ta.focus(); ta.select(); };
+    try { navigator.clipboard.writeText(text).then(() => toast('Shopping list copied'), fallback); } catch (err) { fallback(); }
+  }
+  else if (a === 'plan-day') { planDayTab = +b.dataset.i; render(true); }
+  else if (a === 'set-plan') { S.activePlan = b.dataset.plan; save(); toast('Active plan updated'); render(true); }
+  else if (a === 'start') {
+    S.session = { planId: b.dataset.plan, dayIdx: +b.dataset.day, started: Date.now(), checks: {}, loads: {} };
+    S.activePlan = b.dataset.plan; restEnd = 0; save();
+    if (location.hash === '#session') render(false); else location.hash = 'session';
+  }
+  else if (a === 'set') {
+    const k = b.dataset.k, on = !S.session.checks[k];
+    S.session.checks[k] = on; save();
+    if (on && +b.dataset.rest) restEnd = Date.now() + +b.dataset.rest * 1000;
+    render(true);
+  }
+  else if (a === 'cancel-session') {
+    $('#cancel-wrap').innerHTML = `<span class="confirm"><span>Discard?</span><button class="btn btn-sm" data-act="cancel-yes">Yes</button><button class="btn btn-sm" data-act="cancel-no">No</button></span>`;
+  }
+  else if (a === 'cancel-no') { render(true); }
+  else if (a === 'cancel-yes') { S.session = null; restEnd = 0; save(); location.hash = 'workouts'; }
+  else if (a === 'finish') {
+    const s = S.session, d = planById(s.planId).days[s.dayIdx];
+    const total = d.ex.reduce((x, ex) => x + ex[1], 0), done = Object.values(s.checks).filter(Boolean).length;
+    S.workouts.push({ id: uid(), date: dayKey(), planId: s.planId, dayIdx: s.dayIdx, minutes: Math.max(1, Math.round((Date.now() - s.started) / 60000)), sets: done, total, loads: s.loads });
+    S.session = null; restEnd = 0; save(); toast(`Workout logged · ${done}/${total} sets`); location.hash = 'today';
+  }
+  else if (a === 'del-workout') { S.workouts = S.workouts.filter((w) => w.id !== b.dataset.id); save(); render(true); }
+  else if (a === 'del-meal') { S.meals = S.meals.filter((m) => m.id !== b.dataset.id); save(); render(true); }
+  else if (a === 'del-weight') { S.weights = S.weights.filter((w) => w.date !== logDate); save(); render(true); }
+  else if (a === 'log-day') { const n = addDays(logDate, +b.dataset.d); if (n <= dayKey()) { logDate = n; render(true); } }
+  else if (a === 'units') { S.units = b.dataset.u; save(); render(true); }
+  else if (a === 'goal') { S.profile.goal = b.dataset.g; readProfile(); render(true); }
+  else if (a === 'clear-arm') { clearArmed = true; render(true); }
+  else if (a === 'clear-cancel') { clearArmed = false; render(true); }
+  else if (a === 'clear-all') { const units = S.units; S = { ...fresh(), units }; clearArmed = false; save(); toast('All data cleared'); render(true); }
+});
+
+function readProfile() {
+  const p = S.profile;
+  const num = (id) => parseFloat(($('#' + id) || {}).value);
+  if (!isNaN(num('p-age'))) p.age = num('p-age');
+  if (!isNaN(num('p-weight'))) p.weightKg = round(toKg(num('p-weight')), 2);
+  if (us()) { if (!isNaN(num('p-ft'))) p.heightCm = ((num('p-ft') || 0) * 12 + (num('p-in') || 0)) * 2.54; }
+  else if (!isNaN(num('p-cm'))) p.heightCm = num('p-cm');
+  if ($('#p-sex')) p.sex = $('#p-sex').value;
+  if ($('#p-act')) p.activity = parseFloat($('#p-act').value);
+  const water = num('p-water');
+  S.targets = { ...calcTargets(p), waterMl: !isNaN(water) ? (us() ? water * ML_OZ : water) : S.targets.waterMl };
+  save();
+}
+
+document.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = e.target;
+  if (f.id === 'food-form') {
+    const v = (id) => Math.max(0, Math.round(+$('#' + id).value || 0));
+    S.meals.push({ id: uid(), date: logDate, meal: $('#f-meal').value, name: $('#f-name').value.trim() || 'Food', kcal: v('f-kcal'), p: v('f-p'), c: v('f-c'), f: v('f-f') });
+    save(); toast('Food added'); render(true); $('#f-name') && $('#f-name').focus();
+  } else if (f.id === 'extra-form') {
+    const name = $('#extra-name').value.trim();
+    if (!name) return;
+    S.shopping.extras.push({ id: uid(), name }); save(); render(true); $('#extra-name') && $('#extra-name').focus();
+  } else if (f.id === 'weight-form') {
+    const val = parseFloat($('#w-val').value);
+    if (isNaN(val)) return;
+    S.weights = S.weights.filter((w) => w.date !== logDate);
+    S.weights.push({ date: logDate, kg: round(toKg(val), 2) });
+    if (logDate === dayKey()) S.profile.weightKg = round(toKg(val), 2);
+    save(); toast(`Weight saved · ${val} ${wUnit()}`); render(true);
+  } else if (f.id === 'profile-form') {
+    readProfile();
+    const t = dayKey();
+    S.weights = S.weights.filter((w) => w.date !== t); S.weights.push({ date: t, kg: S.profile.weightKg });
+    save(); toast(`Targets saved · ${S.targets.kcal} kcal/day`); render(true);
+  }
+});
+document.addEventListener('change', (e) => {
+  const t = e.target;
+  if (t.id === 'f-recipe' && t.value) {
+    const r = recipeById(t.value);
+    S.meals.push({ id: uid(), date: logDate, meal: r.meal, name: r.title, kcal: r.per.kcal, p: r.per.p, c: r.per.c, f: r.per.f });
+    save(); toast(`Added ${r.title}`); render(true);
+  } else if (t.id === 'shop-add-recipe' && t.value) { shopAdd(t.value); render(true);
+  } else if (t.dataset.shop != null) {
+    const sh = S.shopping; if (t.checked) sh.checked[t.dataset.shop] = true; else delete sh.checked[t.dataset.shop];
+    save();
+    const total = shoppingItems().length + sh.extras.length, done = document.querySelectorAll('[data-shop]:checked').length;
+    $('#shop-count').textContent = `${done} of ${total} in cart`; $('#shop-bar').style.width = (done / total) * 100 + '%';
+  } else if (t.id === 'log-date' && t.value) { logDate = t.value > dayKey() ? dayKey() : t.value; render(true); }
+  else if (t.dataset.load != null && S.session) { S.session.loads[t.dataset.load] = t.value; save(); }
+});
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'recipe-search') { recipeSearch = e.target.value; $('#recipe-cards').innerHTML = recipeCards(); }
+});
+
+render(false);
+})();
+</script>
+<!-- END PAGE -->
+</body>
+</html>
