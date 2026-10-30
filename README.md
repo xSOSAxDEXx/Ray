@@ -6,7 +6,7 @@ A diet and exercise website with recipes, workout plans and a daily tracker. It 
 
 | Section | What it does |
 |---|---|
-| **Today** | Calorie ring, protein/carb/fat progress, water, this week's workouts, weight trend, next workout |
+| **Today** | Calorie ring, protein/carb/fat progress, a water glass that fills as you drink (+12, +24, +36 oz or a custom amount) with a celebration when you hit your goal, this week's workouts, weight trend, next workout |
 | **Recipes** | 17 recipes with per-serving macros, a servings scaler, step-by-step method and tips. Filter by meal or tag (vegetarian, vegan, low carb, high protein, meal prep), or search by ingredient |
 | **Shopping list** | Add recipes with the servings you need. Ingredients are merged and totaled across recipes, rounded up to whole items, grouped by store section, and can be ticked off or copied as text. You can also add your own items |
 | **Workouts** | 6 plans: Foundations Full Body (beginner), Upper/Lower Strength (intermediate), Push/Pull/Legs (advanced), Home Bodyweight Circuit, Walk to 5K, and Mobility & Core Reset. Includes a live session mode with set check-offs and a rest timer |
