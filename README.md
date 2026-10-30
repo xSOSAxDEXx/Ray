@@ -15,6 +15,15 @@ A diet and exercise website with recipes, workout plans and a daily tracker. It 
 | **Progress** | Body measurements (waist, hips, chest, arm, thigh, neck) with trend cards, an estimated body fat % (US Navy tape method), and progress photos with a side-by-side before/after view |
 | **Targets** | Calorie and macro calculator (Mifflin-St Jeor), goal setting, a default serving size (2 people unless changed) used by recipes, the shopping list and the meal planner, US/metric units, backup and restore, clear data |
 
+## Use it on your phone
+
+Open https://xsosaxdex.github.io/Ray/ on your phone, then add it to your home screen. It gets its own icon, opens full-screen without the browser bar, and works offline once it has been opened.
+
+- **iPhone (Safari):** tap Share, then **Add to Home Screen**.
+- **Android (Chrome):** tap **⋮**, then **Install app** (or **Add to Home screen**).
+
+Your entries stay on that phone. To move them from another device, use a backup (see Data below).
+
 ## Run it locally
 
 Open `index.html` in a browser, or serve the folder:
@@ -27,7 +36,7 @@ Then visit http://localhost:8000.
 
 ## Deploy
 
-Upload `index.html` to any static host, such as GitHub Pages, Netlify, Vercel or Cloudflare Pages.
+Upload `index.html`, `manifest.webmanifest`, `sw.js` and the `icons/` folder to any static host, such as GitHub Pages, Netlify, Vercel or Cloudflare Pages.
 
 ## Data
 
