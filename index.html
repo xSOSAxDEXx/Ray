@@ -270,6 +270,14 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .table-wrap { overflow-x: auto; position: relative; }
 .day-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
 
+.diff-meter { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 700; }
+.diff-meter i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.diff-meter.d1 { color: var(--accent); } .diff-meter.d2 { color: var(--water); } .diff-meter.d3 { color: var(--carbs); } .diff-meter.d4 { color: var(--berry); }
+.diff-meter i.on { background: currentColor; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.filter-row .eyebrow { min-width: 92px; }
+.pcard .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
 /* Session */
 .session-ex { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; padding: 16px 0; border-top: 1px solid var(--line); align-items: center; }
 .session-ex:first-child { border-top: 0; }
@@ -834,7 +842,7 @@ const RECIPES = [
 /* ---------- Content: workout plans ---------- */
 // Exercise: [name, sets, reps, rest seconds, cue]
 const PLANS = [
-  { id: 'foundations', title: 'Foundations Full Body', level: 'Beginner', perWeek: 3, minutes: 45, equipment: 'Dumbbells, bench, band',
+  { id: 'foundations', title: 'Foundations Full Body', diff: 1, muscles: ['Full body'], gear: 'Gym', perWeek: 3, minutes: 45, equipment: 'Dumbbells, bench, band',
     goal: 'Learn the main movement patterns and build a strength base.',
     schedule: 'Mon, Wed, Fri. Alternate days A and B (week 1: A-B-A, week 2: B-A-B).',
     warmup: '5 minutes of brisk walking or cycling, then one light set of the first exercise.',
@@ -853,7 +861,7 @@ const PLANS = [
         ['Glute bridge (weighted)', 3, '12–15', 60, 'Drive through heels, squeeze at the top for one second.'],
         ['Dead bug', 3, '8 / side', 45, 'Lower back pressed to the floor the whole time; move slowly.']] }
     ] },
-  { id: 'upper-lower', title: 'Upper/Lower Strength', level: 'Intermediate', perWeek: 4, minutes: 60, equipment: 'Barbell, rack, dumbbells, cables',
+  { id: 'upper-lower', title: 'Upper/Lower Strength', diff: 3, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', perWeek: 4, minutes: 60, equipment: 'Barbell, rack, dumbbells, cables',
     goal: 'Build strength and muscle with heavy compound lifts and targeted accessories.',
     schedule: 'Mon Upper 1, Tue Lower 1, Thu Upper 2, Fri Lower 2.',
     warmup: '5 minutes easy cardio, then 2–3 ramp-up sets on the first lift (empty bar, 50%, 75%).',
@@ -886,7 +894,7 @@ const PLANS = [
         ['Barbell hip thrust', 3, '8–10', 90, 'Upper back on a bench, chin tucked, full lockout with glutes.'],
         ['Hanging knee raise', 3, '10–15', 60, 'Curl your pelvis up; avoid swinging.']] }
     ] },
-  { id: 'home-circuit', title: 'Home Bodyweight Circuit', level: 'All levels', perWeek: 3, minutes: 30, equipment: 'None (a chair and a towel)', noLoad: true,
+  { id: 'home-circuit', title: 'Home Bodyweight Circuit', diff: 2, muscles: ['Full body', 'Cardio'], gear: 'None', perWeek: 3, minutes: 30, equipment: 'None (a chair and a towel)', noLoad: true,
     goal: 'Improve fitness and burn calories at home with no equipment.',
     schedule: '3 circuits per week (e.g. Mon, Wed, Sat) plus two 30-minute walks.',
     warmup: '3 minutes: marching in place, arm circles, hip circles, 10 bodyweight squats.',
@@ -911,7 +919,7 @@ const PLANS = [
         ['Skater hops', 3, '40 s', 20, 'Bound side to side, land on one foot with a soft knee.'],
         ['Bicycle crunch', 3, '40 s', 60, 'Elbow toward the opposite knee; slow and controlled.']] }
     ] },
-  { id: 'push-pull-legs', title: 'Push / Pull / Legs', level: 'Advanced', perWeek: 6, minutes: 70, equipment: 'Full gym',
+  { id: 'push-pull-legs', title: 'Push / Pull / Legs', diff: 4, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', perWeek: 6, minutes: 70, equipment: 'Full gym',
     goal: 'Build as much muscle as possible with high weekly volume, training each muscle twice a week.',
     schedule: 'Push, Pull, Legs, Push, Pull, Legs, rest. If time or recovery is limited, run it 3 days a week.',
     warmup: '5 minutes easy cardio, dynamic stretches for the muscles you are training, then ramp-up sets on the first lift.',
@@ -939,7 +947,7 @@ const PLANS = [
         ['Seated leg curl', 3, '10–12', 60, 'Lean forward slightly for a bigger hamstring stretch.'],
         ['Seated calf raise', 4, '12–15', 45, 'Two-second pause at the bottom stretch.']] }
     ] },
-  { id: 'walk-to-5k', title: 'Walk to 5K', level: 'Beginner', perWeek: 3, minutes: 30, equipment: 'Running shoes', noLoad: true,
+  { id: 'walk-to-5k', title: 'Walk to 5K', diff: 1, muscles: ['Cardio', 'Lower body & glutes'], gear: 'None', perWeek: 3, minutes: 30, equipment: 'Running shoes', noLoad: true,
     goal: 'Go from walking to running 5 km (3.1 miles) without stopping in 8 weeks.',
     schedule: '3 runs a week on non-consecutive days. Spend 2 weeks on each stage, and repeat a stage if it felt too hard.',
     warmup: 'Every session starts with the 5-minute brisk walk listed first.',
@@ -962,7 +970,7 @@ const PLANS = [
         ['Continuous jog', 1, '25–30 min', 0, 'Aim for 5 km or 30 minutes, whichever comes first. Slow down rather than stop.'],
         ['Cool-down walk', 1, '5 min', 0, 'Easy pace, then stretch your calves and hips.']] }
     ] },
-  { id: 'mobility-core', title: 'Mobility & Core Reset', level: 'All levels', perWeek: 3, minutes: 20, equipment: 'Yoga mat, light band', noLoad: true,
+  { id: 'mobility-core', title: 'Mobility & Core Reset', diff: 1, muscles: ['Core', 'Mobility'], gear: 'Minimal', perWeek: 3, minutes: 20, equipment: 'Yoga mat, light band', noLoad: true,
     goal: 'Ease stiffness from sitting, improve range of motion and build a stable core. Pairs well with any other plan.',
     schedule: '2–3 times a week, on rest days or right after a workout.',
     warmup: '2 minutes of easy marching in place or slow cat-cow.',
@@ -982,8 +990,144 @@ const PLANS = [
         ['Hollow body hold', 3, '20–30 s', 30, 'Lower back pressed down; bend your knees to make it easier.'],
         ['Band Pallof press', 2, '10 / side', 30, 'Press the band straight out and resist the twist; hips stay square.'],
         ['Doorway chest stretch', 1, '45 s / side', 0, 'Elbow at shoulder height, step through gently.']] }
+    ] },
+  /* Minimal- and no-equipment plans. */
+  { id: 'first-steps', title: 'First Steps Bodyweight', diff: 1, muscles: ['Full body'], gear: 'None', perWeek: 3, minutes: 20, equipment: 'None (a wall and a sturdy chair)', noLoad: true,
+    goal: 'A gentle start for total beginners, or anyone returning after a long break. Every move can be done in a living room.',
+    schedule: '3 days a week with a rest day between (e.g. Mon, Wed, Fri). Alternate days A and B.',
+    warmup: '3 minutes of marching in place with big arm swings, then 10 slow shoulder rolls each way.',
+    progression: 'When every set feels comfortable, add 2 reps. After 3–4 weeks, move on to the Home Bodyweight Circuit.',
+    days: [
+      { name: 'Day A', focus: 'Push · Squat · Core', ex: [
+        ['Chair sit-to-stand', 3, '10', 60, 'Sit tall, lean slightly forward and stand without using your hands.'],
+        ['Wall push-up', 3, '10', 60, 'Hands on the wall at shoulder height, body straight from head to heels.'],
+        ['Glute bridge', 3, '12', 45, 'Feet flat, press through your heels and squeeze your glutes at the top.'],
+        ['Bird dog', 2, '6 / side', 45, 'Reach the opposite arm and leg long, keep your back flat like a table.'],
+        ['Standing calf raise', 2, '15', 30, 'Hold the chair for balance, rise slowly onto your toes and lower.']] },
+      { name: 'Day B', focus: 'Lunge · Pull · Balance', ex: [
+        ['Supported split squat', 3, '8 / side', 60, 'Hold the chair, lower the back knee toward the floor, front heel down.'],
+        ['Towel pull-apart', 3, '12', 45, 'Hold a towel taut at chest height and pull it apart, squeezing your shoulder blades.'],
+        ['Incline plank on a chair', 3, '20–30 s', 45, 'Hands on the seat, body in a straight line, breathe steadily.'],
+        ['Side-lying leg raise', 2, '10 / side', 30, 'Lift the top leg slowly without rolling your hips back.'],
+        ['Single-leg stand', 2, '30 s / side', 30, 'Lightly touch the wall if needed. Eyes on a fixed point.']] }
+    ] },
+  { id: 'core-builder', title: 'Core Builder', diff: 2, muscles: ['Core'], gear: 'None', perWeek: 3, minutes: 20, equipment: 'None (a mat or carpet)', noLoad: true,
+    goal: 'A stronger, more stable midsection for better posture, lifting and a happier lower back. Add it on its own days or after another workout.',
+    schedule: '2–3 times a week, alternating days A and B. It pairs well with any strength plan.',
+    warmup: '1 minute of cat-cow, then 10 slow pelvic tilts lying on your back.',
+    progression: 'Add 5 seconds to holds or 2 reps each week. When you can do every set with perfect form, move to the harder variation in the cue.',
+    days: [
+      { name: 'Day A', focus: 'Anti-extension · Anti-rotation', ex: [
+        ['Dead bug', 3, '8 / side', 30, 'Lower back pressed down the whole time. Exhale as you reach.'],
+        ['Front plank', 3, '30–45 s', 30, 'Elbows under shoulders, squeeze glutes. Harder: lift one foot.'],
+        ['Side plank', 3, '20–30 s / side', 30, 'Stack your hips and keep a straight line. Easier: bottom knee down.'],
+        ['Reverse crunch', 3, '10–12', 30, 'Curl your hips off the floor using your abs, not momentum.'],
+        ['Bird dog with pause', 2, '6 / side', 30, 'Hold the reach for 3 seconds without your hips tipping.']] },
+      { name: 'Day B', focus: 'Flexion · Obliques · Stability', ex: [
+        ['Hollow body hold', 3, '20–30 s', 30, 'Lower back down, arms overhead. Easier: knees bent.'],
+        ['Bicycle crunch', 3, '10 / side', 30, 'Slow and controlled; rotate your ribs, not just your elbows.'],
+        ['Plank shoulder taps', 3, '10 / side', 30, 'Feet wide, hips still while you tap each shoulder.'],
+        ['Glute bridge march', 3, '8 / side', 30, 'Keep your hips level as each foot lifts.'],
+        ['Superman hold', 2, '20 s', 30, 'Lift your chest and legs a few inches; keep your neck long.']] }
+    ] },
+  { id: 'legs-glutes-home', title: 'Legs & Glutes at Home', diff: 2, muscles: ['Lower body & glutes'], gear: 'None', perWeek: 2, minutes: 30, equipment: 'None (stairs or a sturdy step)', noLoad: true,
+    goal: 'Build stronger legs and glutes with single-leg work that stays challenging without weights.',
+    schedule: '2 days a week with at least 2 days between (e.g. Tue, Fri). Combine with an upper-body or core plan.',
+    warmup: '2 minutes of marching, 10 bodyweight squats, 10 hip circles each way and 10 glute bridges.',
+    progression: 'Slow the lowering to 3 seconds, then add reps. When 15 reps per side is easy, hold a backpack loaded with books.',
+    days: [
+      { name: 'Day A', focus: 'Squat pattern · Glutes', ex: [
+        ['Bulgarian split squat (back foot on a chair)', 3, '8–12 / side', 60, 'Most of your weight on the front leg; lower straight down.'],
+        ['Single-leg glute bridge', 3, '10–12 / side', 45, 'Drive through the heel, pause one second at the top.'],
+        ['Step-up onto a stair or step', 3, '10 / side', 45, 'Push through the top foot; do not bounce off the bottom one.'],
+        ['Wall sit', 3, '30–45 s', 45, 'Thighs parallel to the floor, back flat on the wall.'],
+        ['Standing single-leg calf raise', 2, '12–15 / side', 30, 'Full range: heel below the step, then all the way up.']] },
+      { name: 'Day B', focus: 'Hinge · Lunge · Hips', ex: [
+        ['Reverse lunge', 3, '10 / side', 60, 'Step back long and lower the knee under control.'],
+        ['Single-leg Romanian deadlift', 3, '8 / side', 45, 'Hinge at the hip, back leg long, light fingertip touch on a wall for balance.'],
+        ['Curtsy lunge', 3, '8 / side', 45, 'Step diagonally behind and keep the front knee over your toes.'],
+        ['Frog pump', 3, '20', 30, 'Soles together, knees out, squeeze your glutes hard at the top.'],
+        ['Side-lying clamshell', 2, '15 / side', 30, 'Heels together; rotate the top knee up without rolling back.']] }
+    ] },
+  { id: 'one-dumbbell', title: 'One-Dumbbell Full Body', diff: 2, muscles: ['Full body'], gear: 'Minimal', perWeek: 3, minutes: 35, equipment: 'One dumbbell or kettlebell (15–35 lb)',
+    goal: 'A complete strength routine that needs only a single weight, ideal for a small home gym or a hotel room.',
+    schedule: '3 days a week (e.g. Mon, Wed, Fri). Alternate days A and B.',
+    warmup: '3 minutes of light cardio, then 10 bodyweight squats, 10 push-ups (incline if needed) and 10 good mornings.',
+    progression: 'Add 2 reps per set each week. When you hit the top of every range, slow the lowering to 3 seconds or move to a heavier dumbbell.',
+    days: [
+      { name: 'Day A', focus: 'Squat · Press · Row', ex: [
+        ['Goblet squat', 3, '10–15', 75, 'Hold the weight at your chest, elbows inside your knees at the bottom.'],
+        ['Single-arm floor press', 3, '10 / side', 60, 'Lie on the floor; lower until your elbow touches, then press.'],
+        ['One-arm dumbbell row', 3, '10 / side', 60, 'Support yourself on a chair, pull the elbow toward your hip.'],
+        ['Suitcase carry', 3, '30 s / side', 45, 'Walk tall with the weight at your side; do not lean.'],
+        ['Dead bug', 3, '8 / side', 30, 'Lower back pressed down; move slowly.']] },
+      { name: 'Day B', focus: 'Hinge · Lunge · Overhead', ex: [
+        ['Dumbbell Romanian deadlift (two hands)', 3, '10–12', 75, 'Push your hips back with a flat back until you feel the hamstrings.'],
+        ['Goblet reverse lunge', 3, '8 / side', 60, 'Hold the weight at your chest and step back long.'],
+        ['Half-kneeling single-arm press', 3, '8 / side', 60, 'Squeeze the glute of the down knee; press straight overhead.'],
+        ['Dumbbell swing or hip hinge', 3, '15', 45, 'Snap the hips forward; the arms just guide the weight.'],
+        ['Side plank', 2, '25 s / side', 30, 'Stack your hips and push the floor away.']] }
+    ] },
+  { id: 'band-upper', title: 'Band & Bodyweight Upper Body', diff: 3, muscles: ['Upper body'], gear: 'Minimal', perWeek: 2, minutes: 35, equipment: 'Resistance band with a door anchor', noLoad: true,
+    goal: 'Build chest, back, shoulders and arms with push-up variations and a single resistance band.',
+    schedule: '2 days a week (e.g. Mon, Thu). Pairs well with Legs & Glutes at Home on other days.',
+    warmup: '20 band pull-aparts, 10 arm circles each way and 10 incline push-ups.',
+    progression: 'Add reps until you reach the top of the range, then use a heavier band, step farther from the anchor, or elevate your feet on push-ups.',
+    days: [
+      { name: 'Day A', focus: 'Horizontal push · pull', ex: [
+        ['Push-up', 4, '8–15', 75, 'Body straight, chest to the floor. Easier: hands on a counter.'],
+        ['Band seated row', 4, '12–15', 60, 'Band around your feet, pull your elbows back and squeeze your shoulder blades.'],
+        ['Diamond push-up', 3, '6–12', 60, 'Hands close under your chest, elbows tucked to train the triceps.'],
+        ['Band face pull', 3, '15', 45, 'Anchor at face height; pull toward your eyes with elbows high.'],
+        ['Band biceps curl', 3, '12–15', 45, 'Stand on the band, elbows pinned at your sides.']] },
+      { name: 'Day B', focus: 'Vertical push · pull', ex: [
+        ['Pike push-up', 4, '6–10', 75, 'Hips high; lower the top of your head between your hands.'],
+        ['Band lat pulldown (anchor high)', 4, '12–15', 60, 'Kneel, pull your elbows down to your ribs.'],
+        ['Band chest fly', 3, '12–15', 45, 'Anchor behind you at chest height, hug a big tree.'],
+        ['Band lateral raise', 3, '15', 45, 'Stand on the band, raise your arms to shoulder height with soft elbows.'],
+        ['Chair triceps dip', 3, '8–12', 45, 'Hands on a stable chair behind you; elbows point straight back.']] }
+    ] },
+  { id: 'hiit-conditioning', title: 'HIIT Conditioning', diff: 3, muscles: ['Cardio', 'Full body'], gear: 'None', perWeek: 3, minutes: 25, equipment: 'None', noLoad: true,
+    goal: 'Raise your heart rate and fitness fast with short, hard intervals. A good fat-loss companion to strength training.',
+    schedule: '2–3 sessions a week on non-consecutive days. Never two hard HIIT days in a row.',
+    warmup: '4 minutes: jog in place, jumping jacks, walking lunges and inchworms, building up the pace.',
+    progression: 'Week 1–2: 30 s work, 30 s rest. Week 3–4: 40 s work, 20 s rest. Then add a fourth round. Stop if form breaks down.',
+    days: [
+      { name: 'Session A', focus: 'Lower-body power', ex: [
+        ['Squat jump', 4, '30–40 s', 30, 'Land softly with bent knees, then go straight into the next rep.'],
+        ['High knees', 4, '30–40 s', 30, 'Drive the knees to hip height and pump your arms.'],
+        ['Alternating jump lunge', 4, '30–40 s', 30, 'Switch legs in the air. Easier: step back instead of jumping.'],
+        ['Mountain climbers', 4, '30–40 s', 60, 'Hands under shoulders, hips low, knees drive fast.']] },
+      { name: 'Session B', focus: 'Total body', ex: [
+        ['Burpee', 4, '30–40 s', 30, 'Chest to the floor, then jump and clap overhead. Easier: step back.'],
+        ['Skater hops', 4, '30–40 s', 30, 'Bound side to side, landing on one foot.'],
+        ['Plank jacks', 4, '30–40 s', 30, 'Jump your feet wide and narrow while your hips stay level.'],
+        ['Fast feet shuffle', 4, '30–40 s', 60, 'Quick small steps on the balls of your feet, chest up.']] }
+    ] },
+  { id: 'bodyweight-advanced', title: 'Bodyweight Strength: Advanced', diff: 4, muscles: ['Upper body', 'Lower body & glutes', 'Core'], gear: 'Minimal', perWeek: 4, minutes: 50, equipment: 'Pull-up bar, two sturdy chairs', noLoad: true,
+    goal: 'Gym-level strength with calisthenics: pull-ups, deep dips, single-leg squats and one-arm push-up progressions.',
+    schedule: '4 days a week: Upper, Lower, rest, Upper, Lower, then 2 rest days.',
+    warmup: '5 minutes of light cardio, then scapular pull-ups, wrist circles, 10 deep squats and 5 slow push-ups.',
+    progression: 'Use the hardest variation that lets you finish the bottom of each rep range. When you hit the top for every set, move to the next progression in the cue.',
+    days: [
+      { name: 'Upper', focus: 'Pull-ups · Dips · Push-ups', ex: [
+        ['Pull-up', 4, '5–10', 120, 'Full hang to chin over the bar. Harder: 3-second lowering or a backpack.'],
+        ['Chair dip (deep)', 4, '8–15', 90, 'Two chairs side by side, lower until your shoulders are below your elbows.'],
+        ['Archer push-up', 3, '5–8 / side', 90, 'Shift your weight to one arm while the other stays straight.'],
+        ['Inverted row under a table', 3, '10–15', 60, 'Body rigid, pull your chest to the edge.'],
+        ['Hanging knee raise', 3, '10–15', 60, 'No swinging; curl your pelvis up. Harder: straight legs.']] },
+      { name: 'Lower', focus: 'Single-leg strength · Core', ex: [
+        ['Pistol squat to a chair', 4, '5–8 / side', 120, 'Sit back to the chair on one leg and stand without rocking. Harder: no chair.'],
+        ['Shrimp squat', 3, '5–8 / side', 90, 'Hold the back foot behind you and lower the knee to the floor.'],
+        ['Nordic hamstring lowering', 3, '4–6', 90, 'Anchor your heels under a couch; lower as slowly as you can.'],
+        ['Single-leg hip thrust (back on a couch)', 3, '10–12 / side', 60, 'Drive through the heel and lock out your glute.'],
+        ['L-sit or tuck hold on chairs', 3, '15–20 s', 60, 'Press down hard, lift your knees or legs off the floor.']] }
     ] }
 ];
+
+const LEVELS = ['', 'Beginner', 'Novice', 'Intermediate', 'Advanced'];
+PLANS.forEach((p) => { p.level = LEVELS[p.diff]; });
+const MUSCLES = ['Full body', 'Upper body', 'Lower body & glutes', 'Core', 'Cardio', 'Mobility'];
 
 /* ---------- Helpers ---------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -1409,14 +1553,26 @@ function viewRecipe(id) {
   </div>`;
 }
 
+const diffMeter = (d) => `<span class="diff-meter d${d}" title="Difficulty ${d} of 4">${[1, 2, 3, 4].map((n) => `<i class="${n <= d ? 'on' : ''}"></i>`).join('')}${LEVELS[d]}</span>`;
+const gearTag = (g) => `<span class="tag ${g === 'None' ? 'tag-accent' : ''}">${g === 'None' ? 'No equipment' : g === 'Minimal' ? 'Minimal equipment' : 'Gym'}</span>`;
+let wDiff = 0, wMuscle = 'All', wHardFirst = false;
 function viewWorkouts() {
+  const list = PLANS.filter((p) => (!wDiff || p.diff === wDiff) && (wMuscle === 'All' || p.muscles.includes(wMuscle)))
+    .sort((a, b) => (wHardFirst ? -1 : 1) * (a.diff - b.diff || a.minutes - b.minutes));
   return `<div class="page-head"><div><div class="eyebrow">${PLANS.length} programs</div><h1>Workout plans</h1>
-    <p class="muted">Pick the plan that fits your experience and equipment. Each day lists sets, reps, rest and a form cue, and you can run it as a live session that logs itself.</p></div></div>
-  <div class="plans">${PLANS.map((p) => `<a class="panel pcard" href="#plan-${p.id}">
-    <div class="row" style="justify-content:space-between"><span class="tag ${p.level === 'Beginner' ? 'tag-accent' : p.level === 'All levels' ? '' : 'tag-berry'}">${p.level}</span>${S.activePlan === p.id ? '<span class="eyebrow" style="color:var(--berry)">Your plan</span>' : ''}</div>
+    <p class="muted">Pick the plan that fits your experience and equipment. Each day lists sets, reps, rest and a form cue, and you can run it as a live session that logs itself.</p></div>
+    <button class="btn btn-sm" data-act="wsort" aria-label="Change sort order">${wHardFirst ? 'Hardest first ↓' : 'Easiest first ↑'}</button></div>
+  <div class="filter-row" role="group" aria-label="Filter by difficulty"><span class="eyebrow">Difficulty</span>
+    ${LEVELS.map((l, i) => `<button class="chip" data-act="wfilter-diff" data-d="${i}" aria-pressed="${wDiff === i}">${i ? l : 'All'}</button>`).join('')}</div>
+  <div class="filter-row" role="group" aria-label="Filter by muscle group" style="margin-bottom:18px"><span class="eyebrow">Muscle group</span>
+    ${['All', ...MUSCLES].map((m) => `<button class="chip" data-act="wfilter-muscle" data-m="${esc(m)}" aria-pressed="${wMuscle === m}">${esc(m)}</button>`).join('')}</div>
+  ${list.length ? `<div class="plans">${list.map((p) => `<a class="panel pcard" href="#plan-${p.id}">
+    <div class="row" style="justify-content:space-between">${diffMeter(p.diff)}${S.activePlan === p.id ? '<span class="eyebrow" style="color:var(--berry)">Your plan</span>' : ''}</div>
     <h2>${esc(p.title)}</h2><p class="muted">${esc(p.goal)}</p>
+    <div class="tags">${gearTag(p.gear)}${p.muscles.map((m) => `<span class="tag">${esc(m)}</span>`).join('')}</div>
     <div class="pmeta"><div><b>${p.perWeek}×</b><span>per week</span></div><div><b>${p.minutes}</b><span>minutes</span></div><div><b>${p.days.length}</b><span>day types</span></div></div>
-    <p style="font-size:.86rem" class="muted">Equipment: ${esc(p.equipment)}</p></a>`).join('')}</div>
+    <p style="font-size:.86rem" class="muted">Equipment: ${esc(p.equipment)}</p></a>`).join('')}</div>`
+    : `<div class="panel stack" style="align-items:start"><p class="muted">No plans match ${wDiff ? `<b>${LEVELS[wDiff]}</b>` : ''}${wDiff && wMuscle !== 'All' ? ' + ' : ''}${wMuscle !== 'All' ? `<b>${esc(wMuscle)}</b>` : ''}. Try a different combination.</p><button class="btn btn-sm" data-act="wfilter-clear">Show all plans</button></div>`}
   ${S.workouts.length ? `<section class="panel" style="margin-top:20px"><div class="panel-head"><h2>Recent sessions</h2><a class="btn btn-sm btn-ghost" href="#log">Full history</a></div>${workoutList(5)}</section>` : ''}`;
 }
 let planDayTab = 0;
@@ -1426,7 +1582,7 @@ function viewPlan(id) {
   if (planDayTab >= p.days.length) planDayTab = 0;
   const d = p.days[planDayTab];
   return `<a class="btn btn-ghost" href="#workouts" style="margin-bottom:10px">← All plans</a>
-  <div class="page-head"><div><div class="row" style="margin-bottom:8px"><span class="tag tag-berry">${p.level}</span><span class="tag">${p.perWeek}× / week</span><span class="tag">${p.minutes} min</span></div>
+  <div class="page-head"><div><div class="row" style="margin-bottom:8px">${diffMeter(p.diff)}${gearTag(p.gear)}${p.muscles.map((m) => `<span class="tag">${esc(m)}</span>`).join('')}<span class="tag">${p.perWeek}× / week</span><span class="tag">${p.minutes} min</span></div>
     <h1>${esc(p.title)}</h1><p class="muted">${esc(p.goal)}</p></div>
     ${S.activePlan === p.id ? `<span class="eyebrow" style="color:var(--berry)">This is your active plan</span>` : `<button class="btn" data-act="set-plan" data-plan="${p.id}">Make this my plan</button>`}</div>
   <div class="grid">
@@ -1863,6 +2019,10 @@ document.addEventListener('click', (e) => {
     const fallback = () => { const box = $('#copy-box'), ta = $('#copy-text'); ta.value = text; box.hidden = false; ta.focus(); ta.select(); };
     try { navigator.clipboard.writeText(text).then(() => toast('Shopping list copied'), fallback); } catch (err) { fallback(); }
   }
+  else if (a === 'wfilter-diff') { wDiff = +b.dataset.d; render(true); }
+  else if (a === 'wfilter-muscle') { wMuscle = b.dataset.m; render(true); }
+  else if (a === 'wfilter-clear') { wDiff = 0; wMuscle = 'All'; render(true); }
+  else if (a === 'wsort') { wHardFirst = !wHardFirst; render(true); }
   else if (a === 'plan-day') { planDayTab = +b.dataset.i; render(true); }
   else if (a === 'set-plan') { S.activePlan = b.dataset.plan; save(); toast('Active plan updated'); render(true); }
   else if (a === 'start') {
