@@ -7,7 +7,7 @@ A diet and exercise website with recipes, workout plans and a daily tracker. It 
 | Section | What it does |
 |---|---|
 | **Today** | Calorie ring, protein/carb/fat progress, a water glass that fills as you drink (+12, +24, +36 oz or a custom amount) with a celebration when you hit your goal, this week's workouts, weight trend, next workout |
-| **Recipes** | 17 recipes with per-serving macros, a servings scaler, step-by-step method and tips. Filter by meal or tag (vegetarian, vegan, low carb, high protein, meal prep), or search by ingredient |
+| **Recipes** | 37 recipes with per-serving macros (including sugar), a servings scaler, step-by-step method and tips. Filter by meal or tag (high protein, sugar free, whole foods, minimally processed, vegetarian, vegan, low carb, meal prep), or search by ingredient |
 | **Shopping list** | Add recipes with the servings you need. Ingredients are merged and totaled across recipes, rounded up to whole items, grouped by store section, and can be ticked off or copied as text. You can also add your own items |
 | **Workouts** | 6 plans: Foundations Full Body (beginner), Upper/Lower Strength (intermediate), Push/Pull/Legs (advanced), Home Bodyweight Circuit, Walk to 5K, and Mobility & Core Reset. Includes a live session mode with set check-offs and a rest timer |
 | **Log** | Add food or recipe servings, weight and water for any day. Shows a 30-day weight chart, 7-day calorie chart and workout history |
@@ -35,6 +35,12 @@ Each visitor's entries are saved in their own browser (`localStorage` key `rep-r
 ## Editing content
 
 Recipes and workout plans are plain arrays at the top of the `<script>` in `index.html` (`RECIPES` and `PLANS`). To add one, copy an existing entry and change it. Macros are per serving.
+
+The diet tags follow simple rules, explained on the Recipes page when a filter is selected:
+
+- **Sugar free**: no sugar, honey, syrups, sweeteners or fruit; 8 g or less of naturally occurring sugar per serving.
+- **Whole foods**: only unprocessed, single-ingredient foods. Give these recipes the Minimally processed tag as well.
+- **Minimally processed**: whole foods plus a few clean staples (canned beans, tuna and tomatoes, broth, light coconut milk, corn tortillas, Dijon, unsweetened protein powder).
 
 ## Ideas for later
 
