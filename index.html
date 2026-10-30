@@ -213,7 +213,7 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .ex-table .num { white-space: nowrap; }
 .ex-name { font-weight: 700; }
 .ex-cue { font-size: .85rem; color: var(--muted); margin-top: 2px; }
-.table-wrap { overflow-x: auto; }
+.table-wrap { overflow-x: auto; position: relative; }
 .day-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
 
 /* Session */
@@ -244,6 +244,23 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .shop-recipes li { gap: 10px; }
 .copy-fallback { width: 100%; min-height: 160px; font: .85rem/1.5 var(--f-mono); }
 
+/* Progress */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.meas-cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); }
+.meas-table td:first-child .btn { white-space: nowrap; }
+.meas-card { background: var(--sunk); border-radius: var(--r-sm); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+.meas-card b { font-family: var(--f-mono); font-size: 1.35rem; font-weight: 500; }
+.meas-card .spark { width: 100%; height: 34px; margin-top: 6px; }
+.photo-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+.photo { margin: 0; position: relative; border-radius: var(--r-sm); overflow: hidden; background: var(--sunk); aspect-ratio: 3 / 4; }
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo figcaption { position: absolute; inset: auto 0 0 0; padding: 18px 8px 6px; font-size: .78rem; font-weight: 700; color: #fff; background: linear-gradient(transparent, rgba(0, 0, 0, .65)); display: flex; justify-content: space-between; align-items: end; gap: 6px; }
+.photo .btn-ghost { color: #fff; padding: 2px 6px; }
+.photo .btn-ghost:hover { background: rgba(0, 0, 0, .4); color: #fff; }
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.compare .photo { aspect-ratio: 3 / 4; }
+.compare img { object-fit: contain; background: #000; }
+
 /* Toast & footer */
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: .92rem; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 40; max-width: calc(100% - 32px); text-align: center; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
@@ -268,6 +285,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
       <a class="tab" href="#shopping" data-tab="shopping">Shopping list</a>
       <a class="tab" href="#workouts" data-tab="workouts">Workouts</a>
       <a class="tab" href="#log" data-tab="log">Log</a>
+      <a class="tab" href="#progress" data-tab="progress">Progress</a>
       <a class="tab" href="#targets" data-tab="targets">Targets</a>
     </nav>
   </div>
@@ -717,18 +735,20 @@ function seed() {
     { id: uid(), date: addDays(t, -9), planId: 'foundations', dayIdx: 0, minutes: 41, sets: 15, total: 15 }
   ];
   const water = {}; water[t] = 1250;
+  const measures = [21, 14, 7, 0].map((ago, i) => ({ id: uid(), date: addDays(t, -ago), waist: round(86.5 - i * 0.7, 1), hips: round(104 - i * 0.5, 1), chest: round(97 - i * 0.3, 1), arm: 30.5, thigh: round(60 - i * 0.4, 1), neck: 34 }));
   return { v: 1, example: true, units: 'us', profile, targets: { ...calcTargets(profile), waterMl: 2400 },
-    meals, weights, workouts, water, activePlan: 'foundations', session: null,
+    meals, weights, workouts, water, measures, activePlan: 'foundations', session: null,
     shopping: { recipes: [{ id: 'chicken-burrito-bowls', servings: 4 }, { id: 'berry-overnight-oats', servings: 4 }], checked: {}, extras: [] } };
 }
 function fresh() {
   const s = seed();
-  return { ...s, example: false, meals: [], weights: [], workouts: [], water: {}, session: null, shopping: { recipes: [], checked: {}, extras: [] } };
+  return { ...s, example: false, meals: [], weights: [], workouts: [], water: {}, measures: [], session: null, shopping: { recipes: [], checked: {}, extras: [] } };
 }
 let S;
 try { const raw = localStorage.getItem(KEY); S = raw ? JSON.parse(raw) : seed(); } catch (e) { S = seed(); }
 if (!S || S.v !== 1) S = seed();
 if (!S.shopping) S.shopping = { recipes: [], checked: {}, extras: [] };
+if (!S.measures) S.measures = [];
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep in memory */ } }
 
 /* ---------- Units ---------- */
@@ -738,6 +758,52 @@ const showW = (kg, d = 1) => round(us() ? kg * KG_LB : kg, d);
 const toKg = (v) => (us() ? v / KG_LB : v);
 const wUnitWater = () => (us() ? 'oz' : 'ml');
 const showWater = (ml) => (us() ? Math.round(ml / ML_OZ) : Math.round(ml));
+const lUnit = () => (us() ? 'in' : 'cm');
+const showL = (cm) => round(us() ? cm / 2.54 : cm, 1);
+const toCm = (v) => (us() ? v * 2.54 : v);
+
+/* ---------- Progress photos (IndexedDB: too large for localStorage) ---------- */
+const PHOTO_DB = 'rep-ration-photos';
+let photos = [], photosReady = false, photosOk = true;
+function photoStore(mode) {
+  return new Promise((res, rej) => {
+    const req = indexedDB.open(PHOTO_DB, 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('photos', { keyPath: 'id' });
+    req.onsuccess = () => res(req.result.transaction('photos', mode).objectStore('photos'));
+    req.onerror = () => rej(req.error);
+  });
+}
+const idbDone = (req) => new Promise((res, rej) => { req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error); });
+async function loadPhotos() {
+  try {
+    const rows = await idbDone((await photoStore('readonly')).getAll());
+    photos.forEach((p) => URL.revokeObjectURL(p.url));
+    photos = rows.map((r) => ({ id: r.id, date: r.date, pose: r.pose, url: URL.createObjectURL(r.blob) })).sort((a, b) => a.date.localeCompare(b.date));
+  } catch (e) { photosOk = false; }
+  photosReady = true;
+  if (current === 'progress') render(true);
+}
+/* Downscale to a JPEG of at most 1200px on the long edge so photos stay small. */
+function shrinkImage(file) {
+  return new Promise((res, rej) => {
+    const img = new Image(), src = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, 1200 / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(src);
+      c.toBlob((b) => (b ? res(b) : rej(new Error('encode'))), 'image/jpeg', 0.82);
+    };
+    img.onerror = () => { URL.revokeObjectURL(src); rej(new Error('decode')); };
+    img.src = src;
+  });
+}
+async function addPhoto(file, date, pose) {
+  const blob = await shrinkImage(file);
+  await idbDone((await photoStore('readwrite')).put({ id: uid(), date, pose, blob }));
+  await loadPhotos();
+}
+async function deletePhoto(id) { await idbDone((await photoStore('readwrite')).delete(id)); await loadPhotos(); }
+async function clearPhotos() { try { await idbDone((await photoStore('readwrite')).clear()); } catch (e) { /* nothing stored */ } await loadPhotos(); }
 
 /* ---------- Small UI pieces ---------- */
 let toastTimer;
@@ -1109,6 +1175,102 @@ function viewLog() {
   </div>`;
 }
 
+/* Progress: body measurements (stored in cm) and photos. */
+const MEASURES = [['waist', 'Waist', 'At the navel, relaxed'], ['hips', 'Hips', 'Widest point of the seat'], ['chest', 'Chest', 'Across the nipples'], ['arm', 'Arm', 'Mid upper arm, relaxed'], ['thigh', 'Thigh', 'Widest point, one side'], ['neck', 'Neck', 'Just below the larynx']];
+const POSES = ['Front', 'Side', 'Back'];
+let measDate = null, comparePair = null;
+/* US Navy circumference method; needs neck, waist and (for women) hips plus height. */
+function bodyFat(m) {
+  const h = S.profile.heightCm, l = Math.log10;
+  if (!m || !m.waist || !m.neck || !h) return null;
+  let bf;
+  if (S.profile.sex === 'male') { if (m.waist <= m.neck) return null; bf = 495 / (1.0324 - 0.19077 * l(m.waist - m.neck) + 0.15456 * l(h)) - 450; }
+  else { if (!m.hips || m.waist + m.hips <= m.neck) return null; bf = 495 / (1.29579 - 0.35004 * l(m.waist + m.hips - m.neck) + 0.221 * l(h)) - 450; }
+  return bf > 2 && bf < 70 ? round(bf, 1) : null;
+}
+function sparkline(vals) {
+  if (vals.length < 2) return '';
+  const W = 140, H = 34, lo = Math.min(...vals), hi = Math.max(...vals), span = hi - lo || 1;
+  const pts = vals.map((v, i) => `${(i / (vals.length - 1) * (W - 6) + 3).toFixed(1)},${(H - 4 - ((v - lo) / span) * (H - 8)).toFixed(1)}`);
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts.join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function photoFig(p, del) {
+  return `<figure class="photo"><img src="${p.url}" alt="${esc(p.pose)} photo, ${fmtDay(p.date, { month: 'long', day: 'numeric', year: 'numeric' })}" loading="lazy">
+    <figcaption><span>${fmtDay(p.date, { month: 'short', day: 'numeric', year: '2-digit' })} · ${esc(p.pose)}</span>${del ? `<button class="btn btn-ghost btn-sm" data-act="del-photo" data-id="${p.id}" aria-label="Delete ${esc(p.pose)} photo from ${fmtDay(p.date)}">✕</button>` : ''}</figcaption></figure>`;
+}
+function photoPanel() {
+  if (!photosReady) return `<p class="muted">Loading photos…</p>`;
+  if (!photosOk) return `<p class="muted">This browser isn't allowing photo storage (private browsing often blocks it). Measurements still save normally.</p>`;
+  const opts = (sel) => photos.map((p) => `<option value="${p.id}" ${p.id === sel ? 'selected' : ''}>${fmtDay(p.date, { month: 'short', day: 'numeric', year: 'numeric' })} · ${esc(p.pose)}</option>`).join('');
+  let compare = '';
+  if (photos.length >= 2) {
+    let [a, b] = comparePair || [];
+    if (!photos.some((p) => p.id === a) || !photos.some((p) => p.id === b)) {
+      const last = photos[photos.length - 1], first = photos.find((p) => p.pose === last.pose && p.id !== last.id) || photos[0];
+      a = first.id; b = last.id;
+    }
+    comparePair = [a, b];
+    const pa = photos.find((p) => p.id === a), pb = photos.find((p) => p.id === b);
+    const days = Math.round((parseKey(pb.date) - parseKey(pa.date)) / 864e5);
+    compare = `<div class="stack" style="margin-top:20px"><div class="panel-head" style="margin:0"><h3>Compare</h3><span class="muted num">${Math.abs(days)} days apart</span></div>
+      <div class="compare"><label class="field">Before<select class="input" id="cmp-a">${opts(a)}</select></label><label class="field">After<select class="input" id="cmp-b">${opts(b)}</select></label>
+      ${photoFig(pa, false)}${photoFig(pb, false)}</div></div>`;
+  }
+  return `<form id="photo-form" class="row" autocomplete="off">
+      <select class="input" id="ph-pose" style="width:auto" aria-label="Pose">${POSES.map((p) => `<option>${p}</option>`).join('')}</select>
+      <label class="btn btn-primary" for="ph-file" style="position:relative">Add photo for ${measDate === dayKey() ? 'today' : fmtDay(measDate)}<input type="file" id="ph-file" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%"></label>
+    </form>
+    <p class="muted" style="font-size:.85rem;margin-top:8px">Same spot, same light, same time of day makes comparisons honest. Photos are shrunk and kept only on this device; backups don't include them.</p>
+    ${photos.length ? `<div class="photo-grid" style="margin-top:14px">${[...photos].reverse().map((p) => photoFig(p, true)).join('')}</div>` : `<p class="muted" style="margin-top:14px">No photos yet.</p>`}
+    ${compare}`;
+}
+function viewProgress() {
+  const t = dayKey(); if (!measDate) measDate = t;
+  const list = [...S.measures].sort((a, b) => a.date.localeCompare(b.date));
+  const cur = list.find((m) => m.date === measDate) || {};
+  const latest = list[list.length - 1], first = list[0];
+  const cards = MEASURES.map(([k, label]) => {
+    const vals = list.filter((m) => m[k]).map((m) => m[k]);
+    if (!vals.length) return '';
+    const d = showL(vals[vals.length - 1]) - showL(vals[0]);
+    return `<div class="meas-card"><span class="eyebrow">${label}</span><b>${showL(vals[vals.length - 1])}<small class="muted" style="font-size:.8rem"> ${lUnit()}</small></b>
+      ${vals.length > 1 ? `<span class="num ${d < 0 ? 'delta-down' : d > 0 ? 'delta-up' : 'muted'}" style="font-size:.82rem">${d > 0 ? '+' : d < 0 ? '−' : '±'}${Math.abs(round(d, 1))} since ${fmtDay(list.find((m) => m[k]).date, { month: 'short', day: 'numeric' })}</span>` : '<span class="muted" style="font-size:.82rem">First entry</span>'}
+      ${sparkline(vals)}</div>`;
+  }).join('');
+  const bfNow = bodyFat(latest), bfThen = first !== latest ? bodyFat(first) : null;
+  const bfCard = bfNow != null ? `<div class="meas-card" style="background:var(--accent-soft)"><span class="eyebrow">Est. body fat</span><b>${bfNow}<small class="muted" style="font-size:.8rem"> %</small></b>
+    ${bfThen != null ? `<span class="num ${bfNow < bfThen ? 'delta-down' : bfNow > bfThen ? 'delta-up' : 'muted'}" style="font-size:.82rem">${bfNow >= bfThen ? '+' : '−'}${Math.abs(round(bfNow - bfThen, 1))} pts</span>` : ''}
+    <span class="muted" style="font-size:.75rem">US Navy tape method, ±3–4%</span></div>` : '';
+  return `${exampleBanner()}
+  <div class="page-head"><div><div class="eyebrow">Beyond the scale</div><h1>Progress</h1>
+    <p class="muted">Measure every 1–2 weeks, first thing in the morning. A shrinking waist with a steady weight usually means you're losing fat and building muscle.</p></div>
+    <div class="row"><button class="btn btn-sm" data-act="meas-day" data-d="-1" aria-label="Previous day">←</button>
+      <input class="input" type="date" id="meas-date" value="${measDate}" max="${t}" style="width:auto" aria-label="Measurement date">
+      <button class="btn btn-sm" data-act="meas-day" data-d="1" aria-label="Next day" ${measDate >= t ? 'disabled' : ''}>→</button></div></div>
+  <div class="grid">
+    <section class="panel span-5" aria-labelledby="h-meas">
+      <div class="panel-head"><h2 id="h-meas">Measurements · ${measDate === t ? 'today' : fmtDay(measDate)}</h2><span class="muted">${lUnit()}</span></div>
+      <form id="meas-form" class="stack" autocomplete="off">
+        <div class="form-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          ${MEASURES.map(([k, label, hint]) => `<label class="field">${label}<input class="input num" id="m-${k}" type="number" step="0.1" min="0" inputmode="decimal" value="${cur[k] ? showL(cur[k]) : ''}" placeholder="${lUnit()}"><span style="font-weight:400;font-size:.75rem">${hint}</span></label>`).join('')}
+        </div>
+        <div class="row"><button class="btn btn-primary" type="submit">${cur.id ? 'Update' : 'Save'} measurements</button>${cur.id ? `<button class="btn btn-ghost" type="button" data-act="del-meas" data-id="${cur.id}">Remove</button>` : ''}</div>
+      </form>
+    </section>
+    <section class="panel span-7" aria-labelledby="h-trend">
+      <div class="panel-head"><h2 id="h-trend">Trends</h2><span class="muted num">${list.length} ${list.length === 1 ? 'entry' : 'entries'}</span></div>
+      ${list.length ? `<div class="meas-cards">${bfCard}${cards}</div>` : `<p class="muted">Save your first set of measurements to see trends here. Neck and waist${S.profile.sex === 'male' ? '' : ' and hips'} also give you a body-fat estimate.</p>`}
+      ${list.length ? `<div class="table-wrap" style="margin-top:18px"><table class="ex-table meas-table"><thead><tr><th>Date</th>${MEASURES.map(([, l]) => `<th>${l}</th>`).join('')}<th><span class="sr-only">Delete</span></th></tr></thead><tbody>
+        ${[...list].reverse().map((m) => `<tr><td><button class="btn btn-ghost btn-sm" data-act="meas-open" data-date="${m.date}" style="padding:0">${fmtDay(m.date, { month: 'short', day: 'numeric', year: '2-digit' })}</button></td>${MEASURES.map(([k]) => `<td class="num">${m[k] ? showL(m[k]) : '—'}</td>`).join('')}<td><button class="btn btn-ghost btn-sm" data-act="del-meas" data-id="${m.id}" aria-label="Delete measurements from ${fmtDay(m.date)}">✕</button></td></tr>`).join('')}
+      </tbody></table></div>` : ''}
+    </section>
+    <section class="panel span-12" aria-labelledby="h-photos">
+      <div class="panel-head"><h2 id="h-photos">Progress photos</h2><span class="muted num">${photos.length}</span></div>
+      ${photoPanel()}
+    </section>
+  </div>`;
+}
+
 /* Shopping list: merges ingredients across recipes by item name (text before the first comma) and unit. */
 const AISLES = ['Produce', 'Meat & seafood', 'Dairy, eggs & tofu', 'Pantry & canned', 'Spices & baking', 'Frozen', 'Other'];
 function aisleOf(name, unit) {
@@ -1250,7 +1412,9 @@ function viewTargets() {
       <p class="muted" style="font-size:.88rem">Resting burn (BMR) <span class="num">${calc.bmr}</span> kcal · with activity (TDEE) <span class="num">${calc.tdee}</span> kcal. Protein is set at about ${p.goal === 'lose' ? '0.9' : '0.8'} g per lb of body weight to protect muscle; fat at 28% of calories; carbs fill the rest.</p>
       <hr style="border:0;border-top:1px solid var(--line);width:100%;margin:4px 0">
       <div class="eyebrow">Your data</div>
-      <p class="muted" style="font-size:.88rem">Everything is stored in this browser only. Clearing removes all meals, weigh-ins and workouts.</p>
+      <p class="muted" style="font-size:.88rem">Everything is stored in this browser only. Download a backup to move your log to another device or browser. Clearing removes all meals, weigh-ins, measurements, photos and workouts.</p>
+      <div class="row"><button class="btn btn-sm" data-act="backup">Download backup</button>
+        <label class="btn btn-sm" for="restore-file" style="position:relative">Restore from backup<input type="file" id="restore-file" accept="application/json,.json" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%"></label></div>
       <div class="confirm">${clearArmed ? `<span>Delete everything?</span><button class="btn btn-sm btn-berry" data-act="clear-all">Yes, delete</button><button class="btn btn-sm" data-act="clear-cancel">Keep</button>` : `<button class="btn btn-sm" data-act="clear-arm">Clear all data</button>`}</div>
     </section>
   </div>`;
@@ -1272,6 +1436,7 @@ function render(keepScroll) {
   else if (h === 'session') { html = viewSession(); tab = 'workouts'; }
   else if (h === 'shopping') { html = viewShopping(); tab = 'shopping'; }
   else if (h === 'log') { html = viewLog(); tab = 'log'; }
+  else if (h === 'progress') { html = viewProgress(); tab = 'progress'; }
   else if (h === 'targets') { html = viewTargets(); tab = 'targets'; }
   else { html = notFound('That page'); tab = ''; }
   const y = window.scrollY;
@@ -1352,7 +1517,17 @@ document.addEventListener('click', (e) => {
   else if (a === 'goal') { S.profile.goal = b.dataset.g; readProfile(); render(true); }
   else if (a === 'clear-arm') { clearArmed = true; render(true); }
   else if (a === 'clear-cancel') { clearArmed = false; render(true); }
-  else if (a === 'clear-all') { const units = S.units; S = { ...fresh(), units }; clearArmed = false; save(); toast('All data cleared'); render(true); }
+  else if (a === 'clear-all') { const units = S.units; S = { ...fresh(), units }; clearArmed = false; save(); clearPhotos(); toast('All data cleared'); render(true); }
+  else if (a === 'meas-day') { const n = addDays(measDate, +b.dataset.d); if (n <= dayKey()) { measDate = n; render(true); } }
+  else if (a === 'meas-open') { measDate = b.dataset.date; render(false); }
+  else if (a === 'del-meas') { S.measures = S.measures.filter((m) => m.id !== b.dataset.id); save(); toast('Measurements removed'); render(true); }
+  else if (a === 'del-photo') { deletePhoto(b.dataset.id).then(() => toast('Photo deleted'), () => toast('Could not delete that photo')); }
+  else if (a === 'backup') {
+    const url = URL.createObjectURL(new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' }));
+    const link = document.createElement('a'); link.href = url; link.download = `rep-ration-backup-${dayKey()}.json`;
+    document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('Backup downloaded');
+  }
 });
 
 function readProfile() {
@@ -1387,6 +1562,13 @@ document.addEventListener('submit', (e) => {
     S.weights.push({ date: logDate, kg: round(toKg(val), 2) });
     if (logDate === dayKey()) S.profile.weightKg = round(toKg(val), 2);
     save(); toast(`Weight saved · ${val} ${wUnit()}`); render(true);
+  } else if (f.id === 'meas-form') {
+    const entry = { date: measDate };
+    MEASURES.forEach(([k]) => { const v = parseFloat($('#m-' + k).value); if (v > 0) entry[k] = round(toCm(v), 1); });
+    if (Object.keys(entry).length === 1) { toast('Enter at least one measurement'); return; }
+    const old = S.measures.find((m) => m.date === measDate);
+    S.measures = S.measures.filter((m) => m.date !== measDate); S.measures.push({ id: old ? old.id : uid(), ...entry });
+    save(); toast(old ? 'Measurements updated' : 'Measurements saved'); render(true);
   } else if (f.id === 'profile-form') {
     readProfile();
     const t = dayKey();
@@ -1408,12 +1590,27 @@ document.addEventListener('change', (e) => {
     $('#shop-count').textContent = `${done} of ${total} in cart`; $('#shop-bar').style.width = (done / total) * 100 + '%';
   } else if (t.id === 'log-date' && t.value) { logDate = t.value > dayKey() ? dayKey() : t.value; render(true); }
   else if (t.dataset.load != null && S.session) { S.session.loads[t.dataset.load] = t.value; save(); }
+  else if (t.id === 'meas-date' && t.value) { measDate = t.value > dayKey() ? dayKey() : t.value; render(true); }
+  else if (t.id === 'cmp-a' || t.id === 'cmp-b') { comparePair = [$('#cmp-a').value, $('#cmp-b').value]; render(true); }
+  else if (t.id === 'ph-file' && t.files[0]) {
+    const file = t.files[0], pose = $('#ph-pose').value;
+    toast('Saving photo…');
+    addPhoto(file, measDate, pose).then(() => toast('Photo saved'), () => toast("Couldn't save that photo. Try a JPEG or PNG."));
+  } else if (t.id === 'restore-file' && t.files[0]) {
+    t.files[0].text().then((txt) => {
+      const data = JSON.parse(txt);
+      if (!data || data.v !== 1 || !Array.isArray(data.meals) || !Array.isArray(data.weights) || !data.profile || !data.targets) throw new Error('shape');
+      S = { ...fresh(), ...data, session: null }; if (!S.measures) S.measures = [];
+      save(); toast('Backup restored'); render(true);
+    }).catch(() => { toast("That file isn't a Rep & Ration backup"); t.value = ''; });
+  }
 });
 document.addEventListener('input', (e) => {
   if (e.target.id === 'recipe-search') { recipeSearch = e.target.value; $('#recipe-cards').innerHTML = recipeCards(); }
 });
 
 render(false);
+loadPhotos();
 })();
 </script>
 <!-- END PAGE -->
