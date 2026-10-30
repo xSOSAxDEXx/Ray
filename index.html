@@ -221,6 +221,13 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
 .rcard { display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; transition: transform .15s ease, box-shadow .15s ease; }
 .rcard:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.meal-jump { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.meal-jump .chip { text-decoration: none; }
+.meal-group { margin-top: 26px; }
+.meal-group:first-of-type { margin-top: 14px; }
+.group-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; margin-bottom: 14px; border-radius: var(--r); background: var(--sunk); border-left: 4px solid var(--accent); }
+.group-head h2 { font-size: 1.2rem; flex: 1; }
+.group-icon { font-size: 1.3rem; }
 .card-wrap { position: relative; display: flex; flex-direction: column; }
 .card-wrap > a { flex: 1; }
 .card-wrap.cant > a { opacity: .6; }
@@ -1739,7 +1746,7 @@ function seed() {
   const water = {}; water[t] = 1250;
   const measures = [21, 14, 7, 0].map((ago, i) => ({ id: uid(), date: addDays(t, -ago), waist: round(86.5 - i * 0.7, 1), hips: round(104 - i * 0.5, 1), chest: round(97 - i * 0.3, 1), arm: 30.5, thigh: round(60 - i * 0.4, 1), neck: 34 }));
   return { v: 1, example: true, units: 'us', profile, targets: { ...calcTargets(profile), waterMl: 2400 },
-    meals, weights, workouts, water, measures, activePlan: 'foundations', session: null, customRecipes: [], customPlans: [], mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null,
+    meals, weights, workouts, water, measures, activePlan: 'foundations', session: null, customRecipes: [], customPlans: [], mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2,
     shopping: { recipes: [{ id: 'chicken-burrito-bowls', servings: 4 }, { id: 'berry-overnight-oats', servings: 4 }], checked: {}, extras: [] } };
 }
 function fresh() {
@@ -1760,6 +1767,7 @@ function migrate() {
   if (S.reminders === undefined) S.reminders = null;
   if (!S.favs) S.favs = { recipes: [], plans: [] };
   if (S.appliance === undefined) S.appliance = null;
+  if (!S.servings) S.servings = 2;
   syncCustom();
 }
 migrate();
@@ -2194,7 +2202,7 @@ function viewMealPlan() {
       <div class="bar" style="height:6px;margin-bottom:10px"><i style="width:${pct}%;background:${tot.kcal > T.kcal * 1.05 ? 'var(--warn)' : 'var(--accent)'}"></i></div>
       ${MEALS.map((m) => { const slot = dp[m], r = slot && recipeById(slot.id);
         return `<div class="mp-slot">${r ? `<a href="#recipe-${r.id}" class="mp-thumb" aria-hidden="true" tabindex="-1">${recipeImg(r, 'rimg')}</a>` : '<span class="mp-thumb mp-empty" aria-hidden="true"></span>'}
-          <div class="mp-pick"><div class="mp-label"><span class="eyebrow">${m}</span>${r ? `<label class="mp-serv" title="Servings to cook"><span class="sr-only">Servings of ${esc(r.title)} to cook</span><select class="input" data-mps="${k}|${m}">${[1, 2, 3, 4, 5, 6, 8].map((n) => `<option value="${n}" ${slot.s === n ? 'selected' : ''}>×${n}</option>`).join('')}</select></label>` : ''}</div>
+          <div class="mp-pick"><div class="mp-label"><span class="eyebrow">${m}</span>${r ? `<label class="mp-serv" title="Servings to cook"><span class="sr-only">Servings of ${esc(r.title)} to cook</span><select class="input" data-mps="${k}|${m}">${[...new Set([1, 2, 3, 4, 5, 6, 8, slot.s])].sort((a, b) => a - b).map((n) => `<option value="${n}" ${slot.s === n ? 'selected' : ''}>×${n}</option>`).join('')}</select></label>` : ''}</div>
             <select class="input" data-mp="${k}|${m}" aria-label="${m} on ${fmtDay(k)}"><option value="">—</option>
               ${sorted.some((x) => isFav('recipes', x.id)) ? `<optgroup label="♥ Favorites">${sorted.filter((x) => isFav('recipes', x.id)).map((x) => `<option value="${x.id}" ${slot && slot.id === x.id ? 'selected' : ''}>${esc(x.title)}</option>`).join('')}</optgroup>` : ''}
               <optgroup label="${m}">${sorted.filter((x) => x.meal === m && !isFav('recipes', x.id)).map((x) => `<option value="${x.id}" ${slot && slot.id === x.id ? 'selected' : ''}>${esc(x.title)}</option>`).join('')}</optgroup>
@@ -2393,13 +2401,21 @@ function recipeCards() {
     if (recipeFilter === 'Favorites') return '<p class="muted">No favorites yet. Tap ♡ on any recipe to save it here.</p>';
     return recipeFilter === 'My recipes' ? `<p class="muted">You haven't added any recipes yet. <a href="#recipe-new">Add your first one</a>.</p>` : '<p class="muted">No recipes in this filter yet.</p>';
   }
-  return list.map((r) => { const ok = worksWith(r, app), m = methodFor(r, app);
+  const card = (r) => { const ok = worksWith(r, app), m = methodFor(r, app);
     return `<div class="card-wrap ${ok ? '' : 'cant'}"><a class="rcard" href="#recipe-${r.id}">${recipeImg(r)}
     <div class="rcard-top"><div><div class="eyebrow">${r.meal}</div><div class="rcard-kcal">${r.per.kcal}<small>kcal</small></div></div>
       <span class="stack" style="gap:4px;align-items:end"><span class="tag">${r.prep + m.cook} min</span>${ok ? '' : `<span class="tag tag-warn">Not for ${appLabel(app).toLowerCase()}</span>`}${onList(r.id) ? '<span class="tag tag-accent">On your list</span>' : ''}${appIcons(r)}</span></div>
     <div class="rcard-body"><h3>${esc(r.title)}</h3><p class="muted" style="font-size:.9rem">${esc(r.blurb)}</p>
-      <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">${macroStrip(r.per)}</div></div></a>${favBtn('recipes', r.id, r.title)}</div>`; }).join('');
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">${macroStrip(r.per)}</div></div></a>${favBtn('recipes', r.id, r.title)}</div>`; };
+  const groups = MEAL_ORDER.map((meal) => [meal, list.filter((r) => r.meal === meal)]).filter(([, rs]) => rs.length);
+  return `${groups.length > 1 ? `<nav class="meal-jump" aria-label="Jump to meal">${groups.map(([meal, rs]) => `<a class="chip" href="#recipes" data-act="jump" data-g="${meal}">${MEAL_ICON[meal]} ${MEAL_PLURAL[meal]} <span class="muted">${rs.length}</span></a>`).join('')}</nav>` : ''}
+    ${groups.map(([meal, rs]) => `<section class="meal-group" id="grp-${meal}" aria-labelledby="gh-${meal}">
+      <div class="group-head"><span class="group-icon" aria-hidden="true">${MEAL_ICON[meal]}</span><h2 id="gh-${meal}">${MEAL_PLURAL[meal]}</h2><span class="muted num">${rs.length} recipe${rs.length === 1 ? '' : 's'}</span></div>
+      <div class="cards">${rs.map(card).join('')}</div></section>`).join('')}`;
 }
+const MEAL_ORDER = ['Snack', 'Breakfast', 'Lunch', 'Dinner'];
+const MEAL_ICON = { Snack: '🍎', Breakfast: '🍳', Lunch: '🥗', Dinner: '🍽️' };
+const MEAL_PLURAL = { Snack: 'Snacks', Breakfast: 'Breakfast', Lunch: 'Lunch', Dinner: 'Dinner' };
 function viewRecipes() {
   return `<div class="page-head"><div><div class="eyebrow">${RECIPES.length} recipes · macros per serving</div><h1>Recipes</h1>
     <p class="muted">High-protein meals built from everyday groceries. Every recipe lists calories and macros per serving and scales to the number of people you're feeding. Use <b>Sugar free</b>, <b>Whole foods</b> or <b>Minimally processed</b> to narrow things down.</p></div>
@@ -2411,7 +2427,7 @@ function viewRecipes() {
     ${appChips('Cooking with')}
     ${S.appliance && RECIPES.some((r) => !worksWith(r, S.appliance)) ? `<p class="muted" style="font-size:.9rem;margin:-8px 0 16px">${RECIPES.filter((r) => !worksWith(r, S.appliance)).length} recipes don't suit the ${appLabel(S.appliance).toLowerCase()} · <button class="btn btn-ghost btn-sm" data-act="app-hide" style="padding:2px 6px;color:var(--accent)">${appHide ? 'Show them' : 'Hide them'}</button></p>` : ''}
     ${FILTER_NOTES[recipeFilter] ? `<p class="tip" style="margin:-6px 0 18px;max-width:80ch"><b>${recipeFilter}:</b> ${FILTER_NOTES[recipeFilter]}</p>` : ''}
-    <div class="cards" id="recipe-cards">${recipeCards()}</div>`;
+    <div id="recipe-cards">${recipeCards()}</div>`;
 }
 
 const servingsState = {};
@@ -2432,7 +2448,7 @@ function unitLabel(q, unit) {
   return unit + (plural ? 's' : '');
 }
 function ingList(r) {
-  const n = servingsState[r.id] || r.servings, k = n / r.servings;
+  const n = servingsState[r.id] || S.servings, k = n / r.servings;
   return r.ingredients.map((ing, i) => {
     const q = ing[0] == null ? null : ing[0] * k;
     return `<li><label><input type="checkbox" id="ing-${r.id}-${i}"><span class="q">${fmtQty(q, ing[1])} ${unitLabel(q, ing[1])}</span><span>${esc(ing[2])}</span></label></li>`;
@@ -2441,7 +2457,7 @@ function ingList(r) {
 function viewRecipe(id) {
   const r = recipeById(id);
   if (!r) return notFound('That recipe');
-  const n = servingsState[r.id] || r.servings, m = methodFor(r, S.appliance);
+  const n = servingsState[r.id] || S.servings, m = methodFor(r, S.appliance);
   return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><a class="btn btn-ghost" href="#recipes">← All recipes</a>
     <div class="row">${favToggle('recipes', r.id)}${r.custom ? `<a class="btn btn-sm" href="#recipe-edit-${r.id}">Edit recipe</a><span class="confirm">${delArmed ? `<span>Delete this recipe?</span><button class="btn btn-sm btn-berry" data-act="del-recipe" data-id="${r.id}">Yes, delete</button><button class="btn btn-sm" data-act="del-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="del-recipe-arm">Delete</button>`}</span>` : ''}</div></div>
   <div class="recipe-photo">${recipeImg(r, 'rimg rimg-hero')}
@@ -2462,7 +2478,7 @@ function viewRecipe(id) {
     <section class="panel span-5" aria-labelledby="h-ing">
       <div class="panel-head"><h2 id="h-ing">Ingredients</h2>
         <div class="stepper" role="group" aria-label="Servings"><button data-act="serv" data-id="${r.id}" data-d="-1" aria-label="Fewer servings">−</button><output id="serv-out" aria-live="polite">${n}</output><button data-act="serv" data-id="${r.id}" data-d="1" aria-label="More servings">+</button></div></div>
-      <p class="muted" style="font-size:.85rem;margin-bottom:8px">Serves <span id="serv-text">${n}</span>. Tick items off as you shop or cook.</p>
+      <p class="muted" style="font-size:.85rem;margin-bottom:8px">Serves <span id="serv-text">${n}</span>${n !== r.servings ? ` <span class="muted">(recipe written for ${r.servings}, amounts scaled)</span>` : ''}. Tick items off as you shop or cook.</p>
       <ul class="ing" id="ing-list">${ingList(r)}</ul>
     </section>
     <section class="panel span-7" aria-labelledby="h-steps">
@@ -2843,7 +2859,7 @@ function viewShopping() {
 }
 function shopAdd(id, servings) {
   const r = recipeById(id); if (!r) return;
-  const n = servings || r.servings, cur = S.shopping.recipes.find((x) => x.id === id);
+  const n = servings || S.servings, cur = S.shopping.recipes.find((x) => x.id === id);
   if (cur) cur.servings = n; else S.shopping.recipes.push({ id, servings: n });
   save(); toast(cur ? `Shopping list updated · ${n} servings` : `Added ${r.title} to your shopping list`);
 }
@@ -2875,6 +2891,11 @@ function viewTargets() {
         <label class="field">Daily water goal (${wUnitWater()})<input class="input num" id="p-water" type="number" min="0" value="${showWater(T.waterMl)}" style="max-width:180px"></label>
         <div class="row"><button class="btn btn-primary" type="submit">Save targets</button><span class="muted" style="font-size:.85rem">Saving also logs today's weight.</span></div>
       </form>
+      <hr style="border:0;border-top:1px solid var(--line);margin:20px 0 16px">
+      <div class="row" style="justify-content:space-between" aria-labelledby="h-serv">
+        <div><h3 id="h-serv">Default serving size</h3><p class="muted" style="font-size:.85rem;max-width:44ch">How many people you usually cook for. Recipes, the shopping list and the meal planner start at this many servings; you can still change it on any recipe.</p></div>
+        <div class="stepper" role="group" aria-label="Default servings"><button type="button" data-act="hh" data-d="-1" aria-label="Fewer servings">−</button><output id="hh-out" aria-live="polite">${S.servings}</output><button type="button" data-act="hh" data-d="1" aria-label="More servings">+</button></div>
+      </div>
     </section>
     <section class="panel span-5 stack" aria-labelledby="h-res">
       <h2 id="h-res">Your daily targets</h2>
@@ -2955,10 +2976,10 @@ document.addEventListener('click', (e) => {
   if (a === 'water') { addWater(+b.dataset.ml, current === 'log' ? logDate : null); waterAdded(); }
   else if (a === 'water-undo') { if (waterUndo) { addWater(-waterUndo.ml, waterUndo.date, true); waterAdded(); } }
   else if (a === 'celebrate-close') { const c = $('#celebrate'); if (c) c.remove(); }
-  else if (a === 'clear-example') { const keep = { units: S.units, profile: S.profile, targets: S.targets, activePlan: S.activePlan, myGear: S.myGear, customRecipes: S.customRecipes, customPlans: S.customPlans, mealPlan: S.mealPlan, reminders: S.reminders, favs: S.favs, appliance: S.appliance }; S = { ...fresh(), ...keep }; save(); toast('Example data cleared. Ready for your first entry.'); render(true); }
+  else if (a === 'clear-example') { const keep = { units: S.units, profile: S.profile, targets: S.targets, activePlan: S.activePlan, myGear: S.myGear, customRecipes: S.customRecipes, customPlans: S.customPlans, mealPlan: S.mealPlan, reminders: S.reminders, favs: S.favs, appliance: S.appliance, servings: S.servings }; S = { ...fresh(), ...keep }; save(); toast('Example data cleared. Ready for your first entry.'); render(true); }
   else if (a === 'filter') { recipeFilter = b.dataset.f; render(true); }
   else if (a === 'serv') {
-    const r = recipeById(b.dataset.id); const n = Math.min(24, Math.max(1, (servingsState[r.id] || r.servings) + +b.dataset.d));
+    const r = recipeById(b.dataset.id); const n = Math.min(24, Math.max(1, (servingsState[r.id] || S.servings) + +b.dataset.d));
     servingsState[r.id] = n; $('#serv-out').textContent = n; $('#serv-text').textContent = n; $('#ing-list').innerHTML = ingList(r);
   }
   else if (a === 'log-recipe') {
@@ -3031,11 +3052,16 @@ document.addEventListener('click', (e) => {
   else if (a === 'meas-open') { measDate = b.dataset.date; render(false); }
   else if (a === 'del-meas') { S.measures = S.measures.filter((m) => m.id !== b.dataset.id); save(); toast('Measurements removed'); render(true); }
   else if (a === 'del-photo') { deletePhoto(b.dataset.id).then(() => toast('Photo deleted'), () => toast('Could not delete that photo')); }
+  else if (a === 'hh') {
+    S.servings = Math.min(12, Math.max(1, S.servings + +b.dataset.d)); Object.keys(servingsState).forEach((k) => delete servingsState[k]);
+    save(); $('#hh-out').textContent = S.servings; toast(`Default serving size: ${S.servings} ${S.servings === 1 ? 'person' : 'people'}`);
+  }
   else if (a === 'fav') {
     const k = b.dataset.kind, id = b.dataset.id, on = isFav(k, id);
     S.favs[k] = on ? S.favs[k].filter((x) => x !== id) : [...S.favs[k], id]; save();
     toast(on ? 'Removed from favorites' : 'Saved to favorites'); render(true);
   }
+  else if (a === 'jump') { e.preventDefault(); const g = $('#grp-' + b.dataset.g); if (g) window.scrollTo({ top: g.getBoundingClientRect().top + window.scrollY - $('.top').offsetHeight - 12, behavior: 'smooth' }); }
   else if (a === 'app') { S.appliance = b.dataset.a || null; save(); render(true); }
   else if (a === 'app-hide') { appHide = !appHide; render(true); }
   else if (a === 'draft-set' && draft) { setPath(draft, b.dataset.path, b.hasAttribute('data-num') ? +b.dataset.v : b.dataset.v); render(true); }
@@ -3059,7 +3085,7 @@ document.addEventListener('click', (e) => {
     [...Array(7)].map((_, i) => addDays(mpWeek, i)).forEach((k) => MEALS.forEach((m) => {
       if (planDay(k)[m]) return;
       const opts = RECIPES.filter((r) => r.meal === m); if (!opts.length) return;
-      S.mealPlan[k] = { ...planDay(k), [m]: { id: opts[Math.floor(Math.random() * opts.length)].id, s: 1 } }; n += 1;
+      S.mealPlan[k] = { ...planDay(k), [m]: { id: opts[Math.floor(Math.random() * opts.length)].id, s: S.servings } }; n += 1;
     }));
     save(); toast(n ? `Filled ${n} slot${n === 1 ? '' : 's'}. Swap any you don't fancy.` : 'Every slot already has a recipe'); render(true);
   }
@@ -3158,7 +3184,7 @@ document.addEventListener('change', (e) => {
     addPhoto(file, measDate, pose).then(() => toast('Photo saved'), () => toast("Couldn't save that photo. Try a JPEG or PNG."));
   } else if (t.dataset.mp != null) {
     const [k, m] = t.dataset.mp.split('|'), day = { ...planDay(k) };
-    if (t.value) day[m] = { id: t.value, s: (day[m] && day[m].s) || 1 }; else delete day[m];
+    if (t.value) day[m] = { id: t.value, s: (day[m] && day[m].s) || S.servings }; else delete day[m];
     if (Object.keys(day).length) S.mealPlan[k] = day; else delete S.mealPlan[k];
     save(); render(true);
   } else if (t.dataset.mps != null) {
