@@ -277,6 +277,12 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .filter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
 .filter-row .eyebrow { min-width: 92px; }
 .pcard .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.pcard.cant { opacity: .62; }
+.pcard.cant:hover { opacity: 1; }
+.tag-warn { background: color-mix(in srgb, var(--warn) 15%, transparent); color: var(--warn); }
+.gear-panel { margin-bottom: 18px; }
+.gear-panel .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.gear-summary { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: space-between; }
 
 /* Session */
 .session-ex { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; padding: 16px 0; border-top: 1px solid var(--line); align-items: center; }
@@ -842,7 +848,7 @@ const RECIPES = [
 /* ---------- Content: workout plans ---------- */
 // Exercise: [name, sets, reps, rest seconds, cue]
 const PLANS = [
-  { id: 'foundations', title: 'Foundations Full Body', diff: 1, muscles: ['Full body'], gear: 'Gym', perWeek: 3, minutes: 45, equipment: 'Dumbbells, bench, band',
+  { id: 'foundations', title: 'Foundations Full Body', diff: 1, muscles: ['Full body'], gear: 'Gym', needs: [['dumbbells'], ['bench'], ['bands', 'cables']], perWeek: 3, minutes: 45, equipment: 'Dumbbells, bench, band',
     goal: 'Learn the main movement patterns and build a strength base.',
     schedule: 'Mon, Wed, Fri. Alternate days A and B (week 1: A-B-A, week 2: B-A-B).',
     warmup: '5 minutes of brisk walking or cycling, then one light set of the first exercise.',
@@ -861,7 +867,7 @@ const PLANS = [
         ['Glute bridge (weighted)', 3, '12–15', 60, 'Drive through heels, squeeze at the top for one second.'],
         ['Dead bug', 3, '8 / side', 45, 'Lower back pressed to the floor the whole time; move slowly.']] }
     ] },
-  { id: 'upper-lower', title: 'Upper/Lower Strength', diff: 3, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', perWeek: 4, minutes: 60, equipment: 'Barbell, rack, dumbbells, cables',
+  { id: 'upper-lower', title: 'Upper/Lower Strength', diff: 3, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', needs: [['barbell'], ['dumbbells'], ['bench'], ['pullup'], ['cables'], ['machines']], perWeek: 4, minutes: 60, equipment: 'Barbell, rack, dumbbells, cables',
     goal: 'Build strength and muscle with heavy compound lifts and targeted accessories.',
     schedule: 'Mon Upper 1, Tue Lower 1, Thu Upper 2, Fri Lower 2.',
     warmup: '5 minutes easy cardio, then 2–3 ramp-up sets on the first lift (empty bar, 50%, 75%).',
@@ -894,7 +900,7 @@ const PLANS = [
         ['Barbell hip thrust', 3, '8–10', 90, 'Upper back on a bench, chin tucked, full lockout with glutes.'],
         ['Hanging knee raise', 3, '10–15', 60, 'Curl your pelvis up; avoid swinging.']] }
     ] },
-  { id: 'home-circuit', title: 'Home Bodyweight Circuit', diff: 2, muscles: ['Full body', 'Cardio'], gear: 'None', perWeek: 3, minutes: 30, equipment: 'None (a chair and a towel)', noLoad: true,
+  { id: 'home-circuit', title: 'Home Bodyweight Circuit', diff: 2, muscles: ['Full body', 'Cardio'], gear: 'None', needs: [], perWeek: 3, minutes: 30, equipment: 'None (a chair and a towel)', noLoad: true,
     goal: 'Improve fitness and burn calories at home with no equipment.',
     schedule: '3 circuits per week (e.g. Mon, Wed, Sat) plus two 30-minute walks.',
     warmup: '3 minutes: marching in place, arm circles, hip circles, 10 bodyweight squats.',
@@ -919,7 +925,7 @@ const PLANS = [
         ['Skater hops', 3, '40 s', 20, 'Bound side to side, land on one foot with a soft knee.'],
         ['Bicycle crunch', 3, '40 s', 60, 'Elbow toward the opposite knee; slow and controlled.']] }
     ] },
-  { id: 'push-pull-legs', title: 'Push / Pull / Legs', diff: 4, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', perWeek: 6, minutes: 70, equipment: 'Full gym',
+  { id: 'push-pull-legs', title: 'Push / Pull / Legs', diff: 4, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', needs: [['barbell'], ['dumbbells'], ['bench'], ['pullup'], ['cables'], ['machines']], perWeek: 6, minutes: 70, equipment: 'Full gym',
     goal: 'Build as much muscle as possible with high weekly volume, training each muscle twice a week.',
     schedule: 'Push, Pull, Legs, Push, Pull, Legs, rest. If time or recovery is limited, run it 3 days a week.',
     warmup: '5 minutes easy cardio, dynamic stretches for the muscles you are training, then ramp-up sets on the first lift.',
@@ -947,7 +953,7 @@ const PLANS = [
         ['Seated leg curl', 3, '10–12', 60, 'Lean forward slightly for a bigger hamstring stretch.'],
         ['Seated calf raise', 4, '12–15', 45, 'Two-second pause at the bottom stretch.']] }
     ] },
-  { id: 'walk-to-5k', title: 'Walk to 5K', diff: 1, muscles: ['Cardio', 'Lower body & glutes'], gear: 'None', perWeek: 3, minutes: 30, equipment: 'Running shoes', noLoad: true,
+  { id: 'walk-to-5k', title: 'Walk to 5K', diff: 1, muscles: ['Cardio', 'Lower body & glutes'], gear: 'None', needs: [], perWeek: 3, minutes: 30, equipment: 'Running shoes', noLoad: true,
     goal: 'Go from walking to running 5 km (3.1 miles) without stopping in 8 weeks.',
     schedule: '3 runs a week on non-consecutive days. Spend 2 weeks on each stage, and repeat a stage if it felt too hard.',
     warmup: 'Every session starts with the 5-minute brisk walk listed first.',
@@ -970,7 +976,7 @@ const PLANS = [
         ['Continuous jog', 1, '25–30 min', 0, 'Aim for 5 km or 30 minutes, whichever comes first. Slow down rather than stop.'],
         ['Cool-down walk', 1, '5 min', 0, 'Easy pace, then stretch your calves and hips.']] }
     ] },
-  { id: 'mobility-core', title: 'Mobility & Core Reset', diff: 1, muscles: ['Core', 'Mobility'], gear: 'Minimal', perWeek: 3, minutes: 20, equipment: 'Yoga mat, light band', noLoad: true,
+  { id: 'mobility-core', title: 'Mobility & Core Reset', diff: 1, muscles: ['Core', 'Mobility'], gear: 'Minimal', needs: [['bands']], perWeek: 3, minutes: 20, equipment: 'Yoga mat, light band', noLoad: true,
     goal: 'Ease stiffness from sitting, improve range of motion and build a stable core. Pairs well with any other plan.',
     schedule: '2–3 times a week, on rest days or right after a workout.',
     warmup: '2 minutes of easy marching in place or slow cat-cow.',
@@ -992,7 +998,7 @@ const PLANS = [
         ['Doorway chest stretch', 1, '45 s / side', 0, 'Elbow at shoulder height, step through gently.']] }
     ] },
   /* Minimal- and no-equipment plans. */
-  { id: 'first-steps', title: 'First Steps Bodyweight', diff: 1, muscles: ['Full body'], gear: 'None', perWeek: 3, minutes: 20, equipment: 'None (a wall and a sturdy chair)', noLoad: true,
+  { id: 'first-steps', title: 'First Steps Bodyweight', diff: 1, muscles: ['Full body'], gear: 'None', needs: [], perWeek: 3, minutes: 20, equipment: 'None (a wall and a sturdy chair)', noLoad: true,
     goal: 'A gentle start for total beginners, or anyone returning after a long break. Every move can be done in a living room.',
     schedule: '3 days a week with a rest day between (e.g. Mon, Wed, Fri). Alternate days A and B.',
     warmup: '3 minutes of marching in place with big arm swings, then 10 slow shoulder rolls each way.',
@@ -1011,7 +1017,7 @@ const PLANS = [
         ['Side-lying leg raise', 2, '10 / side', 30, 'Lift the top leg slowly without rolling your hips back.'],
         ['Single-leg stand', 2, '30 s / side', 30, 'Lightly touch the wall if needed. Eyes on a fixed point.']] }
     ] },
-  { id: 'core-builder', title: 'Core Builder', diff: 2, muscles: ['Core'], gear: 'None', perWeek: 3, minutes: 20, equipment: 'None (a mat or carpet)', noLoad: true,
+  { id: 'core-builder', title: 'Core Builder', diff: 2, muscles: ['Core'], gear: 'None', needs: [], perWeek: 3, minutes: 20, equipment: 'None (a mat or carpet)', noLoad: true,
     goal: 'A stronger, more stable midsection for better posture, lifting and a happier lower back. Add it on its own days or after another workout.',
     schedule: '2–3 times a week, alternating days A and B. It pairs well with any strength plan.',
     warmup: '1 minute of cat-cow, then 10 slow pelvic tilts lying on your back.',
@@ -1030,7 +1036,7 @@ const PLANS = [
         ['Glute bridge march', 3, '8 / side', 30, 'Keep your hips level as each foot lifts.'],
         ['Superman hold', 2, '20 s', 30, 'Lift your chest and legs a few inches; keep your neck long.']] }
     ] },
-  { id: 'legs-glutes-home', title: 'Legs & Glutes at Home', diff: 2, muscles: ['Lower body & glutes'], gear: 'None', perWeek: 2, minutes: 30, equipment: 'None (stairs or a sturdy step)', noLoad: true,
+  { id: 'legs-glutes-home', title: 'Legs & Glutes at Home', diff: 2, muscles: ['Lower body & glutes'], gear: 'None', needs: [], perWeek: 2, minutes: 30, equipment: 'None (stairs or a sturdy step)', noLoad: true,
     goal: 'Build stronger legs and glutes with single-leg work that stays challenging without weights.',
     schedule: '2 days a week with at least 2 days between (e.g. Tue, Fri). Combine with an upper-body or core plan.',
     warmup: '2 minutes of marching, 10 bodyweight squats, 10 hip circles each way and 10 glute bridges.',
@@ -1049,7 +1055,7 @@ const PLANS = [
         ['Frog pump', 3, '20', 30, 'Soles together, knees out, squeeze your glutes hard at the top.'],
         ['Side-lying clamshell', 2, '15 / side', 30, 'Heels together; rotate the top knee up without rolling back.']] }
     ] },
-  { id: 'one-dumbbell', title: 'One-Dumbbell Full Body', diff: 2, muscles: ['Full body'], gear: 'Minimal', perWeek: 3, minutes: 35, equipment: 'One dumbbell or kettlebell (15–35 lb)',
+  { id: 'one-dumbbell', title: 'One-Dumbbell Full Body', diff: 2, muscles: ['Full body'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 3, minutes: 35, equipment: 'One dumbbell or kettlebell (15–35 lb)',
     goal: 'A complete strength routine that needs only a single weight, ideal for a small home gym or a hotel room.',
     schedule: '3 days a week (e.g. Mon, Wed, Fri). Alternate days A and B.',
     warmup: '3 minutes of light cardio, then 10 bodyweight squats, 10 push-ups (incline if needed) and 10 good mornings.',
@@ -1068,7 +1074,7 @@ const PLANS = [
         ['Dumbbell swing or hip hinge', 3, '15', 45, 'Snap the hips forward; the arms just guide the weight.'],
         ['Side plank', 2, '25 s / side', 30, 'Stack your hips and push the floor away.']] }
     ] },
-  { id: 'band-upper', title: 'Band & Bodyweight Upper Body', diff: 3, muscles: ['Upper body'], gear: 'Minimal', perWeek: 2, minutes: 35, equipment: 'Resistance band with a door anchor', noLoad: true,
+  { id: 'band-upper', title: 'Band & Bodyweight Upper Body', diff: 3, muscles: ['Upper body'], gear: 'Minimal', needs: [['bands']], perWeek: 2, minutes: 35, equipment: 'Resistance band with a door anchor', noLoad: true,
     goal: 'Build chest, back, shoulders and arms with push-up variations and a single resistance band.',
     schedule: '2 days a week (e.g. Mon, Thu). Pairs well with Legs & Glutes at Home on other days.',
     warmup: '20 band pull-aparts, 10 arm circles each way and 10 incline push-ups.',
@@ -1087,7 +1093,7 @@ const PLANS = [
         ['Band lateral raise', 3, '15', 45, 'Stand on the band, raise your arms to shoulder height with soft elbows.'],
         ['Chair triceps dip', 3, '8–12', 45, 'Hands on a stable chair behind you; elbows point straight back.']] }
     ] },
-  { id: 'hiit-conditioning', title: 'HIIT Conditioning', diff: 3, muscles: ['Cardio', 'Full body'], gear: 'None', perWeek: 3, minutes: 25, equipment: 'None', noLoad: true,
+  { id: 'hiit-conditioning', title: 'HIIT Conditioning', diff: 3, muscles: ['Cardio', 'Full body'], gear: 'None', needs: [], perWeek: 3, minutes: 25, equipment: 'None', noLoad: true,
     goal: 'Raise your heart rate and fitness fast with short, hard intervals. A good fat-loss companion to strength training.',
     schedule: '2–3 sessions a week on non-consecutive days. Never two hard HIIT days in a row.',
     warmup: '4 minutes: jog in place, jumping jacks, walking lunges and inchworms, building up the pace.',
@@ -1104,7 +1110,7 @@ const PLANS = [
         ['Plank jacks', 4, '30–40 s', 30, 'Jump your feet wide and narrow while your hips stay level.'],
         ['Fast feet shuffle', 4, '30–40 s', 60, 'Quick small steps on the balls of your feet, chest up.']] }
     ] },
-  { id: 'bodyweight-advanced', title: 'Bodyweight Strength: Advanced', diff: 4, muscles: ['Upper body', 'Lower body & glutes', 'Core'], gear: 'Minimal', perWeek: 4, minutes: 50, equipment: 'Pull-up bar, two sturdy chairs', noLoad: true,
+  { id: 'bodyweight-advanced', title: 'Bodyweight Strength: Advanced', diff: 4, muscles: ['Upper body', 'Lower body & glutes', 'Core'], gear: 'Minimal', needs: [['pullup']], perWeek: 4, minutes: 50, equipment: 'Pull-up bar, two sturdy chairs', noLoad: true,
     goal: 'Gym-level strength with calisthenics: pull-ups, deep dips, single-leg squats and one-arm push-up progressions.',
     schedule: '4 days a week: Upper, Lower, rest, Upper, Lower, then 2 rest days.',
     warmup: '5 minutes of light cardio, then scapular pull-ups, wrist circles, 10 deep squats and 5 slow push-ups.',
@@ -1127,6 +1133,10 @@ const PLANS = [
 
 const LEVELS = ['', 'Beginner', 'Novice', 'Intermediate', 'Advanced'];
 PLANS.forEach((p) => { p.level = LEVELS[p.diff]; });
+const EQUIPMENT = [['dumbbells', 'Dumbbells'], ['kettlebell', 'Kettlebell'], ['bench', 'Weight bench'], ['bands', 'Resistance bands'],
+  ['pullup', 'Pull-up bar'], ['barbell', 'Barbell & squat rack'], ['cables', 'Cable machine'], ['machines', 'Leg machines']];
+const GEAR_PRESETS = [['none', 'No equipment', []], ['home', 'Home basics', ['dumbbells', 'bands']], ['gym', 'Full gym', EQUIPMENT.map((e) => e[0])]];
+const gearLabel = (id) => (EQUIPMENT.find((e) => e[0] === id) || [id, id])[1];
 const MUSCLES = ['Full body', 'Upper body', 'Lower body & glutes', 'Core', 'Cardio', 'Mobility'];
 
 /* ---------- Helpers ---------- */
@@ -1195,6 +1205,7 @@ try { const raw = localStorage.getItem(KEY); S = raw ? JSON.parse(raw) : seed();
 if (!S || S.v !== 1) S = seed();
 if (!S.shopping) S.shopping = { recipes: [], checked: {}, extras: [] };
 if (!S.measures) S.measures = [];
+if (S.myGear === undefined) S.myGear = null;
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep in memory */ } }
 
 /* ---------- Units ---------- */
@@ -1555,21 +1566,42 @@ function viewRecipe(id) {
 
 const diffMeter = (d) => `<span class="diff-meter d${d}" title="Difficulty ${d} of 4">${[1, 2, 3, 4].map((n) => `<i class="${n <= d ? 'on' : ''}"></i>`).join('')}${LEVELS[d]}</span>`;
 const gearTag = (g) => `<span class="tag ${g === 'None' ? 'tag-accent' : ''}">${g === 'None' ? 'No equipment' : g === 'Minimal' ? 'Minimal equipment' : 'Gym'}</span>`;
-let wDiff = 0, wMuscle = 'All', wHardFirst = false;
+let wDiff = 0, wMuscle = 'All', wHardFirst = false, wShowAll = false, gearDraft = null;
+/* A plan's needs are a list of requirements; each requirement lists items that satisfy it (e.g. dumbbell or kettlebell). */
+const canDo = (p) => !S.myGear || p.needs.every((opts) => opts.some((id) => S.myGear.includes(id)));
+const missing = (p) => p.needs.filter((opts) => !opts.some((id) => (S.myGear || []).includes(id))).map((opts) => opts.map(gearLabel).join(' or '));
+function gearPanel() {
+  if (S.myGear && !gearDraft) {
+    return `<section class="panel gear-panel gear-summary" aria-label="Your equipment"><div><span class="eyebrow">Your equipment</span>
+      <div style="margin-top:4px"><b>${S.myGear.length ? S.myGear.map(gearLabel).map(esc).join(', ') : 'None, bodyweight only'}</b></div></div>
+      <button class="btn btn-sm" data-act="gear-edit">Edit equipment</button></section>`;
+  }
+  const d = gearDraft || [];
+  return `<section class="panel gear-panel stack" aria-labelledby="h-gear">
+    <div><h2 id="h-gear">What equipment do you have?</h2><p class="muted" style="font-size:.9rem;margin-top:4px">Tick everything you can use and we'll only show plans you can do. A wall, chair, stairs and a mat are assumed.</p></div>
+    <div class="row"><span class="eyebrow" style="margin-right:4px">Quick pick</span>${GEAR_PRESETS.map(([id, label]) => `<button class="btn btn-sm" data-act="gear-preset" data-p="${id}">${label}</button>`).join('')}</div>
+    <div class="chips" role="group" aria-label="Equipment">${EQUIPMENT.map(([id, label]) => `<button class="chip" data-act="gear-toggle" data-g="${id}" aria-pressed="${d.includes(id)}">${label}</button>`).join('')}</div>
+    <div class="row"><button class="btn btn-primary" data-act="gear-save">Save &amp; filter plans</button>${S.myGear ? '<button class="btn btn-ghost" data-act="gear-cancel">Cancel</button>' : ''}</div>
+  </section>`;
+}
 function viewWorkouts() {
-  const list = PLANS.filter((p) => (!wDiff || p.diff === wDiff) && (wMuscle === 'All' || p.muscles.includes(wMuscle)))
+  const matching = PLANS.filter((p) => (!wDiff || p.diff === wDiff) && (wMuscle === 'All' || p.muscles.includes(wMuscle)));
+  const hidden = matching.filter((p) => !canDo(p)).length;
+  const list = matching.filter((p) => wShowAll || canDo(p))
     .sort((a, b) => (wHardFirst ? -1 : 1) * (a.diff - b.diff || a.minutes - b.minutes));
   return `<div class="page-head"><div><div class="eyebrow">${PLANS.length} programs</div><h1>Workout plans</h1>
     <p class="muted">Pick the plan that fits your experience and equipment. Each day lists sets, reps, rest and a form cue, and you can run it as a live session that logs itself.</p></div>
     <button class="btn btn-sm" data-act="wsort" aria-label="Change sort order">${wHardFirst ? 'Hardest first ↓' : 'Easiest first ↑'}</button></div>
+  ${gearPanel()}
   <div class="filter-row" role="group" aria-label="Filter by difficulty"><span class="eyebrow">Difficulty</span>
     ${LEVELS.map((l, i) => `<button class="chip" data-act="wfilter-diff" data-d="${i}" aria-pressed="${wDiff === i}">${i ? l : 'All'}</button>`).join('')}</div>
   <div class="filter-row" role="group" aria-label="Filter by muscle group" style="margin-bottom:18px"><span class="eyebrow">Muscle group</span>
     ${['All', ...MUSCLES].map((m) => `<button class="chip" data-act="wfilter-muscle" data-m="${esc(m)}" aria-pressed="${wMuscle === m}">${esc(m)}</button>`).join('')}</div>
-  ${list.length ? `<div class="plans">${list.map((p) => `<a class="panel pcard" href="#plan-${p.id}">
+  ${hidden ? `<p class="muted" style="font-size:.9rem;margin:-8px 0 16px">${hidden} ${hidden === 1 ? 'plan needs' : 'plans need'} equipment you don't have · <button class="btn btn-ghost btn-sm" data-act="gear-showall" style="padding:2px 6px;color:var(--accent)">${wShowAll ? 'Hide them' : 'Show them'}</button></p>` : ''}
+  ${list.length ? `<div class="plans">${list.map((p) => `<a class="panel pcard ${canDo(p) ? '' : 'cant'}" href="#plan-${p.id}">
     <div class="row" style="justify-content:space-between">${diffMeter(p.diff)}${S.activePlan === p.id ? '<span class="eyebrow" style="color:var(--berry)">Your plan</span>' : ''}</div>
     <h2>${esc(p.title)}</h2><p class="muted">${esc(p.goal)}</p>
-    <div class="tags">${gearTag(p.gear)}${p.muscles.map((m) => `<span class="tag">${esc(m)}</span>`).join('')}</div>
+    <div class="tags">${canDo(p) ? gearTag(p.gear) : `<span class="tag tag-warn">Needs: ${esc(missing(p).join(', '))}</span>`}${p.muscles.map((m) => `<span class="tag">${esc(m)}</span>`).join('')}</div>
     <div class="pmeta"><div><b>${p.perWeek}×</b><span>per week</span></div><div><b>${p.minutes}</b><span>minutes</span></div><div><b>${p.days.length}</b><span>day types</span></div></div>
     <p style="font-size:.86rem" class="muted">Equipment: ${esc(p.equipment)}</p></a>`).join('')}</div>`
     : `<div class="panel stack" style="align-items:start"><p class="muted">No plans match ${wDiff ? `<b>${LEVELS[wDiff]}</b>` : ''}${wDiff && wMuscle !== 'All' ? ' + ' : ''}${wMuscle !== 'All' ? `<b>${esc(wMuscle)}</b>` : ''}. Try a different combination.</p><button class="btn btn-sm" data-act="wfilter-clear">Show all plans</button></div>`}
@@ -1583,7 +1615,8 @@ function viewPlan(id) {
   const d = p.days[planDayTab];
   return `<a class="btn btn-ghost" href="#workouts" style="margin-bottom:10px">← All plans</a>
   <div class="page-head"><div><div class="row" style="margin-bottom:8px">${diffMeter(p.diff)}${gearTag(p.gear)}${p.muscles.map((m) => `<span class="tag">${esc(m)}</span>`).join('')}<span class="tag">${p.perWeek}× / week</span><span class="tag">${p.minutes} min</span></div>
-    <h1>${esc(p.title)}</h1><p class="muted">${esc(p.goal)}</p></div>
+    <h1>${esc(p.title)}</h1><p class="muted">${esc(p.goal)}</p>
+    ${canDo(p) ? '' : `<p class="tag tag-warn" style="margin-top:10px;display:inline-block;padding:6px 12px;font-size:.85rem">You'll need: ${esc(missing(p).join(', '))}</p>`}</div>
     ${S.activePlan === p.id ? `<span class="eyebrow" style="color:var(--berry)">This is your active plan</span>` : `<button class="btn" data-act="set-plan" data-plan="${p.id}">Make this my plan</button>`}</div>
   <div class="grid">
     <section class="panel span-8">
@@ -1995,7 +2028,7 @@ document.addEventListener('click', (e) => {
   if (a === 'water') { addWater(+b.dataset.ml, current === 'log' ? logDate : null); waterAdded(); }
   else if (a === 'water-undo') { if (waterUndo) { addWater(-waterUndo.ml, waterUndo.date, true); waterAdded(); } }
   else if (a === 'celebrate-close') { const c = $('#celebrate'); if (c) c.remove(); }
-  else if (a === 'clear-example') { const keep = { units: S.units, profile: S.profile, targets: S.targets, activePlan: S.activePlan }; S = { ...fresh(), ...keep }; save(); toast('Example data cleared. Ready for your first entry.'); render(true); }
+  else if (a === 'clear-example') { const keep = { units: S.units, profile: S.profile, targets: S.targets, activePlan: S.activePlan, myGear: S.myGear }; S = { ...fresh(), ...keep }; save(); toast('Example data cleared. Ready for your first entry.'); render(true); }
   else if (a === 'filter') { recipeFilter = b.dataset.f; render(true); }
   else if (a === 'serv') {
     const r = recipeById(b.dataset.id); const n = Math.min(24, Math.max(1, (servingsState[r.id] || r.servings) + +b.dataset.d));
@@ -2021,7 +2054,16 @@ document.addEventListener('click', (e) => {
   }
   else if (a === 'wfilter-diff') { wDiff = +b.dataset.d; render(true); }
   else if (a === 'wfilter-muscle') { wMuscle = b.dataset.m; render(true); }
-  else if (a === 'wfilter-clear') { wDiff = 0; wMuscle = 'All'; render(true); }
+  else if (a === 'wfilter-clear') { wDiff = 0; wMuscle = 'All'; wShowAll = true; render(true); }
+  else if (a === 'gear-edit') { gearDraft = [...(S.myGear || [])]; render(true); }
+  else if (a === 'gear-cancel') { gearDraft = null; render(true); }
+  else if (a === 'gear-toggle') { const d = gearDraft || [], g = b.dataset.g; gearDraft = d.includes(g) ? d.filter((x) => x !== g) : [...d, g]; render(true); }
+  else if (a === 'gear-preset') { gearDraft = [...GEAR_PRESETS.find((x) => x[0] === b.dataset.p)[2]]; render(true); }
+  else if (a === 'gear-save') {
+    S.myGear = EQUIPMENT.map((e) => e[0]).filter((id) => (gearDraft || []).includes(id)); gearDraft = null; wShowAll = false; save();
+    const n = PLANS.filter(canDo).length; toast(`Showing ${n} plan${n === 1 ? '' : 's'} you can do`); render(true);
+  }
+  else if (a === 'gear-showall') { wShowAll = !wShowAll; render(true); }
   else if (a === 'wsort') { wHardFirst = !wHardFirst; render(true); }
   else if (a === 'plan-day') { planDayTab = +b.dataset.i; render(true); }
   else if (a === 'set-plan') { S.activePlan = b.dataset.plan; save(); toast('Active plan updated'); render(true); }
@@ -2143,7 +2185,7 @@ document.addEventListener('change', (e) => {
     t.files[0].text().then((txt) => {
       const data = JSON.parse(txt);
       if (!data || data.v !== 1 || !Array.isArray(data.meals) || !Array.isArray(data.weights) || !data.profile || !data.targets) throw new Error('shape');
-      S = { ...fresh(), ...data, session: null }; if (!S.measures) S.measures = [];
+      S = { ...fresh(), ...data, session: null }; if (!S.measures) S.measures = []; if (S.myGear === undefined) S.myGear = null;
       save(); toast('Backup restored'); render(true);
     }).catch(() => { toast("That file isn't a Rep & Ration backup"); t.value = ''; });
   }
