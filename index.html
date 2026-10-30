@@ -1128,6 +1128,66 @@ const PLANS = [
         ['Nordic hamstring lowering', 3, '4–6', 90, 'Anchor your heels under a couch; lower as slowly as you can.'],
         ['Single-leg hip thrust (back on a couch)', 3, '10–12 / side', 60, 'Drive through the heel and lock out your glute.'],
         ['L-sit or tuck hold on chairs', 3, '15–20 s', 60, 'Press down hard, lift your knees or legs off the floor.']] }
+    ] },
+  /* Kettlebell-only HIIT, about 30 minutes including the warm-up. */
+  { id: 'kb-hiit-starter', title: 'Kettlebell HIIT Starter', diff: 2, muscles: ['Cardio', 'Full body'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 reps (about 8–24 kg / 18–53 lb)', noLoad: true,
+    goal: 'Learn the key kettlebell moves while getting your heart rate up. Short intervals with plenty of rest so form stays sharp.',
+    schedule: '2–3 sessions a week on non-consecutive days, alternating sessions A and B.',
+    warmup: '5 minutes: 10 halos each way, 10 prying goblet squats, 10 hip hinges with the bell, then 10 light swings.',
+    progression: '30 s work, 30 s rest; 4 rounds with 1 minute between rounds. Each week add 5 s of work and take 5 s off rest until you reach 40 s / 20 s, then move to Kettlebell HIIT Burn.',
+    days: [
+      { name: 'Session A', focus: 'Hinge · Squat · Pull', ex: [
+        ['Kettlebell deadlift', 4, '30 s', 30, 'Bell between your feet, hips back, flat back, stand tall and squeeze your glutes.'],
+        ['Two-hand swing', 4, '30 s', 30, 'Hike the bell back, then snap your hips forward. Arms are just ropes; the bell floats to chest height.'],
+        ['Goblet squat', 4, '30 s', 30, 'Hold the bell by the horns at your chest, elbows inside your knees at the bottom.'],
+        ['Bent-over row (alternate arms each rep)', 4, '30 s', 30, 'Hinge to 45°, pull the bell to your hip, keep your back flat.'],
+        ['March in place holding the bell at your chest', 4, '30 s', 60, 'Drive the knees up, stay tall, breathe.']] },
+      { name: 'Session B', focus: 'Core · Lunge · Press', ex: [
+        ['Halo', 4, '30 s', 30, 'Circle the bell around your head, switching direction halfway. Ribs down, glutes tight.'],
+        ['Sumo deadlift high pull (light)', 4, '30 s', 30, 'Wide stance, drive up with your legs and pull the bell to your chin, elbows high.'],
+        ['Goblet reverse lunge (alternating)', 4, '30 s', 30, 'Step back long and lower the knee under control.'],
+        ['Single-arm floor press (switch arms halfway)', 4, '30 s', 30, 'Lie on the floor; lower until your elbow touches, then press straight up.'],
+        ['Dead bug holding the bell overhead', 4, '30 s', 60, 'Lower back pressed down; lower opposite leg slowly while the bell stays still.']] }
+    ] },
+  { id: 'kb-hiit-burn', title: 'Kettlebell HIIT Burn', diff: 3, muscles: ['Cardio', 'Full body', 'Lower body & glutes'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 reps (about 8–24 kg / 18–53 lb)', noLoad: true,
+    goal: 'A sweaty, swing-heavy session that builds power, conditioning and strong glutes and hamstrings.',
+    schedule: '2–3 sessions a week on non-consecutive days, alternating sessions A and B.',
+    warmup: '5 minutes: halos, prying goblet squats, 10 hip hinges, 2 sets of 10 swings building up the pace.',
+    progression: '40 s work, 20 s rest; 5 moves × 4 rounds with 1 minute between rounds. Add a fifth round, then move to a heavier bell and drop back to 4 rounds.',
+    days: [
+      { name: 'Session A', focus: 'Swings & legs', ex: [
+        ['Two-hand swing', 4, '40 s', 20, 'Snap the hips; plank at the top with glutes and abs tight. Never lift with your arms or round your back.'],
+        ['Goblet squat', 4, '40 s', 20, 'Steady pace, full depth, chest up.'],
+        ['Goblet reverse lunge (alternating)', 4, '40 s', 20, 'Front knee tracks over the toes; push through the front heel.'],
+        ['Kettlebell high pull', 4, '40 s', 20, 'Swing the bell up and pull your elbow back at chest height. Alternate arms each round.'],
+        ['Squat thrust with hands on the bell', 4, '40 s', 60, 'Hands on the handle, jump or step back to plank, then back in and stand.']] },
+      { name: 'Session B', focus: 'Total body', ex: [
+        ['Single-arm swing (switch arms halfway)', 4, '40 s', 20, 'Shoulder packed down, free hand guards your body; same hip snap as the two-hand swing.'],
+        ['Clean & press (switch sides halfway)', 4, '40 s', 20, 'Zip the bell up close to rack position, then press straight overhead with a tight core.'],
+        ['Plank row with the bell', 4, '40 s', 20, 'Feet wide in a plank, row the bell to your ribs, set it down and switch hands; hips stay square.'],
+        ['Goblet squat to press', 4, '40 s', 20, 'Squat, then drive up and press the bell overhead with both hands.'],
+        ['Around-the-world pass', 4, '40 s', 60, 'Pass the bell around your waist hand to hand, changing direction halfway. Hips stay still.']] }
+    ] },
+  { id: 'kb-hiit-inferno', title: 'Kettlebell HIIT Inferno', diff: 4, muscles: ['Cardio', 'Full body'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 2, minutes: 30, equipment: 'One kettlebell you can swing for 20 reps (about 12–32 kg / 26–70 lb)', noLoad: true,
+    goal: 'An advanced, high-output session with snatches, complexes and a swing finisher. Only for people with solid swing and clean technique.',
+    schedule: '2 sessions a week, at least 2 days apart. Pair with easy walking or mobility on other days.',
+    warmup: '6 minutes: halos, goblet squats, 2 Turkish get-ups per side with a light bell, then 3 sets of 10 swings.',
+    progression: '45 s work, 15 s rest; 4 rounds with 1 minute between rounds, then the finisher. When all rounds feel controlled, add a fifth round or use a heavier bell.',
+    days: [
+      { name: 'Session A', focus: 'Power & conditioning', ex: [
+        ['Alternating snatch', 4, '45 s', 15, 'Swing, then punch through so the bell lands softly overhead. Switch hands at the bottom of the swing.'],
+        ['Hand-to-hand swing', 4, '45 s', 15, 'Switch hands at the top when the bell floats. Keep your grip and spine tight.'],
+        ['Front-rack reverse lunge (switch sides halfway)', 4, '45 s', 15, 'Bell in the rack position, ribs down, step back long.'],
+        ['Kettlebell thruster', 4, '45 s', 15, 'Hold by the horns at your chest, squat, then drive the bell overhead in one move.'],
+        ['Burpee to deadlift', 4, '45 s', 60, 'Chest to the floor, jump in, then deadlift the bell with a flat back.'],
+        ['Swing EMOM finisher', 5, '15 swings', 0, 'At the start of each minute do 15 hard swings, then rest for the rest of the minute. 5 minutes total.']] },
+      { name: 'Session B', focus: 'Complexes & control', ex: [
+        ['Clean, squat, press complex (switch sides each round)', 4, '45 s', 15, 'Clean to the rack, front squat, then press. That is one rep. Move smoothly.'],
+        ['Turkish get-up (slow)', 4, '45 s', 15, 'Your "active rest": eyes on the bell, one deliberate step at a time, alternate sides.'],
+        ['Two-hand swing (heavy)', 4, '45 s', 15, 'Maximum hip snap on every rep. Stop the set early if your back starts to round.'],
+        ['Goblet lateral lunge (alternating)', 4, '45 s', 15, 'Sit into one hip with the other leg straight, chest up.'],
+        ['Plank pull-through', 4, '45 s', 15, 'In a high plank, drag the bell under your body to the other side. Hips stay level.'],
+        ['High pull (alternate arms)', 4, '45 s', 60, 'Explosive hips, elbow high and back, bell stays close.']] }
     ] }
 ];
 
