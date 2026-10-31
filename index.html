@@ -44,18 +44,21 @@
   --f-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --r: 14px;
+  --stage: #f7faf8;
+  --stage2: #e8efea;
+  --stage-floor: #dce5df;
   --r-sm: 9px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0d1411; --surface: #151f1a; --sunk: #1c2822; --ink: #e4eee7; --muted: #94a89b; --line: #2a3a31;
+    --bg: #0d1411; --stage: #dbe4de; --stage2: #c9d5cd; --stage-floor: #bccabf; --surface: #151f1a; --sunk: #1c2822; --ink: #e4eee7; --muted: #94a89b; --line: #2a3a31;
     --accent: #5cc48a; --accent-soft: #1d3a2a; --on-accent: #08130d; --berry: #e17ca7; --berry-soft: #3a1d2a;
     --protein: #7fb1ec; --carbs: #e2b04a; --fat: #e17ca7; --water: #5bc0dc; --good: #5cc48a; --warn: #f0a24a;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3); color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0d1411; --surface: #151f1a; --sunk: #1c2822; --ink: #e4eee7; --muted: #94a89b; --line: #2a3a31;
+  --bg: #0d1411; --stage: #dbe4de; --stage2: #c9d5cd; --stage-floor: #bccabf; --surface: #151f1a; --sunk: #1c2822; --ink: #e4eee7; --muted: #94a89b; --line: #2a3a31;
   --accent: #5cc48a; --accent-soft: #1d3a2a; --on-accent: #08130d; --berry: #e17ca7; --berry-soft: #3a1d2a;
   --protein: #7fb1ec; --carbs: #e2b04a; --fat: #e17ca7; --water: #5bc0dc; --good: #5cc48a; --warn: #f0a24a;
   --shadow: 0 1px 2px rgba(0, 0, 0, .3); color-scheme: dark;
@@ -525,8 +528,15 @@ body.calm-open { overflow: hidden; }
 .ex-link:hover { color: var(--accent); text-decoration: underline; }
 .ex-how { font-size: .78rem; font-weight: 700; margin-left: 6px; }
 .ex-card { text-decoration: none; color: inherit; }
-.demo-ph { border: 2px dashed var(--line); border-radius: var(--r); padding: 26px; display: grid; justify-items: center; gap: 6px; color: var(--muted); font-size: .85rem; }
-.demo-ph .ic { width: 28px; height: 28px; }
+.ex-demo { margin: 2px 0 4px; max-width: 460px; }
+.ex-demo svg { width: 100%; display: block; aspect-ratio: 4 / 3; background: linear-gradient(var(--stage), var(--stage2)); border: 1px solid var(--line); border-radius: var(--r); }
+.ex-demo-stage { position: relative; }
+.ex-demo-hold { position: absolute; top: 10px; right: 12px; font: 700 .7rem var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: #3d5245; background: rgba(255, 255, 255, .7); padding: 2px 8px; border-radius: 999px; }
+.dm-ground { fill: var(--stage-floor); }
+.dm-shadow { fill: #1d2621; }
+.ex-demo-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; }
+.ex-demo-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 6px; font-size: .8rem; }
+.dm-floor { stroke: #8a978f; stroke-width: 1.2; fill: none; }
 .fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
 .fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
 .fbtn { display: inline-flex; align-items: center; gap: 8px; }
@@ -2725,6 +2735,458 @@ const libFor = (name) => { if (!exCacheLib.has(name)) exCacheLib.set(name, EX_MA
 const exLink = (name) => { const x = libFor(name); return x ? `<a class="ex-name ex-link" href="#ex-${x.id}">${esc(name)}</a>` : `<div class="ex-name">${esc(name)}</div>`; };
 let exQ = '', exMuscle = 'All';
 const EX_GROUPS = [['All', null], ['Legs', /quad|glute|hamstring|calf|calves|adductor/i], ['Push', /chest|tricep|shoulder/i], ['Pull', /lats|upper back|bicep|rear|grip/i], ['Core', /core|abs|oblique/i], ['Cardio', /cardio/i], ['Mobility', /mobility|hips, spine/i]];
+/* ---------- Exercise demos: looping cartoon drawings built from pose keyframes ----------
+   Side view by default (figure faces right). Angles are degrees from straight down, positive toward the front.
+   t is the torso lean from upright (positive = forward). Lying: t = -90 is on the back (head left), 90 is face down (head right).
+   Each demo: [view, keyframes, options]. A keyframe may also set d (ms to reach it), bd (ms to leave it going back),
+   hold (ms to pause on it), e (easing into it: io, out, in, lin) and an (the joint that stays planted while moving into it).
+   Motion between keyframes follows a smooth spline; the lowest point rests on the floor unless options say otherwise. */
+const DM = { W: 160, H: 120, FLOOR: 110, LT: 28, R: 7.5, UA: 15, FA: 14, TH: 21, SH: 20, FT: 6 };
+const DEMO_FOLK = [ // simple cartoon people: [label, skin, hair color, hair style, shirt, shorts, shoes]
+  ['woman', '#f1c7a3', '#5a3a22', 'pony', '#1d6a45', '#33415c', '#e9ecef'],
+  ['man', '#8d5a3b', '#1f1712', 'short', '#2c66a8', '#2f3a33', '#2a2f36'],
+  ['woman', '#c68b62', '#1b1310', 'curly', '#9a2b59', '#2f3a33', '#f2f2f2'],
+  ['man', '#e8b894', '#6b4a2b', 'beard', '#c08a1a', '#33415c', '#2a2f36'],
+  ['woman', '#6e4529', '#120c09', 'bun', '#1f7f9c', '#3b2f45', '#e9ecef'],
+  ['man', '#d9a27a', '#4a4a4a', 'short', '#a35a00', '#2f3a33', '#2a2f36']];
+const D_ARMS = { sN: -4, eN: -2, sF: 5, eF: 7 };
+const D_SQ = (d = 1) => ({ t: 38 * d, hN: 88 * d, kN: -32 * d, hF: 86 * d, kF: -30 * d });
+const D_BASE = { x: 0, t: 0, sN: -4, eN: -2, sF: 5, eF: 7, hN: 0, kN: 0, hF: 0, kF: 0, aN: 1, aF: 1, uN: 1, uF: 1, air: 0, sh: 0, rot: 0, nk: 0 };
+const D_PLANK = (t = 80) => ({ t, hN: -t, kN: -t, hF: -t, kF: -t });
+const D_LIE = { t: -90, sN: 95, eN: 95, sF: 95, eF: 95, hN: 90, kN: 90, hF: 90, kF: 90 };
+const D_KNEESUP = { hN: 135, kN: -10, hF: 132, kF: -12 };
+const D_ROW = { catch: { t: 26, hN: 150, kN: 12, hF: 148, kF: 14, sN: 86, eN: 88, sF: 84, eF: 86 }, legs: { t: 26, hN: 96, kN: 92, hF: 94, kF: 90, sN: 80, eN: 82, sF: 78, eF: 80 }, body: { t: -20, hN: 96, kN: 92, hF: 94, kF: 90, sN: 64, eN: 66, sF: 62, eF: 64 }, finish: { t: -22, hN: 96, kN: 92, hF: 94, kF: 90, sN: -42, eN: 92, sF: -44, eF: 90 } };
+const EX_DEMO = {
+  // Squats and lunges
+  'goblet-squat': ['s', [{ t: 4, sN: 15, eN: 165, sF: 22, eF: 160 }, { ...D_SQ(1.04), t: 22, sN: 24, eN: 172, sF: 30, eF: 168, d: 1000, e: 'out', bd: 800, hold: 200 }], { props: [['kb', 'hands']] }],
+  'back-squat': ['s', [{ t: 6, sN: -45, eN: 160, sF: -40, eF: 165 }, { ...D_SQ(1), t: 44, sN: -12, eN: 192, sF: -7, eF: 197, d: 1000, e: 'out', bd: 800, hold: 150 }], { props: [['plate', 'back', 'behind']] }],
+  'front-squat': ['s', [{ t: 3, sN: 82, eN: 225, sF: 80, eF: 222 }, { ...D_SQ(1.06), t: 14, sN: 90, eN: 230, sF: 88, eF: 228, d: 1000, e: 'out', bd: 800, hold: 150 }], { props: [['plate', 'hands', 'behind']] }],
+  'bodyweight-squat': ['s', [{ sN: 82, eN: 86, sF: 86, eF: 88 }, { ...D_SQ(1), sN: 95, eN: 98, sF: 98, eF: 100, d: 900, e: 'out', bd: 750, hold: 120 }]],
+  'squat-jump': ['s', [{ ...D_SQ(0.55), sN: -40, eN: -30, sF: -35, eF: -25, d: 360, e: 'out' }, { air: 7, sN: 128, eN: 136, sF: 124, eF: 132, kN: -12, kF: -9, fN: 28, fF: 32, d: 300, e: 'out' }, { ...D_SQ(0.68), sN: 40, eN: 50, sF: 45, eF: 55, d: 280, e: 'in', hold: 120 }], { seq: 'loop' }],
+  'sit-to-stand': ['s', [{ t: 16, hN: 90, kN: 0, hF: 88, kF: 2, sN: 25, eN: 110, sF: 28, eF: 112, hold: 300 }, { t: 42, hN: 72, kN: -10, hF: 70, kF: -9, sN: 35, eN: 115, sF: 38, eF: 118, d: 600 }, { sN: 20, eN: 110, sF: 24, eF: 112, d: 700, hold: 300, bd: 1200 }], { props: [['chair', 0]] }],
+  'deep-squat-hold': ['s', [{ t: 22, hN: 105, kN: -48, hF: 103, kF: -46, sN: 45, eN: 135, sF: 50, eF: 140 }, { t: 24, hN: 106, kN: -49, hF: 104, kF: -47, sN: 47, eN: 137, sF: 52, eF: 142 }], { hold: 1, ms: 1800 }],
+  'wall-sit': ['s', [{ t: 0, hN: 90, kN: 0, hF: 89, kF: 1, sN: 2, eN: 4, sF: 5, eF: 7 }, { t: 0.5, hN: 90, kN: 0, hF: 89, kF: 1, sN: 3, eN: 6, sF: 6, eF: 9 }], { props: [['wall', 0]], hold: 1, ms: 1800 }],
+  'split-squat': ['s', [{ t: 6, hN: 20, kN: -2, hF: -24, kF: -105, ...D_ARMS }, { t: 10, hN: 82, kN: -6, hF: -4, kF: -100, d: 1000, e: 'out', bd: 800, hold: 150 }], { props: [['bench', 'footF']], pin: [['F', 'down']] }],
+  'reverse-lunge': ['s', [{}, { t: 4, hN: 30, kN: -4, hF: -24, kF: -40, d: 450 }, { t: 6, hN: 84, kN: -4, hF: -6, kF: -86, sN: 6, eN: 10, sF: -6, eF: -4, d: 600, e: 'out', hold: 150 }], {}],
+  'walking-lunge': ['s', [{ t: 6, hN: 82, kN: -4, hF: -8, kF: -86, hold: 150 }, { hN: 22, kN: -6, hF: -4, kF: -40, d: 500 }, { t: 6, hF: 82, kF: -4, hN: -8, kN: -86, d: 500, e: 'out', hold: 150 }, { hF: 22, kF: -6, hN: -4, kN: -40, d: 500 }], { seq: 'loop', ms: 500, props: [['db', 'handN'], ['db', 'handF']], move: 0.8, an: 'hip' }],
+  'jump-lunge': ['s', [{ t: 8, hN: 80, kN: -4, hF: -10, kF: -84, sN: -30, eN: -20, sF: 30, eF: 60, hold: 100 }, { air: 11, hN: 30, kN: -30, hF: 0, kF: -50, sN: 0, eN: 20, sF: 0, eF: 20, d: 330, e: 'out' }, { t: 8, hF: 80, kF: -4, hN: -10, kN: -84, sN: 30, eN: 60, sF: -30, eF: -20, d: 330, e: 'in', hold: 100 }, { air: 11, hF: 30, kF: -30, hN: 0, kN: -50, sF: 0, eF: 20, sN: 0, eN: 20, d: 330, e: 'out' }], { seq: 'loop', ms: 330, an: 'hip' }],
+  'lateral-lunge': ['f', [{ hA: 22, kA: 22, hB: 22, kB: 22, sA: 30, eA: -60, sB: 30, eB: -60, hold: 150 }, { x: -13, dy: 9, t: -8, sA: 30, eA: -60, sB: 30, eB: -60, d: 900, e: 'out', hold: 250 }, { hA: 22, kA: 22, hB: 22, kB: 22, sA: 30, eA: -60, sB: 30, eB: -60, d: 700, hold: 150 }, { x: 13, dy: 9, t: 8, sA: 30, eA: -60, sB: 30, eB: -60, d: 900, e: 'out', hold: 250 }], { seq: 'loop', an: 'none', lockY: 1, pin: [['A', 'out'], ['B', 'out']] }],
+  'step-up': ['s', [{ t: 10, hN: 72, kN: -6, ...D_ARMS, hold: 150 }, { t: 6, hN: 30, kN: -6, hF: -10, kF: -40, d: 600 }, { d: 400, hold: 250 }, { t: 2, hF: 8, kF: -70, hN: 0, kN: 0, d: 600 }], { props: [['box', 'footN']], an: 'footY', seq: 'loop' }],
+  'pistol': ['s', [{ hF: 70, kF: 70, sN: 80, eN: 84, sF: 84, eF: 86, hold: 200 }, { t: 30, hN: 92, kN: -30, hF: 92, kF: 88, sN: 92, eN: 94, sF: 94, eF: 96, d: 1400, e: 'out', bd: 1000, hold: 250 }], { props: [['chair', 1]] }],
+  'leg-press': ['s', [{ t: -55, hN: 165, kN: 80, hF: 162, kF: 82, sN: 40, eN: 60, sF: 42, eF: 62, hold: 150 }, { t: -55, hN: 128, kN: 120, hF: 126, kF: 118, sN: 40, eN: 60, sF: 42, eF: 62, d: 800, bd: 1100, hold: 150 }], { props: [['legpress', 0]], an: 'hip', lockY: 1 }],
+  'leg-extension': ['s', [{ t: -6, hN: 90, kN: 2, hF: 89, kF: 3, sN: 20, eN: 70, sF: 22, eF: 72, hold: 150 }, { t: -6, hN: 92, kN: 88, hF: 91, kF: 87, sN: 20, eN: 70, sF: 22, eF: 72, d: 800, hold: 1000, bd: 1300 }], { props: [['seat', 0], ['pad', 'ankN']], an: 'hip', lockY: 1 }],
+  'calf-raise': ['s', [{ fN: 90, fF: 90, hold: 200 }, { fN: 18, fF: 20, d: 600, hold: 700, bd: 1100 }], {}],
+  // Hinges and glutes
+  'rdl': ['s', [{ sN: 0, eN: 0, sF: 2, eF: 2, hold: 150 }, { t: 72, hN: 14, kN: -2, hF: 13, kF: -1, sN: 2, eN: 2, sF: 4, eF: 4, d: 1100, e: 'out', bd: 850, hold: 150 }], { props: [['db', 'handN']] }],
+  'deadlift': ['s', [{ t: 56, hN: 72, kN: -22, hF: 70, kF: -20, sN: 0, eN: 0, sF: 2, eF: 2, hold: 300 }, { t: 30, hN: 40, kN: -6, hF: 38, kF: -5, sN: -1, eN: -1, sF: 1, eF: 1, d: 450 }, { sN: -2, eN: -2, sF: 0, eF: 0, d: 450, hold: 350, bd: 700 }], { props: [['plate', 'hands', 'floor']] }],
+  'swing': ['s', [{ t: 66, hN: 26, kN: -14, hF: 24, kF: -12, sN: -38, eN: -40, sF: -36, eF: -38 }, { t: 30, hN: 14, kN: -6, hF: 13, kF: -5, sN: 20, eN: 18, sF: 22, eF: 20, d: 260, e: 'in' }, { t: -2, sN: 92, eN: 92, sF: 94, eF: 94, d: 280, e: 'out', hold: 120 }], { props: [['kb', 'hands']] }],
+  'hip-thrust': ['s', [{ t: -55, hN: 128, kN: -8, hF: 126, kF: -6, sN: 112, eN: 80, sF: 114, eF: 82, hold: 150 }, { t: -90, hN: 90, kN: 0, hF: 88, kF: 2, sN: 95, eN: 88, sF: 97, eF: 90, d: 750, hold: 1000, bd: 1000 }], { props: [['bench', 'shoulder']] }],
+  'glute-bridge': ['s', [{ t: -90, hN: 135, kN: -28, hF: 133, kF: -26, sN: 90, eN: 90, sF: 90, eF: 90, hold: 200 }, { t: -116, hN: 110, kN: -6, hF: 108, kF: -4, sN: 68, eN: 68, sF: 68, eF: 68, d: 800, hold: 600, bd: 1000 }], { pin: [['N', 'fwd'], ['F', 'fwd']] }],
+  'leg-curl': ['s', [{ t: 90, sN: 10, eN: 80, sF: 12, eF: 82, hN: -90, kN: -90, hF: -90, kF: -90, hold: 150 }, { t: 90, sN: 10, eN: 80, sF: 12, eF: 82, hN: -90, kN: -200, hF: -90, kF: -198, d: 800, hold: 500, bd: 1200 }], { props: [['flatbench', 0], ['pad', 'ankN']], an: 'hip', lockY: 1 }],
+  'nordic': ['s', [{ t: 0, hN: 0, kN: -90, hF: 0, kF: -90, sN: 30, eN: 60, sF: 32, eF: 62, hold: 250 }, { t: 55, hN: -55, kN: -90, hF: -55, kF: -90, sN: 80, eN: 70, sF: 82, eF: 72, d: 2000, e: 'in', bd: 900 }, { t: 72, hN: -72, kN: -90, hF: -72, kF: -90, sN: 10, eN: 60, sF: 12, eF: 62, d: 300, hold: 200, bd: 400 }], { props: [['pad', 'ankN']], an: 'knee' }],
+  'back-extension': ['s', [{ t: 90, sN: 140, eN: 260, sF: 142, eF: 262, hN: -90, kN: -90, hF: -90, kF: -90, hold: 200 }, { t: 70, sN: 160, eN: 280, sF: 162, eF: 282, hN: -92, kN: -92, hF: -92, kF: -92, nk: -6, d: 900, hold: 400, bd: 900 }], { an: 'hip' }],
+  'clamshell': ['f', [{ rot: -90, hA: 16, kA: -16, hB: -6, kB: 6, sA: 175, eA: 120, sB: 25, eB: -60, hold: 200 }, { rot: -90, hA: 16, kA: -16, hB: 46, kB: -44, sA: 175, eA: 120, sB: 25, eB: -60, d: 800, hold: 300, bd: 1100 }], { an: 'none' }],
+  // Pushes
+  'bench-press': ['s', [{ ...D_LIE, hN: 60, kN: 0, hF: 58, kF: 2, sN: 180, eN: 180, sF: 178, eF: 178, hold: 200 }, { ...D_LIE, hN: 60, kN: 0, hF: 58, kF: 2, sN: 104, eN: 176, sF: 102, eF: 174, d: 1000, e: 'out', bd: 750, hold: 120 }], { props: [['flatbench', 0], ['plate', 'hands']] }],
+  'incline-press': ['s', [{ t: -45, hN: 85, kN: 0, hF: 83, kF: 2, sN: 160, eN: 160, sF: 158, eF: 158, hold: 200 }, { t: -45, hN: 85, kN: 0, hF: 83, kF: 2, sN: 66, eN: 162, sF: 64, eF: 160, d: 1000, e: 'out', bd: 750, hold: 120 }], { props: [['incline', 0], ['plate', 'hands']] }],
+  'chest-fly': ['s', [{ ...D_LIE, hN: 60, kN: 0, hF: 58, kF: 2, sN: 180, eN: 185, sF: 178, eF: 183, hold: 200 }, { ...D_LIE, hN: 60, kN: 0, hF: 58, kF: 2, sN: 172, eN: 178, sF: 170, eF: 176, aN: 0.3, aF: 0.3, d: 1100, e: 'out', bd: 900, hold: 150 }], { props: [['flatbench', 0], ['db', 'handN']] }],
+  'push-up': ['s', [{ ...D_PLANK(70), sN: 2, eN: 2, sF: 4, eF: 4, hold: 150 }, { ...D_PLANK(84), d: 900, e: 'out', bd: 700, hold: 100 }], { an: 'toe', pinArm: 'back' }],
+  'pike-push-up': ['s', [{ t: 140, hN: -36, kN: -36, hF: -36, kF: -36, sN: 40, eN: 40, sF: 42, eF: 42, hold: 150 }, { t: 147, hN: -36, kN: -36, hF: -36, kF: -36, d: 950, e: 'out', bd: 750, hold: 100 }], { an: 'toe', pinArm: 'back' }],
+  'overhead-press': ['s', [{ sN: 30, eN: 170, sF: 32, eF: 172, hold: 200 }, { t: -3, sN: 100, eN: 176, sF: 98, eF: 174, nk: -10, d: 380 }, { t: 1, sN: 176, eN: 178, sF: 174, eF: 176, nk: 4, d: 380, hold: 250, bd: 600 }], { props: [['plate', 'hands', 'behind']] }],
+  'clean-press': ['s', [{ t: 40, hN: 30, kN: -16, hF: 28, kF: -14, sN: -10, eN: -10, sF: -8, eF: -8, hold: 150 }, { t: -2, sN: -60, eN: 60, sF: 5, eF: 7, d: 320, e: 'out' }, { sN: 26, eN: 166, sF: 5, eF: 7, d: 260, hold: 250 }, { sN: 176, eN: 178, sF: 5, eF: 7, d: 600, hold: 250 }, { sN: 26, eN: 166, sF: 5, eF: 7, d: 700, hold: 150 }, { t: -2, sN: -60, eN: 60, sF: 5, eF: 7, d: 300 }], { seq: 'loop', props: [['kb', 'handN']], ms: 400 }],
+  'lateral-raise': ['f', [{ t: 0, sA: 8, eA: 10, sB: 8, eB: 10, hold: 150 }, { sA: 86, eA: 92, sB: 86, eB: 92, d: 800, hold: 200, bd: 1100 }], { props: [['db', 'handA'], ['db', 'handB']] }],
+  'dip': ['s', [{ t: -4, sN: -22, eN: -10, sF: -20, eF: -8, hN: 72, kN: 40, hF: 70, kF: 42, hold: 150 }, { t: 2, sN: -100, eN: -6, sF: -98, eF: -4, hN: 72, kN: 40, hF: 70, kF: 42, d: 1000, e: 'out', bd: 750, hold: 120 }], { props: [['chair', 'hand']], an: 'handY', pin: [['N', 'fwd'], ['F', 'fwd']] }],
+  'triceps-ext': ['s', [{ sN: 170, eN: -20, sF: 168, eF: -18, hold: 150 }, { sN: 172, eN: -182, sF: 170, eF: -184, d: 750, hold: 200, bd: 1000 }], { props: [['db', 'handN']] }],
+  // Pulls
+  'pull-up': ['s', [{ sN: 180, eN: 180, sF: 178, eF: 178, kN: -62, kF: -60, hN: 14, hF: 12, hold: 250 }, { t: -6, sN: 210, eN: 155, sF: 208, eF: 153, kN: -64, kF: -62, hN: 16, hF: 14, nk: -6, d: 900, hold: 250, bd: 1200 }], { props: [['bar', 0]], an: 'hang' }],
+  'pulldown': ['s', [{ t: -10, hN: 90, kN: 0, hF: 88, kF: 2, sN: 172, eN: 176, sF: 170, eF: 174, hold: 200 }, { t: -16, hN: 90, kN: 0, hF: 88, kF: 2, sN: 15, eN: 150, sF: 13, eF: 148, d: 800, hold: 200, bd: 1200 }], { props: [['seat', 0], ['cable', 'up']], an: 'hip', lockY: 1 }],
+  'straight-arm-pulldown': ['s', [{ t: 24, hN: 8, kN: -6, hF: 7, kF: -5, sN: 145, eN: 150, sF: 143, eF: 148, hold: 250 }, { t: 24, hN: 8, kN: -6, hF: 7, kF: -5, sN: 12, eN: 14, sF: 10, eF: 12, d: 900, hold: 200, bd: 1100 }], { props: [['cable', 'high']] }],
+  'row': ['s', [{ t: 66, hN: 18, kN: -10, hF: 16, kF: -8, sN: 0, eN: 0, sF: 2, eF: 2, hold: 150 }, { t: 66, hN: 18, kN: -10, hF: 16, kF: -8, sN: -100, eN: 4, sF: 2, eF: 2, d: 700, hold: 350, bd: 1000 }], { props: [['db', 'handN']] }],
+  'face-pull': ['s', [{ t: -4, sN: 100, eN: 102, sF: 98, eF: 100, hold: 200 }, { t: -4, sN: 92, uN: 0.2, eN: 160, sF: 90, uF: 0.2, eF: 158, d: 750, hold: 350, bd: 1000 }], { props: [['cable', 'face']] }],
+  'rear-delt': ['s', [{ t: 70, hN: 14, kN: -6, hF: 13, kF: -5, sN: 2, eN: 8, sF: 4, eF: 10, hold: 150 }, { t: 70, hN: 14, kN: -6, hF: 13, kF: -5, sN: 74, eN: 80, sF: 76, eF: 82, aN: 0.42, aF: 0.42, d: 800, hold: 200, bd: 1100 }], { props: [['db', 'handN']] }],
+  'high-pull': ['s', [{ t: 62, hN: 26, kN: -14, hF: 24, kF: -12, sN: -30, eN: -32, sF: 4, eF: 6 }, { t: 20, hN: 10, kN: -4, hF: 9, kF: -4, sN: 10, eN: 10, sF: 4, eF: 6, d: 240, e: 'in' }, { t: -3, sN: -95, eN: 70, sF: 4, eF: 6, d: 260, e: 'out', hold: 120 }], { props: [['kb', 'handN']] }],
+  'snatch': ['s', [{ t: 62, hN: 26, kN: -14, hF: 24, kF: -12, sN: -30, eN: -32, sF: 4, eF: 6 }, { t: -3, sN: -95, eN: 70, sF: 4, eF: 6, d: 300 }, { sN: 178, eN: 180, sF: 4, eF: 6, d: 300, e: 'out', hold: 300 }, { t: -3, sN: -95, eN: 70, sF: 4, eF: 6, d: 350 }], { seq: 'loop', props: [['kb', 'handN']], ms: 350 }],
+  'shrug': ['s', [{ sN: 0, eN: 0, sF: 2, eF: 2, hold: 200 }, { sN: 0, eN: 0, sF: 2, eF: 2, sh: 6, nk: 3, d: 500, hold: 600, bd: 800 }], { props: [['db', 'handN']] }],
+  'curl': ['s', [{ sN: 0, eN: 0, sF: 2, eF: 2, hold: 150 }, { sN: 6, eN: 150, sF: 2, eF: 2, d: 750, hold: 200, bd: 1100 }], { props: [['db', 'handN'], ['db', 'handF']] }],
+  'dead-hang': ['s', [{ sN: 180, eN: 180, sF: 178, eF: 178, hN: 12, kN: -58, hF: 10, kF: -56 }, { sN: 181, eN: 181, sF: 179, eF: 179, hN: 14, kN: -60, hF: 12, kF: -58, sh: -1 }], { props: [['bar', 0]], an: 'hang', hold: 1, ms: 1800 }],
+  'get-up': ['s', [
+    { t: -90, sN: 180, eN: 180, sF: 80, eF: 80, hN: 135, kN: -30, hF: 92, kF: 92, nk: 10, hold: 300 },
+    { t: -60, sN: 180, eN: 180, sF: -6, eF: 85, hN: 135, kN: -30, hF: 92, kF: 92, nk: 8, d: 800 },
+    { t: -32, sN: 180, eN: 180, sF: -40, eF: -40, hN: 128, kN: -28, hF: 92, kF: 92, nk: 6, d: 700 },
+    { t: -14, sN: 180, eN: 180, sF: -52, eF: -52, hN: 100, kN: -18, hF: 72, kF: 72, nk: 6, d: 700, hold: 150 },
+    { t: -6, sN: 180, eN: 180, sF: -24, eF: -24, hN: 100, kN: -18, hF: 8, kF: -96, nk: 6, d: 800 },
+    { t: 0, sN: 180, eN: 180, sF: 5, eF: 7, hN: 86, kN: 0, hF: 0, kF: -90, nk: 6, d: 700, hold: 200 },
+    { sN: 180, eN: 180, sF: 4, eF: 6, nk: 6, d: 800, hold: 400 }], { props: [['kb', 'handN']], bdx: 0.9 }],
+  'carry': ['s', [{ hN: 20, kN: -4, hF: -16, kF: -24, sN: -3, eN: -3, sF: 3, eF: 3 }, { hN: 2, kN: -16, hF: 4, kF: -2, sN: -3, eN: -3, sF: 3, eF: 3 }, { hF: 20, kF: -4, hN: -16, kN: -24, sN: -3, eN: -3, sF: 3, eF: 3 }, { hF: 2, kF: -16, hN: 4, kN: -2, sN: -3, eN: -3, sF: 3, eF: 3 }], { seq: 'loop', ms: 360, lin: 1, move: 1, an: 'hip', props: [['db', 'handN'], ['db', 'handF']] }],
+  'halo': ['f', [{ hT: [0, 13] }, { hT: [11, 0] }, { hT: [0, -12], behind: 1 }, { hT: [-11, 0] }], { seq: 'loop', props: [['kb', 'handsF']], ms: 650, lin: 1 }],
+  // Core
+  'plank': ['s', [{ ...D_PLANK(80), sN: 0, eN: 90, sF: 2, eF: 92 }, { ...D_PLANK(80.6), sN: 0, eN: 90, sF: 2, eF: 92 }], { an: 'toe', hold: 1, ms: 1800 }],
+  'side-plank': ['f', [{ rot: -72, sA: 0, eA: 90, sB: 175, eB: 178, hA: 0, kA: 0, hB: 2, kB: 2 }, { rot: -72.6, sA: 0, eA: 90, sB: 176, eB: 180, hA: 0, kA: 0, hB: 2, kB: 2 }], { an: 'none', hold: 1, ms: 1800 }],
+  'plank-dynamic': ['s', [{ ...D_PLANK(76), sN: 0, eN: 0, sF: 2, eF: 2, hF: -70, kF: -70, hold: 200 }, { ...D_PLANK(76), sN: 60, eN: 190, sF: 2, eF: 2, hF: -70, kF: -70, hold: 200 }, { ...D_PLANK(76), sN: 0, eN: 0, sF: 2, eF: 2, hF: -70, kF: -70, hold: 200 }, { ...D_PLANK(76), sN: 0, eN: 0, sF: 62, eF: 192, hF: -70, kF: -70, hold: 200 }], { seq: 'loop', an: 'toe', ms: 650 }],
+  'dead-bug': ['s', [{ t: -90, sN: 180, eN: 180, sF: 180, eF: 180, hN: 180, kN: 90, hF: 180, kF: 90, hold: 200 }, { t: -90, sN: 262, eN: 262, sF: 180, eF: 180, hN: 180, kN: 90, hF: 100, kF: 100, d: 1100, hold: 250 }, { t: -90, sN: 180, eN: 180, sF: 180, eF: 180, hN: 180, kN: 90, hF: 180, kF: 90, d: 800, hold: 200 }, { t: -90, sN: 180, eN: 180, sF: 262, eF: 262, hN: 100, kN: 100, hF: 180, kF: 90, d: 1100, hold: 250 }], { seq: 'loop', an: 'hip', ms: 800 }],
+  'bird-dog': ['s', [{ t: 90, sN: 0, eN: 0, sF: 2, eF: 2, hN: 0, kN: -90, hF: 2, kF: -88, hold: 200 }, { t: 90, sN: 92, eN: 92, sF: 2, eF: 2, hN: 0, kN: -90, hF: -90, kF: -90, d: 900, hold: 500 }, { t: 90, sN: 0, eN: 0, sF: 2, eF: 2, hN: 0, kN: -90, hF: 2, kF: -88, d: 800, hold: 200 }, { t: 90, sN: 0, eN: 0, sF: 92, eF: 92, hN: -90, kN: -90, hF: 2, kF: -88, d: 900, hold: 500 }], { seq: 'loop', an: 'knee', ms: 800 }],
+  'hollow': ['s', [{ t: -78, sN: -100, eN: -100, sF: -98, eF: -98, hN: 100, kN: 100, hF: 100, kF: 100 }, { t: -79, sN: -101, eN: -101, sF: -99, eF: -99, hN: 101, kN: 101, hF: 101, kF: 101 }], { an: 'hip', hold: 1, ms: 1800 }],
+  'crunch': ['s', [{ t: -90, ...D_KNEESUP, sN: 105, eN: -70, sF: 107, eF: -68, hold: 200 }, { t: -60, ...D_KNEESUP, sN: 125, eN: -40, sF: 127, eF: -38, nk: 8, d: 650, hold: 200, bd: 1000 }], { an: 'hip' }],
+  'pallof': ['f', [{ sA: 20, eA: -70, sB: 20, eB: -70, hold: 200 }, { sA: 14, eA: -8, sB: 14, eB: -8, aA: 0.55, aB: 0.55, d: 800, hold: 900, bd: 800 }], { props: [['cable', 'side']] }],
+  'mountain-climber': ['s', [{ ...D_PLANK(72), sN: 0, eN: 0, sF: 2, eF: 2, hN: 30, kN: -70 }, { ...D_PLANK(72), sN: 0, eN: 0, sF: 2, eF: 2, hF: 30, kF: -70 }], { an: 'hand', ms: 360, pause: 40 }],
+  // Conditioning
+  'burpee': ['s', [{ hold: 150 }, { ...D_SQ(1.2), t: 78, sN: 4, eN: 4, sF: 6, eF: 6, d: 450 }, { ...D_PLANK(76), sN: 0, eN: 0, sF: 2, eF: 2, an: 'hdN', d: 350, e: 'out', hold: 150 }, { ...D_SQ(1.2), t: 78, sN: 4, eN: 4, sF: 6, eF: 6, an: 'hdN', d: 350, e: 'out' }, { ...D_SQ(0.5), t: 20, sN: -30, eN: -20, sF: -28, eF: -18, d: 350 }, { air: 10, sN: 168, eN: 174, sF: 166, eF: 172, fN: 30, fF: 34, d: 300, e: 'out' }, { ...D_SQ(0.4), sN: 60, eN: 70, sF: 62, eF: 72, d: 300, e: 'in' }], { seq: 'loop' }],
+  'jumping-jack': ['f', [{ sA: 6, eA: 6, sB: 6, eB: 6, hold: 40 }, { air: 6, sA: 165, eA: 175, sB: 165, eB: 175, hA: 16, kA: 16, hB: 16, kB: 16, hold: 40 }], { ms: 360, an: 'none' }],
+  'jump-rope': ['f', [{ sA: 20, eA: 40, sB: 20, eB: 40, rope: 1 }, { air: 6, sA: 20, eA: 40, sB: 20, eB: 40, rope: 0 }], { seq: 'loop', ms: 300, props: [['rope', 0]], an: 'none' }],
+  'run': ['s', [
+    { t: 12, hN: 40, kN: -4, hF: -28, kF: -70, sN: -45, eN: 40, sF: 45, eF: 135, fN: 100 },
+    { t: 12, air: 1, hN: 8, kN: -40, hF: 10, kF: -95, sN: -10, eN: 75, sF: 10, eF: 100 },
+    { t: 12, air: 4, hN: -22, kN: -40, hF: 50, kF: -20, sN: 30, eN: 120, sF: -30, eF: 60 },
+    { t: 12, hF: 40, kF: -4, hN: -28, kN: -70, sF: -45, eF: 40, sN: 45, eN: 135, fF: 100 },
+    { t: 12, air: 1, hF: 8, kF: -40, hN: 10, kN: -95, sF: -10, eF: 75, sN: 10, eN: 100 },
+    { t: 12, air: 4, hF: -22, kF: -40, hN: 50, kN: -20, sF: 30, eF: 120, sN: -30, eN: 60 }], { seq: 'loop', ms: 140, lin: 1, move: 2, an: 'hip' }],
+  'walk': ['s', [
+    { hN: 24, kN: -2, hF: -18, kF: -24, sN: -24, eN: -10, sF: 24, eF: 40, fN: 100 },
+    { hN: 4, kN: -8, hF: 10, kF: -60, sN: -4, eN: 6, sF: 4, eF: 20 },
+    { hF: 24, kF: -2, hN: -18, kN: -24, sF: -24, eF: -10, sN: 24, eN: 40, fF: 100 },
+    { hF: 4, kF: -8, hN: 10, kN: -60, sF: -4, eF: 6, sN: 4, eN: 20 }], { seq: 'loop', ms: 330, lin: 1, move: 1, an: 'hip' }],
+  'rowing': ['s', [{ ...D_ROW.catch, hold: 60 }, { ...D_ROW.legs, d: 380 }, { ...D_ROW.body, d: 280 }, { ...D_ROW.finish, d: 280, hold: 120 }, { ...D_ROW.body, d: 380 }, { ...D_ROW.legs, d: 380 }], { seq: 'loop', props: [['rower', 0]], an: 'footY', ms: 520 }],
+  'cycling': ['s', [], {}],
+  'machine-cardio': ['s', [{ t: 6, hN: 30, kN: -6, hF: -20, kF: -40, sN: -30, eN: 40, sF: 30, eF: 110 }, { t: 6, hN: 4, kN: -40, hF: 4, kF: -10, sN: 0, eN: 80, sF: 0, eF: 80 }, { t: 6, hF: 30, kF: -6, hN: -20, kN: -40, sF: -30, eF: 40, sN: 30, eN: 110 }, { t: 6, hF: 4, kF: -40, hN: 4, kN: -10, sN: 0, eN: 80, sF: 0, eF: 80 }], { seq: 'loop', ms: 300, lin: 1, move: 1.5, an: 'hip', props: [['treadmill', 0]] }],
+  'mobility': ['s', [{ sN: 175, eN: 178, sF: 172, eF: 175, hold: 500 }, { t: 85, hN: 4, kN: 0, hF: 3, kF: 0, sN: 0, eN: 4, sF: 2, eF: 6, d: 1500, hold: 600 }, { ...D_SQ(1.05), t: 25, sN: 60, eN: 120, sF: 62, eF: 122, d: 1300, hold: 600 }], { ms: 1400, seq: 'loop' }]
+};
+// Cycling legs follow the pedals: two-link IK for 8 crank positions.
+(() => {
+  const crank = [11, 27], r = 7.5, ik = (tx, ty) => {
+    const d = Math.min(Math.hypot(tx, ty), DM.TH + DM.SH - 0.01), a = Math.atan2(tx, ty) * 180 / Math.PI;
+    const al = Math.acos((DM.TH ** 2 + d ** 2 - DM.SH ** 2) / (2 * DM.TH * d)) * 180 / Math.PI;
+    const h = a + al, K = [Math.sin(h * Math.PI / 180) * DM.TH, Math.cos(h * Math.PI / 180) * DM.TH];
+    return [h, Math.atan2(tx - K[0], ty - K[1]) * 180 / Math.PI];
+  };
+  EX_DEMO.cycling[1] = [...Array(12)].map((_, i) => {
+    const q = i * Math.PI / 6, [hN, kN] = ik(crank[0] + r * Math.cos(q), crank[1] + r * Math.sin(q)), [hF, kF] = ik(crank[0] - r * Math.cos(q), crank[1] - r * Math.sin(q));
+    return { t: 32, hN, kN, hF, kF, fN: 95 + 12 * Math.sin(q), fF: 95 - 12 * Math.sin(q), sN: 72, eN: 80, sF: 74, eF: 82 };
+  });
+  EX_DEMO.cycling[2] = { seq: 'loop', props: [['bike', 0]], an: 'hip', lockY: 1, ms: 95, lin: 1 };
+})();
+const D_FBASE = { x: 0, t: 0, sA: 8, eA: 8, sB: 8, eB: 8, hA: 4, kA: 4, hB: 4, kB: 4, aA: 1, aB: 1, air: 0, sh: 0, rot: 0, rope: 0, nk: 0, behind: 0 };
+const D_NUM = new Set(['x', 'air', 'sh', 'aN', 'aF', 'uN', 'uF', 'aA', 'aB', 'dy', 'rope', 'behind']);
+const dv = (a, l) => [Math.sin(a * Math.PI / 180) * l, Math.cos(a * Math.PI / 180) * l];
+const pa = (p, v, k = 1) => [p[0] + v[0] * k, p[1] + v[1] * k];
+const mix = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+const demoFootAng = (k) => (Math.abs(k) <= 60 ? 90 : k + 90);
+// Two-link reach: knee or elbow position for a limb from P to T, picking the bend side.
+function demoIK(P, T, l1, l2, pick) {
+  const dx = T[0] - P[0], dy = T[1] - P[1], d = Math.max(0.01, Math.min(Math.hypot(dx, dy), l1 + l2 - 0.05)), a = Math.atan2(dy, dx);
+  const al = Math.acos(Math.max(-1, Math.min(1, (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d)))), c = [a + al, a - al].map((x) => [P[0] + Math.cos(x) * l1, P[1] + Math.sin(x) * l1]);
+  const K = pick(c[0], c[1]), v = [T[0] - K[0], T[1] - K[1]], l = Math.hypot(v[0], v[1]) || 1;
+  return [K, [K[0] + v[0] / l * l2, K[1] + v[1] / l * l2]];
+}
+function demoJoints(v, p) { // joints with the hip at 0,0
+  const u = dv(180 - p.t, 1), H = [0, 0], S = pa(H, u, DM.LT - 3 + p.sh), N = pa(H, u, DM.LT + 1), hu = dv(180 - p.t - p.nk, 1), C = pa(N, hu, 1 + DM.R);
+  if (v === 's') {
+    const f = [-u[1], u[0]], hf = [-hu[1], hu[0]];
+    const arm = (s, e, a, ua) => { const E = pa(S, dv(s, DM.UA * a * ua)); return [E, pa(E, dv(e, DM.FA * a))]; };
+    const leg = (h, k, ft) => { const K = pa(H, dv(h, DM.TH)), A = pa(K, dv(k, DM.SH)); return [K, A, pa(A, dv(ft, DM.FT))]; };
+    const [elN, hdN] = arm(p.sN, p.eN, p.aN, p.uN), [elF, hdF] = arm(p.sF, p.eF, p.aF, p.uF);
+    const [knN, anN, toN] = leg(p.hN, p.kN, p.fN), [knF, anF, toF] = leg(p.hF, p.kF, p.fF);
+    return { v, u, f, hu, hf, H, S, N, C, elN, hdN, elF, hdF, knN, anN, toN, knF, anF, toF };
+  }
+  const r = [-u[1], u[0]], down = [-u[0], -u[1]];
+  const side = (sg) => (a, l) => [(down[0] * Math.cos(a * Math.PI / 180) + sg * r[0] * Math.sin(a * Math.PI / 180)) * l, (down[1] * Math.cos(a * Math.PI / 180) + sg * r[1] * Math.sin(a * Math.PI / 180)) * l];
+  const dA = side(-1), dB = side(1);
+  const SA = pa(S, r, -7), SB = pa(S, r, 7), HA = pa(H, r, -4.5), HB = pa(H, r, 4.5);
+  let elA = pa(SA, dA(p.sA, DM.UA * p.aA)), hdA = pa(elA, dA(p.eA, DM.FA * p.aA)), elB = pa(SB, dB(p.sB, DM.UA * p.aB)), hdB = pa(elB, dB(p.eB, DM.FA * p.aB));
+  if (p.hT) { // hands meet at a point near the head (front view), elbows out
+    const T = pa(pa(C, r, p.hT[0]), u, -p.hT[1]);
+    [elA, hdA] = demoIK(SA, pa(T, r, -2.4), DM.UA, DM.FA, (a, b) => ((a[0] - b[0]) * r[0] + (a[1] - b[1]) * r[1] < 0 ? a : b));
+    [elB, hdB] = demoIK(SB, pa(T, r, 2.4), DM.UA, DM.FA, (a, b) => ((a[0] - b[0]) * r[0] + (a[1] - b[1]) * r[1] > 0 ? a : b));
+  }
+  const knA = pa(HA, dA(p.hA, DM.TH)), anA = pa(knA, dA(p.kA, DM.SH)), knB = pa(HB, dB(p.hB, DM.TH)), anB = pa(knB, dB(p.kB, DM.SH));
+  const J = { v, u, f: r, hu, hf: [-hu[1], hu[0]], H, S, N, C, SA, SB, HA, HB, elA, hdA, elB, hdB, knA, anA, knB, anB, toA: pa(anA, dA(100, 4.5)), toB: pa(anB, dB(100, 4.5)) };
+  if (p.rot) { const c = Math.cos(p.rot * Math.PI / 180), s = Math.sin(p.rot * Math.PI / 180);
+    Object.keys(J).forEach((k) => { if (Array.isArray(J[k])) { const [x, y] = J[k]; J[k] = [x * c - y * s, x * s + y * c]; } }); }
+  return J;
+}
+const D_PTS = ['H', 'S', 'N', 'C', 'elN', 'hdN', 'elF', 'hdF', 'knN', 'anN', 'toN', 'knF', 'anF', 'toF', 'SA', 'SB', 'HA', 'HB', 'elA', 'hdA', 'elB', 'hdB', 'knA', 'anA', 'knB', 'anB', 'toA', 'toB'];
+const demoMove = (J, dx, dy) => { D_PTS.forEach((k) => { if (J[k]) J[k] = [J[k][0] + dx, J[k][1] + dy]; }); return J; };
+const demoLow = (J, noArms) => Math.max(...D_PTS.filter((k) => J[k] && k !== 'C' && k !== 'N' && !(noArms && /^(el|hd)/.test(k))).map((k) => J[k][1] + 3), J.C[1] + DM.R);
+const D_ANCHOR = { handY: 'hdN', foot: 'anN', footY: 'anN', toe: 'toN', hip: 'H', hand: 'hdN', knee: 'knN', hang: 'hdN', none: 'H' };
+const demoCache = {};
+// Normalize a demo once: full keyframes, timeline, anchor positions and floor.
+function demoSpec(id) {
+  if (demoCache[id]) return demoCache[id];
+  const raw = EX_DEMO[id]; if (!raw) return null;
+  const [v, ks, o = {}] = raw, base = v === 's' ? D_BASE : D_FBASE;
+  const k = ks.map((x) => { const p = { ...base, ...x }; if (v === 's') { if (p.fN == null) p.fN = demoFootAng(p.kN); if (p.fF == null) p.fF = demoFootAng(p.kF); } return p; });
+  const an = o.an || (v === 's' ? 'foot' : 'none'), jn = D_ANCHOR[an], floor = DM.FLOOR - (o.props || []).some((x) => x[0] === 'treadmill') * 6;
+  const s = { id, v, k, o, an, jn, floor };
+  // Both feet planted (no jumps, legs alike): keep the far foot from sliding too.
+  s.pinF = v === 's' && an === 'foot' && !o.pin && k.every((p) => !p.air && Math.abs(p.hN - p.hF) < 12 && Math.abs(p.kN - p.kF) < 12);
+  // Timeline: keyframe order (there and back, or a loop) with per-step time, easing and holds.
+  const n = k.length, seq = o.seq || 'pp', step = o.ms || 800, pause = o.pause != null ? o.pause : o.hold ? 0 : 150;
+  s.order = seq === 'loop' ? [...Array(n).keys(), 0] : [...Array(n).keys(), ...[...Array(n - 1).keys()].reverse()];
+  s.segs = [];
+  s.order.slice(1).forEach((b, i) => {
+    const a = s.order[i], fwd = seq === 'loop' || b > a, kf = fwd ? k[b] : k[a], raw2 = fwd ? ks[b] : ks[a];
+    const d = fwd ? (raw2.d || step) : (raw2.bd || (raw2.d ? raw2.d * (o.bdx || 1) : step));
+    s.segs.push({ a, b, q: i, d, e: fwd ? (raw2.e || (o.lin ? 'lin' : 'io')) : (raw2.e === 'out' ? 'io' : raw2.e || (o.lin ? 'lin' : 'io')), an: kf.an });
+    const hold = ks[b].hold != null ? ks[b].hold : seq === 'pp' && (b === n - 1 || b === 0) ? pause : 0;
+    if (hold && !o.hold) s.segs.push({ a: b, b, q: i, d: hold, hold: 1, an: k[b].an });
+  });
+  s.total = s.segs.reduce((x, g) => x + g.d, 0);
+  // Center the whole movement and remember where each planted joint sits.
+  let lo = 1e9, hi = -1e9;
+  k.forEach((p) => { const J = demoJoints(v, p), ax = an === 'none' ? -p.x : J[jn][0]; D_PTS.forEach((nm) => { if (J[nm]) { lo = Math.min(lo, J[nm][0] - ax); hi = Math.max(hi, J[nm][0] - ax); } }); });
+  s.ax = DM.W / 2 - (lo + hi) / 2;
+  if (o.lockY) s.dy0 = Math.min(...k.map((p) => demoPlace(s, p).dy));
+  if (an === 'handY') s.hy = demoPlace(s, k[0]).hdN[1];
+  s.k0 = demoPlace(s, k[0]);
+  // Keyframes that plant a different joint (hands in a burpee) carry its position along the sequence.
+  s.kw = [s.k0];
+  for (let i = 1; i < n; i += 1) s.kw[i] = demoPlace(s, k[i], k[i].an ? { j: k[i].an, at: s.kw[i - 1][k[i].an] } : null);
+  return (demoCache[id] = s);
+}
+function demoPlace(s, p, plant) { // world joints for pose p
+  const J = demoJoints(s.v, p);
+  let dx = s.an === 'none' ? s.ax + p.x : s.ax - J[s.jn][0];
+  if (plant) dx = plant.at[0] - J[plant.j][0];
+  demoMove(J, dx, 0);
+  let dy;
+  if (s.an === 'hang') dy = 16 - J.hdN[1];
+  else if (s.an === 'handY' && s.hy != null) dy = s.hy - J.hdN[1];
+  else if (s.an === 'footY') dy = (s.o.ay || DM.FLOOR - 17) - J.anN[1];
+  else if (s.o.pinArm && s.k0) dy = s.k0.toN[1] - J.toN[1];
+  else if (s.o.lockY && s.dy0 != null) dy = s.dy0;
+  else dy = s.floor - Math.max(demoLow(J, s.o.pinArm && s.k0), s.o.props && s.o.props.some((x) => x[2] === 'floor') ? (J.hdN[1] + J.hdF[1]) / 2 + 9 : 0) - p.air;
+  demoMove(J, 0, dy + (p.dy || 0)); J.dy = dy; J.p = p;
+  const pins = [...(s.o.pin || []), ...(s.pinF ? [['F', 'fwd']] : [])];
+  if (s.k0) pins.forEach(([L, mode]) => { // keep a planted foot where it started
+    const Hp = J.v === 's' ? J.H : J['H' + L], T = s.k0['an' + L];
+    const pick = mode === 'down' ? (a, b) => (a[1] > b[1] ? a : b) : mode === 'out' ? (a, b) => ((L === 'A') === (a[0] < b[0]) ? a : b) : (a, b) => (a[0] > b[0] ? a : b);
+    const [K, A] = demoIK(Hp, T, DM.TH, DM.SH, pick), ft = [J['to' + L][0] - J['an' + L][0], J['to' + L][1] - J['an' + L][1]];
+    J['kn' + L] = K; J['an' + L] = A; J['to' + L] = [A[0] + ft[0], A[1] + ft[1]];
+  });
+  if (s.o.pinArm && s.k0) ['N', 'F'].forEach((L) => { // hands stay on the floor (push-ups): elbows bend back
+    const [E, Hd] = demoIK(J.S, s.k0['hd' + L], DM.UA, DM.FA, (a, b) => (a[0] < b[0] ? a : b));
+    J['el' + L] = E; J['hd' + L] = Hd;
+  });
+  return J;
+}
+// Smooth motion: eased time along a Catmull-Rom spline through the keyframes (angles take the short way round).
+const D_EASE = { io: (u) => 0.5 - 0.5 * Math.cos(Math.PI * u), out: (u) => 1 - (1 - u) * (1 - u), in: (u) => u * u, lin: (u) => u };
+function demoAt(s, ms) {
+  let t = ((ms % s.total) + s.total) % s.total;
+  for (const g of s.segs) {
+    if (t > g.d) { t -= g.d; continue; }
+    const u = g.hold ? 0 : D_EASE[g.e || 'io'](t / g.d), ord = s.order, L = ord.length - 1, loop = (s.o.seq || 'pp') === 'loop';
+    const at = (i) => (loop ? ord[((i % L) + L) % L] : ord[Math.max(0, Math.min(L, i))]);
+    const P0 = s.k[at(g.q - 1)], P1 = s.k[g.a], P2 = s.k[g.b], P3 = s.k[at(g.q + 2)], p = {};
+    Object.keys(P1).forEach((key) => {
+      const v1 = P1[key]; if (typeof v1 !== 'number') { p[key] = u < 0.5 ? v1 : P2[key]; return; }
+      let v2 = P2[key], v0 = P0[key], v3 = P3[key];
+      if (g.hold) { p[key] = v1; return; }
+      p[key] = 0.5 * (2 * v1 + (-v0 + v2) * u + (2 * v0 - 5 * v1 + 4 * v2 - v3) * u * u + (-v0 + 3 * v1 - 3 * v2 + v3) * u * u * u);
+    });
+    if (s.v === 'f') { p.rope = u < 0.5 ? P1.rope : P2.rope; p.behind = u < 0.5 ? P1.behind : P2.behind; if (P1.hT || P2.hT) { const A = P1.hT || P2.hT, B = P2.hT || P1.hT, A0 = P0.hT || A, B3 = P3.hT || B;
+      p.hT = [0, 1].map((i) => 0.5 * (2 * A[i] + (-A0[i] + B[i]) * u + (2 * A0[i] - 5 * A[i] + 4 * B[i] - B3[i]) * u * u + (-A0[i] + 3 * A[i] - 3 * B[i] + B3[i]) * u * u * u)); } }
+    p._g = g; p._u = u;
+    return p;
+  }
+  return s.k[0];
+}
+// Pose at a moment, with small automatic extras: breathing on holds and a head that lags the body a little.
+function demoPoseAt(s, ms) {
+  const p = demoAt(s, ms);
+  if (s.o.hold) { const b = Math.sin(ms / 3000 * 2 * Math.PI); p.sh = (p.sh || 0) + 0.7 * b; p.t += 0.5 * b; }
+  const q = demoAt(s, ms - 90); p.nk = (p.nk || 0) + Math.max(-7, Math.min(7, (q.t - p.t) * 0.35));
+  return p;
+}
+function demoWorld(s, p) { // place a pose, carrying planted hands or feet between keyframes
+  const g = p._g; if (!g || !g.an) return demoPlace(s, p);
+  const from = s.kw[g.a > g.b ? g.b : g.a][g.an] || s.kw[g.a][g.an];
+  return demoPlace(s, p, { j: g.an, at: from });
+}
+/* Drawing: tapered, rounded body parts with one outline per part group, like clip art. */
+const D_OL = '#1d2621', f1 = (n) => n.toFixed(1);
+function dcap(A, B, ra, rb) { // a capsule from A (radius ra) to B (radius rb)
+  const dx = B[0] - A[0], dy = B[1] - A[1], l = Math.hypot(dx, dy) || 0.001, nx = -dy / l, ny = dx / l;
+  return `M${f1(A[0] + nx * ra)} ${f1(A[1] + ny * ra)}L${f1(B[0] + nx * rb)} ${f1(B[1] + ny * rb)}A${rb} ${rb} 0 0 0 ${f1(B[0] - nx * rb)} ${f1(B[1] - ny * rb)}L${f1(A[0] - nx * ra)} ${f1(A[1] - ny * ra)}A${ra} ${ra} 0 0 0 ${f1(A[0] + nx * ra)} ${f1(A[1] + ny * ra)}Z`;
+}
+// A group of shapes [path, fill]: dark outline underneath, fills on top, so joints have no seams.
+const dgrp = (parts, w = 2.2) => `<path d="${parts.map((x) => x[0]).join('')}" fill="${D_OL}" stroke="${D_OL}" stroke-width="${w}" stroke-linejoin="round"/>` + parts.map(([d, c]) => `<path d="${d}" fill="${c}"/>`).join('');
+const dci = (p, r, c, w = 1) => `<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${r}" fill="${c}" stroke="${D_OL}" stroke-width="${w}"/>`;
+const dln = (a, b, w, c) => `<path d="M${f1(a[0])} ${f1(a[1])}L${f1(b[0])} ${f1(b[1])}" stroke="${D_OL}" stroke-width="${w + 2}" stroke-linecap="round"/><path d="M${f1(a[0])} ${f1(a[1])}L${f1(b[0])} ${f1(b[1])}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+const dpoly = (pts, c, w = 1) => `<path d="M${pts.map((q) => f1(q[0]) + ' ' + f1(q[1])).join('L')}Z" fill="${c}" stroke="${D_OL}" stroke-width="${w}" stroke-linejoin="round"/>`;
+const dshade = (hex, k) => { const n = parseInt(hex.slice(1), 16), c = [n >> 16, (n >> 8) & 255, n & 255].map((x) => Math.max(0, Math.min(255, Math.round(k < 0 ? x * (1 + k) : x + (255 - x) * k)))); return '#' + c.map((x) => x.toString(16).padStart(2, '0')).join(''); };
+const dcirc = (p, r) => `M${f1(p[0] - r)} ${f1(p[1])}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z`;
+function dell(c, dir, rx, ry) { // ellipse path along dir
+  const l = Math.hypot(dir[0], dir[1]) || 1, ux = dir[0] / l, uy = dir[1] / l, pts = [];
+  for (let i = 0; i < 12; i += 1) { const a = i / 12 * 2 * Math.PI; pts.push([c[0] + ux * Math.cos(a) * rx - uy * Math.sin(a) * ry, c[1] + uy * Math.cos(a) * rx + ux * Math.sin(a) * ry]); }
+  return 'M' + pts.map((q) => f1(q[0]) + ' ' + f1(q[1])).join('L') + 'Z';
+}
+function demoLimbs(J, ch, far) {
+  const [who, skin0, , , shirt0, shorts0, shoe0] = ch, k = far ? -0.18 : 0, skin = dshade(skin0, k), shirt = dshade(shirt0, k), shorts = dshade(shorts0, k), shoe = dshade(shoe0, far ? -0.25 : 0);
+  const big = who === 'man' ? 1.06 : 1;
+  const leg = (Hp, K, A, T) => { const fd = [T[0] - A[0], T[1] - A[1]], heel = pa(A, fd, -0.22), toe = pa(A, fd, 1.02);
+    return dgrp([[dcap(Hp, K, 3.9 * big, 3.1 * big), skin], [dcap(K, A, 3.1 * big, 2.2), skin], [dcap(Hp, mix(Hp, K, 0.55), 4.3 * big, 3.7 * big), shorts], [dcap(heel, toe, 2.5, 2.1), shoe]]) + `<path d="M${f1(heel[0])} ${f1(heel[1] + 1.6)}L${f1(toe[0])} ${f1(toe[1] + 1.6)}" stroke="${dshade(shoe, shoe0 === '#2a2f36' ? 0.45 : -0.35)}" stroke-width=".8"/>`; };
+  const arm = (Sp, E, Hd) => { const fd = [Hd[0] - E[0], Hd[1] - E[1]];
+    return dgrp([[dcap(Sp, E, 2.7 * big, 2.2 * big), skin], [dcap(E, Hd, 2.2 * big, 1.8), skin], [dell(pa(Hd, fd, 0.09), fd, 2.9, 2.3), skin], [dcap(Sp, mix(Sp, E, 0.42), 3.2 * big, 2.9 * big), shirt]]); };
+  return { leg, arm };
+}
+function demoTorso(J, ch) {
+  const [who, , , , shirt, shorts] = ch, top = pa(J.S, J.u, 1.2), side = J.v === 's';
+  const chest = side ? (who === 'man' ? 6.6 : 6) : (who === 'man' ? 9.5 : 8.6), waist = side ? (who === 'man' ? 5.2 : 4.8) : (who === 'man' ? 7.4 : 6.6), hips = side ? (who === 'man' ? 5.4 : 5.8) : (who === 'man' ? 7.6 : 8.2);
+  const W = pa(J.H, J.u, 9);
+  return dgrp([[dcap(W, top, waist, chest), shirt], [dcap(J.H, W, hips, waist), shorts]]) + `<path d="M${f1(W[0] - J.f[0] * waist)} ${f1(W[1] - J.f[1] * waist)}L${f1(W[0] + J.f[0] * waist)} ${f1(W[1] + J.f[1] * waist)}" stroke="${D_OL}" stroke-width=".7" opacity=".5"/>`;
+}
+function demoHead(J, ch, sway) {
+  const [, skin, hair, style] = ch, C = J.C, u = J.hu, f = J.hf, R = DM.R, side = J.v === 's';
+  const pt = (a, rad) => [C[0] + (u[0] * Math.cos(a * Math.PI / 180) + f[0] * Math.sin(a * Math.PI / 180)) * rad, C[1] + (u[1] * Math.cos(a * Math.PI / 180) + f[1] * Math.sin(a * Math.PI / 180)) * rad];
+  const cres = (a0, a1, ro, ri) => { const o = [], n = 16; for (let i = 0; i <= n; i += 1) o.push(pt(a0 + (a1 - a0) * i / n, ro)); for (let i = n; i >= 0; i -= 1) o.push(pt(a0 + (a1 - a0) * i / n, ri)); return dpoly(o, hair, 0.9); };
+  const dot = (q, r, c = D_OL) => `<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="${r}" fill="${c}"/>`;
+  const curve = (a, b, c, w = 0.9) => `<path d="M${f1(a[0])} ${f1(a[1])}Q${f1(c[0])} ${f1(c[1])} ${f1(b[0])} ${f1(b[1])}" stroke="${D_OL}" stroke-width="${w}" fill="none" stroke-linecap="round"/>`;
+  let back = '', top = '';
+  if (side) {
+    if (style === 'pony') { const a0 = pt(-100, R - 1), mid = pt(-128 - sway, R + 5), end = pt(-150 - sway * 1.6, R + 10); back += `<path d="M${f1(a0[0])} ${f1(a0[1])}Q${f1(mid[0])} ${f1(mid[1])} ${f1(end[0])} ${f1(end[1])}" stroke="${D_OL}" stroke-width="5.4" fill="none" stroke-linecap="round"/><path d="M${f1(a0[0])} ${f1(a0[1])}Q${f1(mid[0])} ${f1(mid[1])} ${f1(end[0])} ${f1(end[1])}" stroke="${hair}" stroke-width="3.4" fill="none" stroke-linecap="round"/>`; }
+    if (style === 'bun') back += dci(pt(-42, R + 2.4), 3.7, hair, 0.9);
+    top += style === 'beard' ? cres(40, -112, R + 0.8, R * 0.62) + cres(122, 205, R + 0.9, R * 0.52) : cres(60, style === 'pony' || style === 'bun' ? -125 : -110, R + 1.4, R * 0.48);
+    if (style === 'curly') [56, 28, 0, -28, -56, -84, -108].forEach((a) => { top += dci(pt(a, R + 1), 2.7, hair, 0.8); });
+    top += dot(pt(70, R * 0.46), 1.15) + curve(pt(52, R * 0.62), pt(74, R * 0.78), pt(62, R * 0.8), 0.8); // eye, brow
+    top += curve(pt(112, R * 0.62), pt(100, R * 0.92), pt(118, R * 0.86));
+  } else {
+    if (style === 'bun') back += dci(pt(0, R + 2.8), 3.7, hair, 0.9);
+    if (style === 'pony') back += dci(pt(-70, R + 1.8), 2.6, hair, 0.9);
+    [-1, 1].forEach((sg) => { back += dci(pt(sg * 92, R * 0.95), 1.8, skin, 0.9); });
+    top += style === 'beard' ? cres(-80, 80, R + 0.8, R * 0.62) + cres(118, 242, R + 0.8, R * 0.62) : cres(-100, 100, R + 1.4, R * 0.45);
+    if (style === 'curly') [-104, -72, -40, -12, 12, 40, 72, 104].forEach((a) => { top += dci(pt(a, R + 1), 2.6, hair, 0.8); });
+    [-1, 1].forEach((sg) => { top += dot(pt(sg * 38, R * 0.32), 1.1) + curve(pt(sg * 26, R * 0.55), pt(sg * 50, R * 0.6), pt(sg * 38, R * 0.66), 0.8); });
+    top += curve(pt(150, R * 0.55), pt(210, R * 0.55), pt(180, R * 0.84));
+  }
+  return back + dgrp([[dcap(J.S, mix(J.N, C, 0.4), 2.2, 2.2), skin], [dcirc(C, R), skin]]) + top;
+}
+/* Equipment, placed from the current pose (hand-held) or a reference keyframe (fixed). */
+let dTop = -40; // tall things (walls, posts, cable columns) reach up out of view
+const D_IRON = '#3d4450', D_IRON2 = '#7d8794', D_PADC = '#c46a3a', D_FRAME = '#8b96a3';
+const D_STATIC = ['chair', 'wall', 'bench', 'box', 'flatbench', 'incline', 'seat', 'bar'];
+function demoProp(pr, J, s, ms) {
+  const [kind, at] = pr, F = s.floor, R0 = typeof at === 'number' ? demoPlace(s, s.k[at]) : s.k0;
+  const hands = J.v === 's' ? mix(J.hdN, J.hdF, 0.5) : mix(J.hdA, J.hdB, 0.5);
+  const spot = { hands, handsF: hands, handN: J.hdN, handF: J.hdF, handA: J.hdA, handB: J.hdB, back: J.S && pa(pa(J.S, J.f, -4.5), J.u, 1), shoulder: J.S, hip: J.H }[at];
+  const legs = (x0, x1, top) => dln([x0 + 3, top + 3], [x0 + 3, F], 2, D_FRAME) + dln([x1 - 3, top + 3], [x1 - 3, F], 2, D_FRAME);
+  const pad = (x0, x1, top, h = 4.5) => `<rect x="${f1(x0)}" y="${f1(top)}" width="${f1(x1 - x0)}" height="${h}" rx="2" fill="${D_PADC}" stroke="${D_OL}" stroke-width="1"/><path d="M${f1(x0 + 2)} ${f1(top + h - 1.2)}H${f1(x1 - 2)}" stroke="${dshade(D_PADC, -0.3)}" stroke-width="1"/>`;
+  const box = (x0, x1, top) => `<rect x="${f1(x0)}" y="${f1(top)}" width="${f1(x1 - x0)}" height="${f1(F - top)}" rx="2" fill="${D_FRAME}" stroke="${D_OL}" stroke-width="1"/><path d="M${f1(x0 + 1)} ${f1(top + 2.5)}H${f1(x1 - 1)}" stroke="#fff" stroke-width="1" opacity=".35"/>`;
+  const bench = (x0, x1, top) => legs(x0, x1, top) + pad(x0, x1, top);
+  switch (kind) {
+    case 'kb': { const p = spot, b = [p[0], p[1] + 5.8];
+      return `<path d="M${f1(p[0] - 3.4)} ${f1(p[1] + 2.6)}Q${f1(p[0])} ${f1(p[1] - 3.2)} ${f1(p[0] + 3.4)} ${f1(p[1] + 2.6)}" stroke="${D_OL}" stroke-width="3.6" fill="none"/><path d="M${f1(p[0] - 3.4)} ${f1(p[1] + 2.6)}Q${f1(p[0])} ${f1(p[1] - 3.2)} ${f1(p[0] + 3.4)} ${f1(p[1] + 2.6)}" stroke="${D_IRON}" stroke-width="1.8" fill="none"/>`
+        + `<path d="M${f1(b[0] - 4)} ${f1(b[1] + 4.6)}A5.6 5.6 0 1 1 ${f1(b[0] + 4)} ${f1(b[1] + 4.6)}Z" fill="${D_IRON}" stroke="${D_OL}" stroke-width="1"/><circle cx="${f1(b[0] - 1.8)}" cy="${f1(b[1] - 1.6)}" r="1.3" fill="#fff" opacity=".25"/>`; }
+    case 'db': { const p = spot; if (J.v === 's') return dci(pa(p, [1.5, -1.5]), 4.2, dshade(D_IRON, -0.2), 0.9) + dci(p, 4.4, D_IRON, 1) + dci(p, 1.6, D_IRON2, 0.6);
+      return `<rect x="${f1(p[0] - 5.5)}" y="${f1(p[1] - 1.2)}" width="11" height="2.4" rx="1" fill="${D_IRON2}" stroke="${D_OL}" stroke-width=".8"/><rect x="${f1(p[0] - 7)}" y="${f1(p[1] - 3.6)}" width="3.8" height="7.2" rx="1.2" fill="${D_IRON}" stroke="${D_OL}" stroke-width=".8"/><rect x="${f1(p[0] + 3.2)}" y="${f1(p[1] - 3.6)}" width="3.8" height="7.2" rx="1.2" fill="${D_IRON}" stroke="${D_OL}" stroke-width=".8"/>`; }
+    case 'plate': { const p = spot; return dci(pa(p, [2, -2]), 8.6, dshade(D_IRON, -0.25), 1) + dci(p, 9, D_IRON, 1.2) + `<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="6.2" fill="none" stroke="#fff" stroke-width=".8" opacity=".18"/>` + dci(p, 2.6, D_IRON2, 0.8); }
+    case 'chair': { const hand = at === 'hand', x1 = hand ? R0.hdN[0] + 2 : R0.H[0] + 6, top = hand ? R0.hdN[1] + 2.6 : R0.H[1] + 5.5, x0 = x1 - 20;
+      return dln([x0 + 1.2, top], [x0 + 1.2, top - 26], 2.6, D_PADC) + legs(x0, x1, top) + pad(x0, x1, top, 3.6); }
+    case 'wall': { const x = R0.H[0] - 5.6; return `<rect x="${f1(x - 30)}" y="${dTop}" width="30" height="${F - dTop}" fill="${D_FRAME}" opacity=".35"/><path d="M${f1(x)} ${dTop}V${F}" stroke="${D_FRAME}" stroke-width="1.5"/>`; }
+    case 'bench': { if (at === 'footF') { const T = R0.toF, A = R0.anF; return bench(Math.min(T[0], A[0]) - 9, Math.max(T[0], A[0]) + 6, Math.max(T[1], A[1]) + 3); }
+      return bench(R0.S[0] - 18, R0.S[0] + 3, R0.S[1] + 5.5); }
+    case 'box': { const T = R0.toN, A = R0.anN; return box(Math.min(T[0], A[0]) - 7, Math.max(T[0], A[0]) + 8, Math.max(T[1], A[1]) + 3); }
+    case 'flatbench': { const y = Math.max(R0.H[1], R0.S[1]) + 5.5; return bench(Math.min(R0.H[0], R0.S[0]) - 6, Math.max(R0.H[0], R0.S[0]) + 6, y); }
+    case 'incline': { const b0 = pa(R0.H, R0.f, -5.5), b1 = pa(R0.S, R0.f, -5.5); return dln(pa(b0, R0.u, -2), pa(b1, R0.u, 4), 4.5, D_PADC) + bench(R0.H[0] - 8, R0.H[0] + 10, R0.H[1] + 5.5); }
+    case 'seat': { const y = R0.H[1] + 5.5, back = s.id === 'leg-extension' ? dln(pa(pa(R0.H, R0.f, -6), R0.u, -2), pa(pa(R0.S, R0.f, -6), R0.u, 3), 4.5, D_PADC) : '';
+      return back + dln([R0.H[0], y + 4], [R0.H[0], F], 3, D_FRAME) + dln([R0.H[0] - 9, F], [R0.H[0] + 9, F], 3, D_FRAME) + pad(R0.H[0] - 10, R0.H[0] + 10, y); }
+    case 'pad': { const K = J.knN, A = J.anN, d = [A[0] - K[0], A[1] - K[1]], l = Math.hypot(d[0], d[1]) || 1, fr = [d[1] / l, -d[0] / l], sg = s.id === 'leg-extension' ? 1 : -1;
+      return dci(pa(mix(K, A, 0.85), fr, 4.6 * sg), 3.7, D_PADC); }
+    case 'cable': {
+      if (at === 'up') { const top = [R0.hdN[0], dTop]; return dln(top, hands, 0.8, '#59606b') + dln([hands[0] - 10, hands[1]], [hands[0] + 10, hands[1]], 2.2, D_IRON); }
+      if (at === 'high') { const top = [Math.min(R0.hdN[0] + 30, DM.W - 10), 8]; return dln([top[0] + 4, dTop], [top[0] + 4, F], 3, D_FRAME) + dln(top, hands, 0.8, '#59606b') + dci(top, 2.4, D_FRAME) + dln(pa(hands, [0, -1], 2), pa(hands, [0, 1], 2), 2.4, D_IRON); }
+      if (at === 'face') { const a = [Math.min(R0.C[0] + 45, DM.W - 10), R0.C[1]]; return dln([a[0] + 4, dTop], [a[0] + 4, F], 3, D_FRAME) + dln(a, hands, 0.8, '#59606b') + dci(a, 2.4, D_FRAME); }
+      if (at === 'side') { const a = [R0.C[0] - 34, hands[1]]; return dln([a[0] - 4, dTop], [a[0] - 4, F], 3, D_FRAME) + dln(a, hands, 0.8, '#59606b') + dci(a, 2.4, D_FRAME) + dci(hands, 2.2, D_IRON); }
+      return ''; }
+    case 'bar': { const y = 16; return dln([R0.hdN[0] - 30, y], [R0.hdN[0] + 30, y], 2.6, D_IRON2) + dln([R0.hdN[0] - 28, dTop], [R0.hdN[0] - 28, y], 2, D_FRAME) + dln([R0.hdN[0] + 28, dTop], [R0.hdN[0] + 28, y], 2, D_FRAME); }
+    case 'rope': { const P0 = J.hdA, P2 = J.hdB, tgt = J.p.rope ? [J.C[0], J.C[1] - DM.R - 12] : [J.H[0], F + 1], cp = [2 * tgt[0] - (P0[0] + P2[0]) / 2, 2 * tgt[1] - (P0[1] + P2[1]) / 2];
+      return `<path d="M${f1(P0[0])} ${f1(P0[1])}Q${f1(cp[0])} ${f1(cp[1])} ${f1(P2[0])} ${f1(P2[1])}" stroke="#c9504f" stroke-width="1.4" fill="none"/>`; }
+    case 'legpress': { const hip = R0.H, seat = dln(pa(pa(hip, R0.f, -6), R0.u, -3), pa(pa(R0.S, R0.f, -6), R0.u, 4), 4.5, D_PADC) + dln([hip[0] - 4, hip[1] + 6], [hip[0] + 8, hip[1] + 6], 4, D_PADC) + dln([hip[0], hip[1] + 8], [hip[0], F], 3, D_FRAME);
+      const A = J.anN, d = [A[0] - J.H[0], A[1] - J.H[1]], l = Math.hypot(d[0], d[1]), n = [d[0] / l, d[1] / l], c = pa(A, n, 4), pp = [-n[1], n[0]];
+      const rail = dln(pa(hip, n, 20), pa(hip, n, 70), 2.2, D_FRAME) + dln([hip[0] + 50, F], pa(hip, n, 62), 2.5, D_FRAME);
+      return seat + rail + dln(pa(c, pp, -11), pa(c, pp, 11), 4, D_IRON2); }
+    case 'rower': { const y = R0.anN[1] + 3, foot = R0.anN[0] + 6, fly = [foot + 16, y - 10];
+      return dln([14, y + 6], [fly[0] + 6, y + 6], 3, D_FRAME) + dln([18, y + 6], [18, F], 2.5, D_FRAME) + dln([fly[0], y + 6], [fly[0], F], 2.5, D_FRAME) + dci(fly, 8, D_FRAME) + dci(fly, 2.5, D_IRON) + dln([foot - 2, y + 5], [foot + 2, y - 8], 3, D_IRON) + dln(fly, hands, 0.8, '#59606b') + dln([hands[0], hands[1] - 4], [hands[0], hands[1] + 4], 2.4, D_IRON)
+        + `<rect x="${f1(J.H[0] - 7)}" y="${f1(J.H[1] + 5)}" width="14" height="4" rx="1.5" fill="${D_PADC}" stroke="${D_OL}" stroke-width="1"/>`; }
+    case 'bike': { const hip = R0.H, cr = [hip[0] + 11, hip[1] + 27], w1 = [hip[0] - 16, F - 12], w2 = [hip[0] + 40, F - 12], hb = mix(R0.hdN, R0.hdF, 0.5), a = ms / 95 / 12 * 2 * Math.PI;
+      const spokes = (c) => [0, 1, 2].map((i) => { const q = a * 0.6 + i * Math.PI / 3; return `<path d="M${f1(c[0] - Math.cos(q) * 11)} ${f1(c[1] - Math.sin(q) * 11)}L${f1(c[0] + Math.cos(q) * 11)} ${f1(c[1] + Math.sin(q) * 11)}" stroke="${D_FRAME}" stroke-width=".7"/>`; }).join('');
+      return dci(w1, 12, 'none', 2.2) + spokes(w1) + dci(w2, 12, 'none', 2.2) + spokes(w2) + dln(w1, cr, 2.5, D_FRAME) + dln([hip[0] - 1, hip[1] + 5], cr, 2.5, D_FRAME) + dln(cr, [hb[0] - 2, hb[1] + 4], 2.5, D_FRAME) + dln([hb[0] - 2, hb[1] + 4], w2, 2.5, D_FRAME)
+        + dln([hip[0] - 6, hip[1] + 5], [hip[0] + 5, hip[1] + 5], 3.5, D_IRON) + dln([hb[0] - 3, hb[1] + 1], [hb[0] + 3, hb[1] - 1], 3, D_IRON) + dci(cr, 7.5, 'none', 1.2) + dln(J.anN, J.anF, 0.8, D_IRON); }
+    case 'treadmill': { const off = (ms * 0.045) % 10; let ticks = ''; for (let x = 24 - off; x < 132; x += 10) if (x > 24) ticks += `<path d="M${f1(x)} ${F + 3}h4" stroke="${D_OL}" stroke-width="1" opacity=".35"/>`;
+      return `<rect x="22" y="${F}" width="112" height="6" rx="3" fill="${D_FRAME}" stroke="${D_OL}" stroke-width="1"/>` + ticks + dln([128, F], [124, 44], 2.6, D_FRAME) + `<rect x="114" y="38" width="16" height="9" rx="2" fill="${D_IRON}"/>` + dln([96, 60], [124, 52], 2.2, D_FRAME); }
+  }
+  return '';
+}
+// The fixed scene (floor and equipment that doesn't move) and the moving figure are drawn separately.
+function demoStatic(id) {
+  const s = demoSpec(id);
+  return `<rect x="-200" y="${DM.FLOOR}" width="560" height="60" class="dm-ground"/><path d="M-200 ${DM.FLOOR + 0.5}H360" class="dm-floor"/>` + (s.o.props || []).filter((x) => D_STATIC.includes(x[0]) && x[2] !== 'behind').map((x) => demoProp(x, s.k0, s, 0)).join('');
+}
+function demoDyn(id, idx, ms, pose) {
+  const s = demoSpec(id); if (!s) return '';
+  const ch = DEMO_FOLK[idx % DEMO_FOLK.length], p = pose || demoPoseAt(s, ms), J = demoWorld(s, p), props = (s.o.props || []).filter((x) => !D_STATIC.includes(x[0]) || x[2] === 'behind');
+  const back = props.filter((x) => ['legpress', 'rower', 'bike', 'treadmill', 'cable'].includes(x[0]) || x[2] === 'behind' || (p.behind && x[0] === 'kb'));
+  const front = props.filter((x) => !back.includes(x)), farP = front.filter((x) => x[1] === 'handF'), nearP = front.filter((x) => x[1] !== 'handF');
+  let sway = 0;
+  if (!pose) { const q = demoWorld(s, demoAt(s, ms - 60)); sway = Math.max(-25, Math.min(25, (J.C[1] - q.C[1]) * 6 + (J.C[0] - q.C[0]) * 4)); }
+  // Soft floor shadow: wider where the body touches the floor, fading when it's in the air.
+  const lowPts = D_PTS.filter((k) => J[k] && k !== 'C' && k !== 'N').map((k) => J[k]), lowY = Math.max(...lowPts.map((q) => q[1])), near = lowPts.filter((q) => q[1] > lowY - 8);
+  const sx0 = Math.min(...near.map((q) => q[0])), sx1 = Math.max(...near.map((q) => q[0])), lift = Math.max(0, s.floor - 3 - lowY);
+  const shadow = s.an === 'hang' || s.o.lockY || s.an === 'footY' ? '' : `<ellipse cx="${f1((sx0 + sx1) / 2)}" cy="${s.floor + 0.8}" rx="${f1(Math.max(6, (sx1 - sx0) / 2 + 6) * (1 - Math.min(0.5, lift / 30)))}" ry="2.2" class="dm-shadow" opacity="${f1(Math.max(0.08, 0.22 - lift / 80))}"/>`;
+  let ticks = '';
+  if (s.o.move && !props.some((x) => x[0] === 'treadmill')) { const off = (ms * 0.018 * s.o.move) % 14; for (let x = -40 - off; x < 200; x += 14) ticks += `<path d="M${f1(x)} ${DM.FLOOR + 4}h5" class="dm-floor" opacity=".6"/>`; }
+  const L = demoLimbs(J, ch, true), Ln = demoLimbs(J, ch, false);
+  let body;
+  if (J.v === 's') body = L.leg(J.H, J.knF, J.anF, J.toF) + L.arm(J.S, J.elF, J.hdF) + farP.map((x) => demoProp(x, J, s, ms)).join('') + demoTorso(J, ch) + Ln.leg(J.H, J.knN, J.anN, J.toN) + demoHead(J, ch, sway) + Ln.arm(J.S, J.elN, J.hdN);
+  else body = Ln.leg(J.HA, J.knA, J.anA, J.toA) + Ln.leg(J.HB, J.knB, J.anB, J.toB) + demoTorso(J, ch) + demoHead(J, ch, 0) + Ln.arm(J.SA, J.elA, J.hdA) + Ln.arm(J.SB, J.elB, J.hdB);
+  return ticks + shadow + back.map((x) => demoProp(x, J, s, ms)).join('') + body + nearP.map((x) => demoProp(x, J, s, ms)).join('');
+}
+const demoFrame = (id, idx, ms, pose) => demoStatic(id) + demoDyn(id, idx, ms, pose);
+// Frame the whole movement: sample it, measure, and fit a 4:3 view with the floor near the bottom.
+const demoViews = {};
+function demoFit(id, idx) {
+  if (demoViews[id]) return demoViews[id];
+  const s = demoSpec(id), ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('style', 'position:absolute;left:-9999px;top:0;width:320px;height:240px;visibility:hidden');
+  document.body.appendChild(svg);
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  const take = (html) => { svg.innerHTML = html; const b = svg.getBBox(); x0 = Math.min(x0, b.x); y0 = Math.min(y0, b.y); x1 = Math.max(x1, b.x + b.width); y1 = Math.max(y1, b.y + b.height); };
+  dTop = DM.FLOOR - 30;
+  try {
+    for (let i = 0; i < 40; i += 1) take(`<g>${demoDyn(id, idx, s.total * i / 40).replace(/<text[^>]*>HOLD<\/text>/, '').replace(/<path d="M[-\d.]+ \d+(\.\d+)?h5"[^>]*\/>/g, '')}</g>`);
+    const st = (s.o.props || []).filter((x) => D_STATIC.includes(x[0])).map((x) => demoProp(x, s.k0, s, 0)).join('');
+    if (st) take(st);
+  } finally { dTop = -40; svg.remove(); }
+  const bottom = DM.FLOOR + 8; let top = Math.min(y0, DM.FLOOR - 40) - 7, h = bottom - top, w = Math.max(x1 - x0 + 16, h * 4 / 3);
+  if (w > h * 4 / 3) { h = w * 3 / 4; top = bottom - h; }
+  const cx = (x0 + x1) / 2;
+  return (demoViews[id] = `${f1(cx - w / 2)} ${f1(top)} ${f1(w)} ${f1(h)}`);
+}
+
+// The player: the fixed scene is drawn once and only the figure is redrawn, every frame. Reduced motion shows key positions instead.
+let demoRaf = 0, demoT0 = 0, demoPlay = null;
+function exDemo(x, i) {
+  if (!EX_DEMO[x.id]) return '';
+  const who = DEMO_FOLK[i % DEMO_FOLK.length][0], still = demoPlay === false || (demoPlay == null && matchMedia('(prefers-reduced-motion: reduce)').matches), s = demoSpec(x.id);
+  const keys = s.k.length > 3 ? [0, Math.floor(s.k.length / 2), s.k.length - 1].map((j) => s.k[j]) : s.k;
+  return `<figure class="ex-demo" id="ex-demo" data-id="${x.id}" data-i="${i}">
+    ${still ? `<div class="ex-demo-strip" role="img" aria-label="Key positions: a cartoon ${who} doing ${esc(x.name)}">${keys.map((p) => `<svg viewBox="0 0 160 120" aria-hidden="true">${demoStatic(x.id)}${demoDyn(x.id, i, 0, p)}</svg>`).join('')}</div>`
+      : `<div class="ex-demo-stage"><svg viewBox="0 0 160 120" role="img" aria-label="Animated demo: a cartoon ${who} doing ${esc(x.name)}"><g>${demoStatic(x.id)}</g><g class="dm-fig">${demoDyn(x.id, i, 0)}</g></svg>${s.o.hold ? '<span class="ex-demo-hold">Hold</span>' : ''}</div>`}
+    <figcaption class="ex-demo-bar"><span class="muted">A simplified drawing. Follow the written cues above.</span><button type="button" class="btn btn-sm btn-ghost" data-act="demo-toggle">${still ? 'Play' : 'Pause'}</button></figcaption></figure>`;
+}
+function demoLoop(now) {
+  const el = document.getElementById('ex-demo'), g = el && el.querySelector('.dm-fig');
+  if (!g) { demoRaf = 0; return; }
+  g.innerHTML = demoDyn(el.dataset.id, +el.dataset.i, now - demoT0);
+  demoRaf = requestAnimationFrame(demoLoop);
+}
+function demoStart() {
+  cancelAnimationFrame(demoRaf); demoRaf = 0;
+  const el = document.getElementById('ex-demo'); if (!el) return;
+  const vb = demoFit(el.dataset.id, +el.dataset.i);
+  el.querySelectorAll('svg').forEach((s) => s.setAttribute('viewBox', vb));
+  if (el.querySelector('.dm-fig')) { demoT0 = performance.now(); demoRaf = requestAnimationFrame(demoLoop); }
+}
+
 function viewExercises() {
   const g = EX_GROUPS.find((x) => x[0] === exMuscle) || EX_GROUPS[0], q = exQ.trim().toLowerCase();
   const list = EX_LIB.filter((x) => (!g[1] || g[1].test(x.muscles)) && (!q || (x.name + ' ' + x.muscles + ' ' + x.eq).toLowerCase().includes(q)));
@@ -2745,8 +3207,8 @@ function viewExercise(id) {
   return `<div class="row" style="margin-bottom:10px">${backBtn('ex', 'exercises', 'Exercise library')}</div>
   <div class="grid">
     <section class="panel span-7 stack"><div class="eyebrow">${esc(x.muscles)}</div><h1>${esc(x.name)}</h1><p class="muted">Equipment: ${esc(x.eq)}</p>
-      <div class="demo-ph" role="img" aria-label="Demonstration coming soon">${icon('clock')}<span>Demo video or illustration coming soon</span></div>
       <h2>Form cues</h2><ol class="calm-steps">${x.cues.map((c) => `<li>${esc(c)}</li>`).join('')}</ol>
+      ${exDemo(x, EX_LIB.indexOf(x))}
       <div class="rinfo-grid"><div><div class="eyebrow">Easier</div><p>${esc(x.easier)}</p></div><div><div class="eyebrow">Harder</div><p>${esc(x.harder)}</p></div></div></section>
     <section class="panel span-5 stack"><h2>Your records</h2>
       ${best.length ? `<ul class="list">${best.map((r) => `<li><div class="grow"><b>${esc(r.n)}</b><div class="muted" style="font-size:.82rem">${r.l.length} session${r.l.length === 1 ? '' : 's'} · best ${fmtDay(r.b.date, { month: 'short', day: 'numeric' })}</div></div><span class="num">${r.b.load ? `${showW(r.b.load)} ${wUnit()}${r.b.top ? ' × ' + r.b.top : ''}` : `${r.b.top} ${r.b.timed ? 's' : 'reps'}`}</span></li>`).join('')}</ul>` : emptyState('flame', 'Log a workout with this exercise to see your best sets here.')}
@@ -6436,7 +6898,7 @@ const GUIDE = [
   ['mealplan', 'Meal plan', 'Plan a week or a whole month on a calendar.', ['Tap a day on the calendar to choose its recipes; colored dots show each meal\'s main protein. Switch to Week to see seven days at once.', '“Plan for” picks a week or the whole month for the tools: add to the shopping list, fill empty meals (Variety, Budget, Quick or Batch cook), set servings for all, or clear.', '“Same protein, less work” swaps planned lunches or dinners to one protein, rotating recipes or repeating one, so you buy in bulk and prep once. Undo puts things back.', 'Copy a day to tomorrow, the rest of the week or every same weekday. The summary line shows the estimated cost, proteins and ingredients for the range.', 'Turn on “Build from my meal plan” in the shopping list to fill it automatically.']],
   ['shopping', 'Shopping list', 'One combined list from the recipes you choose, with store prices and package sizes.', ['Add recipes, then tick items off as you shop. “Have it” hides things already in your pantry.', 'From Meal plan, “Add week (or month) to shopping list” adds a whole range at once.', 'Enter a zip code to find nearby supermarkets, sorted by estimated full-list price, lowest first. If the store directory is busy, use the Google or Apple Maps links instead.', 'Open stores in maps, order online, or share, email, text or print the list.']],
   ['workouts', 'Workouts', '33 plans for gyms, homes and no equipment, plus a builder for your own.', ['Set your equipment once and plans you can\'t do are marked.', 'Start a session to get a timer, rest countdowns, a plate calculator, effort ratings and a “next step” suggestion based on last time.', 'While a workout is running, a “Workout in progress” bar with a timer shows on every page; tap Return to go back to it.', 'Share any plan as a link.']],
-  ['exercises', 'Exercise library', 'Every movement in the plans, with how-to cues and easier or harder versions.', ['Search by name, muscle or equipment.', 'Each exercise lists the plans that use it and charts your best lifts over time.', 'Opened from “How to” during a workout, it has a “← Back to your workout” button.']],
+  ['exercises', 'Exercise library', 'Every movement in the plans, with how-to cues and easier or harder versions.', ['Search by name, muscle or equipment.', 'Each exercise has a looping cartoon demo under its form cues (Pause stops it; with reduced motion on, you see the key positions instead), lists the plans that use it and charts your best lifts over time.', 'Opened from “How to” during a workout, it has a “← Back to your workout” button.']],
   ['breathe', 'Breathe', 'Guided breathing from many traditions with a calm timer, tones and optional music.', ['Pick by goal: calm, focus, energy or sleep. Each exercise says where it comes from and how to do it.', 'New to it? The 7-day “Learn to breathe” course gives one short session a day.', 'Wim Hof-style and power breathing carry safety warnings: never do them in or near water, driving or standing.']],
   ['mind', 'Mind', 'Meditation, long-hold yoga and calisthenics holds, sleep sounds and daily brain habits.', ['Sessions run on the same calm timer as Breathe.', 'Tick off daily habits to build a streak; sleep sounds fade out on a timer.']],
   ['progress', 'Body & weight', 'Weight, body measurements, body-fat estimate and progress photos.', ['Photos stay on this device only.', 'Body fat uses the US Navy tape method (neck, waist and, for women, hips).']],
@@ -6754,6 +7216,7 @@ function renderView(keepScroll) {
   sessBar();
   if (h === 'session' && S.session && !ticker) { ticker = setInterval(tick, 250); }
   if (h === 'session') tick();
+  demoStart();
 }
 // Last line of defence: an unexpected error in a handler shows a short message instead of failing silently.
 let errToastAt = 0;
@@ -7062,6 +7525,7 @@ document.addEventListener('click', (e) => {
   else if (a === 'del-recipe') { delArmed = false; deleteRecipe(b.dataset.id); }
   else if (a === 'del-plan') { delArmed = false; deletePlan(b.dataset.id); }
   else if (a === 'rp-remove') { removeRecipePhoto(b.dataset.id).then(() => toast('Photo removed'), () => toast('Could not remove that photo')); }
+  else if (a === 'demo-toggle') { demoPlay = !$('#ex-demo .dm-fig'); render(true); }
   else if (a === 'mp-nav') {
     const d = +b.dataset.d;
     if (!d) mpSel = dayKey();

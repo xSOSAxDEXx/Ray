@@ -44,6 +44,13 @@ const STATES = {
       await page.goto(URL + '#mealplan'); await page.waitForTimeout(100);
       const cal = await page.$$eval('#app .mp-cell', (l) => l.length);
       if (!/setup/.test(name) && (cal < 28 || cal > 42 || !(await page.$('#app .mp-month .mp-day')))) { failures += 1; console.log(`FAIL ${name} @${width}px: meal plan calendar has ${cal} cells`); }
+      if (!/setup/.test(name)) { // every exercise page shows its cartoon demo
+        await page.goto(URL + '#exercises'); await page.waitForTimeout(100);
+        const exIds = await page.$$eval('#ex-cards a', (l) => l.map((a) => a.getAttribute('href')));
+        const noDemo = [];
+        for (const h of exIds) { await page.goto(URL + h); await page.waitForTimeout(30); if (!(await page.$('#ex-demo svg'))) noDemo.push(h); }
+        if (!exIds.length || noDemo.length) { failures += 1; console.log(`FAIL ${name} @${width}px: exercise demos missing ${noDemo.join(', ') || '(no exercises listed)'}`); }
+      }
       const groups = await page.$$eval('#site-menu .menu-h', (l) => l.map((x) => x.textContent));
       if (groups.join('|') !== 'Food|Training|Mind & breath|Progress|You|Help') { failures += 1; console.log(`FAIL ${name} @${width}px: menu groups are ${groups.join(', ')}`); }
       if (errors.length) { failures += 1; console.log(`FAIL ${name} @${width}px: ${errors[0]}`); }
