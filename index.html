@@ -484,6 +484,12 @@ body.calm-open { overflow: hidden; }
 .star { background: none; border: 0; font-size: 1.5rem; color: var(--line); cursor: pointer; min-width: 36px; min-height: 36px; }
 .star.on { color: var(--carbs); }
 .note-list { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 4px; font-size: .9rem; }
+.ex-link { color: inherit; text-decoration: none; display: block; }
+.ex-link:hover { color: var(--accent); text-decoration: underline; }
+.ex-how { font-size: .78rem; font-weight: 700; margin-left: 6px; }
+.ex-card { text-decoration: none; color: inherit; }
+.demo-ph { border: 2px dashed var(--line); border-radius: var(--r); padding: 26px; display: grid; justify-items: center; gap: 6px; color: var(--muted); font-size: .85rem; }
+.demo-ph .ic { width: 28px; height: 28px; }
 .fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
 .fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
 .fbtn { display: inline-flex; align-items: center; gap: 8px; }
@@ -1634,6 +1640,55 @@ const PLANS = [
         ['Stair climber or ski erg', 1, '10 min', 0, 'Slightly harder; stand tall, don\'t lean on the rails.'],
         ['Cool-down', 1, '5 min', 0, 'Easy.']] }
     ] },
+  /* Roadmap plans: dumbbell home strength, 5K to 10K, 20-minute express, women's strength, low impact for older adults. */
+  { id: 'dumbbell-home-strength', title: 'Dumbbell Home Strength', diff: 2, muscles: ['Full body'], gear: 'Minimal', needs: [['dumbbells']], perWeek: 3, minutes: 45, equipment: 'A pair of adjustable dumbbells (a bench or sturdy chair helps)',
+    goal: 'A complete strength program with nothing but a set of dumbbells: squat, hinge, push, pull and carry, three days a week.',
+    schedule: '3 non-consecutive days a week, rotating A, B, C.',
+    warmup: '5 minutes: 10 bodyweight squats, 10 hip hinges, 10 arm circles each way, then one light set of the first exercise.',
+    progression: 'Use a weight you could lift 2 more times at the end of each set. When you hit the top of the rep range on every set, go up one dumbbell size next time.',
+    days: [
+      { name: 'Day A', focus: 'Squat & push', ex: [['Goblet squat', 3, '8–12', 90, ''], ['Dumbbell bench press', 3, '8–12', 90, 'Use a bench, or press from the floor.'], ['One-arm dumbbell row', 3, '10–12', 60, 'Each side.'], ['Dumbbell lateral raise', 2, '12–15', 45, ''], ['Front plank', 3, '30–45 s', 45, '']] },
+      { name: 'Day B', focus: 'Hinge & pull', ex: [['Dumbbell Romanian deadlift', 3, '8–12', 90, ''], ['Bulgarian split squat (back foot on a chair)', 3, '8–10', 60, 'Each leg.'], ['Seated dumbbell shoulder press', 3, '8–12', 75, ''], ['Dumbbell curl', 2, '10–12', 45, ''], ['Suitcase carry', 3, '30–40 s', 45, 'Each side.']] },
+      { name: 'Day C', focus: 'Full body', ex: [['Dumbbell walking lunge', 3, '10–12', 75, 'Each leg.'], ['Incline dumbbell press', 3, '8–12', 75, 'Bench propped up, or push-ups instead.'], ['Bent-over row (alternate arms each rep)', 3, '10–12', 60, ''], ['Glute bridge (weighted)', 3, '12–15', 45, ''], ['Dead bug', 3, '8–10', 45, 'Each side.']] }
+    ] },
+  { id: '5k-to-10k', title: '5K to 10K', diff: 2, muscles: ['Cardio', 'Lower body & glutes'], gear: 'None', needs: [], perWeek: 3, minutes: 45, equipment: 'Running shoes', noLoad: true,
+    goal: 'For people who can already run 5 km: build to a comfortable 10 km in about 8 weeks, with one easy run, one interval session and one long run a week.',
+    schedule: '3 runs a week with a rest or easy day between. Most running should feel easy enough to talk.',
+    warmup: 'Each session starts with 5–10 minutes of easy jogging.',
+    progression: 'Add about 5 minutes to the long run each week (roughly 10% more distance), up to 70 minutes. Every 4th week, cut back by a third to recover.',
+    days: [
+      { name: 'Easy run', focus: 'Conversational pace', ex: [['Easy jog warm-up', 1, '5 min', 0, ''], ['Continuous jog', 1, '30–40 min', 0, 'Easy: you could talk in full sentences.'], ['Cool-down walk', 1, '5 min', 0, '']] },
+      { name: 'Intervals', focus: 'Speed', ex: [['Easy jog warm-up', 1, '10 min', 0, ''], ['Fast run', 6, '180 s', 120, 'Comfortably hard: 10K effort or a little faster. Jog slowly to recover.'], ['Cool-down walk', 1, '5 min', 0, '']] },
+      { name: 'Long run', focus: 'Endurance', ex: [['Easy jog warm-up', 1, '5 min', 0, ''], ['Continuous jog', 1, '45–70 min', 0, 'Slower than your easy run. Walk briefly if you need to.'], ['Build-up strides', 4, '20 s', 60, 'Gradually faster, then relax.']] }
+    ] },
+  { id: 'express-20', title: '20-Minute Express', diff: 2, muscles: ['Full body', 'Cardio'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 3, minutes: 20, equipment: 'One or two dumbbells, or a kettlebell',
+    goal: 'For busy weeks: a full-body circuit in 20 minutes, with weights to keep building strength.',
+    schedule: '2–4 times a week. Move straight from one exercise to the next and rest at the end of each round.',
+    warmup: '2 minutes: jumping jacks, squats and arm circles.',
+    progression: 'Do 3 rounds. When you finish them with time to spare, use a heavier weight or add a 4th round.',
+    days: [
+      { name: 'Circuit A', focus: 'Legs & push', ex: [['Goblet squat', 3, '12', 0, ''], ['Push-up', 3, '8–12', 0, 'Knees down or incline if needed.'], ['Dumbbell swing or hip hinge', 3, '15', 0, ''], ['Mountain climbers', 3, '30 s', 60, 'Rest after this one.']] },
+      { name: 'Circuit B', focus: 'Hinge & pull', ex: [['Dumbbell Romanian deadlift', 3, '12', 0, ''], ['One-arm dumbbell row', 3, '10', 0, 'Each side.'], ['Reverse lunge', 3, '10', 0, 'Each leg.'], ['Front plank', 3, '30 s', 60, 'Rest after this one.']] }
+    ] },
+  { id: 'womens-strength', title: "Women's Strength Foundations", diff: 2, muscles: ['Lower body & glutes', 'Upper body'], gear: 'Minimal', needs: [['dumbbells'], ['bench']], perWeek: 3, minutes: 45, equipment: 'Dumbbells and a bench (or sturdy step)',
+    goal: 'Lift progressively heavier with a lower, upper and full-body day. Heavy-ish strength training builds muscle and supports bone density, which matters more with age.',
+    schedule: '3 days a week. Pair with 1–2 walks or easy cardio days.',
+    warmup: '5 minutes: glute bridges, bodyweight squats and band pull-aparts, then a light set of the first lift.',
+    progression: 'Most sets should end with 1–2 reps left. When every set reaches the top of the range, go up to the next dumbbell. Strength, not exhaustion, is the goal.',
+    days: [
+      { name: 'Lower', focus: 'Glutes & legs', ex: [['Goblet squat', 4, '6–10', 90, ''], ['Barbell hip thrust', 3, '8–12', 90, 'Use a dumbbell across your hips if you don\'t have a barbell.'], ['Dumbbell Romanian deadlift', 3, '8–10', 90, ''], ['Step-up onto a stair or step', 3, '8–10', 60, 'Each leg.'], ['Side plank', 2, '20–30 s', 45, 'Each side.']] },
+      { name: 'Upper', focus: 'Back, shoulders & arms', ex: [['One-arm dumbbell row', 4, '8–12', 75, 'Each side.'], ['Dumbbell bench press', 3, '8–12', 75, ''], ['Seated dumbbell shoulder press', 3, '8–10', 75, ''], ['Band face pull', 3, '12–15', 45, 'Or rear-delt raises.'], ['Dumbbell curl', 2, '10–12', 45, '']] },
+      { name: 'Full body', focus: 'Strength & carries', ex: [['Bulgarian split squat (back foot on a chair)', 3, '8–10', 75, 'Each leg.'], ['Push-up', 3, '6–12', 60, 'Incline if needed.'], ['Single-leg Romanian deadlift', 3, '8', 60, 'Each leg, hold a chair if needed.'], ['Farmer carry', 3, '40 s', 60, 'Heavy.'], ['Dead bug', 3, '8–10', 45, 'Each side.']] }
+    ] },
+  { id: 'strong-steady', title: 'Strong & Steady (Low Impact)', diff: 1, muscles: ['Full body', 'Mobility'], gear: 'None', needs: [], perWeek: 3, minutes: 30, equipment: 'A sturdy chair and a wall (light dumbbells optional)', noLoad: true,
+    goal: 'Gentle strength and balance work for older adults or anyone returning from a long break: get up from chairs easily, climb stairs and stay steady on your feet.',
+    schedule: '2–3 days a week, plus a daily walk if you can. Always keep a chair or counter within reach for balance.',
+    warmup: '3–5 minutes of marching in place and gentle shoulder rolls.',
+    progression: 'When an exercise feels easy for all sets, try the harder version on its page, or hold light weights. Check with your doctor before starting if you have heart, joint or balance conditions.',
+    days: [
+      { name: 'Day A', focus: 'Legs & balance', ex: [['Chair sit-to-stand', 3, '8–12', 60, 'Slowly on the way down.'], ['Wall push-up', 3, '10–12', 60, ''], ['Step-up onto a stair or step', 2, '8', 60, 'Each leg, hold the rail.'], ['Single-leg stand', 3, '20–30 s', 30, 'Each leg, near a counter.'], ['Standing single-leg calf raise', 2, '10', 45, 'Use both legs if needed.']] },
+      { name: 'Day B', focus: 'Back, core & posture', ex: [['Band seated row', 3, '12', 60, 'Or a towel row.'], ['Glute bridge', 3, '10–12', 60, ''], ['Bird dog', 2, '6', 45, 'Each side, slowly.'], ['Wall slides', 2, '10', 30, ''], ['Suitcase carry', 3, '30 s', 45, 'A light bag or dumbbell in one hand; walk tall.']] }
+    ] },
   { id: 'mobility-core', title: 'Mobility & Core Reset', diff: 1, muscles: ['Core', 'Mobility'], gear: 'Minimal', needs: [['bands']], perWeek: 3, minutes: 20, equipment: 'Yoga mat, light band', noLoad: true,
     goal: 'Ease stiffness from sitting, improve range of motion and build a stable core. Pairs well with any other plan.',
     schedule: '2–3 times a week, on rest days or right after a workout.',
@@ -2488,7 +2543,8 @@ RECIPES.forEach((r) => applyDiet(Object.assign(r, COOK[r.id] || (r.how ? {} : { 
 const PLAN_MET = { foundations: 3.5, 'upper-lower': 5, 'home-circuit': 6, 'push-pull-legs': 6, 'walk-to-5k': 5, 'mobility-core': 2.5, 'first-steps': 3.5, 'core-builder': 3.8,
   'legs-glutes-home': 4.5, 'one-dumbbell': 4.5, 'band-upper': 4, 'hiit-conditioning': 8, 'bodyweight-advanced': 6, 'kb-hiit-starter': 7, 'kb-hiit-burn': 8.5, 'kb-hiit-inferno': 9.5,
   'yates-hit': 6, 'yates-classic': 6, 'kb-swing-getup': 8, 'kb-press-ladders': 6, 'longevity-strength-hiit': 5.5, 'animal-based-athlete': 6.5,
-  'zone2-base': 5, 'rower-intervals': 7, 'bike-sprints': 8.5, 'treadmill-incline': 6, 'jump-rope': 9, 'low-impact-cardio': 5.5 };
+  'zone2-base': 5, 'rower-intervals': 7, 'bike-sprints': 8.5, 'treadmill-incline': 6, 'jump-rope': 9, 'low-impact-cardio': 5.5,
+  'dumbbell-home-strength': 5, '5k-to-10k': 8, 'express-20': 6, 'womens-strength': 5, 'strong-steady': 3 };
 PLANS.forEach((p) => { p.met = PLAN_MET[p.id]; });
 // [id, label, group]
 const EQUIPMENT = [['dumbbells', 'Dumbbells', 's'], ['kettlebell', 'Kettlebell', 's'], ['bench', 'Weight bench', 's'], ['bands', 'Resistance bands', 's'],
@@ -2520,6 +2576,127 @@ const ICON_PATHS = {
   moon: 'M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z'
 };
 const icon = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON_PATHS[name]}"/></svg>`;
+
+/* ---------- Exercise library ----------
+   Each movement is defined once: what it works, the equipment, form cues, and an easier and a harder version. Plan exercises
+   link to an entry by name (first pattern that matches wins); the plan's own note stays alongside for plan-specific detail.
+   [id, name, pattern, muscles, equipment, [cues], easier, harder] */
+const EX_LIB = [
+  // Squats and lunges
+  ['goblet-squat', 'Goblet squat', /goblet squat(?! to press)/i, 'Quads, glutes, core', 'Dumbbell or kettlebell', ['Hold the weight at your chest, elbows down.', 'Sit between your heels, chest tall, knees tracking over toes.', 'Drive up through the whole foot.'], 'Bodyweight squat to a chair', 'Pause 2 s at the bottom, or front squat'],
+  ['back-squat', 'Barbell back squat', /back squat/i, 'Quads, glutes, adductors, back', 'Barbell & rack', ['Bar on upper back, brace your belly before each rep.', 'Hips and knees bend together; knees follow toes.', 'Stand up by pushing the floor away, chest leading.'], 'Goblet squat', 'Pause squat or add weight'],
+  ['front-squat', 'Front squat', /front squat/i, 'Quads, glutes, upper back', 'Kettlebell, dumbbells or barbell', ['Weight racked high on the chest, elbows up.', 'Stay upright and sit straight down.', 'Keep your upper back tight as you stand.'], 'Goblet squat', 'Heavier or paused reps'],
+  ['bodyweight-squat', 'Bodyweight squat', /bodyweight squat|squat to calf raise|squat thrust/i, 'Quads, glutes', 'None', ['Feet shoulder-width, arms forward for balance.', 'Sit back and down as low as you can keep your heels down.', 'Stand tall and squeeze your glutes.'], 'Squat to a chair', 'Jump squat or goblet squat'],
+  ['squat-jump', 'Squat jump', /squat jump/i, 'Quads, glutes, calves (power)', 'None', ['Quarter-squat, swing your arms.', 'Jump straight up.', 'Land softly with bent knees and go straight into the next rep.'], 'Fast bodyweight squat', 'Higher or continuous jumps'],
+  ['sit-to-stand', 'Chair sit-to-stand', /sit-to-stand/i, 'Quads, glutes, balance', 'Chair', ['Sit on the front of the chair, feet under your knees.', 'Lean forward and stand without using your hands.', 'Sit back down slowly.'], 'Use your hands on your thighs', 'Hold a weight, or slower down'],
+  ['deep-squat-hold', 'Deep squat hold', /deep squat hold/i, 'Hips, ankles (mobility)', 'None', ['Sit as deep as you comfortably can, heels down.', 'Press your knees out with your elbows.', 'Breathe slowly and relax into it.'], 'Hold onto a door frame', 'Longer holds'],
+  ['wall-sit', 'Wall sit', /wall sit/i, 'Quads (endurance)', 'Wall', ['Back flat on the wall, thighs about parallel.', 'Knees over ankles.', 'Breathe; don\'t push on your thighs.'], 'Sit higher on the wall', 'Hold a weight on your lap'],
+  ['split-squat', 'Bulgarian split squat', /bulgarian|supported split squat|split squat/i, 'Quads, glutes (one leg at a time)', 'Bench or chair, optional dumbbells', ['Back foot on a bench, front foot far enough forward.', 'Drop the back knee straight down.', 'Push through the front heel.'], 'Supported split squat holding a chair', 'Hold dumbbells or add a pause'],
+  ['reverse-lunge', 'Reverse lunge', /reverse lunge|alternating reverse lunge/i, 'Quads, glutes', 'None or dumbbells', ['Step back far enough that both knees reach about 90°.', 'Keep your chest up and front heel down.', 'Push off the front foot to stand.'], 'Hold a chair for balance', 'Hold dumbbells or a front-rack bell'],
+  ['walking-lunge', 'Walking lunge', /walking lunge/i, 'Quads, glutes', 'Dumbbells', ['Long step forward, back knee toward the floor.', 'Stay tall, step through to the next rep.', 'Keep the front knee over the foot.'], 'Stationary lunge', 'Heavier dumbbells'],
+  ['jump-lunge', 'Alternating jump lunge', /jump lunge/i, 'Quads, glutes (power)', 'None', ['From a lunge, jump and switch legs in the air.', 'Land softly in the opposite lunge.', 'Keep your chest up.'], 'Alternating reverse lunge', 'Faster tempo'],
+  ['lateral-lunge', 'Lateral lunge', /lateral lunge|curtsy lunge/i, 'Glutes, adductors, quads', 'None or kettlebell', ['Step wide and sit into one hip, other leg straight.', 'Keep both feet flat and chest up.', 'Push back to center.'], 'Shorter step, hold a chair', 'Hold a goblet weight'],
+  ['step-up', 'Step-up', /step-up/i, 'Quads, glutes, balance', 'Step or stair', ['Whole foot on the step.', 'Drive through the top leg; don\'t push off the back foot.', 'Step down slowly.'], 'Lower step, hold a rail', 'Higher step or hold weights'],
+  ['pistol', 'Pistol squat to a chair', /pistol|shrimp squat/i, 'Quads, glutes, balance', 'Chair', ['Stand on one leg, other leg forward.', 'Sit back slowly to the chair.', 'Stand up without rocking.'], 'Higher seat or hold a door frame', 'Lower seat, then full pistol'],
+  ['leg-press', 'Leg press', /leg press|hack squat/i, 'Quads, glutes', 'Machine', ['Feet shoulder-width, mid-platform.', 'Lower until knees reach about 90° without your lower back lifting.', 'Press without locking your knees hard.'], 'Lighter load, shorter range', 'Slower lowering or narrow stance'],
+  ['leg-extension', 'Leg extension', /leg extension/i, 'Quads', 'Machine', ['Pad on the lower shin.', 'Straighten fully and squeeze 1 s.', 'Lower slowly.'], 'Lighter', 'Pause at the top'],
+  ['calf-raise', 'Calf raise', /calf raise/i, 'Calves', 'None, step or machine', ['Rise as high as you can.', 'Pause at the top.', 'Lower all the way down slowly.'], 'Both legs, holding a wall', 'One leg, or add weight'],
+  // Hinges and glutes
+  ['rdl', 'Romanian deadlift', /romanian deadlift|stiff-leg deadlift|single-leg romanian/i, 'Hamstrings, glutes, back', 'Dumbbells, kettlebell or barbell', ['Soft knees, push your hips back.', 'Weight slides down your thighs, back flat.', 'Stand by squeezing your glutes.'], 'Hip hinge with a broomstick', 'Single-leg or heavier'],
+  ['deadlift', 'Deadlift', /deadlift(?! high)|rack deadlift/i, 'Whole back chain: glutes, hamstrings, back', 'Barbell or kettlebell', ['Bar over mid-foot, shins close.', 'Brace, pull the slack out, then push the floor away.', 'Stand tall; lower with control.'], 'Kettlebell deadlift or rack pull', 'More weight or deficit pulls'],
+  ['swing', 'Kettlebell swing', /swing/i, 'Glutes, hamstrings, grip (power)', 'Kettlebell or dumbbell', ['Hike the bell back between your legs like a football.', 'Snap your hips forward; arms just guide it.', 'Stand tall at the top: glutes and abs tight.'], 'Kettlebell deadlift', 'Heavier bell or one-arm swing'],
+  ['hip-thrust', 'Hip thrust', /hip thrust|frog pump/i, 'Glutes', 'Bench, barbell or none', ['Upper back on a bench, feet flat.', 'Drive hips up until your body is straight from knees to shoulders.', 'Squeeze 1 s; chin tucked.'], 'Glute bridge on the floor', 'Single-leg or heavier'],
+  ['glute-bridge', 'Glute bridge', /glute bridge|single-leg glute bridge/i, 'Glutes, hamstrings', 'None or weight', ['Feet flat, close to your hips.', 'Press through your heels and lift your hips.', 'Don\'t arch your lower back.'], 'Smaller range', 'Single-leg, weighted or marching'],
+  ['leg-curl', 'Leg curl', /leg curl/i, 'Hamstrings', 'Machine', ['Pad just above the heels.', 'Curl fully, pause.', 'Lower slowly.'], 'Lighter', 'Slower lowering'],
+  ['nordic', 'Nordic hamstring lowering', /nordic/i, 'Hamstrings (eccentric)', 'Anchor for your feet', ['Kneel with feet anchored.', 'Lower forward as slowly as you can, hips straight.', 'Catch yourself with your hands and push back.'], 'Shorter range', 'Slower or pause halfway'],
+  ['back-extension', 'Back extension', /back extension|superman/i, 'Lower back, glutes', 'Bench or floor', ['Hinge at the hips, back neutral.', 'Lift until your body is straight.', 'No over-arching at the top.'], 'Superman hold on the floor', 'Hold a plate'],
+  ['clamshell', 'Side-lying clamshell', /clamshell|side-lying leg raise/i, 'Side glutes', 'None or band', ['Lie on your side, knees bent, heels together.', 'Lift the top knee without rolling back.', 'Lower slowly.'], 'Smaller range', 'Add a band'],
+  // Pushes
+  ['bench-press', 'Bench press', /bench press|floor press|flat dumbbell press|dumbbell floor or bench press/i, 'Chest, shoulders, triceps', 'Barbell or dumbbells, bench', ['Shoulder blades squeezed back and down.', 'Lower to mid-chest, elbows about 45°.', 'Press up and slightly back.'], 'Push-up or lighter dumbbells', 'Pause on the chest'],
+  ['incline-press', 'Incline press', /incline (barbell|dumbbell) press/i, 'Upper chest, shoulders', 'Barbell or dumbbells, incline bench', ['Bench at 30–45°.', 'Lower to the upper chest.', 'Press up over the shoulders.'], 'Lower incline or lighter', 'Slower lowering'],
+  ['chest-fly', 'Chest fly', /fly|crossover/i, 'Chest', 'Dumbbells, cables or band', ['Slight bend in the elbows, keep it fixed.', 'Open wide until you feel a chest stretch.', 'Hug back together.'], 'Lighter, shorter range', 'Pause in the stretch'],
+  ['push-up', 'Push-up', /push-up(?!.*pike)|wall push-up/i, 'Chest, shoulders, triceps, core', 'None', ['Hands under shoulders, body in one straight line.', 'Lower your chest to just above the floor.', 'Push the floor away.'], 'Incline push-up on a counter or wall', 'Feet raised, archer or diamond push-up'],
+  ['pike-push-up', 'Pike push-up', /pike push-up/i, 'Shoulders, triceps', 'None', ['Hips high, head between your hands.', 'Lower the top of your head toward the floor.', 'Press back up.'], 'Incline pike on a step', 'Feet raised on a chair'],
+  ['overhead-press', 'Overhead press', /overhead press|shoulder press|seated dumbbell (or smith-machine )?press|seated dumbbell press|arnold press|single-arm press|half-kneeling/i, 'Shoulders, triceps, core', 'Barbell, dumbbells or kettlebell', ['Squeeze your glutes and brace.', 'Press straight up, head moves through at the top.', 'Lower to the chin with control.'], 'Seated or lighter', 'Strict standing, heavier'],
+  ['clean-press', 'Clean & press', /clean & press|clean, squat, press|goblet squat to press|thruster/i, 'Whole body', 'Kettlebell or dumbbell', ['Clean the bell to your chest in one hip snap.', 'Brace, then press overhead.', 'Lower to the rack, then down between your legs.'], 'Press only', 'Heavier or more rungs'],
+  ['lateral-raise', 'Lateral raise', /lateral raise/i, 'Side shoulders', 'Dumbbells, cable or band', ['Slight lean forward, soft elbows.', 'Raise out to the sides to shoulder height.', 'Lower slowly.'], 'Lighter', 'Pause at the top'],
+  ['dip', 'Triceps dip', /dip/i, 'Triceps, chest', 'Chair or bars', ['Hands on the edge, shoulders down.', 'Lower until elbows reach about 90°.', 'Press back up.'], 'Feet closer, bent knees', 'Feet raised or deeper'],
+  ['triceps-ext', 'Triceps extension', /pushdown|triceps extension|ez-bar triceps|overhead (cable|ez-bar) (triceps )?extension|reverse-grip cable extension/i, 'Triceps', 'Cable, EZ bar or dumbbell', ['Upper arms still.', 'Straighten fully.', 'Control the way back.'], 'Lighter', 'Slower lowering'],
+  // Pulls
+  ['pull-up', 'Pull-up', /pull-up|chin-up|wide-grip pull-up/i, 'Lats, upper back, biceps', 'Pull-up bar', ['Start from a full hang, shoulders active.', 'Pull your chest toward the bar.', 'Lower all the way with control.'], 'Band-assisted or negatives', 'Weighted or slower'],
+  ['pulldown', 'Lat pulldown', /pulldown(?!.*straight)|close-grip pulldown/i, 'Lats, upper back, biceps', 'Cable machine or band', ['Lean back slightly, chest up.', 'Pull the bar to your upper chest, elbows down.', 'Let it rise slowly.'], 'Lighter', 'Pause at the chest'],
+  ['straight-arm-pulldown', 'Straight-arm pulldown', /straight-arm pulldown|pullover/i, 'Lats', 'Cable or dumbbell', ['Arms nearly straight.', 'Sweep down to your thighs.', 'Feel the stretch at the top.'], 'Lighter', 'Pause at the bottom'],
+  ['row', 'Row', /\brow\b/i, 'Upper back, lats, biceps', 'Dumbbell, barbell, cable, band or table', ['Flat back, brace.', 'Pull your elbow toward your hip.', 'Squeeze your shoulder blades, then lower slowly.'], 'Supported row or lighter', 'Pause at the top or heavier'],
+  ['face-pull', 'Face pull', /face pull|pull-apart/i, 'Rear shoulders, upper back', 'Cable or band', ['Pull toward your forehead, hands apart.', 'Thumbs back at the end.', 'Return slowly.'], 'Lighter band', 'Pause at the end'],
+  ['rear-delt', 'Rear-delt raise', /rear-delt/i, 'Rear shoulders', 'Dumbbells or machine', ['Hinge forward, soft elbows.', 'Raise out wide.', 'Lower slowly.'], 'Lighter', 'Pause at the top'],
+  ['high-pull', 'High pull', /high pull/i, 'Upper back, hips (power)', 'Kettlebell', ['Hike like a swing.', 'Snap the hips and pull the elbow high and back.', 'Let the bell drop back into the hike.'], 'Swing', 'Heavier or snatch'],
+  ['snatch', 'Kettlebell snatch', /snatch/i, 'Whole body (power)', 'Kettlebell', ['Swing it back, snap the hips.', 'Punch through as it floats overhead; don\'t let it flip onto your wrist.', 'Drop it back into the swing.'], 'High pull', 'Heavier or longer sets'],
+  ['shrug', 'Shrug', /shrug/i, 'Upper traps', 'Dumbbells', ['Lift your shoulders to your ears.', 'Pause.', 'Lower fully.'], 'Lighter', 'Pause longer'],
+  ['curl', 'Biceps curl', /curl(?!.*leg)/i, 'Biceps', 'Dumbbells, EZ bar, barbell or band', ['Elbows by your sides.', 'Curl up without swinging.', 'Lower slowly.'], 'Lighter', 'Incline curl or slower lowering'],
+  ['dead-hang', 'Dead hang', /dead hang/i, 'Grip, shoulders (decompression)', 'Pull-up bar', ['Hang with straight arms.', 'Relax your shoulders, breathe.', 'Step down before your grip fails.'], 'Feet on a box', 'Longer holds'],
+  ['get-up', 'Turkish get-up', /get-up/i, 'Whole body, shoulder stability', 'Kettlebell', ['Eyes on the bell the whole time.', 'Roll to the elbow, then the hand, bridge, sweep the leg, stand.', 'Reverse every step slowly.'], 'No weight (shoe on the fist)', 'Heavier bell'],
+  ['carry', 'Loaded carry', /carry|march in place holding/i, 'Grip, core, posture', 'Dumbbells or kettlebells', ['Stand tall, shoulders down.', 'Short, steady steps.', 'Don\'t lean toward the weight.'], 'Lighter or shorter', 'Heavier or longer'],
+  ['halo', 'Halo', /halo|around-the-world/i, 'Shoulders, core', 'Kettlebell', ['Hold the bell by the horns.', 'Circle it close around your head.', 'Keep your ribs down.'], 'Lighter', 'Slower'],
+  // Core
+  ['plank', 'Plank', /plank(?!.*(jack|tap|row|pull))|front plank|incline plank/i, 'Core', 'None', ['Elbows under shoulders, body straight.', 'Squeeze glutes and abs.', 'Breathe; don\'t let your hips sag.'], 'On your knees or hands on a chair', 'Longer, or lift one foot'],
+  ['side-plank', 'Side plank', /side plank/i, 'Obliques, side hips', 'None', ['Elbow under the shoulder.', 'Body straight, hips high.', 'Breathe.'], 'Knees bent', 'Top leg raised'],
+  ['plank-dynamic', 'Plank shoulder taps', /shoulder taps|plank row|pull-through|plank jacks/i, 'Core (anti-rotation)', 'None or kettlebell', ['Feet wide, hips still.', 'Lift one hand at a time.', 'Move slowly.'], 'Feet wider or knees down', 'Feet together'],
+  ['dead-bug', 'Dead bug', /dead bug/i, 'Deep core', 'None or kettlebell', ['Lower back pressed down.', 'Lower the opposite arm and leg slowly.', 'Breathe out as you reach.'], 'Move legs only', 'Hold a weight'],
+  ['bird-dog', 'Bird dog', /bird dog/i, 'Core, back, glutes', 'None', ['Hands under shoulders, knees under hips.', 'Reach opposite arm and leg long.', 'Pause; don\'t rotate your hips.'], 'Arms or legs only', 'Longer pause'],
+  ['hollow', 'Hollow body hold', /hollow|l-sit|tuck hold/i, 'Abs', 'None', ['Lower back glued to the floor.', 'Arms and legs reach long.', 'Breathe.'], 'Knees bent', 'Arms overhead, legs lower'],
+  ['crunch', 'Crunch', /crunch|knee raise/i, 'Abs', 'None or bar', ['Exhale and curl your ribs toward your hips.', 'Control the way down.', 'No yanking on your neck.'], 'Smaller range', 'Slower or straight legs'],
+  ['pallof', 'Pallof press', /pallof/i, 'Core (anti-rotation)', 'Band or cable', ['Stand side-on to the anchor.', 'Press straight out and hold.', 'Don\'t let it twist you.'], 'Lighter band', 'Longer hold'],
+  ['mountain-climber', 'Mountain climbers', /mountain climber/i, 'Core, shoulders, cardio', 'None', ['Plank position.', 'Drive knees toward your chest in turn.', 'Hips level.'], 'Slow steps', 'Faster'],
+  // Conditioning
+  ['burpee', 'Burpee', /burpee|squat thrust/i, 'Whole body, cardio', 'None', ['Squat, hands down, step or jump back.', 'Chest to floor (optional), back to squat.', 'Stand or jump.'], 'Step-back burpee', 'Add a push-up and jump'],
+  ['jumping-jack', 'Jumping jacks', /jumping jacks|step jacks|skater|high knees|fast feet|bear crawl/i, 'Cardio, legs', 'None', ['Light on the balls of your feet.', 'Steady rhythm.', 'Breathe.'], 'Step version', 'Faster or longer'],
+  ['jump-rope', 'Jump rope', /jump rope|bounce|alternate-foot|side-to-side|high-knee finisher/i, 'Calves, cardio, coordination', 'Jump rope', ['Wrists turn the rope, elbows close.', 'Small jumps.', 'Land softly.'], 'Shorter rounds', 'Double-unders or longer rounds'],
+  ['run', 'Running', /jog|run|strides|sprint(?!.*bike)|hill/i, 'Cardio, legs', 'Shoes', ['Tall posture, relaxed shoulders.', 'Short, quick steps under your hips.', 'Easy runs at a pace you can talk at.'], 'Walk-jog intervals', 'Longer or faster intervals'],
+  ['walk', 'Walking', /walk|hike|ruck/i, 'Cardio', 'Shoes (backpack optional)', ['Swing your arms, stand tall.', 'Brisk pace: breathing faster but able to talk.', 'Add hills for more effort.'], 'Shorter, flatter', 'Hills, incline or a weighted backpack'],
+  ['rowing', 'Rowing machine', /(easy|hard|strong|cool-down) row\b|rowing/i, 'Whole body, cardio', 'Rower', ['Legs, then body, then arms on the drive.', 'Arms, body, then legs on the return.', '24–30 strokes a minute for hard work.'], 'Shorter pieces', 'Longer or faster pieces'],
+  ['cycling', 'Cycling', /spin\b|bike|^sprint$|hard effort/i, 'Legs, cardio', 'Stationary or air bike', ['Seat at hip height, slight knee bend at the bottom.', 'Smooth circles.', 'Stay seated for sprints.'], 'Less resistance', 'More resistance or longer'],
+  ['machine-cardio', 'Cardio machine', /elliptical|stair climber|ski erg|^push$|zone 2|easy warm-up|cool-down|warm-up/i, 'Cardio', 'Any cardio machine', ['Start easy, build gradually.', 'Stand tall; don\'t lean on the rails.', 'Match the effort the plan asks for.'], 'Easier pace', 'Harder pace or longer'],
+  // Mobility
+  ['mobility', 'Mobility drill', /cat-cow|world's greatest|90\/90|open book|wall slides|stretch|child's pose|single-leg stand/i, 'Hips, spine, shoulders', 'None', ['Move slowly through a comfortable range.', 'Breathe out as you go deeper.', 'No pain: stretch, don\'t strain.'], 'Smaller range', 'Slower, longer holds']
+].map(([id, name, re, muscles, eq, cues, easier, harder]) => ({ id, name, re, muscles, eq, cues, easier, harder }));
+// More specific patterns are tried first, so "Side plank" isn't caught by "plank" or "Hard row" by "row".
+const EX_FIRST = ['rowing', 'cycling', 'plank-dynamic', 'side-plank', 'pike-push-up', 'straight-arm-pulldown', 'rear-delt', 'burpee', 'high-pull'];
+const EX_MATCH = [...EX_FIRST.map((id) => EX_LIB.find((x) => x.id === id)), ...EX_LIB.filter((x) => !EX_FIRST.includes(x.id))];
+const exCacheLib = new Map();
+const libFor = (name) => { if (!exCacheLib.has(name)) exCacheLib.set(name, EX_MATCH.find((x) => x.re.test(name)) || null); return exCacheLib.get(name); };
+
+const exLink = (name) => { const x = libFor(name); return x ? `<a class="ex-name ex-link" href="#ex-${x.id}">${esc(name)}</a>` : `<div class="ex-name">${esc(name)}</div>`; };
+let exQ = '', exMuscle = 'All';
+const EX_GROUPS = [['All', null], ['Legs', /quad|glute|hamstring|calf|calves|adductor/i], ['Push', /chest|tricep|shoulder/i], ['Pull', /lats|upper back|bicep|rear|grip/i], ['Core', /core|abs|oblique/i], ['Cardio', /cardio/i], ['Mobility', /mobility|hips, spine/i]];
+function viewExercises() {
+  const g = EX_GROUPS.find((x) => x[0] === exMuscle) || EX_GROUPS[0], q = exQ.trim().toLowerCase();
+  const list = EX_LIB.filter((x) => (!g[1] || g[1].test(x.muscles)) && (!q || (x.name + ' ' + x.muscles + ' ' + x.eq).toLowerCase().includes(q)));
+  return `<a class="btn btn-ghost" href="#workouts" style="margin-bottom:10px">← Workout plans</a>
+  <div class="page-head"><div><div class="eyebrow">${EX_LIB.length} movements</div><h1>Exercise library</h1>
+    <p class="muted">Every movement in the plans, with form cues, the muscles it works, and an easier and a harder version.</p></div></div>
+  <div class="fbar"><input class="input fsearch" id="ex-q" type="search" placeholder="Search exercises…" value="${esc(exQ)}" aria-label="Search exercises"></div>
+  <div class="row" role="group" aria-label="Filter by area" style="margin-bottom:14px">${EX_GROUPS.map(([n]) => `<button class="chip" data-act="ex-group" data-g="${n}" aria-pressed="${n === exMuscle}">${n}</button>`).join('')}</div>
+  <div class="calm-cards" id="ex-cards">${list.map((x) => `<a class="panel calm-card ex-card" href="#ex-${x.id}"><h3>${esc(x.name)}</h3><p class="muted" style="font-size:.85rem">${esc(x.muscles)}</p><p class="calm-meta"><span>${esc(x.eq)}</span></p></a>`).join('') || emptyState('clock', 'No exercises match that search.')}</div>`;
+}
+function viewExercise(id) {
+  const x = EX_LIB.find((y) => y.id === id);
+  if (!x) return notFound('That exercise');
+  const hist = exHistory(), names = [...hist.keys()].filter((n) => libFor(n) === x);
+  const uses = PLANS.filter((p) => p.days.some((d) => d.ex.some((e) => libFor(e[0]) === x)));
+  const best = names.map((n) => { const l = hist.get(n), b = l.reduce((a, e) => (exScore(e) > exScore(a) ? e : a)); return { n, b, l }; });
+  const series = best.filter((r) => r.l.some((e) => e.e1)).slice(0, 1).map((r) => ({ name: `Est. 1-rep max (${wUnit()})`, color: 'var(--accent)', pts: r.l.filter((e) => e.e1).map((e) => ({ d: e.date, v: showW(e.e1) })) }))[0];
+  return `<a class="btn btn-ghost" href="#exercises" style="margin-bottom:10px">← Exercise library</a>
+  <div class="grid">
+    <section class="panel span-7 stack"><div class="eyebrow">${esc(x.muscles)}</div><h1>${esc(x.name)}</h1><p class="muted">Equipment: ${esc(x.eq)}</p>
+      <div class="demo-ph" role="img" aria-label="Demonstration coming soon">${icon('clock')}<span>Demo video or illustration coming soon</span></div>
+      <h2>Form cues</h2><ol class="calm-steps">${x.cues.map((c) => `<li>${esc(c)}</li>`).join('')}</ol>
+      <div class="rinfo-grid"><div><div class="eyebrow">Easier</div><p>${esc(x.easier)}</p></div><div><div class="eyebrow">Harder</div><p>${esc(x.harder)}</p></div></div></section>
+    <section class="panel span-5 stack"><h2>Your records</h2>
+      ${best.length ? `<ul class="list">${best.map((r) => `<li><div class="grow"><b>${esc(r.n)}</b><div class="muted" style="font-size:.82rem">${r.l.length} session${r.l.length === 1 ? '' : 's'} · best ${fmtDay(r.b.date, { month: 'short', day: 'numeric' })}</div></div><span class="num">${r.b.load ? `${showW(r.b.load)} ${wUnit()}${r.b.top ? ' × ' + r.b.top : ''}` : `${r.b.top} ${r.b.timed ? 's' : 'reps'}`}</span></li>`).join('')}</ul>` : emptyState('flame', 'Log a workout with this exercise to see your best sets here.')}
+      ${series && series.pts.length > 1 ? `<div class="chart-wrap">${lineChart([series], { label: `${x.name} progress`, dec: 0 })}</div>` : ''}
+      <h2 style="margin-top:8px">In these plans</h2><div class="row">${uses.map((p) => `<a class="chip" href="#plan-${p.id}">${esc(p.title)}</a>`).join('') || '<span class="muted">Only in your own plans.</span>'}</div></section>
+  </div>`;
+}
 
 /* ---------- Helpers ---------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -3093,7 +3270,7 @@ function viewPlanForm(id) {
   const key = 'p:' + (id || 'new');
   if (draftFor !== key) { if (id && !(S.customPlans || []).some((x) => x.id === id)) return notFound('That plan'); draft = planDraft(id); draftFor = key; }
   const d = draft;
-  return `<a class="btn btn-ghost" href="${id ? '#plan-' + id : '#workouts'}" style="margin-bottom:10px">← ${id ? 'Back to plan' : 'All plans'}</a>
+  return `<datalist id="ex-names">${EX_LIB.map((x) => `<option value="${esc(x.name)}">`).join('')}</datalist><a class="btn btn-ghost" href="${id ? '#plan-' + id : '#workouts'}" style="margin-bottom:10px">← ${id ? 'Back to plan' : 'All plans'}</a>
   <div class="page-head"><div><div class="eyebrow">Your workout</div><h1>${id ? 'Edit plan' : 'Create your own plan'}</h1>
     <p class="muted">Build a routine with as many days and exercises as you like. It works with live sessions, reminders and the equipment filter.</p></div></div>
   <form id="plan-form" class="stack" autocomplete="off" novalidate>
@@ -3110,7 +3287,7 @@ function viewPlanForm(id) {
       <div class="form-grid" style="grid-template-columns:minmax(0,1fr) minmax(0,2fr)">${fld('Day name', `days.${di}.name`, day.name, 'maxlength="30"')}${fld('Focus (optional)', `days.${di}.focus`, day.focus, 'maxlength="60" placeholder="e.g. Legs + core"')}</div>
       <div class="ex-head" aria-hidden="true"><span>Exercise</span><span>Sets</span><span>Reps / time</span><span>Rest s</span><span></span></div>
       ${day.ex.map((e, ei) => `<div class="ex-row">
-        <input class="input" data-d="days.${di}.ex.${ei}.0" value="${esc(e[0])}" placeholder="Exercise name" aria-label="Exercise name">
+        <input class="input" data-d="days.${di}.ex.${ei}.0" value="${esc(e[0])}" placeholder="Exercise name" aria-label="Exercise name" list="ex-names">
         <input class="input num" data-d="days.${di}.ex.${ei}.1" data-num type="number" min="1" max="20" value="${e[1] ?? ''}" aria-label="Sets">
         <input class="input num" data-d="days.${di}.ex.${ei}.2" value="${esc(e[2])}" placeholder="10 or 30 s" aria-label="Reps or time">
         <input class="input num" data-d="days.${di}.ex.${ei}.3" data-num type="number" min="0" max="600" value="${e[3] ?? ''}" aria-label="Rest in seconds">
@@ -3610,7 +3787,7 @@ function viewWorkouts() {
     .sort((a, b) => (wHardFirst ? -1 : 1) * (a.diff - b.diff || a.minutes - b.minutes));
   return `<div class="page-head"><div><div class="eyebrow">${PLANS.length} plans</div><h1>Workout plans</h1>
     <p class="muted">Pick the plan that fits your experience and equipment. Each day lists sets, reps, rest and a form cue, and you can run it as a live session that logs itself.</p></div>
-    <a class="btn btn-sm btn-primary" href="#plan-new">+ Create your own plan</a></div>
+    <div class="row"><a class="btn btn-sm" href="#exercises">Exercise library</a><a class="btn btn-sm btn-primary" href="#plan-new">+ Create your own plan</a></div></div>
   <div class="wtools ${gearDraft || remDraft ? 'editing' : ''}">${gearPanel()}${reminderPanel()}</div>
   ${filterBar('workouts', { count: (wDiff ? 1 : 0) + (wMuscle !== 'All' ? 1 : 0) + (wFavOnly ? 1 : 0),
     extra: `<label class="fsel"><span class="eyebrow">Sort</span><select class="input" id="wsort-sel"><option value="easy">Easiest first</option><option value="hard" ${wHardFirst ? 'selected' : ''}>Hardest first</option></select></label>`,
@@ -3671,7 +3848,7 @@ function viewPlan(id) {
       <div class="day-tabs" role="group" aria-label="Training days">${p.days.map((x, i) => `<button class="chip" data-act="plan-day" data-i="${i}" aria-pressed="${i === planDayTab}">${esc(x.name)}</button>`).join('')}</div>
       <div class="panel-head"><h2>${esc(d.name)} <span class="muted" style="font-weight:500">· ${esc(d.focus)}</span></h2></div>
       <div class="table-wrap"><table class="ex-table plan-ex"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr></thead><tbody>
-        ${d.ex.map((e) => `<tr><td><div class="ex-name">${esc(e[0])}</div><div class="ex-cue">${esc(e[4])}</div></td><td class="num" data-l="Sets">${e[1]}</td><td class="num" data-l="Reps">${esc(e[2])}</td><td class="num" data-l="Rest">${e[3] ? e[3] + 's' : '—'}</td></tr>`).join('')}
+        ${d.ex.map((e) => `<tr><td>${exLink(e[0])}${e[4] ? `<div class="ex-cue">${esc(e[4])}</div>` : libFor(e[0]) ? `<div class="ex-cue">${esc(libFor(e[0]).cues[0])}</div>` : ''}</td><td class="num" data-l="Sets">${e[1]}</td><td class="num" data-l="Reps">${esc(e[2])}</td><td class="num" data-l="Rest">${e[3] ? e[3] + 's' : '—'}</td></tr>`).join('')}
       </tbody></table></div>
       <div class="row" style="margin-top:16px"><button class="btn btn-berry" data-act="start" data-plan="${p.id}" data-day="${planDayTab}">Start ${esc(d.name)}</button></div>
     </section>
@@ -3752,7 +3929,7 @@ function viewSession() {
       const ss = e[5] === 'ss' ? 'a' : d.ex[i - 1] && d.ex[i - 1][5] === 'ss' ? 'b' : '';
       const w0 = wt ? parseFloat(setVal(s, e, i, 0, 'w', last)) : NaN;
       return `<div class="session-ex ${ss ? 'ss ss-' + ss : ''}">${ss === 'a' ? '<div class="ss-tag">Superset: do this, then go straight to the next exercise, then rest</div>' : ''}
-        <div class="ex-name">${esc(e[0])}${(s.prs || []).includes(e[0]) ? ' <span class="tag tag-berry">New best!</span>' : ''}</div><div class="ex-cue">${e[1]} × ${esc(e[2])} · ${e[3] ? 'rest ' + e[3] + 's' : 'no timed rest'} — ${esc(e[4])}</div>
+        <div class="ex-name">${esc(e[0])}${(s.prs || []).includes(e[0]) ? ' <span class="tag tag-berry">New best!</span>' : ''}${libFor(e[0]) ? ` <a class="ex-how" href="#ex-${libFor(e[0]).id}">How to</a>` : ''}</div><div class="ex-cue">${e[1]} × ${esc(e[2])} · ${e[3] ? 'rest ' + e[3] + 's' : 'no timed rest'}${e[4] ? ' — ' + esc(e[4]) : libFor(e[0]) ? ' — ' + esc(libFor(e[0]).cues[0]) : ''}</div>
         ${last ? `<div class="ex-last">Last time: ${exLine({ reps: last.map((x) => x.r), kg: last.map((x) => x.kg), timed })}</div>` : ''}
         ${tip ? `<div class="ex-next"><b>Next step:</b> ${tip}</div>` : ''}
         ${wt && isBarbell(p, e) ? `<div class="ex-plates" id="plates-${i}">${platesFor(w0)}</div>` : ''}
@@ -5898,6 +6075,8 @@ function renderView(keepScroll) {
   else if (h.startsWith('plan-edit-')) { html = viewPlanForm(h.slice(10)); tab = 'workouts'; }
   else if (h.startsWith('plan-')) { html = viewPlan(h.slice(5)); tab = 'workouts'; }
   else if (h === 'session') { html = viewSession(); tab = 'workouts'; }
+  else if (h === 'exercises') { html = viewExercises(); tab = 'workouts'; }
+  else if (h.startsWith('ex-')) { html = viewExercise(h.slice(3)); tab = 'workouts'; }
   else if (h.startsWith('import-plan=')) { html = viewImportPlan(h.slice(12)); tab = 'workouts'; }
   else if (h === 'shopping') { html = viewShopping(); tab = 'shopping'; }
   else if (h === 'breathe') { html = viewBreathe(); tab = 'breathe'; }
@@ -6128,6 +6307,7 @@ document.addEventListener('click', (e) => {
     S.setup = true; S.example = false; save(); location.hash = 'goals'; render(false);
     setTimeout(() => toast('All set. Here are your daily targets.'), 200);
   }
+  else if (a === 'ex-group') { exMuscle = b.dataset.g; render(true); }
   else if (a === 'r-star') { const n = S.recipeNotes[b.dataset.id] || (S.recipeNotes[b.dataset.id] = {}); n.stars = n.stars === +b.dataset.v ? 0 : +b.dataset.v; save(); render(true); }
   else if (a === 'r-note-del') { const n = S.recipeNotes[b.dataset.id]; if (n && n.notes) { n.notes.splice(+b.dataset.i, 1); save(); render(true); } }
   else if (a === 'del-meal') {
@@ -6394,6 +6574,7 @@ document.addEventListener('input', (e) => {
   if (t.id === 'recipe-search') { recipeSearch = t.value; $('#recipe-cards').innerHTML = recipeCards(); }
   else if (t.id === 'calm-vol' || t.id === 'set-vol' || t.id === 'set-tvol') { S.calm[t.id === 'set-tvol' ? 'toneVol' : 'vol'] = +t.value; audio(); setVolumes(); save(); }
   else if (t.id === 'scan-g') { const g = parseFloat(t.value); if (g > 0 && scan) { scan.grams = g; const el = t.closest('.scan-result').querySelector('.muted.num'), pr = scan.product, f = g / 100; el.textContent = `${Math.round(pr.kcal * f)} kcal · P ${round(pr.p * f)} · C ${round(pr.c * f)} · F ${round(pr.f * f)}`; } }
+  else if (t.id === 'ex-q') { exQ = t.value; const c = $('#ex-cards'); const tmp = document.createElement('div'); tmp.innerHTML = viewExercises(); c.innerHTML = tmp.querySelector('#ex-cards').innerHTML; }
   else if (t.id === 'food-q') {
     const had = !!foodQ.trim(); foodQ = t.value;
     if (had !== !!foodQ.trim() && manualOpen === false) { render(true); const q = $('#food-q'); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }
