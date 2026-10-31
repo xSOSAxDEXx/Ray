@@ -62,6 +62,7 @@ A diet and exercise website with recipes, workout plans and a daily tracker. It 
 - **Report an issue** (`#report`): opens a pre-filled GitHub issue with the `site-report` template, or copies the report.
 - **Friends** (`#friends`): share workouts, milestones and recipes as links, add friends and send cheers. No accounts yet; see `docs/SOCIAL.md` for the planned Supabase version.
 - **Grouped menu:** Today, then Food (Daily log, Recipes, Meal plan, Shopping list), Training (Workouts, Exercise library), Mind & breath, Progress (Body & weight, Charts & records, Friends) and You (Profile & goals, Settings), with Guide, Links & facts and Report an issue at the bottom.
+- **Back to where you were:** when a link inside a page opens another page (a recipe from the meal plan, a plan from Today, a page from the Guide), it shows a "← Back to …" button. Menu navigation starts fresh.
 - **Back to your workout:** a "Workout in progress · Return" bar shows on every page while a session runs, and an exercise's how-to page opened from a workout has a "Back to your workout" button.
 
 ## Use it on your phone
