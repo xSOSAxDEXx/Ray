@@ -4755,7 +4755,7 @@ function storesPanel() {
   const loc = `<form id="store-loc" class="fbar" autocomplete="off" style="margin:0">
       <input class="input fsearch" id="store-q" placeholder="Zip code or town" value="${esc(st.loc ? st.loc.q || st.loc.label : '')}" aria-label="Zip code or town" inputmode="search">
       <button class="btn" type="submit">Find stores</button><button class="btn btn-ghost" type="button" data-act="store-geo">Use my location</button></form>
-    ${storesBusy ? `<p class="muted store-busy" style="margin-top:8px" role="status">${esc(storesBusy)}</p>` : storesFail ? storesFailBox(storesFail) : st.loc && st.list.length ? `<p class="muted" style="margin-top:8px;font-size:.85rem">Showing stores near <b>${esc(st.loc.label)}</b>.${st.partial ? ' This is a partial list from a backup directory.' : ''} <button type="button" class="btn btn-sm btn-ghost" data-act="store-refresh">Refresh</button></p>` : ''}`;
+    ${storesBusy ? `<p class="muted store-busy" style="margin-top:8px" role="status">${esc(storesBusy)}</p>${storesNow ? `<div class="row" style="margin-top:6px;align-items:center"><span class="muted" style="font-size:.82rem">Taking a while?</span>${mapsLinks(storesNow)}</div>` : ''}` : storesFail ? storesFailBox(storesFail) : st.loc && st.list.length ? `<p class="muted" style="margin-top:8px;font-size:.85rem">Showing stores near <b>${esc(st.loc.label)}</b>.${st.partial ? ' This is a partial list from a backup directory.' : ''} <button type="button" class="btn btn-sm btn-ghost" data-act="store-refresh">Refresh</button></p>` : ''}`;
   const storeCard = (q) => {
     const s = q.store, isHome = s.id === st.home, fav = st.favs.includes(s.id), open = storeOpen === s.id;
     return `<div class="store ${isHome ? 'home' : ''}"><div class="store-top">
@@ -4807,10 +4807,10 @@ const kmBetween = (a, b) => { const R = 6371, r = Math.PI / 180, dLat = (b.lat -
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLon / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
 /* Overpass (OpenStreetMap's map-data servers) is shared and often busy, and the main server limits each visitor to
    2 requests at a time. So ask one server at a time, move on when one is busy, and fall back to Nominatim's
-   supermarket search (a partial list) when every Overpass server fails. Results are remembered for 7 days. */
-const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+   supermarket search is tried first because it's fast; Overpass fills in when it finds fewer than 3 stores. Results are remembered for 7 days. */
+const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter'];
 const STORE_DAYS = 7, STORE_KM = 16;
-let storesFail = null; // the location of the last search that found nothing anywhere, for the "try again" options
+let storesFail = null, storesNow = null; // storesNow: the location being searched, for the "taking a while?" links // the location of the last search that found nothing anywhere, for the "try again" options
 async function fetchTimeout(url, opts, ms) {
   const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
   try { return await fetch(url, { ...opts, signal: ctl.signal }); } finally { clearTimeout(t); }
@@ -4819,7 +4819,7 @@ async function overpass(q, onRetry) {
   for (let i = 0; i < OVERPASS.length; i += 1) {
     if (i) onRetry(i);
     try {
-      const r = await fetchTimeout(OVERPASS[i], { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }, 12000);
+      const r = await fetchTimeout(OVERPASS[i], { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }, 8000);
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const d = await r.json();
       if (d && Array.isArray(d.elements)) return d;
@@ -4839,7 +4839,7 @@ async function storesOverpass(loc, onRetry) {
 }
 async function storesNominatim(loc) {
   const box = [loc.lon - 0.15, loc.lat + 0.12, loc.lon + 0.15, loc.lat - 0.12].map((n) => n.toFixed(4)).join(',');
-  const r = await fetchTimeout(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent('[supermarket]')}&viewbox=${box}&bounded=1&limit=40&countrycodes=us&addressdetails=1&extratags=1`, { headers: { Accept: 'application/json' } }, 12000);
+  const r = await fetchTimeout(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent('[supermarket]')}&viewbox=${box}&bounded=1&limit=40&countrycodes=us&addressdetails=1&extratags=1`, { headers: { Accept: 'application/json' } }, 8000);
   if (!r.ok) throw new Error('HTTP ' + r.status);
   const list = await r.json();
   return (Array.isArray(list) ? list : []).map((h) => {
@@ -4855,12 +4855,16 @@ async function findStores(loc, fresh) {
   let list = null, partial = false;
   if (!fresh && hit && Date.now() - hit.at < STORE_DAYS * 864e5) { list = hit.list; partial = !!hit.partial; }
   else {
-    storesBusy = 'Looking for grocery stores near ' + loc.label + '…'; render(true);
-    try { list = await storesOverpass(loc, () => { storesBusy = 'The store directory is busy. Trying another server…'; render(true); }); }
-    catch (e) {
-      storesBusy = 'Still busy. Trying a backup directory…'; render(true);
-      try { list = await storesNominatim(loc); partial = true; } catch (e2) { list = null; }
+    storesBusy = 'Looking for grocery stores near ' + loc.label + '…'; storesNow = loc; render(true);
+    let quick = null;
+    try { quick = await storesNominatim(loc); } catch (e) { quick = null; }
+    if (quick && quick.length >= 3) list = quick;
+    else {
+      storesBusy = 'Checking the full store directory…'; render(true);
+      try { list = await storesOverpass(loc, () => { storesBusy = 'The store directory is busy. Trying another server…'; render(true); }); }
+      catch (e) { list = quick && quick.length ? quick : null; partial = !!list; }
     }
+    storesNow = null;
     if (list) {
       const seen = new Set();
       list = list.filter((x) => x.name && !seen.has(x.name + x.addr) && seen.add(x.name + x.addr)).sort((a, b) => (a.dist ?? 99) - (b.dist ?? 99)).slice(0, 20);
@@ -4875,13 +4879,15 @@ async function findStores(loc, fresh) {
   save(); render(true);
 }
 // Shown when no directory answered: try again, or search a maps app directly.
-function storesFailBox(loc) {
+function mapsLinks(loc) {
   const near = encodeURIComponent(loc.q || loc.label), ll = loc.q ? '' : `&sll=${loc.lat},${loc.lon}`;
   const g = loc.q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('grocery stores near ' + (loc.q || loc.label))}` : `https://www.google.com/maps/search/grocery+stores/@${loc.lat},${loc.lon},13z`;
   const ap = `https://maps.apple.com/?q=${encodeURIComponent('grocery stores')}${loc.q ? '&near=' + near : ll}`;
+  return `<a class="btn btn-sm" href="${g}" target="_blank" rel="noopener">Google Maps</a><a class="btn btn-sm" href="${ap}" target="_blank" rel="noopener">Apple Maps</a>`;
+}
+function storesFailBox(loc) {
   return `<div class="store-fail stack" role="status" style="margin-top:8px"><p style="margin:0">The free store directory is busy right now, so stores near <b>${esc(loc.label)}</b> couldn't be loaded.</p>
-    <div class="row"><button class="btn btn-sm btn-primary" data-act="store-retry">Try again</button>
-      <a class="btn btn-sm" href="${g}" target="_blank" rel="noopener">Google Maps</a><a class="btn btn-sm" href="${ap}" target="_blank" rel="noopener">Apple Maps</a></div>
+    <div class="row"><button class="btn btn-sm btn-primary" data-act="store-retry">Try again</button>${mapsLinks(loc)}</div>
     <p class="muted" style="font-size:.8rem;margin:0">The maps links search for grocery stores near you in a new tab.</p></div>`;
 }
 const US_ZIP = /^\d{5}(-\d{4})?$/;
