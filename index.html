@@ -460,6 +460,22 @@ body.calm-open { overflow: hidden; }
 .fav-food { color: var(--muted); min-width: 36px; min-height: 36px; } .fav-food.on { color: var(--berry); }
 .chip-fav .ic { color: var(--berry); }
 @media (max-width: 700px) { .recipe-cta { position: sticky; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 5; background: var(--surface); padding: 8px; border-radius: var(--r); box-shadow: var(--shadow); } }
+.buy { display: block; font-size: .78rem; color: var(--accent); }
+.have-btn { margin-left: auto; color: var(--muted); }
+.shop-list li { display: flex; align-items: flex-start; gap: 6px; }
+.shop-list li label { flex: 1; }
+.have-list summary { cursor: pointer; font-weight: 700; padding-block: 12px 4px; color: var(--muted); }
+.auto-row { display: flex; gap: 10px; align-items: flex-start; font-size: .88rem; border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; margin-bottom: 12px; }
+.auto-row input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; margin-top: 2px; }
+.share-row { gap: 6px; }
+@media print {
+  body.print-list header, body.print-list footer, body.print-list .page-head .row, body.print-list .stores, body.print-list .grid > section:first-child, body.print-list .toast, body.print-list .have-btn, body.print-list .have-list, body.print-list .bar, body.print-list .shop-groups ~ .row, body.print-list .example-banner, body.print-list .nudge { display: none !important; }
+  body.print-list { background: #fff; color: #000; }
+  body.print-list .panel { border: 0; box-shadow: none; padding: 0; }
+  body.print-list .grid { display: block; }
+  body.print-list .shop-list li { break-inside: avoid; }
+  body.print-list .from { display: none; }
+}
 .fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
 .fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
 .fbtn { display: inline-flex; align-items: center; gap: 8px; }
@@ -2577,7 +2593,7 @@ let S, unreadable = false;
 const DEFAULTS = () => ({
   meals: [], weights: [], workouts: [], water: {}, measures: [], session: null, myGear: null, customRecipes: [], customPlans: [],
   mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, favFoods: [], appliance: null, servings: 2, lastBackup: null, backupSnooze: null,
-  shopping: { recipes: [], checked: {}, extras: [], subs: {} },
+  shopping: { recipes: [], checked: {}, extras: [], subs: {}, have: [], auto: false },
   settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
   stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {} },
   calm: { music: true, track: -1, vol: 0.5, tones: true, toneVol: 0.7, vibrate: true }, mind: { habits: {}, log: [], course: {} }
@@ -4021,9 +4037,18 @@ function aisleOf(name, unit) {
   return 'Other';
 }
 const onList = (id) => S.shopping.recipes.some((x) => x.id === id);
+// The recipes the list is built from: your own picks, or (with "Build from my meal plan" on) this week's plan.
+function listRecipes() {
+  if (!S.shopping.auto) return S.shopping.recipes;
+  const mon = mondayOf(dayKey()), sum = {};
+  [...Array(7)].forEach((_, i) => Object.values(planDay(addDays(mon, i))).forEach((x) => { if (recipeById(x.id)) sum[x.id] = (sum[x.id] || 0) + (x.s || 1); }));
+  return Object.entries(sum).map(([id, servings]) => ({ id, servings }));
+}
+const haveKey = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const haveIt = (it) => (S.shopping.have || []).includes(haveKey(it.orig || it.name));
 function shoppingItems() {
   const map = new Map();
-  S.shopping.recipes.forEach(({ id, servings }) => {
+  listRecipes().forEach(({ id, servings }) => {
     const r = recipeById(id); if (!r) return;
     const k = servings / r.servings;
     r.ingredients.forEach(([q, unit, name]) => {
@@ -4041,6 +4066,12 @@ function shoppingItems() {
 }
 // Whole items (limes, cans, cloves, eggs) round up, because you can't buy a quarter of one.
 const WHOLE_UNITS = ['', 'clove', 'can', 'large', 'oz'];
+// One line per ingredient: amounts in different units are joined with "+".
+function mergeUnits(list) {
+  const by = new Map();
+  list.forEach((i) => { const k = haveKey(i.name); const g = by.get(k); if (g) { g.parts.push(i); g.keys.push(i.key); g.from = [...new Set([...g.from, ...i.from])]; } else by.set(k, { ...i, parts: [i], keys: [i.key] }); });
+  return [...by.values()].map((g) => (g.parts.length > 1 ? { ...g, multi: g.parts.filter((x) => x.qty != null).map(itemQty).join(' + ') } : g));
+}
 const itemQty = (it) => {
   if (it.qty == null) return 'as needed';
   const q = WHOLE_UNITS.includes(it.unit) ? Math.ceil(it.qty - 0.01) : it.qty;
@@ -4050,10 +4081,10 @@ function shoppingText() {
   const items = shoppingItems(), sh = S.shopping;
   const lines = ['Shopping list (Rep & Ration)', ''];
   AISLES.forEach((a) => {
-    const g = items.filter((i) => i.aisle === a && !sh.checked[i.key]);
+    const g = mergeUnits(items.filter((i) => i.aisle === a && !sh.checked[i.key] && !haveIt(i)));
     if (!g.length) return;
     lines.push(a.toUpperCase());
-    g.forEach((i) => lines.push(`- ${i.qty == null ? i.name + ' (as needed)' : itemQty(i) + ' ' + i.name}`));
+    g.forEach((i) => lines.push(`- ${i.multi ? i.multi + ' ' + i.name : i.qty == null ? i.name + ' (as needed)' : itemQty(i) + ' ' + i.name}`));
     lines.push('');
   });
   const ex = sh.extras.filter((x) => !sh.checked['x-' + x.id]);
@@ -4166,6 +4197,20 @@ const PRICE_RULES = [
   [/parsley|cilantro|dill|mint|chives|rosemary|thyme/, { cup: 1, tbsp: 16 }, 1.99, {}]
 ];
 const ruleFor = (name) => PRICE_RULES.find((r) => r[0].test(name.toLowerCase()));
+// What one package is called in the store, for "Buy 2 × 15 oz can". Sizes match the amounts in PRICE_RULES.
+const PACKAGES = [[/\beggs?\b/, 'dozen'], [/greek yogurt/, '32 oz tub'], [/cottage cheese/, '16 oz tub'], [/whole milk|almond milk|\bmilk\b/, 'half gallon'], [/oats/, '42 oz canister'],
+  [/rice\b/, '2 lb bag (dry)'], [/quinoa/, '1 lb bag (dry)'], [/lentils/, '1 lb bag'], [/crushed tomatoes/, '28 oz can'], [/beans|chickpeas|diced tomatoes/, '15 oz can'], [/coconut milk/, '13.5 oz can'],
+  [/chicken thigh|chicken breast|boneless skinless chicken/, '2 lb pack'], [/ground turkey|ground beef/, '1 lb pack'], [/salmon|ribeye|sirloin|flank|shrimp|liver/, '1 lb'], [/tofu/, '14 oz block'],
+  [/spinach/, '5 oz bag'], [/kale/, 'bunch'], [/broccoli\b|broccoli florets/, 'crown (about 4 cups)'], [/butter lettuce/, 'head'], [/butter\b/, '1 lb (4 sticks)'], [/peanut butter|almond butter/, '16 oz jar'],
+  [/olive oil|avocado oil/, '17 oz bottle'], [/berries|cherry tomatoes/, 'pint'], [/walnuts|pecans/, '8 oz bag'], [/chia/, '12 oz bag'], [/cheddar/, '8 oz bag'], [/feta/, '6 oz tub'],
+  [/bone broth|broth|stock/, '32 oz carton'], [/tortilla/, '30-pack'], [/yukon|potatoes/, '1.5 lb bag'], [/carrot/, '2 lb bag'], [/celery|green onion/, 'bunch'], [/garlic/, 'head'], [/tuna/, '5 oz can']];
+const pkgOf = (name) => { const x = PACKAGES.find((r) => r[0].test(name.toLowerCase())); return x ? x[1] : null; };
+function buyText(it) {
+  const pk = pkgOf(it.orig || it.name), r = ruleFor(it.orig || it.name);
+  if (!pk || !r || it.qty == null) return '';
+  const per = r[1][it.unit || 'each'] || Object.values(r[1])[0], n = per ? Math.max(1, Math.ceil(it.qty / per - 0.01)) : 1;
+  return `Buy ${n} × ${pk}`;
+}
 // Chain price level (1 = typical US supermarket) and store type, matched on the store's brand or name.
 const CHAINS = [
   [/aldi/, 'Aldi', 0.78, 'discount', 'aldi.us'], [/lidl/, 'Lidl', 0.8, 'discount', 'lidl.com'], [/market basket/, 'Market Basket', 0.86, 'conventional', 'shopmarketbasket.com'],
@@ -4201,7 +4246,7 @@ let storesBusy = '', storeOpen = null, orderSite = null, orderOpen = false, orde
 // Every list item (recipe ingredients plus your own items) with its package count and base price.
 function priceItems() {
   const sh = S.shopping;
-  const its = shoppingItems().map((it) => ({ key: it.key, name: it.name, orig: it.orig, unit: it.unit, qty: it.qty }));
+  const its = shoppingItems().filter((it) => !haveIt(it)).map((it) => ({ key: it.key, name: it.name, orig: it.orig, unit: it.unit, qty: it.qty }));
   sh.extras.forEach((x) => its.push({ key: 'x-' + x.id, name: x.name, unit: '', qty: null }));
   return its.map((it) => {
     const r = ruleFor(it.name), f = r ? r[3] : {}, per = r && (r[1][it.unit || 'each'] || Object.values(r[1])[0]);
@@ -4351,32 +4396,41 @@ function viewShopping() {
   const done = items.filter((i) => sh.checked[i.key]).length + sh.extras.filter((x) => sh.checked['x-' + x.id]).length;
   const notOn = RECIPES.filter((r) => !onList(r.id));
   const recipePanel = `<section class="panel span-4" aria-labelledby="h-shop-r">
-      <div class="panel-head"><h2 id="h-shop-r">Recipes</h2><span class="muted">${sh.recipes.length}</span></div>
+      <div class="panel-head"><h2 id="h-shop-r">Recipes</h2><span class="muted">${listRecipes().length}</span></div>
+      <label class="auto-row"><input type="checkbox" id="shop-auto" ${sh.auto ? 'checked' : ''}> <span><b>Build from my meal plan</b><br><span class="muted">Uses this week's <a href="#mealplan">meal plan</a> and updates as you change it.</span></span></label>
+      ${sh.auto ? `<ul class="list shop-recipes">${listRecipes().map((x) => { const r = recipeById(x.id); return r ? `<li><div class="grow"><a href="#recipe-${r.id}" style="font-weight:700;color:var(--ink)">${esc(r.title)}</a><div class="muted" style="font-size:.8rem">${x.servings} serving${x.servings === 1 ? '' : 's'} planned</div></div></li>` : ''; }).join('') || '<li class="muted">Nothing planned this week yet.</li>'}</ul>` : `
       ${sh.recipes.length ? `<ul class="list shop-recipes">${sh.recipes.map((x) => { const r = recipeById(x.id); if (!r) return '';
         return `<li><div class="grow"><a href="#recipe-${r.id}" style="font-weight:700;color:var(--ink)">${esc(r.title)}</a><div class="muted" style="font-size:.8rem">${r.per.kcal * x.servings} kcal total</div></div>
           <div class="stepper" role="group" aria-label="Servings of ${esc(r.title)}"><button data-act="shop-serv" data-id="${r.id}" data-d="-1" aria-label="Fewer servings">−</button><output>${x.servings}</output><button data-act="shop-serv" data-id="${r.id}" data-d="1" aria-label="More servings">+</button></div>
           <button class="btn btn-ghost btn-sm" data-act="shop-remove" data-id="${r.id}" aria-label="Remove ${esc(r.title)}">✕</button></li>`; }).join('')}</ul>`
         : emptyState('bowl', 'Your list is empty. Add a recipe below, or tap “Add to shopping list” on any recipe.')}
       ${notOn.length ? `<label class="field" style="margin-top:14px">Add a recipe<select class="input" id="shop-add-recipe"><option value="">Choose a recipe…</option>${notOn.map((r) => `<option value="${r.id}">${esc(r.title)} (serves ${r.servings})</option>`).join('')}</select></label>` : ''}
+      `}
       <form id="extra-form" class="row" style="margin-top:14px" autocomplete="off">
         <label class="field" style="flex:1">Add your own item<input class="input" id="extra-name" placeholder="e.g. Coffee, paper towels" required></label>
         <button class="btn" type="submit" style="align-self:end">Add</button>
       </form>
     </section>`;
   let groups = '';
+  const have = items.filter(haveIt), need = items.filter((i) => !haveIt(i));
   AISLES.forEach((a) => {
-    const g = items.filter((i) => i.aisle === a);
+    const g = mergeUnits(need.filter((i) => i.aisle === a));
     if (!g.length) return;
-    groups += `<div class="shop-group"><h3>${a}</h3><ul class="shop-list">${g.map((i) => `<li><label><input type="checkbox" id="shop-${i.key}" data-shop="${i.key}" ${sh.checked[i.key] ? 'checked' : ''}>
-      <span>${i.qty == null ? `${esc(i.name)} <span class="muted">· as needed</span>` : `<span class="q">${esc(itemQty(i))}</span>${esc(i.name)}`}${i.orig ? ` <span class="muted">(instead of ${esc(i.orig)})</span>` : ''}<span class="from">${esc(i.from.join(' · '))}</span></span></label></li>`).join('')}</ul></div>`;
+    groups += `<div class="shop-group"><h3>${a}</h3><ul class="shop-list">${g.map((i) => `<li><label><input type="checkbox" id="shop-${i.key}" data-shop="${i.keys.join('|')}" ${i.keys.every((k) => sh.checked[k]) ? 'checked' : ''}>
+      <span>${i.multi ? `<span class="q">${esc(i.multi)}</span>${esc(i.name)}` : i.qty == null ? `${esc(i.name)} <span class="muted">· as needed</span>` : `<span class="q">${esc(itemQty(i))}</span>${esc(i.name)}`}${i.orig ? ` <span class="muted">(instead of ${esc(i.orig)})</span>` : ''}${!i.multi && buyText(i) ? `<span class="buy">${esc(buyText(i))}</span>` : ''}<span class="from">${esc(i.from.join(' · '))}</span></span></label>
+      <button class="btn btn-ghost btn-sm have-btn" data-act="have" data-n="${esc(haveKey(i.orig || i.name))}" aria-label="I already have ${esc(i.name)}">Have it</button></li>`).join('')}</ul></div>`;
   });
+  if (have.length) groups += `<details class="shop-group have-list"><summary>Already have (${mergeUnits(have).length})</summary><ul class="shop-list">${mergeUnits(have).map((i) => `<li><span class="grow muted">${esc(i.name)}</span><button class="btn btn-ghost btn-sm" data-act="have" data-n="${esc(haveKey(i.orig || i.name))}">Need it</button></li>`).join('')}</ul></details>`;
   if (sh.extras.length) {
     groups += `<div class="shop-group"><h3>Your items</h3><ul class="shop-list">${sh.extras.map((x) => `<li style="display:flex;align-items:center;gap:6px"><label style="flex:1"><input type="checkbox" id="shop-x-${x.id}" data-shop="x-${x.id}" ${sh.checked['x-' + x.id] ? 'checked' : ''}><span>${esc(x.name)}</span></label><button class="btn btn-ghost btn-sm" data-act="extra-remove" data-id="${x.id}" aria-label="Remove ${esc(x.name)}">✕</button></li>`).join('')}</ul></div>`;
   }
   return `${exampleBanner()}
   <div class="page-head"><div><div class="eyebrow">Built from your recipes</div><h1>Shopping list</h1>
     <p class="muted">Add recipes and set how many servings you need. Ingredients are combined, totaled and sorted by store section. Tick items off as you shop.</p></div>
-    ${total ? `<div class="row"><button class="btn btn-primary" data-act="shop-copy">Copy list</button></div>` : ''}</div>
+    ${total ? `<div class="row share-row"><button class="btn btn-primary" data-act="shop-share">${navigator.share ? 'Share list' : 'Copy list'}</button>
+      <a class="btn" href="mailto:?subject=${encodeURIComponent('Shopping list')}&body=${encodeURIComponent(shoppingText())}">Email</a>
+      <a class="btn" href="sms:?&body=${encodeURIComponent(shoppingText())}">Text</a>
+      <button class="btn" data-act="shop-print">Print</button></div>` : ''}</div>
   <div id="copy-box" hidden style="margin-bottom:16px"><p class="muted" style="margin-bottom:6px">Copying isn't available here. Select the text below and copy it yourself.</p><textarea class="input copy-fallback" id="copy-text" readonly></textarea></div>
   <div class="grid">
     ${recipePanel}
@@ -5779,6 +5833,14 @@ document.addEventListener('click', (e) => {
   else if (a === 'shop-clear-arm') { shopClearArmed = true; render(true); }
   else if (a === 'shop-clear-cancel') { shopClearArmed = false; render(true); }
   else if (a === 'shop-clear') { S.shopping = { recipes: [], checked: {}, extras: [], subs: {} }; shopClearArmed = false; save(); toast('Shopping list emptied'); render(true); }
+  else if (a === 'have') { const sh = S.shopping, n = b.dataset.n; sh.have = sh.have || []; sh.have = sh.have.includes(n) ? sh.have.filter((x) => x !== n) : [...sh.have, n]; save(); render(true); }
+  else if (a === 'shop-print') { document.body.classList.add('print-list'); window.print(); setTimeout(() => document.body.classList.remove('print-list'), 500); }
+  else if (a === 'shop-share') {
+    const text = shoppingText();
+    if (navigator.share) navigator.share({ title: 'Shopping list', text }).catch(() => {});
+    else { const fallback = () => { const box = $('#copy-box'), ta = $('#copy-text'); ta.value = text; box.hidden = false; ta.focus(); ta.select(); };
+      try { navigator.clipboard.writeText(text).then(() => toast('Shopping list copied'), fallback); } catch (err) { fallback(); } }
+  }
   else if (a === 'shop-copy') {
     const text = shoppingText();
     const fallback = () => { const box = $('#copy-box'), ta = $('#copy-text'); ta.value = text; box.hidden = false; ta.focus(); ta.select(); };
@@ -6117,9 +6179,10 @@ document.addEventListener('submit', (e) => {
 });
 document.addEventListener('change', (e) => {
   const t = e.target;
-  if (t.id === 'shop-add-recipe' && t.value) { shopAdd(t.value); render(true);
+  if (t.id === 'shop-auto') { S.shopping.auto = t.checked; save(); render(true);
+  } else if (t.id === 'shop-add-recipe' && t.value) { shopAdd(t.value); render(true);
   } else if (t.dataset.shop != null) {
-    const sh = S.shopping; if (t.checked) sh.checked[t.dataset.shop] = true; else delete sh.checked[t.dataset.shop];
+    const sh = S.shopping; t.dataset.shop.split('|').forEach((k) => { if (t.checked) sh.checked[k] = true; else delete sh.checked[k]; });
     save();
     const total = shoppingItems().length + sh.extras.length, done = document.querySelectorAll('[data-shop]:checked').length;
     $('#shop-count').textContent = `${done} of ${total} in cart`; $('#shop-bar').style.width = (done / total) * 100 + '%';
