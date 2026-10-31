@@ -2859,7 +2859,7 @@ const DEFAULTS = () => ({
   mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, favFoods: [], recipeNotes: {}, appliance: null, servings: 2, lastBackup: null, backupSnooze: null,
   shopping: { recipes: [], checked: {}, extras: [], subs: {}, have: [], auto: false },
   settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
-  stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {} },
+  stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {}, found: {}, partial: false },
   calm: { music: true, track: -1, vol: 0.5, tones: true, toneVol: 0.7, vibrate: true }, mind: { habits: {}, log: [], course: {} },
   friends: { name: '', me: '', list: [], feed: [] }
 });
@@ -4755,7 +4755,7 @@ function storesPanel() {
   const loc = `<form id="store-loc" class="fbar" autocomplete="off" style="margin:0">
       <input class="input fsearch" id="store-q" placeholder="Zip code or town" value="${esc(st.loc ? st.loc.q || st.loc.label : '')}" aria-label="Zip code or town" inputmode="search">
       <button class="btn" type="submit">Find stores</button><button class="btn btn-ghost" type="button" data-act="store-geo">Use my location</button></form>
-    ${storesBusy ? `<p class="muted store-busy" style="margin-top:8px" role="status">${esc(storesBusy)}</p>` : st.loc && st.list.length ? `<p class="muted" style="margin-top:8px;font-size:.85rem">Showing stores near <b>${esc(st.loc.label)}</b>.</p>` : ''}`;
+    ${storesBusy ? `<p class="muted store-busy" style="margin-top:8px" role="status">${esc(storesBusy)}</p>` : storesFail ? storesFailBox(storesFail) : st.loc && st.list.length ? `<p class="muted" style="margin-top:8px;font-size:.85rem">Showing stores near <b>${esc(st.loc.label)}</b>.${st.partial ? ' This is a partial list from a backup directory.' : ''} <button type="button" class="btn btn-sm btn-ghost" data-act="store-refresh">Refresh</button></p>` : ''}`;
   const storeCard = (q) => {
     const s = q.store, isHome = s.id === st.home, fav = st.favs.includes(s.id), open = storeOpen === s.id;
     return `<div class="store ${isHome ? 'home' : ''}"><div class="store-top">
@@ -4805,34 +4805,84 @@ function storesPanel() {
 // OpenStreetMap: geocode a zip or town (Nominatim), then list supermarkets within about 8 km (Overpass).
 const kmBetween = (a, b) => { const R = 6371, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLon / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
-const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
-async function overpass(q) {
-  const ctl = OVERPASS.map(() => new AbortController()), stop = setTimeout(() => ctl.forEach((c) => c.abort()), 20000);
-  try {
-    const any = Promise.any ? (l) => Promise.any(l) : (l) => new Promise((ok, no) => { let left = l.length; l.forEach((x) => x.then(ok, () => { left -= 1; if (!left) no(new Error('all failed')); })); });
-    return await any(OVERPASS.map((u, i) => fetch(u, { method: 'POST', body: 'data=' + encodeURIComponent(q), signal: ctl[i].signal, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
-      .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then((d) => { ctl.forEach((c, j) => j !== i && c.abort()); return d; })));
-  } finally { clearTimeout(stop); }
+/* Overpass (OpenStreetMap's map-data servers) is shared and often busy, and the main server limits each visitor to
+   2 requests at a time. So ask one server at a time, move on when one is busy, and fall back to Nominatim's
+   supermarket search (a partial list) when every Overpass server fails. Results are remembered for 7 days. */
+const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+const STORE_DAYS = 7, STORE_KM = 16;
+let storesFail = null; // the location of the last search that found nothing anywhere, for the "try again" options
+async function fetchTimeout(url, opts, ms) {
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms);
+  try { return await fetch(url, { ...opts, signal: ctl.signal }); } finally { clearTimeout(t); }
 }
-async function findStores(loc) {
-  storesBusy = 'Looking for grocery stores near ' + loc.label + '…'; render(true);
-  try {
-    // 16 km reaches the nearest supermarkets from most rural towns; results are sorted by distance.
-    const q = `[out:json][timeout:15];nwr["shop"~"^(supermarket|wholesale)$"](around:16000,${loc.lat},${loc.lon});out center tags 60;`;
-    const data = await overpass(q), seen = new Set();
-    S.stores.list = (data.elements || []).map((e) => {
-      const t = e.tags || {}, lat = e.lat ?? (e.center && e.center.lat), lon = e.lon ?? (e.center && e.center.lon);
-      return { id: e.type[0] + e.id, name: t.name || t.brand || 'Grocery store', brand: t.brand || '', addr: [t['addr:housenumber'], t['addr:street'], t['addr:city']].filter(Boolean).join(' '),
-        web: t.website || t['contact:website'] || t['brand:website'] || '', lat, lon, dist: lat != null ? round(kmBetween(loc, { lat, lon }), 1) : null };
-    }).filter((x) => x.name && !seen.has(x.name + x.addr) && seen.add(x.name + x.addr)).sort((a, b) => (a.dist ?? 99) - (b.dist ?? 99)).slice(0, 20);
-    // Keep the home store and favorites even if they're outside this search.
-    const keep = S.stores.keep.filter((x) => !S.stores.list.some((y) => y.id === x.id));
-    S.stores.list = [...S.stores.list, ...keep];
-    S.stores.loc = loc;
-    storesBusy = S.stores.list.length ? '' : `No supermarkets found within 10 miles of ${loc.label}. Try a nearby town or zip code.`;
-  } catch (e) { storesBusy = "Couldn't reach the store directory right now. Check your connection and try again."; }
+async function overpass(q, onRetry) {
+  for (let i = 0; i < OVERPASS.length; i += 1) {
+    if (i) onRetry(i);
+    try {
+      const r = await fetchTimeout(OVERPASS[i], { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }, 12000);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const d = await r.json();
+      if (d && Array.isArray(d.elements)) return d;
+    } catch (e) { /* busy, down or too slow: try the next server */ }
+  }
+  throw new Error('Overpass unavailable');
+}
+const storeFrom = (loc, o) => ({ ...o, dist: o.lat != null ? round(kmBetween(loc, { lat: o.lat, lon: o.lon }), 1) : null });
+async function storesOverpass(loc, onRetry) {
+  const at = `(around:${STORE_KM * 1000},${loc.lat},${loc.lon})`;
+  const data = await overpass(`[out:json][timeout:20];(nwr["shop"="supermarket"]${at};nwr["shop"="wholesale"]${at};);out center tags 40;`, onRetry);
+  return data.elements.map((e) => {
+    const t = e.tags || {}, lat = e.lat ?? (e.center && e.center.lat), lon = e.lon ?? (e.center && e.center.lon);
+    return storeFrom(loc, { id: e.type[0] + e.id, name: t.name || t.brand || 'Grocery store', brand: t.brand || '', addr: [t['addr:housenumber'], t['addr:street'], t['addr:city']].filter(Boolean).join(' '),
+      web: t.website || t['contact:website'] || t['brand:website'] || '', lat, lon });
+  });
+}
+async function storesNominatim(loc) {
+  const box = [loc.lon - 0.15, loc.lat + 0.12, loc.lon + 0.15, loc.lat - 0.12].map((n) => n.toFixed(4)).join(',');
+  const r = await fetchTimeout(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent('[supermarket]')}&viewbox=${box}&bounded=1&limit=40&countrycodes=us&addressdetails=1&extratags=1`, { headers: { Accept: 'application/json' } }, 12000);
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const list = await r.json();
+  return (Array.isArray(list) ? list : []).map((h) => {
+    const a = h.address || {}, x = h.extratags || {}, name = h.name || (h.display_name || '').split(',')[0];
+    return storeFrom(loc, { id: (h.osm_type || 'n')[0] + h.osm_id, name: name || x.brand || 'Grocery store', brand: x.brand || '', addr: [a.house_number, a.road, a.city || a.town || a.village].filter(Boolean).join(' '),
+      web: x.website || x['contact:website'] || '', lat: +h.lat, lon: +h.lon });
+  });
+}
+const storeKey = (loc) => (loc.q || `${loc.lat.toFixed(2)},${loc.lon.toFixed(2)}`).toLowerCase();
+async function findStores(loc, fresh) {
+  const st = S.stores, cache = st.found || (st.found = {}), key = storeKey(loc), hit = cache[key];
+  storesFail = null;
+  let list = null, partial = false;
+  if (!fresh && hit && Date.now() - hit.at < STORE_DAYS * 864e5) { list = hit.list; partial = !!hit.partial; }
+  else {
+    storesBusy = 'Looking for grocery stores near ' + loc.label + '…'; render(true);
+    try { list = await storesOverpass(loc, () => { storesBusy = 'The store directory is busy. Trying another server…'; render(true); }); }
+    catch (e) {
+      storesBusy = 'Still busy. Trying a backup directory…'; render(true);
+      try { list = await storesNominatim(loc); partial = true; } catch (e2) { list = null; }
+    }
+    if (list) {
+      const seen = new Set();
+      list = list.filter((x) => x.name && !seen.has(x.name + x.addr) && seen.add(x.name + x.addr)).sort((a, b) => (a.dist ?? 99) - (b.dist ?? 99)).slice(0, 20);
+      if (list.length) { cache[key] = { at: Date.now(), list, partial }; const keys = Object.keys(cache); if (keys.length > 10) delete cache[keys[0]]; }
+    }
+  }
+  if (!list) { storesFail = loc; storesBusy = ''; render(true); return; }
+  // Keep the home store and favorites even if they're outside this search.
+  const keep = st.keep.filter((x) => !list.some((y) => y.id === x.id));
+  st.list = [...list, ...keep]; st.loc = loc; st.partial = partial;
+  storesBusy = list.length ? '' : `No supermarkets found within 10 miles of ${loc.label}. Try a nearby town or zip code.`;
   save(); render(true);
+}
+// Shown when no directory answered: try again, or search a maps app directly.
+function storesFailBox(loc) {
+  const near = encodeURIComponent(loc.q || loc.label), ll = loc.q ? '' : `&sll=${loc.lat},${loc.lon}`;
+  const g = loc.q ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('grocery stores near ' + (loc.q || loc.label))}` : `https://www.google.com/maps/search/grocery+stores/@${loc.lat},${loc.lon},13z`;
+  const ap = `https://maps.apple.com/?q=${encodeURIComponent('grocery stores')}${loc.q ? '&near=' + near : ll}`;
+  return `<div class="store-fail stack" role="status" style="margin-top:8px"><p style="margin:0">The free store directory is busy right now, so stores near <b>${esc(loc.label)}</b> couldn't be loaded.</p>
+    <div class="row"><button class="btn btn-sm btn-primary" data-act="store-retry">Try again</button>
+      <a class="btn btn-sm" href="${g}" target="_blank" rel="noopener">Google Maps</a><a class="btn btn-sm" href="${ap}" target="_blank" rel="noopener">Apple Maps</a></div>
+    <p class="muted" style="font-size:.8rem;margin:0">The maps links search for grocery stores near you in a new tab.</p></div>`;
 }
 const US_ZIP = /^\d{5}(-\d{4})?$/;
 // "Deerfield, NH 03037" from a Nominatim result with address details.
@@ -4845,7 +4895,7 @@ function placeLabel(hit, text) {
 async function geocode(text) {
   const key = text.toLowerCase(), cache = S.stores.geo || (S.stores.geo = {});
   if (cache[key]) return findStores(cache[key]);
-  storesBusy = 'Finding ' + text + '…'; render(true);
+  storesFail = null; storesBusy = 'Finding ' + text + '…'; render(true);
   const base = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1';
   const ask = async (qs) => { const res = await fetch(base + qs, { headers: { Accept: 'application/json' } }); if (!res.ok) throw new Error('HTTP ' + res.status); return (await res.json())[0]; };
   try {
@@ -4857,7 +4907,7 @@ async function geocode(text) {
     cache[key] = loc;
     const keys = Object.keys(cache); if (keys.length > 20) delete cache[keys[0]];
     findStores(loc);
-  } catch (e) { storesBusy = "Couldn't look up that location right now. Check your connection and try again."; render(true); }
+  } catch (e) { storesBusy = ''; storesFail = { q: text, label: text }; render(true); }
 }
 // Home and favorite stores are remembered in full so they survive a new search somewhere else.
 function keepStore(id) { const x = S.stores.list.find((y) => y.id === id); if (x && !S.stores.keep.some((y) => y.id === id)) S.stores.keep.push(x); }
@@ -6719,10 +6769,12 @@ document.addEventListener('click', (e) => {
     const v = Math.max(0, round((parseFloat(inp.value) || 0) + +b.dataset.d, 2));
     inp.value = v; setSessionVal(b.dataset.k, b.dataset.f, String(v));
   }
+  else if (a === 'store-retry') { const f = storesFail; if (f) { if (f.lat == null) geocode(f.q); else findStores(f, true); } }
+  else if (a === 'store-refresh') { if (S.stores.loc) findStores(S.stores.loc, true); }
   else if (a === 'store-geo') {
     if (!navigator.geolocation) { storesBusy = 'Location isn’t available in this browser. Enter a zip code instead.'; render(true); return; }
     storesBusy = 'Getting your location…'; render(true);
-    navigator.geolocation.getCurrentPosition((pos) => findStores({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: 'My location' }),
+    navigator.geolocation.getCurrentPosition((pos) => findStores({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: 'My location' }, true),
       () => { storesBusy = 'Location permission was denied. Enter a zip code or town instead.'; render(true); }, { timeout: 10000 });
   }
   else if (a === 'order-open') { orderOpen = !orderOpen; render(true); }
