@@ -122,7 +122,6 @@ button, input, select { font: inherit; color: inherit; }
 .tab { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 12px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: .98rem; }
 .tab:hover { background: var(--sunk); }
 .tab[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
-.tab-i { width: 1.4em; text-align: center; font-size: 1.1rem; }
 @keyframes menu-in { from { opacity: 0; transform: translateY(-6px); } }
 
 main { padding-block: 28px 56px; }
@@ -228,6 +227,16 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .day.done b { color: var(--surface); }
 .day.today { outline: 2px solid var(--ink); outline-offset: -2px; }
 .list { list-style: none; padding: 0; margin: 0; }
+.wlog-item { border-top: 1px solid var(--line); }
+.wlog-item:first-child { border-top: 0; }
+.wlog-item summary { display: flex; align-items: center; gap: 12px; padding: 12px 0; cursor: pointer; list-style: none; }
+.wlog-item summary::-webkit-details-marker { display: none; }
+.wlog-item .grow { flex: 1; min-width: 0; }
+.wlog-chev { width: 10px; height: 10px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); margin-right: 6px; transition: transform .2s; flex: none; }
+.wlog-item[open] .wlog-chev { transform: rotate(-135deg); }
+.wlog-body { padding: 0 0 16px; }
+.facts.wlog-facts { grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); margin-bottom: 10px; background: none; border: 0; gap: 8px; }
+.facts.wlog-facts div { background: var(--sunk); border-radius: var(--r-sm); padding: 10px 6px; }
 .list li { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
 .list li:first-child { border-top: 0; }
 .list .grow { flex: 1; min-width: 0; }
@@ -239,7 +248,8 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .next-card .week { margin-top: 18px; }
 .next-card .day { background: var(--surface); }
 .next-card .day.done { background: var(--berry); }
-.week-head { display: flex; justify-content: space-between; align-items: baseline; margin-top: 20px; font-size: .85rem; }
+.week-head { display: flex; flex-wrap: wrap; gap: 2px 12px; justify-content: space-between; align-items: baseline; margin-top: 20px; font-size: .85rem; }
+.week-head b { white-space: nowrap; }
 .week-head + .week { margin-top: 8px; }
 
 /* Charts */
@@ -248,8 +258,40 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .chart-wrap { overflow-x: auto; }
 
 /* Recipes */
-.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 18px; }
-.filters .input { max-width: 260px; }
+.wtools { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; align-items: start; }
+.wtools.editing, .wtools > :only-child { grid-template-columns: 1fr; }
+@media (max-width: 900px) { .wtools { grid-template-columns: 1fr; } }
+.stores .panel-head { flex-wrap: wrap; }
+.store-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 12px; margin-top: 12px; }
+.store { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; background: var(--surface); min-width: 0; }
+.store.home { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.store:has([aria-expanded="true"]) { grid-column: 1 / -1; }
+.store-top { display: flex; gap: 12px; align-items: flex-start; }
+.store-top .grow { flex: 1; min-width: 0; }
+.store-total { display: flex; flex-direction: column; align-items: flex-end; text-align: right; font-size: .8rem; flex: none; }
+.store-total b { font-size: 1.25rem; }
+.store-acts { margin-top: 10px; gap: 6px; }
+.price-table td { vertical-align: middle; padding-block: 6px; }
+.price-in { width: 90px; padding: 4px 8px; color: var(--muted); }
+.price-in.yours { color: var(--good); border-color: var(--good); font-weight: 700; }
+.price-table tr.gone td:first-child { text-decoration: line-through; color: var(--muted); }
+.chip-sm { padding: 3px 10px; font-size: .78rem; }
+.home-box { background: var(--accent-soft); border-radius: var(--r); padding: 12px 14px; margin-top: 12px; }
+.subs li { flex-wrap: wrap; }
+.order { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
+.order h3 { font-size: 1rem; }
+.order-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.order-links .chip { text-decoration: none; }
+.fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
+.fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
+.fbtn { display: inline-flex; align-items: center; gap: 8px; }
+.fcount { background: var(--accent); color: var(--on-accent); border-radius: 999px; font-size: .72rem; padding: 1px 7px; font-family: var(--f-mono); }
+.fchev { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); transition: transform .2s; }
+.fbtn[aria-expanded="true"] .fchev { transform: rotate(-135deg) translateY(-2px); }
+.fsel { display: inline-flex; align-items: center; gap: 8px; }
+.fsel select { width: auto; padding-block: 8px; }
+.fpanel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px 6px; margin-bottom: 16px; }
+.factive { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 .cards { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
 .rcard { display: flex; flex-direction: column; text-decoration: none; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; transition: transform .15s ease, box-shadow .15s ease; }
 .rcard:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
@@ -291,6 +333,12 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .ex-row { padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .ex-row .ex-cue-in { grid-column: 1 / -1; font-size: .88rem; }
 @media (max-width: 560px) {
+  .plan-ex thead { display: none; }
+  .plan-ex tr { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 4px 18px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .plan-ex tr:last-child { border-bottom: 0; }
+  .ex-table.plan-ex td { padding: 0; border: 0; }
+  .plan-ex td:first-child { grid-column: 1 / -1; margin-bottom: 2px; }
+  .plan-ex td[data-l]::before { content: attr(data-l) " "; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
   .ex-head, .ex-row { grid-template-columns: repeat(3, minmax(0, 1fr)) 36px; }
   .ex-head > :first-child { display: none; }
   .ex-row > :first-child { grid-column: 1 / -1; }
@@ -374,12 +422,10 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .gear-summary { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: space-between; }
 
 /* Session */
-.session-ex { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; padding: 16px 0; border-top: 1px solid var(--line); align-items: center; }
+.session-ex { padding: 16px 0; border-top: 1px solid var(--line); }
 .session-ex:first-child { border-top: 0; }
-.sets { display: flex; gap: 6px; flex-wrap: wrap; }
-.set { width: 42px; height: 42px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); font-family: var(--f-mono); font-weight: 600; cursor: pointer; color: var(--muted); }
+.set { width: 44px; height: 44px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); font-family: var(--f-mono); font-weight: 600; cursor: pointer; color: var(--muted); }
 .set[aria-pressed="true"] { background: var(--berry); border-color: var(--berry); color: var(--surface); }
-.load { width: 92px; }
 .restbar { position: sticky; bottom: 0; margin-top: 20px; background: var(--ink); color: var(--bg); border-radius: var(--r) var(--r) 0 0; padding: 14px 18px calc(14px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; justify-content: space-between; }
 .restbar .num { font-size: 1.4rem; }
 .restbar .btn { background: transparent; color: var(--bg); border-color: color-mix(in srgb, var(--bg) 40%, transparent); }
@@ -402,10 +448,18 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .copy-fallback { width: 100%; min-height: 160px; font: .85rem/1.5 var(--f-mono); }
 
 /* Progress */
-.set-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.rep-in { width: 42px; padding: 4px 0; text-align: center; font: 500 16px var(--f-mono); border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); -moz-appearance: textfield; appearance: textfield; }
-.rep-in::-webkit-inner-spin-button, .rep-in::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-.rep-unit { align-self: flex-end; font-size: .75rem; color: var(--muted); padding-bottom: 8px; }
+.ex-last { font-size: .82rem; color: var(--accent); font-weight: 700; margin-top: 4px; }
+.srows { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.srow { display: grid; grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; max-width: 420px; }
+.srows.no-w .srow { grid-template-columns: 44px minmax(0, 200px); }
+.srow-h { font-size: .7rem; font-family: var(--f-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); text-align: center; }
+.srow-h span:first-child { text-align: left; }
+.srow.done .stp { opacity: .6; }
+.stp { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); overflow: hidden; min-width: 0; }
+.stp button { flex: none; width: 38px; height: 44px; border: 0; background: none; color: var(--ink); font-size: 1.3rem; line-height: 1; cursor: pointer; touch-action: manipulation; }
+.stp button:active { background: var(--sunk); }
+.stp input { flex: 1; min-width: 0; width: 100%; height: 44px; border: 0; background: none; text-align: center; font: 600 16px var(--f-mono); color: var(--ink); -moz-appearance: textfield; appearance: textfield; padding: 0; }
+.stp input::-webkit-inner-spin-button, .stp input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .goal-bars { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
 .goal-bars + .week { margin-top: 10px; }
 .gbar { height: 6px; border-radius: 99px; background: var(--sunk); overflow: hidden; }
@@ -468,16 +522,16 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
   </div>
   <nav class="menu" id="site-menu" aria-label="Sections" hidden>
     <div class="wrap menu-grid">
-      <a class="tab" href="#today" data-tab="today"><span class="tab-i" aria-hidden="true">🏠</span><span class="tab-l">Today</span></a>
-      <a class="tab" href="#recipes" data-tab="recipes"><span class="tab-i" aria-hidden="true">🥗</span><span class="tab-l">Recipes</span></a>
-      <a class="tab" href="#mealplan" data-tab="mealplan"><span class="tab-i" aria-hidden="true">📅</span><span class="tab-l">Meal plan</span></a>
-      <a class="tab" href="#shopping" data-tab="shopping"><span class="tab-i" aria-hidden="true">🛒</span><span class="tab-l">Shopping list</span></a>
-      <a class="tab" href="#workouts" data-tab="workouts"><span class="tab-i" aria-hidden="true">🏋️</span><span class="tab-l">Workouts</span></a>
-      <a class="tab" href="#log" data-tab="log"><span class="tab-i" aria-hidden="true">📝</span><span class="tab-l">Log</span></a>
-      <a class="tab" href="#progress" data-tab="progress"><span class="tab-i" aria-hidden="true">📏</span><span class="tab-l">Progress</span></a>
-      <a class="tab" href="#analytics" data-tab="analytics"><span class="tab-i" aria-hidden="true">📈</span><span class="tab-l">Analytics</span></a>
-      <a class="tab" href="#goals" data-tab="goals"><span class="tab-i" aria-hidden="true">🎯</span><span class="tab-l">Profile &amp; goals</span></a>
-      <a class="tab" href="#settings" data-tab="settings"><span class="tab-i" aria-hidden="true">⚙️</span><span class="tab-l">Settings</span></a>
+      <a class="tab" href="#today" data-tab="today"><span class="tab-l">Today</span></a>
+      <a class="tab" href="#recipes" data-tab="recipes"><span class="tab-l">Recipes</span></a>
+      <a class="tab" href="#mealplan" data-tab="mealplan"><span class="tab-l">Meal plan</span></a>
+      <a class="tab" href="#shopping" data-tab="shopping"><span class="tab-l">Shopping list</span></a>
+      <a class="tab" href="#workouts" data-tab="workouts"><span class="tab-l">Workouts</span></a>
+      <a class="tab" href="#log" data-tab="log"><span class="tab-l">Log</span></a>
+      <a class="tab" href="#progress" data-tab="progress"><span class="tab-l">Progress</span></a>
+      <a class="tab" href="#analytics" data-tab="analytics"><span class="tab-l">Analytics</span></a>
+      <a class="tab" href="#goals" data-tab="goals"><span class="tab-l">Profile &amp; goals</span></a>
+      <a class="tab" href="#settings" data-tab="settings"><span class="tab-l">Settings</span></a>
     </div>
   </nav>
 </header>
@@ -1312,7 +1366,7 @@ const PLANS = [
         ['Plank pull-through', 4, '45 s', 15, 'In a high plank, drag the bell under your body to the other side. Hips stay level.'],
         ['High pull (alternate arms)', 4, '45 s', 60, 'Explosive hips, elbow high and back, bell stays close.']] }
     ] },
-  { id: 'yates-hit', title: 'Blood & Guts HIT Split (Dorian Yates style)', diff: 4, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', needs: [['barbell'], ['dumbbells'], ['bench'], ['cables'], ['machines']], perWeek: 4, minutes: 50,
+  { id: 'yates-hit', title: 'Blood & Guts HIT Split', diff: 4, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', needs: [['barbell'], ['dumbbells'], ['bench'], ['cables'], ['machines']], perWeek: 4, minutes: 50,
     equipment: 'Full gym: barbell, dumbbells, cables and machines (leg press, hack squat, leg curl, calf raise)',
     goal: 'Six-time Mr. Olympia Dorian Yates built his physique on brief, brutally hard sessions: a couple of warm-up sets, then one all-out working set per exercise taken to failure. Low volume, maximum effort and plenty of recovery. For experienced lifters only.',
     schedule: 'Four sessions spread over a 6-day cycle so each body part is trained once every 6 days, e.g. Day 1, Day 2, rest, Day 3, Day 4, rest. Never train the same muscle while it is still sore.',
@@ -1354,7 +1408,7 @@ const PLANS = [
         ['Standing calf raise', 1, '10–12', 90, 'Full stretch at the bottom with a 1-second pause, then rise high.'],
         ['Seated calf raise', 1, '10–12', 60, 'Same full range; no bouncing.']] }
     ] },
-  { id: 'yates-classic', title: 'Two-Set Mass Builder (Yates 1987–92 style)', diff: 4, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', needs: [['barbell'], ['dumbbells'], ['bench'], ['cables'], ['machines'], ['pullup']], perWeek: 4, minutes: 60,
+  { id: 'yates-classic', title: 'Two-Set Mass Builder', diff: 4, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', needs: [['barbell'], ['dumbbells'], ['bench'], ['cables'], ['machines'], ['pullup']], perWeek: 4, minutes: 60,
     equipment: 'Full gym: barbell, rack, dumbbells, cables, pull-up bar and leg machines',
     goal: 'Based on how Dorian Yates trained on his way to the top: after warm-ups, two hard working sets per exercise, the second a little lighter and also taken to failure. A touch more volume than Blood & Guts with heavy and light leg days.',
     schedule: 'Four sessions in rotation with a rest day after every second session: Chest & arms, Legs (heavy), rest, Back & shoulders, Legs (light), rest, repeat.',
@@ -1391,7 +1445,7 @@ const PLANS = [
         ['Seated leg curl', 2, '10–12', 90, 'Squeeze at full contraction.'],
         ['Seated calf raise', 2, '12–15', 60, 'Full range, no bouncing.']] }
     ] },
-  { id: 'kb-swing-getup', title: 'Kettlebell Swing & Get-Up Daily (Pavel style)', diff: 2, muscles: ['Full body', 'Core', 'Cardio'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 5, minutes: 25,
+  { id: 'kb-swing-getup', title: 'Kettlebell Swing & Get-Up Daily', diff: 2, muscles: ['Full body', 'Core', 'Cardio'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 5, minutes: 25,
     equipment: 'One kettlebell. Many start around 16 kg (35 lb) for men and 8–12 kg (18–26 lb) for women.',
     goal: 'Inspired by Pavel Tsatsouline’s minimalist "Simple & Sinister" approach: two movements, the one-arm swing and the Turkish get-up, practised almost every day. Builds hip power, grip, shoulder stability and conditioning in under half an hour.',
     schedule: '5–6 days a week. Train fresh and never to exhaustion: it is practice, not a workout to survive. On low-energy days do the Easy day.',
@@ -1405,7 +1459,7 @@ const PLANS = [
         ['One-arm swing (alternate hands each set)', 5, '10', 45, 'Same crisp technique, lots of rest. Stop well before fatigue.'],
         ['Turkish get-up (alternate sides)', 6, '1', 45, 'Slow and deliberate. A lighter bell is fine.']] }
     ] },
-  { id: 'kb-press-ladders', title: 'Kettlebell Press Ladders (Pavel style)', diff: 3, muscles: ['Upper body', 'Full body', 'Cardio'], gear: 'Minimal', needs: [['kettlebell'], ['pullup']], perWeek: 3, minutes: 40,
+  { id: 'kb-press-ladders', title: 'Kettlebell Press Ladders', diff: 3, muscles: ['Upper body', 'Full body', 'Cardio'], gear: 'Minimal', needs: [['kettlebell'], ['pullup']], perWeek: 3, minutes: 40,
     equipment: 'One kettlebell you can strictly press about 5–8 times per arm, and a pull-up bar',
     goal: 'Modelled on the press-ladder programme from Pavel Tsatsouline’s "Enter the Kettlebell!" (the Rite of Passage). Clean-and-press ladders and pull-up ladders build pressing strength without grinding to failure, with swings or snatches for conditioning.',
     schedule: '3 days a week on non-consecutive days: Heavy, Light, Medium. Best after you can comfortably handle the Swing & Get-Up plan.',
@@ -1425,7 +1479,7 @@ const PLANS = [
         ['Pull-up ladder (1, 2, 3)', 4, '6', 60, 'Chest up to the bar.'],
         ['Two-hand or one-arm swings', 5, '15', 45, 'Moderate pace, perfect form.']] }
     ] },
-  { id: 'longevity-strength-hiit', title: 'Longevity Strength & HIIT (inspired by David Sinclair)', diff: 2, muscles: ['Full body', 'Cardio'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 3, minutes: 35,
+  { id: 'longevity-strength-hiit', title: 'Longevity Strength & HIIT', diff: 2, muscles: ['Full body', 'Cardio'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 3, minutes: 35,
     equipment: 'A pair of dumbbells or a kettlebell, plus a bike, rower or open space for sprints',
     goal: 'Built around the habits longevity researcher David Sinclair describes: short, hard sessions that leave you out of breath, lifting to hold on to muscle as you age, and moving all day instead of sitting. Two brief strength days and one high-intensity interval day.',
     schedule: '3 sessions a week (e.g. Mon strength, Wed intervals, Fri strength). On every other day aim for 7,000–10,000 steps and break up long sitting with a standing desk or short walks.',
@@ -1447,7 +1501,7 @@ const PLANS = [
         ['Push-up', 2, '8–15', 60, 'Body in one line. Hands on a bench to make it easier.'],
         ['Side plank', 2, '30 s', 30, 'Each side. Hips high, body straight.']] }
     ] },
-  { id: 'animal-based-athlete', title: 'Outdoor Athlete (inspired by Paul Saladino)', diff: 3, muscles: ['Full body', 'Cardio', 'Mobility'], gear: 'Minimal', needs: [['kettlebell', 'dumbbells'], ['pullup']], perWeek: 4, minutes: 40,
+  { id: 'animal-based-athlete', title: 'Outdoor Athlete', diff: 3, muscles: ['Full body', 'Cardio', 'Mobility'], gear: 'Minimal', needs: [['kettlebell', 'dumbbells'], ['pullup']], perWeek: 4, minutes: 40,
     equipment: 'A kettlebell or dumbbells, a pull-up bar (or tree branch / playground bar), a field or hill, and a backpack for rucking',
     goal: 'Inspired by how Paul Saladino describes staying fit: moving outdoors almost every day, with sprints, hikes and simple strength work, and starting each session with a mobility and activation routine. Pairs naturally with his "get morning sun, get your feet on the grass" habits.',
     schedule: '4 sessions a week: Strength, Sprints, Strength, Hike/Ruck. Get outside in the morning light for 10 minutes most days, barefoot on grass if you can.',
@@ -2001,32 +2055,49 @@ function seed() {
 }
 function fresh() {
   const s = seed();
-  return { ...s, example: false, meals: [], weights: [], workouts: [], water: {}, measures: [], session: null, shopping: { recipes: [], checked: {}, extras: [] } };
+  return { ...s, example: false, meals: [], weights: [], workouts: [], water: {}, measures: [], session: null, shopping: { recipes: [], checked: {}, extras: [], subs: {} } };
 }
 let S;
 try { const raw = localStorage.getItem(KEY); S = raw ? JSON.parse(raw) : seed(); } catch (e) { S = seed(); }
 if (!S || S.v !== 1) S = seed();
-/* Fill in fields added after a save (or backup) was made. */
+/* Fill in fields added after a save (or backup) was made, and repair anything with the wrong shape so one bad
+   field can't stop the whole app from loading. Only uses things declared above this point (it runs at startup). */
+const DEFAULTS = () => ({
+  meals: [], weights: [], workouts: [], water: {}, measures: [], session: null, myGear: null, customRecipes: [], customPlans: [],
+  mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2,
+  shopping: { recipes: [], checked: {}, extras: [], subs: {} },
+  settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
+  stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false }
+});
+const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 function migrate() {
-  if (!S.shopping) S.shopping = { recipes: [], checked: {}, extras: [] };
-  if (!S.measures) S.measures = [];
-  if (S.myGear === undefined) S.myGear = null;
-  if (!S.customRecipes) S.customRecipes = [];
-  if (!S.customPlans) S.customPlans = [];
-  if (!S.mealPlan) S.mealPlan = {};
-  if (S.reminders === undefined) S.reminders = null;
-  if (!S.favs) S.favs = { recipes: [], plans: [] };
-  if (S.appliance === undefined) S.appliance = null;
-  if (!S.servings) S.servings = 2;
-  if (!S.settings) S.settings = { theme: 'system', accent: 'green', text: 'md', celebrate: true };
+  const d = DEFAULTS();
+  Object.entries(d).forEach(([k, def]) => {
+    const v = S[k];
+    if (v === undefined || (Array.isArray(def) && !Array.isArray(v)) || (isObj(def) && !isObj(v))) S[k] = def;
+    else if (isObj(def)) Object.entries(def).forEach(([k2, def2]) => { if (S[k][k2] === undefined || (Array.isArray(def2) && !Array.isArray(S[k][k2]))) S[k][k2] = def2; });
+  });
+  if (!isObj(S.profile) || !isObj(S.targets)) { const base = seed(); if (!isObj(S.profile)) S.profile = base.profile; if (!isObj(S.targets)) S.targets = base.targets; }
+  if (!(S.servings > 0)) S.servings = 2;
+  S.workouts = S.workouts.filter((w) => isObj(w) && typeof w.date === 'string');
+  S.meals = S.meals.filter((m) => isObj(m) && typeof m.date === 'string');
   syncCustom();
-  // planById is declared further down, so look the plan up directly here.
-  if (S.targets.workoutsWeek == null) S.targets.workoutsWeek = (PLANS.find((p) => p.id === S.activePlan) || PLANS[0]).perWeek;
+  // planById is declared further down, so look plans up in PLANS directly here.
+  const planOf = (id) => PLANS.find((p) => p.id === id);
+  if (S.session && !(planOf(S.session.planId) && planOf(S.session.planId).days[S.session.dayIdx])) S.session = null;
+  if (!planOf(S.activePlan)) S.activePlan = PLANS[0].id;
+  if (S.targets.workoutsWeek == null) S.targets.workoutsWeek = planOf(S.activePlan).perWeek;
   if (S.targets.minutesWeek == null) S.targets.minutesWeek = 150;
 }
 migrate();
 applyPrefs();
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep in memory */ } }
+let saveWarned = false;
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); }
+  catch (e) { // storage full or blocked: keep working in memory and say so once
+    if (!saveWarned) { saveWarned = true; setTimeout(() => toast("Couldn't save: this browser's storage is full or blocked. Download a backup to keep your data."), 0); }
+  }
+}
 
 /* ---------- Units ---------- */
 const us = () => S.units === 'us';
@@ -2361,7 +2432,7 @@ function viewRecipeForm(id) {
     <section class="panel span-7 stack">
       ${fld('Recipe name', 'title', d.title, 'required maxlength="80" placeholder="e.g. Grandma\'s chicken soup"')}
       <div class="row" role="group" aria-label="Meal"><span class="eyebrow" style="margin-right:6px">Meal</span>${['Breakfast', 'Lunch', 'Dinner', 'Snack'].map((m) => `<button type="button" class="chip" data-act="draft-set" data-path="meal" data-v="${m}" aria-pressed="${d.meal === m}">${m}</button>`).join('')}</div>
-      <div class="row" role="group" aria-label="Cooked on"><span class="eyebrow" style="margin-right:6px">Cooked on</span>${[...APPLIANCES, ['none', 'No cooking', '🥗']].map(([a, l, i]) => `<button type="button" class="chip" data-act="draft-set" data-path="how" data-v="${a}" aria-pressed="${(d.how || 'stove') === a}">${i} ${l}</button>`).join('')}</div>
+      <div class="row" role="group" aria-label="Cooked on"><span class="eyebrow" style="margin-right:6px">Cooked on</span>${[...APPLIANCES, ['none', 'No cooking']].map(([a, l]) => `<button type="button" class="chip" data-act="draft-set" data-path="how" data-v="${a}" aria-pressed="${(d.how || 'stove') === a}">${l}</button>`).join('')}</div>
       <label class="field">Short description<textarea class="input" data-d="blurb" rows="2" maxlength="240">${esc(d.blurb)}</textarea></label>
       <div class="form-grid">${numFld('Servings', 'servings', d.servings, 'min="1" max="24"')}${numFld('Prep (min)', 'prep', d.prep)}${numFld('Cook (min)', 'cook', d.cook)}</div>
       <h3 style="margin-top:6px">Ingredients <span class="muted" style="font-weight:400;font-size:.85rem">for ${d.servings || '?'} servings</span></h3>
@@ -2575,7 +2646,7 @@ const favToggle = (kind, id) => { const on = isFav(kind, id);
   return `<button class="btn btn-sm fav-toggle" data-act="fav" data-kind="${kind}" data-id="${id}" aria-pressed="${on}">${on ? '♥ Favorite' : '♡ Add to favorites'}</button>`; };
 
 /* ---------- Cooking appliance ---------- */
-const APPLIANCES = [['stove', 'Stovetop', '🍳'], ['oven', 'Oven', '♨️'], ['air', 'Air fryer', '🌀'], ['micro', 'Microwave', '⚡']];
+const APPLIANCES = [['stove', 'Stovetop'], ['oven', 'Oven'], ['air', 'Air fryer'], ['micro', 'Microwave']];
 const appLabel = (a) => (APPLIANCES.find((x) => x[0] === a) || [, 'Stovetop'])[1];
 const howOf = (r) => r.how || 'stove';
 const worksWith = (r, app) => !app || howOf(r) === 'none' || howOf(r) === app || !!(r.alt && r.alt[app] && !r.alt[app].no);
@@ -2588,10 +2659,10 @@ function methodFor(r, app) {
   if (!alt || alt.no) return { ...base, unavailable: alt ? alt.no : `This is one of your recipes, written for the ${appLabel(how).toLowerCase()}. Edit it to change the method.` };
   return { steps: alt.steps, cook: alt.cook, note: alt.note, app };
 }
-const appIcons = (r) => (howOf(r) === 'none' ? '<span class="app-icons" title="No cooking needed">No cook</span>'
-  : `<span class="app-icons">${APPLIANCES.filter(([a]) => worksWith(r, a)).map(([, l, i]) => `<span title="${l}" aria-label="${l}" role="img">${i}</span>`).join('')}</span>`);
+const appIcons = (r) => (howOf(r) === 'none' ? '<span class="app-icons">No cook</span>' : '');
 const appChips = (label) => `<div class="filter-row app-row" role="group" aria-label="${label}"><span class="eyebrow">${label}</span>
-  <button class="chip" data-act="app" data-a="" aria-pressed="${!S.appliance}">As written</button>${APPLIANCES.map(([a, l, i]) => `<button class="chip" data-act="app" data-a="${a}" aria-pressed="${S.appliance === a}">${i} ${l}</button>`).join('')}</div>`;
+  <button class="chip" data-act="app" data-a="" aria-pressed="${!S.appliance}">As written</button>${APPLIANCES.map(([a, l]) => `<button class="chip" data-act="app" data-a="${a}" aria-pressed="${S.appliance === a}">${l}</button>`).join('')}</div>`;
+const appSelect = () => `<label class="fsel"><span class="eyebrow">Cooking with</span><select class="input" id="app-sel"><option value="">As written</option>${APPLIANCES.map(([a, l]) => `<option value="${a}" ${S.appliance === a ? 'selected' : ''}>${l}</option>`).join('')}</select></label>`;
 let appHide = false;
 
 /* ---------- Calories burned ---------- */
@@ -2680,7 +2751,15 @@ function viewToday() {
 }
 
 let recipeFilter = 'All', recipeSearch = '';
-const FILTERS = ['All', 'Favorites', 'Breakfast', 'Lunch', 'Dinner', 'Snack', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Vegetarian', 'Vegan', 'Low carb', 'Meal prep', 'My recipes'];
+/* Compact filter bar: search and dropdowns stay visible, chips live in a panel behind a Filters button that shows how many are active. */
+const fOpen = { recipes: false, workouts: false };
+function filterBar(id, { count = 0, lead = '', extra = '', panel = '', active = '' }) {
+  return `<div class="fbar">${lead}<button type="button" class="btn fbtn" data-act="ftoggle" data-v="${id}" aria-expanded="${fOpen[id]}" aria-controls="fp-${id}">Filters${count ? ` <span class="fcount">${count}</span>` : ''}<span class="fchev" aria-hidden="true"></span></button>${extra}</div>
+    ${fOpen[id] ? `<div class="fpanel" id="fp-${id}">${panel}</div>` : active ? `<div class="factive">${active}</div>` : ''}`;
+}
+const clearChip = (label, act, attrs) => `<button class="chip" aria-pressed="true" data-act="${act}" ${attrs} aria-label="Remove filter ${esc(label)}">${esc(label)} ✕</button>`;
+const SHOW_FILTERS = ['All', 'Favorites', 'My recipes'];
+const DIET_FILTERS = ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Vegetarian', 'Vegan', 'Low carb', 'Meal prep'];
 const FILTER_NOTES = {
   'Sugar free': 'No sugar, honey, syrups, sweeteners or fruit. Any sugar listed comes naturally from dairy or vegetables, 8 g or less per serving.',
   'Whole foods': 'Only unprocessed, single-ingredient foods: meat, fish, eggs, plain dairy, dried legumes, vegetables, nuts, seeds, herbs and spices.',
@@ -2715,14 +2794,15 @@ const MEAL_ICON = { Snack: '🍎', Breakfast: '🍳', Lunch: '🥗', Dinner: '�
 const MEAL_PLURAL = { Snack: 'Snacks', Breakfast: 'Breakfast', Lunch: 'Lunch', Dinner: 'Dinner' };
 function viewRecipes() {
   return `<div class="page-head"><div><div class="eyebrow">${RECIPES.length} recipes · macros per serving</div><h1>Recipes</h1>
-    <p class="muted">High-protein meals built from everyday groceries. Every recipe lists calories and macros per serving and scales to the number of people you're feeding. Use <b>Sugar free</b>, <b>Whole foods</b> or <b>Minimally processed</b> to narrow things down.</p>
+    <p class="muted">High-protein meals built from everyday groceries, with calories and macros per serving that scale to the number of people you're feeding.</p>
     <p class="muted" style="font-size:.85rem"><b>Ingredient standards:</b> no seed oils or cooking sprays (olive oil, avocado oil, butter or ghee instead), full-fat dairy, whole eggs, unflavored whey or collagen without sweeteners, and raw honey or maple only in small amounts.</p></div>
     <a class="btn btn-primary" href="#recipe-new">+ Add your own recipe</a></div>
-    <div class="filters" role="group" aria-label="Filter recipes">
-      ${FILTERS.map((f) => `<button class="chip" data-act="filter" data-f="${f}" aria-pressed="${f === recipeFilter}">${f}</button>`).join('')}
-      <input class="input" id="recipe-search" type="search" placeholder="Search by ingredient…" value="${esc(recipeSearch)}" aria-label="Search recipes">
-    </div>
-    ${appChips('Cooking with')}
+    ${filterBar('recipes', { count: recipeFilter === 'All' ? 0 : 1,
+      lead: `<input class="input fsearch" id="recipe-search" type="search" placeholder="Search by ingredient…" value="${esc(recipeSearch)}" aria-label="Search recipes">`,
+      extra: appSelect(),
+      panel: `<div class="filter-row" role="group" aria-label="Show"><span class="eyebrow">Show</span>${SHOW_FILTERS.map((f) => `<button class="chip" data-act="filter" data-f="${f}" aria-pressed="${f === recipeFilter}">${f}</button>`).join('')}</div>
+        <div class="filter-row" role="group" aria-label="Diet"><span class="eyebrow">Diet</span>${DIET_FILTERS.map((f) => `<button class="chip" data-act="filter" data-f="${f}" aria-pressed="${f === recipeFilter}">${f}</button>`).join('')}</div>`,
+      active: recipeFilter === 'All' ? '' : clearChip(recipeFilter, 'filter', 'data-f="All"') })}
     ${S.appliance && RECIPES.some((r) => !worksWith(r, S.appliance)) ? `<p class="muted" style="font-size:.9rem;margin:-8px 0 16px">${RECIPES.filter((r) => !worksWith(r, S.appliance)).length} recipes don't suit the ${appLabel(S.appliance).toLowerCase()} · <button class="btn btn-ghost btn-sm" data-act="app-hide" style="padding:2px 6px;color:var(--accent)">${appHide ? 'Show them' : 'Hide them'}</button></p>` : ''}
     ${FILTER_NOTES[recipeFilter] ? `<p class="tip" style="margin:-6px 0 18px;max-width:80ch"><b>${recipeFilter}:</b> ${FILTER_NOTES[recipeFilter]}</p>` : ''}
     <div id="recipe-cards">${recipeCards()}</div>`;
@@ -2780,7 +2860,7 @@ function viewRecipe(id) {
       <ul class="ing" id="ing-list">${ingList(r)}</ul>
     </section>
     <section class="panel span-7" aria-labelledby="h-steps">
-      <div class="panel-head"><h2 id="h-steps">Method</h2>${m.none ? '<span class="tag tag-accent">No cooking needed</span>' : `<span class="tag">${APPLIANCES.find((x) => x[0] === m.app)[2]} ${appLabel(m.app)}${m.app === howOf(r) ? ' · as written' : ''}</span>`}</div>
+      <div class="panel-head"><h2 id="h-steps">Method</h2>${m.none ? '<span class="tag tag-accent">No cooking needed</span>' : `<span class="tag">${appLabel(m.app)}${m.app === howOf(r) ? ' · as written' : ''}</span>`}</div>
       ${m.none ? '' : appChips('Cook it with')}
       ${m.unavailable ? `<p class="tip tip-warn" style="margin-bottom:16px"><b>Not for the ${appLabel(S.appliance).toLowerCase()}.</b> ${esc(m.unavailable)} Showing the ${appLabel(m.app).toLowerCase()} method instead.</p>` : ''}
       ${m.note ? `<p class="tip" style="margin-bottom:16px"><b>${appLabel(m.app)} tip.</b> ${esc(m.note)}</p>` : ''}
@@ -2797,6 +2877,11 @@ let wFavOnly = false, wDiff = 0, wMuscle = 'All', wHardFirst = false, wShowAll =
 const canDo = (p) => !S.myGear || p.needs.every((opts) => opts.some((id) => S.myGear.includes(id)));
 const missing = (p) => p.needs.filter((opts) => !opts.some((id) => (S.myGear || []).includes(id))).map((opts) => opts.map(gearLabel).join(' or '));
 function gearPanel() {
+  if (!S.myGear && !gearDraft) {
+    return `<section class="panel gear-panel gear-summary" aria-label="Your equipment"><div><span class="eyebrow">Your equipment</span>
+      <div style="margin-top:4px"><b>Not set</b> <span class="muted">· showing every plan</span></div></div>
+      <button class="btn btn-sm btn-primary" data-act="gear-edit">Choose equipment</button></section>`;
+  }
   if (S.myGear && !gearDraft) {
     return `<section class="panel gear-panel gear-summary" aria-label="Your equipment"><div><span class="eyebrow">Your equipment</span>
       <div style="margin-top:4px"><b>${S.myGear.length ? S.myGear.map(gearLabel).map(esc).join(', ') : 'None, bodyweight only'}</b></div></div>
@@ -2817,14 +2902,14 @@ function viewWorkouts() {
     .sort((a, b) => (wHardFirst ? -1 : 1) * (a.diff - b.diff || a.minutes - b.minutes));
   return `<div class="page-head"><div><div class="eyebrow">${PLANS.length} programs</div><h1>Workout plans</h1>
     <p class="muted">Pick the plan that fits your experience and equipment. Each day lists sets, reps, rest and a form cue, and you can run it as a live session that logs itself.</p></div>
-    <div class="row"><a class="btn btn-sm btn-primary" href="#plan-new">+ Create your own plan</a><button class="btn btn-sm" data-act="wsort" aria-label="Change sort order">${wHardFirst ? 'Hardest first ↓' : 'Easiest first ↑'}</button></div></div>
-  ${gearPanel()}
-  ${reminderPanel()}
-  <div class="filter-row" role="group" aria-label="Filter by difficulty"><span class="eyebrow">Difficulty</span>
-    ${LEVELS.map((l, i) => `<button class="chip" data-act="wfilter-diff" data-d="${i}" aria-pressed="${wDiff === i}">${i ? l : 'All'}</button>`).join('')}
-    <button class="chip" data-act="wfav" aria-pressed="${wFavOnly}">♥ Favorites</button></div>
-  <div class="filter-row" role="group" aria-label="Filter by muscle group" style="margin-bottom:18px"><span class="eyebrow">Muscle group</span>
-    ${['All', ...MUSCLES].map((m) => `<button class="chip" data-act="wfilter-muscle" data-m="${esc(m)}" aria-pressed="${wMuscle === m}">${esc(m)}</button>`).join('')}</div>
+    <a class="btn btn-sm btn-primary" href="#plan-new">+ Create your own plan</a></div>
+  <div class="wtools ${gearDraft || remDraft ? 'editing' : ''}">${gearPanel()}${reminderPanel()}</div>
+  ${filterBar('workouts', { count: (wDiff ? 1 : 0) + (wMuscle !== 'All' ? 1 : 0) + (wFavOnly ? 1 : 0),
+    extra: `<label class="fsel"><span class="eyebrow">Sort</span><select class="input" id="wsort-sel"><option value="easy">Easiest first</option><option value="hard" ${wHardFirst ? 'selected' : ''}>Hardest first</option></select></label>`,
+    panel: `<div class="filter-row" role="group" aria-label="Filter by difficulty"><span class="eyebrow">Difficulty</span>${LEVELS.map((l, i) => `<button class="chip" data-act="wfilter-diff" data-d="${i}" aria-pressed="${wDiff === i}">${i ? l : 'All'}</button>`).join('')}</div>
+      <div class="filter-row" role="group" aria-label="Filter by muscle group"><span class="eyebrow">Muscle group</span>${['All', ...MUSCLES].map((m) => `<button class="chip" data-act="wfilter-muscle" data-m="${esc(m)}" aria-pressed="${wMuscle === m}">${esc(m)}</button>`).join('')}</div>
+      <div class="filter-row" role="group" aria-label="Show"><span class="eyebrow">Show</span><button class="chip" data-act="wfav" aria-pressed="${wFavOnly}">Favorites only</button></div>`,
+    active: (wDiff ? clearChip(LEVELS[wDiff], 'wfilter-diff', 'data-d="0"') : '') + (wMuscle !== 'All' ? clearChip(wMuscle, 'wfilter-muscle', 'data-m="All"') : '') + (wFavOnly ? clearChip('Favorites', 'wfav', '') : '') })}
   ${hidden ? `<p class="muted" style="font-size:.9rem;margin:-8px 0 16px">${hidden} ${hidden === 1 ? 'plan needs' : 'plans need'} equipment you don't have · <button class="btn btn-ghost btn-sm" data-act="gear-showall" style="padding:2px 6px;color:var(--accent)">${wShowAll ? 'Hide them' : 'Show them'}</button></p>` : ''}
   ${list.length ? `<div class="plans">${list.map((p) => `<div class="card-wrap"><a class="panel pcard ${canDo(p) ? '' : 'cant'}" href="#plan-${p.id}">
     <div class="row" style="justify-content:space-between">${diffMeter(p.diff)}${S.activePlan === p.id ? '<span class="eyebrow" style="color:var(--berry)">Your plan</span>' : ''}</div>
@@ -2852,8 +2937,8 @@ function viewPlan(id) {
     <section class="panel span-8">
       <div class="day-tabs" role="group" aria-label="Training days">${p.days.map((x, i) => `<button class="chip" data-act="plan-day" data-i="${i}" aria-pressed="${i === planDayTab}">${esc(x.name)}</button>`).join('')}</div>
       <div class="panel-head"><h2>${esc(d.name)} <span class="muted" style="font-weight:500">· ${esc(d.focus)}</span></h2></div>
-      <div class="table-wrap"><table class="ex-table"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr></thead><tbody>
-        ${d.ex.map((e) => `<tr><td><div class="ex-name">${esc(e[0])}</div><div class="ex-cue">${esc(e[4])}</div></td><td class="num">${e[1]}</td><td class="num">${esc(e[2])}</td><td class="num">${e[3] ? e[3] + 's' : '—'}</td></tr>`).join('')}
+      <div class="table-wrap"><table class="ex-table plan-ex"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr></thead><tbody>
+        ${d.ex.map((e) => `<tr><td><div class="ex-name">${esc(e[0])}</div><div class="ex-cue">${esc(e[4])}</div></td><td class="num" data-l="Sets">${e[1]}</td><td class="num" data-l="Reps">${esc(e[2])}</td><td class="num" data-l="Rest">${e[3] ? e[3] + 's' : '—'}</td></tr>`).join('')}
       </tbody></table></div>
       <div class="row" style="margin-top:16px"><button class="btn btn-berry" data-act="start" data-plan="${p.id}" data-day="${planDayTab}">Start ${esc(d.name)}</button></div>
     </section>
@@ -2871,26 +2956,58 @@ function viewPlan(id) {
 }
 
 let restEnd = 0, ticker = null;
+/* Live session. Each set has its own weight and reps. A value you set carries forward to the later sets of that
+   exercise until you change one of those too; untouched sets start from what you did last time (or the plan target). */
+function lastSets(name) {
+  const w = [...S.workouts].sort((a, b) => b.date.localeCompare(a.date)).find((x) => workoutEx(x).some((y) => y.n === name && y.reps.length));
+  return w ? setsOf(workoutEx(w).find((y) => y.n === name)) : null;
+}
+function setVal(s, e, i, j, f, last) {
+  const store = (f === 'w' ? s.w : s.reps) || {};
+  for (let x = j; x >= 0; x -= 1) { const v = store[i + '-' + x]; if (v != null && v !== '') return String(v); }
+  const l = last && (last[j] || last[last.length - 1]);
+  if (f === 'w') return s.loads && s.loads[i] ? String(s.loads[i]) : l && l.kg ? String(showW(l.kg)) : '';
+  return l && l.r != null ? String(l.r) : String(repTarget(e[2]) ?? '');
+}
+const hasWeight = (p, e) => !p.noLoad && !/ s$/.test(e[2]);
 function viewSession() {
   const s = S.session;
   if (!s) return `<div class="panel stack" style="max-width:520px"><h2>No session running</h2><p class="muted">Start one from any workout plan.</p><a class="btn btn-primary" href="#workouts" style="align-self:start">Choose a workout</a></div>`;
   const p = planById(s.planId), d = p.days[s.dayIdx];
   const total = d.ex.reduce((a, e) => a + e[1], 0), done = Object.values(s.checks).filter(Boolean).length;
-  const loadUnit = us() ? 'lb' : 'kg';
+  const stepper = (k, f, v, label, step) => `<span class="stp"><button type="button" data-act="stp" data-k="${k}" data-f="${f}" data-d="-${step}" aria-label="Less ${label}">−</button><input type="number" inputmode="decimal" min="0" value="${esc(v)}" data-sv="${f}" data-k="${k}" aria-label="${label}"><button type="button" data-act="stp" data-k="${k}" data-f="${f}" data-d="${step}" aria-label="More ${label}">+</button></span>`;
   return `<div class="page-head"><div><div class="eyebrow">${esc(p.title)} · live session</div><h1>${esc(d.name)}: ${esc(d.focus)}</h1>
-    <p class="muted">Tap a set when you finish it and a rest timer starts. The box under each set holds your reps (or seconds); change it if you did more or fewer.</p></div></div>
+    <p class="muted">Each set starts with what you did last time. Adjust with − and + if it changed, then tap the set number when you finish it to start the rest timer. A change carries forward to the sets after it.</p></div></div>
   <section class="panel">
-    ${d.ex.map((e, i) => `<div class="session-ex"><div style="min-width:0"><div class="ex-name">${esc(e[0])}</div><div class="ex-cue">${e[1]} × ${esc(e[2])} · ${e[3] ? 'rest ' + e[3] + 's' : 'no timed rest'} — ${esc(e[4])}</div></div>
-      ${p.noLoad || / s$/.test(e[2]) ? '<span></span>' : `<label class="field" style="flex-direction:row;align-items:center;gap:6px"><input class="input load num" id="load-${i}" inputmode="decimal" placeholder="${loadUnit}" value="${esc(s.loads[i] || '')}" data-load="${i}" aria-label="Weight used for ${esc(e[0])}"></label>`}
-      <div class="sets" style="grid-column:1/-1">${[...Array(e[1])].map((_, j) => { const k = i + '-' + j, tg = repTarget(e[2]), rv = s.reps && s.reps[k] != null ? s.reps[k] : (tg == null ? '' : tg);
-        return `<div class="set-cell"><button class="set" data-act="set" data-k="${k}" data-rest="${e[3]}" aria-pressed="${!!s.checks[k]}" aria-label="${esc(e[0])} set ${j + 1}">${j + 1}</button>
-          <input class="rep-in" type="number" inputmode="numeric" min="0" max="999" value="${esc(String(rv))}" data-rep="${k}" aria-label="${esc(e[0])} set ${j + 1} ${/ s$/.test(e[2]) ? 'seconds' : 'reps'}"></div>`; }).join('')}<span class="rep-unit">${/ s$/.test(e[2]) ? 'sec' : 'reps'}</span></div></div>`).join('')}
+    ${d.ex.map((e, i) => {
+      const last = lastSets(e[0]), wt = hasWeight(p, e), timed = / s$/.test(e[2]);
+      return `<div class="session-ex"><div class="ex-name">${esc(e[0])}</div><div class="ex-cue">${e[1]} × ${esc(e[2])} · ${e[3] ? 'rest ' + e[3] + 's' : 'no timed rest'} — ${esc(e[4])}</div>
+        ${last ? `<div class="ex-last">Last time: ${exLine({ reps: last.map((x) => x.r), kg: last.map((x) => x.kg), timed })}</div>` : ''}
+        <div class="srows ${wt ? '' : 'no-w'}"><div class="srow srow-h" aria-hidden="true"><span>Set</span>${wt ? `<span>${wUnit()}</span>` : ''}<span>${timed ? 'Seconds' : 'Reps'}</span></div>
+        ${[...Array(e[1])].map((_, j) => { const k = i + '-' + j, lbl = `${e[0]} set ${j + 1}`;
+          return `<div class="srow ${s.checks[k] ? 'done' : ''}"><button class="set" data-act="set" data-k="${k}" data-rest="${e[3]}" aria-pressed="${!!s.checks[k]}" aria-label="Mark ${esc(lbl)} done">${s.checks[k] ? '✓' : j + 1}</button>
+            ${wt ? stepper(k, 'w', setVal(s, e, i, j, 'w', last), esc(lbl) + ' weight', us() ? 5 : 2.5) : ''}${stepper(k, 'r', setVal(s, e, i, j, 'r', last), esc(lbl) + (timed ? ' seconds' : ' reps'), timed ? 5 : 1)}</div>`; }).join('')}</div></div>`;
+    }).join('')}
   </section>
   <div class="restbar">
     <div><div class="eyebrow" style="color:inherit;opacity:.7">Elapsed · Sets</div><span class="num" id="elapsed">0:00</span> <span class="num" style="opacity:.7">· ${done}/${total}</span> <span class="num" id="burn" style="opacity:.7"></span></div>
     <div><div class="eyebrow" style="color:inherit;opacity:.7">Rest</div><span class="num" id="rest">—</span></div>
     <div class="row"><span id="cancel-wrap"><button class="btn btn-sm" data-act="cancel-session">Discard</button></span><button class="btn btn-primary" data-act="finish">Finish &amp; log</button></div>
   </div>`;
+}
+// Store a set value and copy it into the following sets of the same exercise that haven't been set by hand.
+function setSessionVal(k, f, v) {
+  const s = S.session, key = f === 'w' ? 'w' : 'reps';
+  if (!s[key]) s[key] = {};
+  s[key][k] = v;
+  const [i, j] = k.split('-').map(Number);
+  for (let x = j + 1; ; x += 1) {
+    const inp = document.querySelector(`[data-sv="${f}"][data-k="${i}-${x}"]`);
+    if (!inp) break;
+    if (s[key][i + '-' + x] != null && s[key][i + '-' + x] !== '') break;
+    inp.value = v;
+  }
+  save();
 }
 function tick() {
   const el = $('#elapsed'), rest = $('#rest');
@@ -2903,12 +3020,28 @@ function tick() {
   else { rest.textContent = restEnd ? 'Go' : '—'; rest.className = 'num'; }
 }
 
+// Each workout expands to a full summary: totals, every exercise with its sets, and personal bests set that day.
 function workoutList(limit) {
   const list = [...S.workouts].sort((a, b) => b.date.localeCompare(a.date)).slice(0, limit);
   if (!list.length) return `<p class="muted">No workouts logged yet.</p>`;
-  return `<ul class="list">${list.map((w) => { const p = planById(w.planId); const d = p ? p.days[w.dayIdx] : null;
-    return `<li><span class="tag tag-berry">${fmtDay(w.date, { month: 'short', day: 'numeric' })}</span><div class="grow"><b>${esc(d ? d.name + ' · ' + d.focus : 'Workout')}</b><div class="muted" style="font-size:.85rem">${esc(p ? p.title : '')}</div></div>
-      <span class="num muted" style="font-size:.88rem">${w.minutes} min · ${w.sets}/${w.total} sets · 🔥 ${workoutKcal(w)} kcal</span><button class="btn btn-ghost btn-sm" data-act="del-workout" data-id="${w.id}" aria-label="Delete workout">✕</button></li>`; }).join('')}</ul>`;
+  const hist = exHistory();
+  const isPR = (name, date) => { const l = hist.get(name) || [], i = l.findIndex((e) => e.date === date); return i > 0 && exScore(l[i]) > Math.max(...l.slice(0, i).map(exScore)); };
+  return `<div class="wlog">${list.map((w) => {
+    const p = planById(w.planId), d = p ? p.days[w.dayIdx] : null, ex = workoutEx(w);
+    const reps = ex.filter((x) => !x.timed).reduce((a, x) => a + x.reps.reduce((b, r) => b + r, 0), 0);
+    const secs = ex.filter((x) => x.timed).reduce((a, x) => a + x.reps.reduce((b, r) => b + r, 0), 0);
+    const vol = ex.filter((x) => !x.timed).reduce((a, x) => a + setsOf(x).reduce((b, t) => b + (t.kg || 0) * t.r, 0), 0);
+    const fact = (v, l) => `<div><b>${v}</b><span>${l}</span></div>`;
+    return `<details class="wlog-item"><summary><span class="tag tag-berry">${fmtDay(w.date, { month: 'short', day: 'numeric' })}</span>
+      <div class="grow"><b>${esc(d ? d.name + ' · ' + d.focus : 'Workout')}</b><div class="muted" style="font-size:.85rem">${esc(p ? p.title : 'Plan no longer available')} · <span class="num">${w.minutes} min · ${w.sets}/${w.total} sets</span></div></div>
+      <span class="wlog-chev" aria-hidden="true"></span></summary>
+      <div class="wlog-body">
+        <div class="facts wlog-facts">${fact(w.minutes, 'minutes')}${fact(`${w.sets}/${w.total}`, 'sets')}${reps ? fact(reps, 'reps') : ''}${secs ? fact(Math.round(secs / 6) / 10, 'work min') : ''}${vol ? fact(Math.round(showW(vol)).toLocaleString(), wUnit() + ' lifted') : ''}${fact(workoutKcal(w), 'kcal')}</div>
+        ${ex.length ? ex.map((x) => `<div class="wd-ex"><span>${esc(x.n)}${isPR(x.n, w.date) ? ' <span class="tag tag-accent">PR</span>' : ''}</span><span class="wd-sets">${exLine(x)}</span></div>`).join('')
+          : '<p class="muted" style="font-size:.85rem">This workout was logged before per-set tracking, so only the totals were saved.</p>'}
+        <div class="row" style="margin-top:12px">${p ? `<a class="btn btn-sm" href="#plan-${p.id}">View plan</a>` : ''}<button class="btn btn-sm btn-ghost" data-act="del-workout" data-id="${w.id}">Delete workout</button></div>
+      </div></details>`;
+  }).join('')}</div>`;
 }
 
 let logDate = null;
@@ -3085,6 +3218,8 @@ function shoppingItems() {
       if (!it.from.includes(r.title)) it.from.push(r.title);
     });
   });
+  const subs = S.shopping.subs || {};
+  map.forEach((it) => { if (subs[it.key]) { it.orig = it.name; it.name = subs[it.key]; } });
   return [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 // Whole items (limes, cans, cloves, eggs) round up, because you can't buy a quarter of one.
@@ -3108,6 +3243,234 @@ function shoppingText() {
   if (ex.length) { lines.push('EXTRAS'); ex.forEach((x) => lines.push('- ' + x.name)); }
   return lines.join('\n').trim();
 }
+/* ---------- Stores, estimated prices and ordering links ----------
+   Live shelf prices aren't public, so prices are estimates: a typical US package price for each ingredient, scaled by
+   each chain's price level. Availability is likewise an estimate from how specialised the item is and what kind of store
+   it is. People can type the real price, or mark an item as missing, for any store; those always win. */
+// [pattern, units per package, package price (USD), flags] — p: pantry staple, s1/s2: specialty level, sub: replacement
+const PRICE_RULES = [
+  [/coconut aminos/, { tbsp: 16, cup: 1 }, 6.99, { s: 2, sub: 'tamari or low-sodium soy sauce' }],
+  [/arrowroot/, { tbsp: 20 }, 5.49, { s: 2, sub: 'cornstarch' }],
+  [/whey|collagen/, { scoop: 30 }, 39.99, { s: 2, sub: 'unflavored whey protein (no sweeteners)' }],
+  [/hemp seeds/, { tbsp: 16, tsp: 48 }, 9.99, { s: 2, sub: 'pumpkin seeds' }],
+  [/bone broth/, { cup: 4 }, 5.99, { s: 1, sub: 'low-sodium chicken stock' }],
+  [/raw honey/, { tsp: 72, tbsp: 24 }, 8.99, { s: 1, sub: 'honey' }],
+  [/dark chocolate/, { oz: 3.5 }, 3.99, { s: 1, sub: '70%+ dark chocolate' }],
+  [/tahini/, { tbsp: 32 }, 6.99, { s: 1, sub: 'natural almond or peanut butter' }],
+  [/pine nuts/, { tbsp: 8 }, 7.99, { s: 1, sub: 'chopped walnuts' }],
+  [/coconut milk/, { cup: 1.6 }, 2.99, { s: 1 }],
+  [/wild salmon/, { each: 2 }, 14.99, { s: 1, sub: 'salmon fillets' }],
+  [/salmon/, { each: 2 }, 11.99, {}],
+  [/cod/, { each: 2 }, 9.99, {}],
+  [/shrimp/, { oz: 16 }, 10.99, {}],
+  [/tuna/, { can: 1 }, 1.79, {}],
+  [/chicken thigh/, { oz: 32 }, 7.99, {}],
+  [/chicken stock/, { cup: 4 }, 2.99, {}],
+  [/chicken/, { oz: 32 }, 8.99, {}],
+  [/ground turkey/, { oz: 16 }, 6.49, {}],
+  [/turkey breast/, { oz: 24 }, 10.99, {}],
+  [/flank steak/, { oz: 16 }, 11.99, {}],
+  [/sirloin|steak/, { oz: 16 }, 10.99, {}],
+  [/pork/, { oz: 24 }, 8.99, {}],
+  [/tofu/, { oz: 14 }, 2.79, {}],
+  [/\beggs?\b/, { large: 12, each: 12 }, 4.49, {}],
+  [/greek yogurt/, { cup: 4 }, 6.49, {}],
+  [/cottage cheese/, { cup: 2 }, 3.99, {}],
+  [/feta/, { cup: 1.5 }, 4.99, {}],
+  [/cheddar/, { cup: 2 }, 3.49, {}],
+  [/parmesan/, { cup: 1.5, tbsp: 24 }, 5.49, {}],
+  [/almond milk|whole milk|\bmilk\b/, { cup: 8 }, 4.49, {}],
+  [/butter lettuce/, { each: 1 }, 2.99, {}],
+  [/peanut butter/, { tbsp: 32, cup: 2 }, 4.49, {}],
+  [/almond butter/, { tbsp: 32 }, 8.99, {}],
+  [/butter/, { tbsp: 32, tsp: 96 }, 5.49, {}],
+  [/oats/, { cup: 10 }, 4.29, {}],
+  [/quinoa/, { cup: 9 }, 5.99, {}],
+  [/rice\b/, { cup: 15 }, 3.49, {}],
+  [/lentils/, { cup: 2.25 }, 2.29, {}],
+  [/crushed tomatoes/, { can: 1 }, 2.49, {}],
+  [/beans|chickpeas|diced tomatoes/, { can: 1 }, 1.29, {}],
+  [/vegetable stock|broth/, { cup: 4 }, 3.29, {}],
+  [/pico|salsa/, { cup: 2 }, 4.99, {}],
+  [/tortilla/, { each: 30 }, 3.49, {}],
+  [/cornstarch/, { tbsp: 40 }, 2.49, {}],
+  [/soy sauce|tamari/, { tbsp: 20 }, 3.99, {}],
+  [/honey/, { tsp: 72, tbsp: 24 }, 5.99, {}],
+  [/maple/, { tsp: 72, tbsp: 24 }, 7.99, {}],
+  [/chia/, { tbsp: 24 }, 5.99, {}],
+  [/flax/, { tbsp: 32 }, 4.49, {}],
+  [/pumpkin/, { tbsp: 16, tsp: 48 }, 4.99, {}],
+  [/walnuts|pecans/, { tbsp: 32 }, 7.99, {}],
+  [/almonds/, { tbsp: 16 }, 3.99, {}],
+  [/cocoa/, { tbsp: 30 }, 4.99, {}],
+  [/berries/, { cup: 2 }, 4.99, {}],
+  [/edamame/, { cup: 3 }, 3.49, {}],
+  [/corn kernels/, { cup: 3 }, 2.49, {}],
+  [/avocado oil|olive oil|sesame oil/, { tbsp: 33, tsp: 100 }, 9.99, { p: 1 }],
+  [/vinegar|dijon|mustard|vanilla|baking powder|sesame seeds|\bsalt\b|pepper flakes|black pepper|paprika|cumin|chili powder|curry|turmeric|nutmeg|cinnamon|garlic powder|dried|oregano/, { tsp: 60, tbsp: 20 }, 3.99, { p: 1 }],
+  [/\bice\b/, { cup: 999 }, 0, { p: 1 }],
+  [/avocado/, { each: 1 }, 1.29, {}],
+  [/lime/, { each: 1 }, 0.5, {}],
+  [/lemon/, { each: 1, tbsp: 3, tsp: 9 }, 0.79, {}],
+  [/banana/, { each: 1 }, 0.29, {}],
+  [/bell pepper/, { each: 1, cup: 1 }, 1.29, {}],
+  [/green onion/, { each: 6, cup: 1 }, 1.29, {}],
+  [/red onion/, { each: 1, tbsp: 16 }, 1.19, {}],
+  [/onion|shallot/, { each: 1 }, 0.99, {}],
+  [/garlic/, { clove: 10 }, 0.69, {}],
+  [/ginger/, { tbsp: 6, tsp: 18 }, 1.0, {}],
+  [/spinach/, { cup: 5, oz: 5 }, 3.99, {}],
+  [/kale/, { cup: 8 }, 2.49, {}],
+  [/romaine|greens/, { cup: 10 }, 4.49, {}],
+  [/broccolini/, { oz: 8 }, 3.49, {}],
+  [/broccoli/, { cup: 4 }, 2.49, {}],
+  [/cauliflower/, { each: 1 }, 3.49, {}],
+  [/brussels/, { oz: 16 }, 3.99, {}],
+  [/green beans/, { oz: 16 }, 2.99, {}],
+  [/snap peas/, { cup: 4 }, 3.49, {}],
+  [/zucchini/, { each: 1 }, 1.19, {}],
+  [/english cucumber/, { each: 1 }, 1.49, {}],
+  [/cucumber/, { each: 1, cup: 2 }, 0.89, {}],
+  [/cherry tomatoes/, { cup: 2 }, 3.99, {}],
+  [/tomato/, { each: 1 }, 0.99, {}],
+  [/yukon|potatoes/, { oz: 24 }, 4.49, {}],
+  [/carrot/, { each: 12 }, 2.49, {}],
+  [/celery/, { each: 8 }, 2.49, {}],
+  [/radish/, { cup: 2 }, 1.99, {}],
+  [/basil/, { cup: 1, tbsp: 16 }, 2.99, {}],
+  [/parsley|cilantro|dill|mint|chives|rosemary|thyme/, { cup: 1, tbsp: 16 }, 1.99, {}]
+];
+const ruleFor = (name) => PRICE_RULES.find((r) => r[0].test(name.toLowerCase()));
+// Chain price level (1 = typical US supermarket) and store type, matched on the store's brand or name.
+const CHAINS = [
+  [/aldi/, 'Aldi', 0.78, 'discount'], [/lidl/, 'Lidl', 0.8, 'discount'], [/walmart/, 'Walmart', 0.88, 'mass'], [/costco|sam'?s club|bj'?s/, 'Warehouse club', 0.85, 'club'],
+  [/trader joe/, "Trader Joe's", 0.92, 'natural'], [/target/, 'Target', 0.98, 'mass'], [/h-?e-?b\b/, 'H-E-B', 0.93, 'conventional'], [/meijer/, 'Meijer', 0.95, 'conventional'],
+  [/food lion/, 'Food Lion', 0.97, 'conventional'], [/kroger|ralphs|fred meyer|king soopers|fry'?s|smith'?s|harris teeter|food 4 less|dillons|qfc|mariano/, 'Kroger family', 1.0, 'conventional'],
+  [/hy-?vee/, 'Hy-Vee', 1.02, 'conventional'], [/wegmans/, 'Wegmans', 1.05, 'conventional'], [/giant|stop & shop|stop and shop|food city|winn-?dixie/, 'Regional chain', 1.06, 'conventional'],
+  [/publix/, 'Publix', 1.12, 'conventional'], [/safeway|albertsons|vons|jewel|acme|shaw'?s|pavilions|randalls|tom thumb/, 'Albertsons family', 1.12, 'conventional'],
+  [/sprouts/, 'Sprouts', 1.1, 'natural'], [/whole foods/, 'Whole Foods', 1.25, 'natural'], [/natural grocers|co-?op|earth fare/, 'Natural grocer', 1.2, 'natural']
+];
+const chainOf = (store) => { const n = `${store.brand || ''} ${store.name || ''}`.toLowerCase(); const c = CHAINS.find((x) => x[0].test(n)); return c ? { label: c[1], idx: c[2], tier: c[3] } : { label: 'Independent', idx: 1.05, tier: 'conventional' }; };
+// Likely availability of specialty items by store type: 'yes', 'maybe' (worth checking) or 'no'.
+const AVAIL = { 1: { discount: 'maybe', club: 'maybe', mass: 'yes', conventional: 'yes', natural: 'yes' }, 2: { discount: 'no', club: 'no', mass: 'maybe', conventional: 'maybe', natural: 'yes' } };
+const ORDER_SITES = [['Instacart', (q) => `https://www.instacart.com/store/s?k=${q}`], ['Walmart', (q) => `https://www.walmart.com/search?q=${q}`],
+  ['Amazon Fresh', (q) => `https://www.amazon.com/s?k=${q}&i=amazonfresh`], ['Kroger', (q) => `https://www.kroger.com/search?query=${q}`], ['Target', (q) => `https://www.target.com/s?searchTerm=${q}`]];
+const money = (n) => '$' + n.toFixed(2);
+const shortName = (n) => n.replace(/\s*\([^)]*\)/g, '');
+let storesBusy = '', storeOpen = null, orderSite = 0;
+
+// Every list item (recipe ingredients plus your own items) with its package count and base price.
+function priceItems() {
+  const sh = S.shopping;
+  const its = shoppingItems().map((it) => ({ key: it.key, name: it.name, orig: it.orig, unit: it.unit, qty: it.qty }));
+  sh.extras.forEach((x) => its.push({ key: 'x-' + x.id, name: x.name, unit: '', qty: null }));
+  return its.map((it) => {
+    const r = ruleFor(it.name), f = r ? r[3] : {}, per = r && (r[1][it.unit || 'each'] || Object.values(r[1])[0]);
+    const packs = it.qty == null || !per ? 1 : Math.max(1, Math.ceil(it.qty / per - 0.01));
+    return { ...it, base: r ? r[2] * packs : null, packs, pantry: !!f.p, spec: f.s || 0, sub: f.sub };
+  });
+}
+function storeQuote(store, items) {
+  const c = chainOf(store), mine = S.stores.prices[store.id] || {}, gone = S.stores.missing[store.id] || {};
+  let total = 0, have = 0, est = 0, count = 0;
+  const lines = items.filter((it) => S.stores.pantry || !it.pantry).map((it) => {
+    count += 1;
+    const avail = gone[it.key] === true ? 'no' : gone[it.key] === false || !it.spec ? 'yes' : AVAIL[it.spec][c.tier];
+    const price = mine[it.key] != null ? mine[it.key] : it.base == null ? null : round(it.base * c.idx, 2);
+    if (avail !== 'no' && price != null) { total += price; have += 1; if (mine[it.key] == null) est += 1; }
+    return { ...it, avail, price, yours: mine[it.key] != null };
+  });
+  return { store, chain: c, lines, total, have, count, est };
+}
+function nearbyStores() {
+  const st = S.stores, ids = new Set();
+  return [st.home, ...st.favs].map((id) => st.list.find((x) => x.id === id)).filter(Boolean).concat(st.list)
+    .filter((x) => (ids.has(x.id) ? false : ids.add(x.id))).slice(0, 12);
+}
+
+function storesPanel() {
+  const st = S.stores, items = priceItems();
+  if (!items.length) return '';
+  const quotes = nearbyStores().map((x) => storeQuote(x, items)).sort((a, b) => (b.store.id === st.home) - (a.store.id === st.home) || b.have / b.count - a.have / a.count || a.total - b.total);
+  const home = quotes.find((q) => q.store.id === st.home);
+  const full = quotes.filter((q) => q.have === q.count), best = full.length > 1 ? full.reduce((a, b) => (b.total < a.total ? b : a)) : null;
+  const loc = `<form id="store-loc" class="fbar" autocomplete="off" style="margin:0">
+      <input class="input fsearch" id="store-q" placeholder="Zip code or town" value="${esc(st.loc ? st.loc.label : '')}" aria-label="Zip code or town">
+      <button class="btn" type="submit">Find stores</button><button class="btn btn-ghost" type="button" data-act="store-geo">Use my location</button></form>
+    ${storesBusy ? `<p class="muted" style="margin-top:8px">${esc(storesBusy)}</p>` : ''}`;
+  const storeCard = (q) => {
+    const s = q.store, isHome = s.id === st.home, fav = st.favs.includes(s.id), open = storeOpen === s.id;
+    return `<div class="store ${isHome ? 'home' : ''}"><div class="store-top">
+        <div class="grow"><b>${esc(s.name)}</b>${isHome ? ' <span class="tag tag-accent">Home store</span>' : ''}${q === best ? ' <span class="tag tag-berry">Lowest full-list price</span>' : ''}<div class="muted" style="font-size:.82rem">${esc(q.chain.label)}${s.dist != null ? ` · ${s.dist < 1 ? '<1' : round(s.dist, 1)} km` : ''}${s.addr ? ' · ' + esc(s.addr) : ''}</div></div>
+        <div class="store-total"><b class="num">${money(q.total)}</b><span class="muted">${q.have} of ${q.count} items</span></div></div>
+      <div class="row store-acts"><button class="btn btn-sm" data-act="store-open" data-id="${s.id}" aria-expanded="${open}">${open ? 'Hide prices' : 'See prices'}</button>
+        ${isHome ? '' : `<button class="btn btn-sm btn-ghost" data-act="store-home" data-id="${s.id}">Make home store</button>`}
+        <button class="btn btn-sm btn-ghost" data-act="store-fav" data-id="${s.id}" aria-pressed="${fav}">${fav ? 'Favorite ✓' : 'Favorite'}</button></div>
+      ${open ? `<div class="table-wrap"><table class="ex-table price-table"><thead><tr><th>Item</th><th>Here?</th><th>Price</th></tr></thead><tbody>
+        ${q.lines.map((l) => `<tr class="${l.avail === 'no' ? 'gone' : ''}"><td>${esc(shortName(l.name))}${l.packs > 1 ? ` <span class="muted">×${l.packs}</span>` : ''}</td>
+          <td><button class="chip chip-sm" data-act="store-miss" data-id="${s.id}" data-k="${esc(l.key)}" aria-pressed="${l.avail !== 'no'}" title="Tap if this store doesn't have it">${l.avail === 'yes' ? 'Yes' : l.avail === 'maybe' ? 'Check' : 'No'}</button></td>
+          <td><input class="input price-in num ${l.yours ? 'yours' : ''}" type="number" step="0.01" min="0" inputmode="decimal" value="${l.price == null ? '' : l.price.toFixed(2)}" placeholder="—" data-price="${s.id}|${esc(l.key)}" aria-label="Price of ${esc(l.name)} at ${esc(s.name)}"></td></tr>`).join('')}
+      </tbody></table></div><p class="muted" style="font-size:.78rem;margin-top:6px">Grey prices are estimates; type the shelf price to replace one (it turns green and is remembered). Tap Yes/Check/No to mark what this store has.</p>` : ''}</div>`;
+  };
+  const missingAtHome = home ? home.lines.filter((l) => l.avail !== 'yes') : [];
+  const subs = S.shopping.subs;
+  const homeBox = home ? `<div class="home-box"><div class="eyebrow">At your home store</div>
+      <p style="margin:4px 0 8px"><b>${esc(home.store.name)}</b>: about <b class="num">${money(home.total)}</b> for ${home.have} of ${home.count} items${home.est ? ` <span class="muted">(${home.est} estimated)</span>` : ''}.</p>
+      ${missingAtHome.length ? `<ul class="list subs">${missingAtHome.map((l) => `<li><div class="grow"><b>${esc(shortName(l.name))}</b> <span class="muted">· ${l.avail === 'no' ? 'probably not stocked' : 'may not be stocked'}</span></div>
+        ${l.sub ? `<button class="btn btn-sm" data-act="sub-use" data-k="${esc(l.key)}" data-v="${esc(l.sub)}">Use ${esc(l.sub)}</button>` : ''}
+        <button class="btn btn-sm btn-ghost" data-act="sub-ask" data-k="${esc(l.key)}">${l.sub ? 'Other…' : 'Replace…'}</button></li>`).join('')}</ul>` : '<p class="muted" style="font-size:.85rem">Everything on your list should be available there.</p>'}
+      ${Object.keys(subs).length ? `<p class="muted" style="font-size:.82rem;margin-top:8px">${Object.keys(subs).length} item${Object.keys(subs).length === 1 ? '' : 's'} replaced on your list · <button class="btn btn-ghost btn-sm" data-act="sub-reset" style="padding:2px 6px;color:var(--accent)">Undo replacements</button></p>` : ''}</div>` : '';
+  const site = ORDER_SITES[orderSite], unchecked = items.filter((it) => !S.shopping.checked[it.key] && !it.pantry);
+  const order = `<div class="order"><div class="row" style="justify-content:space-between"><h3>Order online</h3>
+      <label class="fsel"><span class="eyebrow">Service</span><select class="input" id="order-site">${ORDER_SITES.map(([n], i) => `<option value="${i}" ${i === orderSite ? 'selected' : ''}>${n}</option>`).join('')}</select></label></div>
+    <p class="muted" style="font-size:.82rem;margin:4px 0 8px">Opens each item in ${site[0]}'s search for your area (sign in there to see your local store). Use <b>Copy list</b> above to paste the whole list into any other app.</p>
+    <div class="order-links">${unchecked.map((it) => `<a class="chip" href="${site[1](encodeURIComponent(shortName(it.name)))}" target="_blank" rel="noopener">${esc(shortName(it.name))} ↗</a>`).join('') || '<span class="muted">Everything is ticked off.</span>'}</div></div>`;
+  return `<section class="panel span-12 stores" aria-labelledby="h-stores">
+    <div class="panel-head"><h2 id="h-stores">Stores &amp; prices</h2>
+      <label class="fsel"><input type="checkbox" id="store-pantry" ${st.pantry ? 'checked' : ''}> <span style="font-size:.85rem">Include pantry staples</span></label></div>
+    ${loc}
+    ${st.list.length ? `${homeBox}<div class="store-list">${quotes.map(storeCard).join('')}</div>` : `<p class="muted" style="margin-top:10px">Find grocery stores near you to compare estimated totals, pick a home store and swap items it doesn't carry.</p>`}
+    <p class="muted" style="font-size:.78rem;margin-top:10px">Prices are estimates from typical US prices adjusted for each chain, and availability is a best guess by store type. Store locations come from OpenStreetMap.</p>
+    ${order}
+  </section>`;
+}
+
+// OpenStreetMap: geocode a zip or town (Nominatim), then list supermarkets within about 8 km (Overpass).
+const kmBetween = (a, b) => { const R = 6371, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLon / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
+async function findStores(loc) {
+  storesBusy = 'Looking for grocery stores near ' + loc.label + '…'; render(true);
+  try {
+    const q = `[out:json][timeout:20];nwr["shop"~"^(supermarket|wholesale)$"](around:8000,${loc.lat},${loc.lon});out center 80;`;
+    const res = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json(), seen = new Set();
+    S.stores.list = (data.elements || []).map((e) => {
+      const t = e.tags || {}, lat = e.lat ?? (e.center && e.center.lat), lon = e.lon ?? (e.center && e.center.lon);
+      return { id: e.type[0] + e.id, name: t.name || t.brand || 'Grocery store', brand: t.brand || '', addr: [t['addr:housenumber'], t['addr:street'], t['addr:city']].filter(Boolean).join(' '),
+        dist: lat != null ? round(kmBetween(loc, { lat, lon }), 1) : null };
+    }).filter((x) => x.name && !seen.has(x.name + x.addr) && seen.add(x.name + x.addr)).sort((a, b) => (a.dist ?? 99) - (b.dist ?? 99)).slice(0, 25);
+    // Keep the home store and favorites even if they're outside this search.
+    const keep = S.stores.keep.filter((x) => !S.stores.list.some((y) => y.id === x.id));
+    S.stores.list = [...S.stores.list, ...keep];
+    S.stores.loc = loc;
+    storesBusy = S.stores.list.length ? '' : 'No supermarkets found within 8 km. Try a nearby town or zip code.';
+  } catch (e) { storesBusy = "Couldn't reach the store directory right now. Check your connection and try again."; }
+  save(); render(true);
+}
+async function geocode(text) {
+  storesBusy = 'Finding ' + text + '…'; render(true);
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(text)}`, { headers: { Accept: 'application/json' } });
+    const [hit] = await res.json();
+    if (!hit) { storesBusy = `Couldn't find "${text}". Try a zip code or "Town, State".`; render(true); return; }
+    findStores({ lat: +hit.lat, lon: +hit.lon, label: text });
+  } catch (e) { storesBusy = "Couldn't look up that location right now. Check your connection and try again."; render(true); }
+}
+// Home and favorite stores are remembered in full so they survive a new search somewhere else.
+function keepStore(id) { const x = S.stores.list.find((y) => y.id === id); if (x && !S.stores.keep.some((y) => y.id === id)) S.stores.keep.push(x); }
+function pruneKept() { const st = S.stores; st.keep = st.keep.filter((x) => x.id === st.home || st.favs.includes(x.id)); }
+
 let shopClearArmed = false;
 function viewShopping() {
   const sh = S.shopping, items = shoppingItems();
@@ -3132,7 +3495,7 @@ function viewShopping() {
     const g = items.filter((i) => i.aisle === a);
     if (!g.length) return;
     groups += `<div class="shop-group"><h3>${a}</h3><ul class="shop-list">${g.map((i) => `<li><label><input type="checkbox" id="shop-${i.key}" data-shop="${i.key}" ${sh.checked[i.key] ? 'checked' : ''}>
-      <span>${i.qty == null ? `${esc(i.name)} <span class="muted">· as needed</span>` : `<span class="q">${esc(itemQty(i))}</span>${esc(i.name)}`}<span class="from">${esc(i.from.join(' · '))}</span></span></label></li>`).join('')}</ul></div>`;
+      <span>${i.qty == null ? `${esc(i.name)} <span class="muted">· as needed</span>` : `<span class="q">${esc(itemQty(i))}</span>${esc(i.name)}`}${i.orig ? ` <span class="muted">(instead of ${esc(i.orig)})</span>` : ''}<span class="from">${esc(i.from.join(' · '))}</span></span></label></li>`).join('')}</ul></div>`;
   });
   if (sh.extras.length) {
     groups += `<div class="shop-group"><h3>Your items</h3><ul class="shop-list">${sh.extras.map((x) => `<li style="display:flex;align-items:center;gap:6px"><label style="flex:1"><input type="checkbox" id="shop-x-${x.id}" data-shop="x-${x.id}" ${sh.checked['x-' + x.id] ? 'checked' : ''}><span>${esc(x.name)}</span></label><button class="btn btn-ghost btn-sm" data-act="extra-remove" data-id="${x.id}" aria-label="Remove ${esc(x.name)}">✕</button></li>`).join('')}</ul></div>`;
@@ -3155,6 +3518,7 @@ function viewShopping() {
         : `<p class="muted">Your list is empty. Pick a few recipes for the week and their ingredients will appear here, grouped by store section.</p>
            <div class="row" style="margin-top:12px">${['chicken-burrito-bowls', 'turkey-black-bean-chili', 'berry-overnight-oats'].map((id) => `<button class="btn btn-sm" data-act="shop-add" data-id="${id}">+ ${esc(recipeById(id).title)}</button>`).join('')}</div>`}
     </section>
+    ${storesPanel()}
   </div>`;
 }
 function shopAdd(id, servings) {
@@ -3190,7 +3554,7 @@ function viewTargets() {
           ${[['lose', 'Lose fat (−500 kcal)'], ['maintain', 'Maintain'], ['gain', 'Build muscle (+300 kcal)']].map((g) => `<button type="button" class="chip" data-act="goal" data-g="${g[0]}" aria-pressed="${p.goal === g[0]}">${g[1]}</button>`).join('')}</div>
         <label class="field">Daily water goal (${wUnitWater()})<input class="input num" id="p-water" type="number" min="0" value="${showWater(T.waterMl)}" style="max-width:180px"></label>
         <fieldset class="wk-goal"><legend class="eyebrow" style="margin-bottom:8px">Weekly training goal</legend>
-          <div class="form-grid" style="max-width:420px"><label class="field">Workouts per week<input class="input num" id="p-wk" type="number" min="1" max="14" value="${T.workoutsWeek}"></label>
+          <div class="form-grid" style="max-width:420px;align-items:end"><label class="field">Workouts per week<input class="input num" id="p-wk" type="number" min="1" max="14" value="${T.workoutsWeek}"></label>
             <label class="field">Active minutes per week<input class="input num" id="p-min" type="number" min="10" max="2000" step="5" value="${T.minutesWeek}"></label></div>
           <span class="muted" style="font-size:.8rem">Health guidelines suggest at least 150 minutes of moderate activity a week, with strength work on 2 or more days.</span></fieldset>
         <div class="row"><button class="btn btn-primary" type="submit">Save profile &amp; goals</button><span class="muted" style="font-size:.85rem">Saving also logs today's weight.</span></div>
@@ -3228,17 +3592,19 @@ function repTarget(txt) {
 function sessionEx(s) {
   const p = planById(s.planId), d = p.days[s.dayIdx];
   return d.ex.map((e, i) => {
-    const timed = / s$/.test(e[2]), tg = repTarget(e[2]), reps = [];
+    const timed = / s$/.test(e[2]), wt = hasWeight(p, e), last = lastSets(e[0]), reps = [], kg = [];
     for (let j = 0; j < e[1]; j += 1) {
       if (!s.checks[i + '-' + j]) continue;
-      const v = parseFloat((s.reps || {})[i + '-' + j]);
-      const r = v >= 0 ? v : tg;
-      if (r != null) reps.push(r);
+      const r = parseFloat(setVal(s, e, i, j, 'r', last)), w = wt ? parseFloat(setVal(s, e, i, j, 'w', last)) : NaN;
+      if (!(r >= 0)) continue;
+      reps.push(r); kg.push(w > 0 ? round(toKg(w), 2) : null);
     }
-    const ld = parseFloat(s.loads[i]);
-    return { n: e[0], load: ld > 0 && !p.noLoad && !timed ? round(toKg(ld), 2) : null, timed, reps };
-  }).filter((x) => x.reps.length || x.load);
+    const top = Math.max(0, ...kg.filter(Boolean));
+    return { n: e[0], load: top || null, timed, reps, kg: kg.some(Boolean) ? kg : undefined };
+  }).filter((x) => x.reps.length);
 }
+// Each set as { r, kg }. Logs from before per-set weights used one weight (load) for every set.
+const setsOf = (x) => x.reps.map((r, j) => ({ r, kg: x.kg ? x.kg[j] : x.load }));
 // Older logs only kept one weight per exercise position; map those to names through the plan when it still exists.
 function workoutEx(w) {
   if (w.ex) return w.ex;
@@ -3252,14 +3618,18 @@ const isCardio = (w) => { const p = planById(w.planId); return !!p && p.muscles.
 let anEx = null;
 
 // Per-exercise history, oldest first: one entry per session with the weight, best set, total reps and estimated 1RM.
+let exCache = { key: '', map: null };
 function exHistory() {
+  const key = S.workouts.length + '|' + S.workouts.map((w) => w.id).join(',') + '|' + S.units;
+  if (exCache.key === key) return exCache.map;
   const map = new Map();
   [...S.workouts].sort((a, b) => a.date.localeCompare(b.date)).forEach((w) => workoutEx(w).forEach((x) => {
     const reps = x.reps.filter((r) => r > 0), top = reps.length ? Math.max(...reps) : null;
+    const e1 = x.timed ? 0 : Math.max(0, ...setsOf(x).filter((t) => t.kg && t.r > 0).map((t) => e1rm(t.kg, t.r)));
     if (!map.has(x.n)) map.set(x.n, []);
-    map.get(x.n).push({ date: w.date, load: x.load, timed: x.timed, top, total: reps.reduce((a, r) => a + r, 0),
-      e1: x.load && top && !x.timed ? e1rm(x.load, top) : null });
+    map.get(x.n).push({ date: w.date, load: x.load, timed: x.timed, top, total: reps.reduce((a, r) => a + r, 0), e1: e1 || null });
   }));
+  exCache = { key, map };
   return map;
 }
 const exScore = (e) => e.e1 || e.load || e.top || 0;
@@ -3331,7 +3701,7 @@ function viewAnalytics() {
   const hist = exHistory();
   const sums = (list) => {
     let min = 0, kcal = 0, vol = 0;
-    list.forEach((w) => { min += w.minutes || 0; kcal += workoutKcal(w); workoutEx(w).forEach((x) => { if (x.load && !x.timed) vol += x.load * x.reps.reduce((a, r) => a + r, 0); }); });
+    list.forEach((w) => { min += w.minutes || 0; kcal += workoutKcal(w); workoutEx(w).forEach((x) => { if (!x.timed) vol += setsOf(x).reduce((a, t) => a + (t.kg || 0) * t.r, 0); }); });
     return { n: list.length, min, kcal, vol };
   };
   const cur = sums(inR), old = prev && sums(prev);
@@ -3458,10 +3828,14 @@ function viewAnalytics() {
 
 /* ---------- Today: workout details for a tapped calendar day ---------- */
 let wdaySel = null;
+// "35 lb × 10 · 10 · 9" when the weight stays the same, otherwise "35×10 · 40×8 · 40×7 lb".
 const exLine = (x) => {
-  const wt = x.load ? `${showW(x.load)} ${wUnit()}` : '';
-  if (!x.reps.length) return wt || '—';
-  return (wt ? wt + ' × ' : '') + x.reps.map((r) => r + (x.timed ? 's' : '')).join(' · ');
+  const sets = setsOf(x), u = x.timed ? 's' : '';
+  if (!sets.length) return x.load ? `${showW(x.load)} ${wUnit()}` : '—';
+  const ws = sets.map((t) => (t.kg ? showW(t.kg) : null));
+  if (ws.every((w) => w == null)) return sets.map((t) => t.r + u).join(' · ');
+  if (ws.every((w) => w === ws[0])) return `${ws[0]} ${wUnit()} × ${sets.map((t) => t.r + u).join(' · ')}`;
+  return sets.map((t, j) => (ws[j] == null ? t.r + u : `${ws[j]}×${t.r}`)).join(' · ') + ' ' + wUnit();
 };
 function wdayDetail(k) {
   const list = S.workouts.filter((w) => w.date === k);
@@ -3509,6 +3883,16 @@ function notFound(what) {
 /* ---------- Router ---------- */
 let current = '';
 function render(keepScroll) {
+  try { renderView(keepScroll); }
+  catch (e) {
+    console.error(e);
+    app.innerHTML = `<div class="panel stack" style="max-width:560px"><h2>Something went wrong on this page</h2>
+      <p class="muted">Your data is safe. Try another page, or download a backup so nothing is lost.</p>
+      <div class="row"><a class="btn btn-primary" href="#today">Go to Today</a><button class="btn" data-act="backup">Download backup</button></div>
+      <p class="muted" style="font-size:.8rem">Details: ${esc(String((e && e.message) || e))}</p></div>`;
+  }
+}
+function renderView(keepScroll) {
   const h = (location.hash || '#today').slice(1);
   let html, tab;
   if (h === 'today' || h === '') { html = viewToday(); tab = 'today'; }
@@ -3541,6 +3925,11 @@ function render(keepScroll) {
   if (h === 'session' && S.session && !ticker) { ticker = setInterval(tick, 250); }
   if (h === 'session') tick();
 }
+// Last line of defence: an unexpected error in a handler shows a short message instead of failing silently.
+let errToastAt = 0;
+const onAppError = () => { if (Date.now() - errToastAt > 5000) { errToastAt = Date.now(); toast('Something went wrong there. Your data is safe; try again.'); } };
+window.addEventListener('error', onAppError);
+window.addEventListener('unhandledrejection', onAppError);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const c = $('#celebrate'); if (c) c.remove(); else if (!$('#site-menu').hidden) { setMenu(false); $('#menu-btn').focus(); } } });
 
 /* Section menu, opened from the logo */
@@ -3581,7 +3970,7 @@ document.addEventListener('click', (e) => {
   if (a === 'water') { addWater(+b.dataset.ml, current === 'log' ? logDate : null); waterAdded(); }
   else if (a === 'water-undo') { if (waterUndo) { addWater(-waterUndo.ml, waterUndo.date, true); waterAdded(); } }
   else if (a === 'celebrate-close') { const c = $('#celebrate'); if (c) c.remove(); }
-  else if (a === 'clear-example') { const keep = { units: S.units, profile: S.profile, targets: S.targets, activePlan: S.activePlan, myGear: S.myGear, customRecipes: S.customRecipes, customPlans: S.customPlans, mealPlan: S.mealPlan, reminders: S.reminders, favs: S.favs, appliance: S.appliance, servings: S.servings, settings: S.settings }; S = { ...fresh(), ...keep }; save(); toast('Example data cleared. Ready for your first entry.'); render(true); }
+  else if (a === 'clear-example') { const keep = { units: S.units, profile: S.profile, targets: S.targets, activePlan: S.activePlan, myGear: S.myGear, customRecipes: S.customRecipes, customPlans: S.customPlans, mealPlan: S.mealPlan, reminders: S.reminders, favs: S.favs, appliance: S.appliance, servings: S.servings, settings: S.settings, stores: S.stores }; S = { ...fresh(), ...keep }; save(); toast('Example data cleared. Ready for your first entry.'); render(true); }
   else if (a === 'filter') { recipeFilter = b.dataset.f; render(true); }
   else if (a === 'serv') {
     const r = recipeById(b.dataset.id); const n = Math.min(24, Math.max(1, (servingsState[r.id] || S.servings) + +b.dataset.d));
@@ -3618,11 +4007,11 @@ document.addEventListener('click', (e) => {
     const n = PLANS.filter(canDo).length; toast(`Showing ${n} plan${n === 1 ? '' : 's'} you can do`); render(true);
   }
   else if (a === 'gear-showall') { wShowAll = !wShowAll; render(true); }
-  else if (a === 'wsort') { wHardFirst = !wHardFirst; render(true); }
+  else if (a === 'ftoggle') { fOpen[b.dataset.v] = !fOpen[b.dataset.v]; render(true); }
   else if (a === 'plan-day') { planDayTab = +b.dataset.i; render(true); }
   else if (a === 'set-plan') { S.activePlan = b.dataset.plan; save(); toast('Active plan updated'); render(true); }
   else if (a === 'start') {
-    S.session = { planId: b.dataset.plan, dayIdx: +b.dataset.day, started: Date.now(), checks: {}, loads: {}, reps: {} };
+    S.session = { planId: b.dataset.plan, dayIdx: +b.dataset.day, started: Date.now(), checks: {}, loads: {}, reps: {}, w: {} };
     S.activePlan = b.dataset.plan; restEnd = 0; save();
     if (location.hash === '#session') render(false); else location.hash = 'session';
   }
@@ -3654,6 +4043,27 @@ document.addEventListener('click', (e) => {
   else if (a === 'units') { S.units = b.dataset.u; save(); render(true); }
   else if (a === 'pref') { const k = b.dataset.k; S.settings[k] = k === 'celebrate' ? b.dataset.v === 'true' : b.dataset.v; save(); applyPrefs(); render(true); }
   else if (a === 'wday') { wdaySel = wdaySel === b.dataset.k ? null : b.dataset.k; render(true); }
+  else if (a === 'stp' && S.session) {
+    const inp = document.querySelector(`[data-sv="${b.dataset.f}"][data-k="${b.dataset.k}"]`);
+    const v = Math.max(0, round((parseFloat(inp.value) || 0) + +b.dataset.d, 2));
+    inp.value = v; setSessionVal(b.dataset.k, b.dataset.f, String(v));
+  }
+  else if (a === 'store-geo') {
+    if (!navigator.geolocation) { storesBusy = 'Location isn’t available in this browser. Enter a zip code instead.'; render(true); return; }
+    storesBusy = 'Getting your location…'; render(true);
+    navigator.geolocation.getCurrentPosition((pos) => findStores({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: 'My location' }),
+      () => { storesBusy = 'Location permission was denied. Enter a zip code or town instead.'; render(true); }, { timeout: 10000 });
+  }
+  else if (a === 'store-open') { storeOpen = storeOpen === b.dataset.id ? null : b.dataset.id; render(true); }
+  else if (a === 'store-home') { S.stores.home = b.dataset.id; keepStore(b.dataset.id); pruneKept(); save(); toast('Home store set'); render(true); }
+  else if (a === 'store-fav') { const st = S.stores, id = b.dataset.id; st.favs = st.favs.includes(id) ? st.favs.filter((x) => x !== id) : [...st.favs, id]; keepStore(id); pruneKept(); save(); render(true); }
+  else if (a === 'store-miss') {
+    const st = S.stores, id = b.dataset.id, k = b.dataset.k, m = st.missing[id] || (st.missing[id] = {});
+    m[k] = b.getAttribute('aria-pressed') === 'true'; save(); render(true);
+  }
+  else if (a === 'sub-use') { S.shopping.subs[b.dataset.k] = b.dataset.v; save(); toast(`Swapped for ${b.dataset.v}`); render(true); }
+  else if (a === 'sub-ask') { const v = (prompt('Replace it with:') || '').trim(); if (v) { S.shopping.subs[b.dataset.k] = v; save(); render(true); } }
+  else if (a === 'sub-reset') { S.shopping.subs = {}; save(); render(true); }
   else if (a === 'an-range') { S.anRange = b.dataset.r; save(); render(true); }
   else if (a === 'goal') { S.profile.goal = b.dataset.g; readProfile(); render(true); }
   else if (a === 'clear-arm') { clearArmed = true; render(true); }
@@ -3748,6 +4158,7 @@ document.addEventListener('submit', (e) => {
     const v = (id) => Math.max(0, Math.round(+$('#' + id).value || 0)), before = foodHit(logDate);
     S.meals.push({ id: uid(), date: logDate, meal: $('#f-meal').value, name: $('#f-name').value.trim() || 'Food', kcal: v('f-kcal'), p: v('f-p'), c: v('f-c'), f: v('f-f') });
     save(); const won = foodCheck(logDate, before); if (!won) toast('Food added'); render(true); if (!won && $('#f-name')) $('#f-name').focus();
+  } else if (f.id === 'store-loc') { const q = $('#store-q').value.trim(); if (q) geocode(q);
   } else if (f.id === 'extra-form') {
     const name = $('#extra-name').value.trim();
     if (!name) return;
@@ -3788,9 +4199,17 @@ document.addEventListener('change', (e) => {
     const total = shoppingItems().length + sh.extras.length, done = document.querySelectorAll('[data-shop]:checked').length;
     $('#shop-count').textContent = `${done} of ${total} in cart`; $('#shop-bar').style.width = (done / total) * 100 + '%';
   } else if (t.id === 'log-date' && t.value) { logDate = t.value > dayKey() ? dayKey() : t.value; render(true); }
-  else if (t.dataset.load != null && S.session) { S.session.loads[t.dataset.load] = t.value; save(); }
-  else if (t.dataset.rep != null && S.session) { if (!S.session.reps) S.session.reps = {}; S.session.reps[t.dataset.rep] = t.value; save(); }
+  else if (t.dataset.sv && S.session) setSessionVal(t.dataset.k, t.dataset.sv, t.value);
   else if (t.id === 'an-ex') { anEx = t.value; render(true); }
+  else if (t.id === 'order-site') { orderSite = +t.value; render(true); }
+  else if (t.id === 'store-pantry') { S.stores.pantry = t.checked; save(); render(true); }
+  else if (t.dataset.price) {
+    const [id, k] = t.dataset.price.split('|'), v = parseFloat(t.value), pr = S.stores.prices[id] || (S.stores.prices[id] = {});
+    if (v >= 0) pr[k] = round(v, 2); else delete pr[k];
+    save(); render(true);
+  }
+  else if (t.id === 'app-sel') { S.appliance = t.value || null; save(); render(true); }
+  else if (t.id === 'wsort-sel') { wHardFirst = t.value === 'hard'; render(true); }
   else if (t.id === 'meas-date' && t.value) { measDate = t.value > dayKey() ? dayKey() : t.value; render(true); }
   else if (t.id === 'cmp-a' || t.id === 'cmp-b') { comparePair = [$('#cmp-a').value, $('#cmp-b').value]; render(true); }
   else if (t.id === 'ph-file' && t.files[0]) {
