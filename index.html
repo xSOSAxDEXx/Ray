@@ -61,11 +61,29 @@
   --shadow: 0 1px 2px rgba(0, 0, 0, .3); color-scheme: dark;
 }
 
+/* Accent colours and text size chosen in Settings. */
+:root[data-accent="blue"] { --accent: #2457a6; --accent-soft: #dce6f5; }
+:root[data-accent="teal"] { --accent: #0f6f75; --accent-soft: #d3ecee; }
+:root[data-accent="purple"] { --accent: #6b3fa0; --accent-soft: #e8def5; }
+:root[data-accent="orange"] { --accent: #a3501a; --accent-soft: #f6e2d3; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-accent="blue"] { --accent: #7fb1ec; --accent-soft: #1b2c44; }
+  :root:not([data-theme="light"])[data-accent="teal"] { --accent: #5ec6cc; --accent-soft: #173538; }
+  :root:not([data-theme="light"])[data-accent="purple"] { --accent: #b99be6; --accent-soft: #2c2240; }
+  :root:not([data-theme="light"])[data-accent="orange"] { --accent: #f0a060; --accent-soft: #3d2618; }
+}
+:root[data-theme="dark"][data-accent="blue"] { --accent: #7fb1ec; --accent-soft: #1b2c44; }
+:root[data-theme="dark"][data-accent="teal"] { --accent: #5ec6cc; --accent-soft: #173538; }
+:root[data-theme="dark"][data-accent="purple"] { --accent: #b99be6; --accent-soft: #2c2240; }
+:root[data-theme="dark"][data-accent="orange"] { --accent: #f0a060; --accent-soft: #3d2618; }
+:root[data-text="lg"] { font-size: 112.5%; }
+:root[data-text="xl"] { font-size: 125%; }
+
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--ink);
-  font: 16px/1.55 var(--f-body);
+  font: 1rem/1.55 var(--f-body);
   -webkit-font-smoothing: antialiased;
 }
 body::before {
@@ -98,7 +116,7 @@ button, input, select { font: inherit; color: inherit; }
 .tab[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
 @media (max-width: 640px) {
   .top .wrap { flex-wrap: wrap; gap: 6px; padding-block: 8px 6px; }
-  .tabs { flex-basis: 100%; flex-wrap: wrap; gap: 2px 4px; }
+  .tabs { flex-basis: 100%; gap: 2px 4px; position: relative; -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); padding-right: 24px; }
   .tab { padding: 6px 10px; font-size: .86rem; }
 }
 
@@ -393,6 +411,19 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .an-legend i { display: inline-block; width: 12px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
 .an-note { font-size: .88rem; margin-top: 10px; }
 .an-section { margin: 28px 0 12px; }
+button.day { border: 0; font: inherit; width: 100%; cursor: pointer; transition: transform .15s; }
+button.day:hover { transform: translateY(-2px); }
+.day[aria-expanded="true"] { box-shadow: 0 0 0 3px color-mix(in srgb, var(--berry) 35%, transparent); transform: translateY(-2px); }
+.week-hint { font-size: .78rem; margin-top: 8px; }
+.wday-detail { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
+.wd-card + .wd-card { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.wd-meta { font-size: .82rem; color: var(--muted); margin: 4px 0 6px; }
+.wd-ex { display: flex; justify-content: space-between; gap: 4px 12px; flex-wrap: wrap; padding: 7px 0; border-top: 1px solid var(--line); font-size: .9rem; }
+.wd-sets { font-family: var(--f-mono); font-size: .84rem; color: var(--muted); }
+.set-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px 24px; padding: 14px 0; border-top: 1px solid var(--line); }
+.set-row h3 { font-size: 1.02rem; }
+.set-row p { font-size: .85rem; margin: 2px 0 0; max-width: 42ch; }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .meas-cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); }
 .meas-table td:first-child .btn { white-space: nowrap; }
@@ -437,6 +468,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
       <a class="tab" href="#progress" data-tab="progress">Progress</a>
       <a class="tab" href="#analytics" data-tab="analytics">Analytics</a>
       <a class="tab" href="#goals" data-tab="goals">Profile &amp; goals</a>
+      <a class="tab" href="#settings" data-tab="settings">Settings</a>
     </nav>
   </div>
 </header>
@@ -1270,6 +1302,119 @@ const PLANS = [
         ['Goblet lateral lunge (alternating)', 4, '45 s', 15, 'Sit into one hip with the other leg straight, chest up.'],
         ['Plank pull-through', 4, '45 s', 15, 'In a high plank, drag the bell under your body to the other side. Hips stay level.'],
         ['High pull (alternate arms)', 4, '45 s', 60, 'Explosive hips, elbow high and back, bell stays close.']] }
+    ] },
+  { id: 'yates-hit', title: 'Blood & Guts HIT Split (Dorian Yates style)', diff: 4, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', needs: [['barbell'], ['dumbbells'], ['bench'], ['cables'], ['machines']], perWeek: 4, minutes: 50,
+    equipment: 'Full gym: barbell, dumbbells, cables and machines (leg press, hack squat, leg curl, calf raise)',
+    goal: 'Six-time Mr. Olympia Dorian Yates built his physique on brief, brutally hard sessions: a couple of warm-up sets, then one all-out working set per exercise taken to failure. Low volume, maximum effort and plenty of recovery. For experienced lifters only.',
+    schedule: 'Four sessions spread over a 6-day cycle so each body part is trained once every 6 days, e.g. Day 1, Day 2, rest, Day 3, Day 4, rest. Never train the same muscle while it is still sore.',
+    warmup: '5 minutes on a bike or rower. Then before each exercise’s working set, do 2–3 progressively heavier warm-up sets (about 15 reps at 50%, 10 at 70%, 4 at 85%), none close to failure. Only the working set is logged here.',
+    progression: 'Beat your logbook every session: one more rep or a little more weight on the working set. When you reach the top of the rep range, add 5 lb (2.5 kg). With a spotter, finish the hardest sets with 1–2 forced reps or a slow 4-second negative. If strength stalls two sessions in a row, add an extra rest day.',
+    days: [
+      { name: 'Day 1', focus: 'Shoulders · Traps · Triceps', ex: [
+        ['Seated dumbbell or Smith-machine press', 1, '6–8', 180, 'Lower under control to ear level, press without locking out hard. Go to true failure.'],
+        ['Dumbbell lateral raise', 1, '8–10', 120, 'Lead with the elbows, pinkies slightly up, no swinging. Slow 2-second lowering.'],
+        ['One-arm cable lateral raise', 1, '8–10 / side', 120, 'Cable behind your body, raise out to the side to shoulder height.'],
+        ['Bent-over rear-delt raise', 1, '8–10', 120, 'Chest on an incline bench, arms slightly bent, squeeze the rear delts.'],
+        ['Dumbbell shrug', 1, '8–10', 120, 'Straight up and down, 1-second squeeze at the top. No rolling.'],
+        ['Triceps pushdown', 1, '8–10', 120, 'Elbows pinned to your sides, full lockout and squeeze.'],
+        ['Lying EZ-bar triceps extension', 1, '6–8', 120, 'Lower to the forehead with elbows pointing up, then extend.'],
+        ['One-arm reverse-grip cable extension', 1, '8–10 / side', 90, 'Palm up, extend fully, control the return.']] },
+      { name: 'Day 2', focus: 'Back · Rear delts', ex: [
+        ['Machine or dumbbell pullover', 1, '8–10', 150, 'Long arc, big stretch in the lats, elbows soft.'],
+        ['Close-grip pulldown', 1, '6–8', 150, 'Lean back slightly, pull to the upper chest, stretch fully at the top.'],
+        ['Underhand barbell row', 1, '6–8', 180, 'Torso at about 70°, palms up, pull the bar to your lower abs. His signature row.'],
+        ['One-arm dumbbell row', 1, '6–8 / side', 150, 'Pull the elbow back toward the hip, pause, lower slowly.'],
+        ['Seated cable row', 1, '6–8', 150, 'Chest up, squeeze the shoulder blades together, no rocking.'],
+        ['Rear-delt machine fly', 1, '8–10', 120, 'Arms nearly straight, sweep wide, pause at the back.'],
+        ['Back extension', 1, '10–12', 120, 'Hinge at the hips, flat back, squeeze the glutes at the top.'],
+        ['Rack deadlift (from knee height)', 1, '6–8', 180, 'Bar starts just below the knees. Brace hard, drive the hips through. Stop if your back rounds.']] },
+      { name: 'Day 3', focus: 'Chest · Biceps', ex: [
+        ['Incline barbell press', 1, '6–8', 180, '30° bench, lower to the upper chest, elbows about 45° from your body.'],
+        ['Flat dumbbell press', 1, '6–8', 150, 'Deep stretch at the bottom, press up and slightly in.'],
+        ['Incline dumbbell fly', 1, '8–10', 120, 'Arms slightly bent and locked in that angle, stretch, then hug a tree.'],
+        ['Cable crossover', 1, '10–12', 120, 'Lean forward slightly, bring the handles together low, squeeze for a second.'],
+        ['Incline dumbbell curl', 1, '6–8', 120, 'Arms hang straight down behind you for a full stretch. No swinging.'],
+        ['EZ-bar curl', 1, '6–8', 120, 'Elbows still, curl up, lower for 3 seconds.'],
+        ['Machine or preacher curl', 1, '8–10', 90, 'Full range, squeeze hard at the top.']] },
+      { name: 'Day 4', focus: 'Quads · Hamstrings · Calves', ex: [
+        ['Leg extension', 1, '10–12', 120, 'Pre-exhausts the quads. Pause at the top of every rep.'],
+        ['Leg press', 1, '10–12', 180, 'Feet shoulder-width, lower until your knees pass 90°, keep your lower back on the pad.'],
+        ['Hack squat', 1, '10–12', 180, 'Controlled depth, push through the whole foot, no bouncing.'],
+        ['Lying leg curl', 1, '8–10', 120, 'Hips pressed down, curl all the way, lower slowly.'],
+        ['Stiff-leg deadlift', 1, '8–10', 150, 'Soft knees, hips back, bar close to the legs, flat back.'],
+        ['Standing calf raise', 1, '10–12', 90, 'Full stretch at the bottom with a 1-second pause, then rise high.'],
+        ['Seated calf raise', 1, '10–12', 60, 'Same full range; no bouncing.']] }
+    ] },
+  { id: 'yates-classic', title: 'Two-Set Mass Builder (Yates 1987–92 style)', diff: 4, muscles: ['Upper body', 'Lower body & glutes'], gear: 'Gym', needs: [['barbell'], ['dumbbells'], ['bench'], ['cables'], ['machines'], ['pullup']], perWeek: 4, minutes: 60,
+    equipment: 'Full gym: barbell, rack, dumbbells, cables, pull-up bar and leg machines',
+    goal: 'Based on how Dorian Yates trained on his way to the top: after warm-ups, two hard working sets per exercise, the second a little lighter and also taken to failure. A touch more volume than Blood & Guts with heavy and light leg days.',
+    schedule: 'Four sessions in rotation with a rest day after every second session: Chest & arms, Legs (heavy), rest, Back & shoulders, Legs (light), rest, repeat.',
+    warmup: '5 minutes of easy cardio, then 2 lighter warm-up sets (about 12 reps, then 8) before the first exercise for each muscle group.',
+    progression: 'Set 1 is your heaviest all-out set; for set 2 drop the weight about 10% and go to failure again. When set 1 hits the top of the range, add weight next time. Keep a logbook and aim to beat it.',
+    days: [
+      { name: 'Day A', focus: 'Chest · Biceps · Triceps', ex: [
+        ['Incline barbell press', 2, '6–8', 150, 'Upper chest, controlled lowering, no bouncing off the chest.'],
+        ['Flat dumbbell press', 2, '6–8', 150, 'Full stretch, press up and slightly together.'],
+        ['Cable crossover', 2, '10–12', 90, 'Squeeze hard at the bottom for a second.'],
+        ['Barbell curl', 2, '6–8', 120, 'Strict: elbows still, no back swing.'],
+        ['Incline dumbbell curl', 2, '8–10', 90, 'Full stretch at the bottom.'],
+        ['Triceps pushdown', 2, '8–10', 90, 'Elbows tight, full lockout.'],
+        ['Overhead EZ-bar extension', 2, '8–10', 90, 'Deep stretch behind the head, elbows pointing up.']] },
+      { name: 'Day B', focus: 'Legs (heavy)', ex: [
+        ['Back squat', 2, '6–8', 180, 'Brace, sit down between your heels to at least parallel, drive up.'],
+        ['Leg press', 2, '8–10', 150, 'Deep and controlled, lower back stays on the pad.'],
+        ['Leg extension', 2, '10–12', 90, 'Pause at the top.'],
+        ['Lying leg curl', 2, '8–10', 90, 'Slow on the way down.'],
+        ['Stiff-leg deadlift', 2, '8–10', 150, 'Hips back, flat back, stretch the hamstrings.'],
+        ['Standing calf raise', 2, '10–12', 60, 'Full stretch and pause at the bottom.']] },
+      { name: 'Day C', focus: 'Back · Shoulders', ex: [
+        ['Wide-grip pull-up or pulldown', 2, '6–8', 150, 'Pull your chest to the bar, full hang at the bottom.'],
+        ['Barbell row', 2, '6–8', 150, 'Torso about 45°, pull to the belly button.'],
+        ['Seated cable row', 2, '8–10', 120, 'Chest up, squeeze the shoulder blades.'],
+        ['Deadlift', 2, '5–6', 180, 'Bar over mid-foot, brace, push the floor away. Stop a set if form slips.'],
+        ['Seated dumbbell press', 2, '6–8', 120, 'Ribs down, press overhead without arching.'],
+        ['Dumbbell lateral raise', 2, '8–10', 90, 'Lead with the elbows, no swinging.'],
+        ['Bent-over rear-delt raise', 2, '10–12', 60, 'Chest down, squeeze the rear delts.']] },
+      { name: 'Day D', focus: 'Legs (light)', ex: [
+        ['Leg extension', 2, '12–15', 90, 'Pump the quads with a pause at the top.'],
+        ['Hack squat', 2, '10–12', 150, 'Moderate weight, perfect depth and control.'],
+        ['Leg press (narrow stance)', 2, '12–15', 120, 'Feet close together, smooth tempo.'],
+        ['Seated leg curl', 2, '10–12', 90, 'Squeeze at full contraction.'],
+        ['Seated calf raise', 2, '12–15', 60, 'Full range, no bouncing.']] }
+    ] },
+  { id: 'kb-swing-getup', title: 'Kettlebell Swing & Get-Up Daily (Pavel style)', diff: 2, muscles: ['Full body', 'Core', 'Cardio'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 5, minutes: 25,
+    equipment: 'One kettlebell. Many start around 16 kg (35 lb) for men and 8–12 kg (18–26 lb) for women.',
+    goal: 'Inspired by Pavel Tsatsouline’s minimalist "Simple & Sinister" approach: two movements, the one-arm swing and the Turkish get-up, practised almost every day. Builds hip power, grip, shoulder stability and conditioning in under half an hour.',
+    schedule: '5–6 days a week. Train fresh and never to exhaustion: it is practice, not a workout to survive. On low-energy days do the Easy day.',
+    warmup: 'About 5 minutes, 3 rounds of: 5 prying goblet squats (sit deep and gently push your knees out), 5 hip bridges, and 5 halos each direction with a light bell.',
+    progression: 'Use the same bell until the work feels easy and smooth, then test yourself: 100 one-arm swings (10 sets of 10, alternating hands) inside 5 minutes and 10 get-ups (5 per side) inside 10 minutes. When you pass both tests, move up a bell size. Long-term targets often quoted: 32 kg for men and 24 kg for women ("Simple"), 48 kg and 32 kg ("Sinister").',
+    days: [
+      { name: 'Standard day', focus: 'Swings · Get-ups', ex: [
+        ['One-arm swing (alternate hands each set)', 10, '10', 30, 'Hike the bell back high between your legs, snap the hips so it floats to chest height. Arm is a rope; plank at the top.'],
+        ['Turkish get-up (alternate sides)', 10, '1', 30, 'Eyes on the bell, arm locked. Roll to elbow, hand, bridge, sweep the leg, kneel, stand. Reverse it slowly.']] },
+      { name: 'Easy day', focus: 'Lighter practice', ex: [
+        ['One-arm swing (alternate hands each set)', 5, '10', 45, 'Same crisp technique, lots of rest. Stop well before fatigue.'],
+        ['Turkish get-up (alternate sides)', 6, '1', 45, 'Slow and deliberate. A lighter bell is fine.']] }
+    ] },
+  { id: 'kb-press-ladders', title: 'Kettlebell Press Ladders (Pavel style)', diff: 3, muscles: ['Upper body', 'Full body', 'Cardio'], gear: 'Minimal', needs: [['kettlebell'], ['pullup']], perWeek: 3, minutes: 40,
+    equipment: 'One kettlebell you can strictly press about 5–8 times per arm, and a pull-up bar',
+    goal: 'Modelled on the press-ladder programme from Pavel Tsatsouline’s "Enter the Kettlebell!" (the Rite of Passage). Clean-and-press ladders and pull-up ladders build pressing strength without grinding to failure, with swings or snatches for conditioning.',
+    schedule: '3 days a week on non-consecutive days: Heavy, Light, Medium. Best after you can comfortably handle the Swing & Get-Up plan.',
+    warmup: '5 minutes: halos, prying goblet squats, 2 light get-ups per side and a few easy swings.',
+    progression: 'A ladder is 1 rep, rest, 2 reps, rest, 3 reps, per arm (clean before every press). Start with 3 ladders of 1-2-3 on Heavy day. Add one ladder every week or two until you reach 5, then lengthen them to 1-2-3-4 and finally 1-2-3-4-5 (5 ladders = 75 presses per arm). Then move up a bell size and start again.',
+    days: [
+      { name: 'Heavy day', focus: 'Press ladders · Pull-ups · Swings', ex: [
+        ['Clean & press ladder (1, 2, 3 per arm)', 5, '6 / side', 60, 'Clean before every press. Rest briefly between rungs and longer between ladders. Never press to failure.'],
+        ['Pull-up ladder (1, 2, 3)', 5, '6', 60, 'Alternate with the press ladders. Use a band if needed. Full hang at the bottom.'],
+        ['Two-hand or one-arm swings', 6, '15', 45, 'Conditioning finisher, about 6–10 minutes total. Crisp hip snap every rep.']] },
+      { name: 'Light day', focus: 'Fewer ladders · Snatches', ex: [
+        ['Clean & press ladder (1, 2, 3 per arm)', 3, '6 / side', 60, 'Same ladders as Heavy day but only half as many. It should feel easy.'],
+        ['Pull-up ladder (1, 2, 3)', 3, '6', 60, 'Smooth and controlled.'],
+        ['Kettlebell snatch (switch arms each set)', 6, '8', 45, 'Swing it up and punch through at the top so the bell lands softly. Start light.']] },
+      { name: 'Medium day', focus: 'Press ladders · Swings', ex: [
+        ['Clean & press ladder (1, 2, 3 per arm)', 4, '6 / side', 60, 'One ladder fewer than Heavy day.'],
+        ['Pull-up ladder (1, 2, 3)', 4, '6', 60, 'Chest up to the bar.'],
+        ['Two-hand or one-arm swings', 5, '15', 45, 'Moderate pace, perfect form.']] }
     ] }
 ];
 
@@ -1708,7 +1853,8 @@ const COOK = {
 RECIPES.forEach((r) => Object.assign(r, COOK[r.id] || { how: 'none' }));
 /* Typical MET (energy cost vs. rest) for a session of each plan, from the Compendium of Physical Activities ranges. */
 const PLAN_MET = { foundations: 3.5, 'upper-lower': 5, 'home-circuit': 6, 'push-pull-legs': 6, 'walk-to-5k': 5, 'mobility-core': 2.5, 'first-steps': 3.5, 'core-builder': 3.8,
-  'legs-glutes-home': 4.5, 'one-dumbbell': 4.5, 'band-upper': 4, 'hiit-conditioning': 8, 'bodyweight-advanced': 6, 'kb-hiit-starter': 7, 'kb-hiit-burn': 8.5, 'kb-hiit-inferno': 9.5 };
+  'legs-glutes-home': 4.5, 'one-dumbbell': 4.5, 'band-upper': 4, 'hiit-conditioning': 8, 'bodyweight-advanced': 6, 'kb-hiit-starter': 7, 'kb-hiit-burn': 8.5, 'kb-hiit-inferno': 9.5,
+  'yates-hit': 6, 'yates-classic': 6, 'kb-swing-getup': 8, 'kb-press-ladders': 6 };
 PLANS.forEach((p) => { p.met = PLAN_MET[p.id]; });
 const EQUIPMENT = [['dumbbells', 'Dumbbells'], ['kettlebell', 'Kettlebell'], ['bench', 'Weight bench'], ['bands', 'Resistance bands'],
   ['pullup', 'Pull-up bar'], ['barbell', 'Barbell & squat rack'], ['cables', 'Cable machine'], ['machines', 'Leg machines']];
@@ -1791,7 +1937,7 @@ function seed() {
   const water = {}; water[t] = 1250;
   const measures = [21, 14, 7, 0].map((ago, i) => ({ id: uid(), date: addDays(t, -ago), waist: round(86.5 - i * 0.7, 1), hips: round(104 - i * 0.5, 1), chest: round(97 - i * 0.3, 1), arm: 30.5, thigh: round(60 - i * 0.4, 1), neck: 34 }));
   return { v: 1, example: true, units: 'us', profile, targets: { ...calcTargets(profile), waterMl: 2400, workoutsWeek: 4, minutesWeek: 150 },
-    meals, weights, workouts, water, measures, activePlan: 'foundations', session: null, customRecipes: [], customPlans: [], mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2,
+    meals, weights, workouts, water, measures, activePlan: 'foundations', session: null, customRecipes: [], customPlans: [], mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2, settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
     shopping: { recipes: [{ id: 'chicken-burrito-bowls', servings: 4 }, { id: 'berry-overnight-oats', servings: 4 }], checked: {}, extras: [] } };
 }
 function fresh() {
@@ -1813,12 +1959,14 @@ function migrate() {
   if (!S.favs) S.favs = { recipes: [], plans: [] };
   if (S.appliance === undefined) S.appliance = null;
   if (!S.servings) S.servings = 2;
+  if (!S.settings) S.settings = { theme: 'system', accent: 'green', text: 'md', celebrate: true };
   syncCustom();
   // planById is declared further down, so look the plan up directly here.
   if (S.targets.workoutsWeek == null) S.targets.workoutsWeek = (PLANS.find((p) => p.id === S.activePlan) || PLANS[0]).perWeek;
   if (S.targets.minutesWeek == null) S.targets.minutesWeek = 150;
 }
 migrate();
+applyPrefs();
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep in memory */ } }
 
 /* ---------- Units ---------- */
@@ -2007,27 +2155,65 @@ function waterControls(ml, date) {
     <form class="water-custom" data-water-form autocomplete="off"><input class="input num" name="oz" type="number" min="1" max="128" step="1" inputmode="numeric" placeholder="Custom oz" aria-label="Custom amount in ounces" required><button class="btn btn-sm" type="submit">Add</button></form>
     ${canUndo ? `<button class="btn btn-sm btn-ghost" data-act="water-undo" style="align-self:start">Undo last (${round(waterUndo.ml / ML_OZ)} oz)</button>` : ''}`;
 }
-function celebrateWater(date) {
+/* Full-screen confetti card. Returns false (and shows nothing) when celebrations are turned off in Settings. */
+function celebrate({ color, badge, eyebrow, title, html, btn }) {
+  if (S.settings && S.settings.celebrate === false) return false;
   const old = $('#celebrate'); if (old) old.remove();
-  const cols = ['var(--water)', 'var(--accent)', 'var(--carbs)', 'var(--berry)', 'var(--protein)'];
+  const cols = [color, 'var(--accent)', 'var(--carbs)', 'var(--berry)', 'var(--protein)', 'var(--water)'];
   const bits = [...Array(60)].map(() => `<i class="confetti" style="left:${Math.random() * 100}%;background:${cols[Math.floor(Math.random() * cols.length)]};--dx:${Math.round(Math.random() * 160 - 80)}px;--rot:${Math.round(Math.random() * 900 - 450)}deg;animation-duration:${(2.2 + Math.random() * 1.8).toFixed(2)}s;animation-delay:${(Math.random() * .6).toFixed(2)}s;${Math.random() < .3 ? 'border-radius:50%;width:9px;height:9px;' : ''}"></i>`).join('');
   const el = document.createElement('div');
   el.id = 'celebrate'; el.className = 'celebrate';
   el.innerHTML = `${bits}<div class="celebrate-card" role="dialog" aria-modal="true" aria-labelledby="cel-h">
     <svg class="celebrate-badge" viewBox="0 0 132 132" aria-hidden="true">
-      <circle class="ring-pulse" cx="66" cy="66" r="52" fill="none" stroke="var(--water)" stroke-width="4"/>
-      <circle class="ring-pulse r2" cx="66" cy="66" r="52" fill="none" stroke="var(--water)" stroke-width="4"/>
-      <circle cx="66" cy="66" r="46" fill="color-mix(in srgb, var(--water) 16%, var(--surface))"/>
-      <g class="drop"><path d="M66 32 C66 32 44 58 44 74 a22 22 0 0 0 44 0 C88 58 66 32 66 32Z" fill="var(--water)"/>
-        <path d="M56 70 l7 7 l14 -15" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <circle class="ring-pulse" cx="66" cy="66" r="52" fill="none" stroke="${color}" stroke-width="4"/>
+      <circle class="ring-pulse r2" cx="66" cy="66" r="52" fill="none" stroke="${color}" stroke-width="4"/>
+      <circle cx="66" cy="66" r="46" fill="color-mix(in srgb, ${color} 16%, var(--surface))"/>
+      <g class="drop">${badge}</g>
     </svg>
-    <div class="eyebrow" style="color:var(--water)">Hydration goal</div>
-    <h2 id="cel-h">You did it!</h2>
-    <p>You drank <b class="num" style="color:var(--ink)">${showWater(S.water[date] || 0)} ${wUnitWater()}</b>${date === dayKey() ? ' today' : ' on ' + fmtDay(date)}, hitting your ${showWater(S.targets.waterMl)} ${wUnitWater()} goal. Your body thanks you.</p>
-    <button class="btn btn-primary" data-act="celebrate-close">Cheers to that</button></div>`;
+    <div class="eyebrow" style="color:${color}">${eyebrow}</div>
+    <h2 id="cel-h">${title}</h2>
+    <p>${html}</p>
+    <button class="btn btn-primary" data-act="celebrate-close">${btn}</button></div>`;
   document.body.appendChild(el);
   el.addEventListener('click', (e) => { if (e.target === el) el.remove(); });
   el.querySelector('button').focus();
+  return true;
+}
+const CHECK = (x, y) => `<path d="M${x} ${y} l7 7 l14 -15" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
+function celebrateWater(date) {
+  const shown = celebrate({ color: 'var(--water)', eyebrow: 'Hydration goal', title: 'You did it!', btn: 'Cheers to that',
+    badge: `<path d="M66 32 C66 32 44 58 44 74 a22 22 0 0 0 44 0 C88 58 66 32 66 32Z" fill="var(--water)"/>${CHECK(56, 70)}`,
+    html: `You drank <b class="num" style="color:var(--ink)">${showWater(S.water[date] || 0)} ${wUnitWater()}</b>${date === dayKey() ? ' today' : ' on ' + fmtDay(date)}, hitting your ${showWater(S.targets.waterMl)} ${wUnitWater()} goal. Your body thanks you.` });
+  if (!shown) toast(`Water goal reached · ${showWater(S.water[date] || 0)} ${wUnitWater()}`);
+}
+
+// Food goal: calories within 10% of target and at least 90% of the protein target.
+const foodHit = (k) => { const t = totals(dayMeals(k)), T = S.targets; return t.kcal >= T.kcal * 0.9 && t.kcal <= T.kcal * 1.1 && t.p >= T.p * 0.9; };
+function foodCheck(k, before) {
+  if (before || !foodHit(k)) return false;
+  const t = totals(dayMeals(k)), T = S.targets;
+  const shown = celebrate({ color: 'var(--accent)', eyebrow: 'Nutrition goal', title: 'Right on target!', btn: 'Nice!',
+    badge: `<circle cx="66" cy="66" r="27" fill="var(--accent)"/><circle cx="66" cy="66" r="19" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/>${CHECK(55, 66)}`,
+    html: `<b class="num" style="color:var(--ink)">${t.kcal.toLocaleString()} kcal</b> and <b class="num" style="color:var(--ink)">${t.p} g protein</b>${k === dayKey() ? ' today' : ' on ' + fmtDay(k)}, right in line with your ${T.kcal.toLocaleString()} kcal and ${T.p} g goals. That is how progress is built.` });
+  if (!shown) toast('Nutrition goal reached for the day');
+  return true;
+}
+
+// Weekly training goal: both the workout count and active minutes for the week containing day k.
+function weekGoalHit(k) {
+  const m = mondayOf(k), e = addDays(m, 6), l = S.workouts.filter((w) => w.date >= m && w.date <= e), T = S.targets;
+  return l.length >= T.workoutsWeek && l.reduce((a, w) => a + (w.minutes || 0), 0) >= T.minutesWeek;
+}
+function celebrateWorkout(w, weekly) {
+  const p = planById(w.planId), d = p && p.days[w.dayIdx], hist = exHistory();
+  const prs = (w.ex || []).filter((x) => { const l = hist.get(x.n) || []; if (l.length < 2) return false; const cur = exScore(l[l.length - 1]); return cur > 0 && l.slice(0, -1).every((e) => exScore(e) < cur); }).map((x) => x.n);
+  const m = mondayOf(w.date), wk = S.workouts.filter((x) => x.date >= m && x.date <= addDays(m, 6));
+  const b = (v) => `<b class="num" style="color:var(--ink)">${v}</b>`;
+  return celebrate({ color: 'var(--berry)', eyebrow: weekly ? 'Weekly goal complete' : 'Workout complete', title: weekly ? 'Week conquered!' : 'Workout done!', btn: 'Let’s go',
+    badge: `<circle cx="66" cy="66" r="28" fill="var(--berry)"/><g transform="translate(48 48) scale(1.5)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></g>`,
+    html: `${esc(d ? d.name + ': ' + d.focus : 'Session')} logged: ${b(w.minutes + ' min')}, ${b(w.sets + '/' + w.total + ' sets')} and about ${b(w.kcal + ' kcal')} burned.`
+      + (prs.length ? ` New personal best on ${esc(prs.slice(0, 2).join(' and '))}${prs.length > 2 ? ` and ${prs.length - 2} more` : ''}!` : '')
+      + (weekly ? ` That makes ${b(wk.length + ' workouts')} and ${b(wk.reduce((a, x) => a + (x.minutes || 0), 0) + ' active minutes')} this week, so your weekly goal is done.` : '') });
 }
 
 /* ---------- Recipe art & photos ---------- */
@@ -2410,7 +2596,9 @@ function viewToday() {
           <div class="goal-bars"><div class="gbar" role="img" aria-label="${n} of ${T.workoutsWeek} workouts"><span style="width:${Math.min(100, n / T.workoutsWeek * 100)}%"></span></div><div class="gbar" role="img" aria-label="${mins} of ${T.minutesWeek} minutes"><span style="width:${Math.min(100, mins / T.minutesWeek * 100)}%"></span></div></div>`; })()}
         ${(() => { const kc = S.workouts.filter((w) => week.includes(w.date)).reduce((a, w) => a + workoutKcal(w), 0);
           return kc ? `<p class="burn-week">🔥 ≈ ${kc.toLocaleString()} kcal burned this week <span class="muted">(≈ ${fatG(kc)} g of body fat)</span></p>` : ''; })()}
-        <div class="week">${week.map((k) => `<div class="day ${doneDays.has(k) ? 'done' : ''} ${k === t ? 'today' : ''}">${fmtDay(k, { weekday: 'narrow' })}<b>${parseKey(k).getDate()}</b></div>`).join('')}</div>
+        <div class="week">${week.map((k) => { const lbl = `${fmtDay(k, { weekday: 'narrow' })}<b>${parseKey(k).getDate()}</b>`, cls = `day ${k === t ? 'today' : ''}`;
+          return doneDays.has(k) ? `<button type="button" class="${cls} done" data-act="wday" data-k="${k}" aria-expanded="${wdaySel === k}" aria-label="Show the workout from ${fmtDay(k, { weekday: 'long', month: 'long', day: 'numeric' })}">${lbl}</button>` : `<div class="${cls}">${lbl}</div>`; }).join('')}</div>
+        ${wdaySel && week.includes(wdaySel) && doneDays.has(wdaySel) ? wdayDetail(wdaySel) : week.some((k) => doneDays.has(k)) ? '<p class="muted week-hint">Tap a highlighted day to see that workout.</p>' : ''}
       </section>
       <section class="panel t-water" aria-labelledby="h-water">
         <div class="panel-head"><h2 id="h-water">Water</h2>${water >= T.waterMl ? '<span class="goal-tag">✓ Goal reached</span>' : ''}</div>
@@ -3208,6 +3396,52 @@ function viewAnalytics() {
   </div>`;
 }
 
+/* ---------- Today: workout details for a tapped calendar day ---------- */
+let wdaySel = null;
+const exLine = (x) => {
+  const wt = x.load ? `${showW(x.load)} ${wUnit()}` : '';
+  if (!x.reps.length) return wt || '—';
+  return (wt ? wt + ' × ' : '') + x.reps.map((r) => r + (x.timed ? 's' : '')).join(' · ');
+};
+function wdayDetail(k) {
+  const list = S.workouts.filter((w) => w.date === k);
+  return `<div class="wday-detail" aria-live="polite">
+    <div class="panel-head" style="margin-bottom:6px"><h3 style="font-size:1rem">${fmtDay(k, { weekday: 'long', month: 'short', day: 'numeric' })}</h3><button class="btn btn-ghost btn-sm" data-act="wday" data-k="${k}" aria-label="Close workout details">✕</button></div>
+    ${list.map((w) => {
+      const p = planById(w.planId), d = p && p.days[w.dayIdx], ex = workoutEx(w);
+      return `<div class="wd-card"><b>${esc(d ? d.name + ': ' + d.focus : 'Workout')}</b>
+        <div class="muted" style="font-size:.85rem">${p ? `<a href="#plan-${p.id}">${esc(p.title)}</a>` : 'Plan no longer available'}</div>
+        <div class="wd-meta num">${w.minutes} min · ${w.sets}/${w.total} sets · 🔥 ${workoutKcal(w)} kcal</div>
+        ${ex.length ? ex.map((x) => `<div class="wd-ex"><span>${esc(x.n)}</span><span class="wd-sets">${exLine(x)}</span></div>`).join('')
+          : '<p class="muted" style="font-size:.85rem">This workout was logged before per-set tracking, so only the totals were saved.</p>'}</div>`;
+    }).join('')}</div>`;
+}
+
+/* ---------- Settings ---------- */
+const ACCENTS = [['green', 'Green', '#1d6a45'], ['blue', 'Blue', '#2457a6'], ['teal', 'Teal', '#0f6f75'], ['purple', 'Purple', '#6b3fa0'], ['orange', 'Orange', '#a3501a']];
+function applyPrefs() {
+  const r = document.documentElement, p = S.settings || {};
+  const set = (k, v, def) => { if (!v || v === def) delete r.dataset[k]; else r.dataset[k] = v; };
+  set('theme', p.theme, 'system'); set('accent', p.accent, 'green'); set('text', p.text, 'md');
+}
+function viewSettings() {
+  const p = S.settings;
+  const chip = (k, v, label, pre = '') => `<button type="button" class="chip" data-act="pref" data-k="${k}" data-v="${v}" aria-pressed="${String(p[k]) === v}">${pre}${label}</button>`;
+  const row = (title, desc, chips) => `<div class="set-row"><div><h3>${title}</h3><p class="muted">${desc}</p></div><div class="row" role="group" aria-label="${title}">${chips}</div></div>`;
+  return `<div class="page-head"><div><div class="eyebrow">Make it yours</div><h1>Settings</h1>
+    <p class="muted">Choose how Rep &amp; Ration looks and behaves on this device. Changes apply straight away.</p></div></div>
+  <section class="panel" style="max-width:780px">
+    <h2>Appearance</h2>
+    ${row('Colour scheme', 'Follow your device, or always use light or dark.', [['system', 'Match device'], ['light', 'Light'], ['dark', 'Dark']].map(([v, l]) => chip('theme', v, l)).join(''))}
+    ${row('Accent colour', 'Used for buttons, highlights and charts.', ACCENTS.map(([v, l, c]) => chip('accent', v, l, `<span class="swatch" style="background:${c}"></span>`)).join(''))}
+    ${row('Text size', 'Makes text and controls larger across the app.', [['md', 'Standard'], ['lg', 'Large'], ['xl', 'Extra large']].map(([v, l]) => chip('text', v, l)).join(''))}
+    <h2 style="margin-top:22px">Behaviour</h2>
+    ${row('Celebrations', 'Confetti when you hit your water or food goal, finish a workout or complete your weekly goal. Off shows a short message instead.', chip('celebrate', 'true', 'On') + chip('celebrate', 'false', 'Off'))}
+    ${row('Units', 'For weights, measurements and water.', `<button type="button" class="chip" data-act="units" data-u="us" aria-pressed="${us()}">US (lb, oz)</button><button type="button" class="chip" data-act="units" data-u="metric" aria-pressed="${!us()}">Metric (kg, ml)</button>`)}
+    <p class="muted" style="font-size:.85rem;margin-top:14px">Your details, calorie targets, weekly workout goal, backup and restore are on <a href="#goals">Profile &amp; goals</a>.</p>
+  </section>`;
+}
+
 function notFound(what) {
   return `<div class="panel stack" style="max-width:520px"><h2>${what} isn't here</h2><p class="muted">The link may be out of date.</p><a class="btn btn-primary" href="#today" style="align-self:start">Go to Today</a></div>`;
 }
@@ -3232,11 +3466,14 @@ function render(keepScroll) {
   else if (h === 'log') { html = viewLog(); tab = 'log'; }
   else if (h === 'progress') { html = viewProgress(); tab = 'progress'; }
   else if (h === 'analytics') { html = viewAnalytics(); tab = 'analytics'; }
+  else if (h === 'settings') { html = viewSettings(); tab = 'settings'; }
   else if (h === 'goals' || h === 'targets') { html = viewTargets(); tab = 'goals'; }
   else { html = notFound('That page'); tab = ''; }
   const y = window.scrollY;
   app.innerHTML = html;
   document.querySelectorAll('.tab').forEach((a) => { if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  const strip = $('.tabs'), cur = strip && strip.querySelector('[aria-current]');
+  if (cur && strip.scrollWidth > strip.clientWidth) strip.scrollLeft = cur.offsetLeft - (strip.clientWidth - cur.offsetWidth) / 2;
   if (keepScroll) window.scrollTo(0, y);
   else if (h !== current) { window.scrollTo(0, 0); }
   if (!/^(recipe|plan)-(new|edit-)/.test(h)) { draft = null; draftFor = ''; }
@@ -3274,16 +3511,16 @@ document.addEventListener('click', (e) => {
   if (a === 'water') { addWater(+b.dataset.ml, current === 'log' ? logDate : null); waterAdded(); }
   else if (a === 'water-undo') { if (waterUndo) { addWater(-waterUndo.ml, waterUndo.date, true); waterAdded(); } }
   else if (a === 'celebrate-close') { const c = $('#celebrate'); if (c) c.remove(); }
-  else if (a === 'clear-example') { const keep = { units: S.units, profile: S.profile, targets: S.targets, activePlan: S.activePlan, myGear: S.myGear, customRecipes: S.customRecipes, customPlans: S.customPlans, mealPlan: S.mealPlan, reminders: S.reminders, favs: S.favs, appliance: S.appliance, servings: S.servings }; S = { ...fresh(), ...keep }; save(); toast('Example data cleared. Ready for your first entry.'); render(true); }
+  else if (a === 'clear-example') { const keep = { units: S.units, profile: S.profile, targets: S.targets, activePlan: S.activePlan, myGear: S.myGear, customRecipes: S.customRecipes, customPlans: S.customPlans, mealPlan: S.mealPlan, reminders: S.reminders, favs: S.favs, appliance: S.appliance, servings: S.servings, settings: S.settings }; S = { ...fresh(), ...keep }; save(); toast('Example data cleared. Ready for your first entry.'); render(true); }
   else if (a === 'filter') { recipeFilter = b.dataset.f; render(true); }
   else if (a === 'serv') {
     const r = recipeById(b.dataset.id); const n = Math.min(24, Math.max(1, (servingsState[r.id] || S.servings) + +b.dataset.d));
     servingsState[r.id] = n; $('#serv-out').textContent = n; $('#serv-text').textContent = n; $('#ing-list').innerHTML = ingList(r);
   }
   else if (a === 'log-recipe') {
-    const r = recipeById(b.dataset.id);
+    const r = recipeById(b.dataset.id), before = foodHit(dayKey());
     S.meals.push({ id: uid(), date: dayKey(), meal: r.meal, name: r.title, kcal: r.per.kcal, p: r.per.p, c: r.per.c, f: r.per.f });
-    save(); toast(`Logged 1 serving · ${r.per.kcal} kcal`);
+    save(); if (!foodCheck(dayKey(), before)) toast(`Logged 1 serving · ${r.per.kcal} kcal`);
   }
   else if (a === 'shop-add') { shopAdd(b.dataset.id, current.startsWith('recipe-') ? servingsState[b.dataset.id] : null); render(true); }
   else if (a === 'shop-serv') { const x = S.shopping.recipes.find((y) => y.id === b.dataset.id); if (x) { x.servings = Math.min(48, Math.max(1, x.servings + +b.dataset.d)); save(); render(true); } }
@@ -3334,14 +3571,19 @@ document.addEventListener('click', (e) => {
     const s = S.session, d = planById(s.planId).days[s.dayIdx];
     const total = d.ex.reduce((x, ex) => x + ex[1], 0), done = Object.values(s.checks).filter(Boolean).length;
     const minutes = Math.max(1, Math.round((Date.now() - s.started) / 60000)), kcal = burnKcal(planById(s.planId), minutes);
-    S.workouts.push({ id: uid(), date: dayKey(), planId: s.planId, dayIdx: s.dayIdx, minutes, kcal, sets: done, total, loads: s.loads, ex: sessionEx(s) });
-    S.session = null; restEnd = 0; save(); toast(`Workout logged · ${done}/${total} sets · ≈ ${kcal} kcal burned`); location.hash = 'today';
+    const weekBefore = weekGoalHit(dayKey()), w = { id: uid(), date: dayKey(), planId: s.planId, dayIdx: s.dayIdx, minutes, kcal, sets: done, total, loads: s.loads, ex: sessionEx(s) };
+    S.workouts.push(w);
+    S.session = null; restEnd = 0; wdaySel = w.date; save(); location.hash = 'today';
+    const weekly = !weekBefore && weekGoalHit(w.date);
+    setTimeout(() => { if (!celebrateWorkout(w, weekly)) toast(`Workout logged · ${done}/${total} sets · ≈ ${kcal} kcal burned${weekly ? ' · weekly goal reached!' : ''}`); }, 300);
   }
   else if (a === 'del-workout') { S.workouts = S.workouts.filter((w) => w.id !== b.dataset.id); save(); render(true); }
   else if (a === 'del-meal') { S.meals = S.meals.filter((m) => m.id !== b.dataset.id); save(); render(true); }
   else if (a === 'del-weight') { S.weights = S.weights.filter((w) => w.date !== logDate); save(); render(true); }
   else if (a === 'log-day') { const n = addDays(logDate, +b.dataset.d); if (n <= dayKey()) { logDate = n; render(true); } }
   else if (a === 'units') { S.units = b.dataset.u; save(); render(true); }
+  else if (a === 'pref') { const k = b.dataset.k; S.settings[k] = k === 'celebrate' ? b.dataset.v === 'true' : b.dataset.v; save(); applyPrefs(); render(true); }
+  else if (a === 'wday') { wdaySel = wdaySel === b.dataset.k ? null : b.dataset.k; render(true); }
   else if (a === 'an-range') { S.anRange = b.dataset.r; save(); render(true); }
   else if (a === 'goal') { S.profile.goal = b.dataset.g; readProfile(); render(true); }
   else if (a === 'clear-arm') { clearArmed = true; render(true); }
@@ -3375,9 +3617,9 @@ document.addEventListener('click', (e) => {
   else if (a === 'mp-week') { mpWeek = +b.dataset.d ? addDays(mpWeek, +b.dataset.d) : mondayOf(dayKey()); mpClearArmed = false; render(true); }
   else if (a === 'mp-shop') { mpShop(); render(true); }
   else if (a === 'mp-log') {
-    const dp = planDay(dayKey()), list = MEALS.filter((m) => dp[m] && recipeById(dp[m].id));
+    const dp = planDay(dayKey()), list = MEALS.filter((m) => dp[m] && recipeById(dp[m].id)), before = foodHit(dayKey());
     list.forEach((m) => { const r = recipeById(dp[m].id); S.meals.push({ id: uid(), date: dayKey(), meal: m, name: r.title, kcal: r.per.kcal, p: r.per.p, c: r.per.c, f: r.per.f }); });
-    save(); toast(`Logged ${list.length} planned meal${list.length === 1 ? '' : 's'} to today`);
+    save(); if (!foodCheck(dayKey(), before)) toast(`Logged ${list.length} planned meal${list.length === 1 ? '' : 's'} to today`);
   }
   else if (a === 'mp-fill') {
     let n = 0;
@@ -3433,9 +3675,9 @@ document.addEventListener('submit', (e) => {
     const reached = addWater(Math.min(oz, 128) * ML_OZ, current === 'log' ? logDate : null); waterAdded();
     if (!reached) toast(`Added ${round(Math.min(oz, 128), 1)} oz of water`);
   } else if (f.id === 'food-form') {
-    const v = (id) => Math.max(0, Math.round(+$('#' + id).value || 0));
+    const v = (id) => Math.max(0, Math.round(+$('#' + id).value || 0)), before = foodHit(logDate);
     S.meals.push({ id: uid(), date: logDate, meal: $('#f-meal').value, name: $('#f-name').value.trim() || 'Food', kcal: v('f-kcal'), p: v('f-p'), c: v('f-c'), f: v('f-f') });
-    save(); toast('Food added'); render(true); $('#f-name') && $('#f-name').focus();
+    save(); const won = foodCheck(logDate, before); if (!won) toast('Food added'); render(true); if (!won && $('#f-name')) $('#f-name').focus();
   } else if (f.id === 'extra-form') {
     const name = $('#extra-name').value.trim();
     if (!name) return;
@@ -3466,9 +3708,9 @@ document.addEventListener('submit', (e) => {
 document.addEventListener('change', (e) => {
   const t = e.target;
   if (t.id === 'f-recipe' && t.value) {
-    const r = recipeById(t.value);
+    const r = recipeById(t.value), before = foodHit(logDate);
     S.meals.push({ id: uid(), date: logDate, meal: r.meal, name: r.title, kcal: r.per.kcal, p: r.per.p, c: r.per.c, f: r.per.f });
-    save(); toast(`Added ${r.title}`); render(true);
+    save(); if (!foodCheck(logDate, before)) toast(`Added ${r.title}`); render(true);
   } else if (t.id === 'shop-add-recipe' && t.value) { shopAdd(t.value); render(true);
   } else if (t.dataset.shop != null) {
     const sh = S.shopping; if (t.checked) sh.checked[t.dataset.shop] = true; else delete sh.checked[t.dataset.shop];
