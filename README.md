@@ -19,6 +19,41 @@ A diet and exercise website with recipes, workout plans and a daily tracker. It 
 | **Profile & goals** | Calorie and macro calculator (Mifflin-St Jeor) using consensus targets: a deficit of at most 500 kcal or 20%, protein of 1.6–2.0 g/kg of a goal-range weight, fat at 30%, and a water goal from your weight and activity, with a "How these are set" note comparing the Saladino and Sinclair views. Goal setting, a **weekly training goal** (workouts and active minutes per week, shown on Today and in Analytics), a default serving size (2 people unless changed) used by recipes, the shopping list and the meal planner, US/metric units, backup and restore, clear data |
 | **Settings** | Color scheme (match device, light or dark), accent color, text size, celebrations on or off, units, and sound for breathing and mind sessions (music on or off, track or shuffle, music and tone volume, vibration). Every section is reached from a menu that opens when you tap the barbell logo |
 
+## Added in the roadmap update
+
+- **Your data is safe across updates.** Saved data is versioned and upgraded step by step, never reset. Unreadable data is kept aside instead of deleted.
+- **Backups:** dated backup files, a preview before restoring (dates covered, meals, workouts, weigh-ins), and a reminder after 7 days.
+- **Profiles:** two people can share one device. Each has their own name, units, targets, logs and photos.
+- **Privacy:** a note in Settings explains what is stored and that it stays in this browser.
+- **First run:** a 3-step setup (units, about you, goal) instead of example data. You can still look around with example data.
+- **Faster logging:**
+  - Edit any logged food, with Undo for adds, edits and deletes.
+  - Mark favorite foods.
+  - Barcode lookup through Open Food Facts.
+  - Micronutrients (fiber, sodium, potassium, iron, B12) against FDA Daily Values.
+- **Adaptive calorie target:** estimates your real daily burn from 4 weeks of logged intake and your weight trend, then suggests a new target.
+- **Shopping:**
+  - One line per ingredient even across units.
+  - "Buy 2 × 15 oz can" package hints.
+  - A "have it" pantry list.
+  - Build the list from this week's meal plan.
+  - Share, email, text or print.
+- **Recipes (52):**
+  - Allergens (the FDA's nine), estimated cost per serving, equipment and storage.
+  - Vegetarian and lower-carb swaps.
+  - Your own star rating and notes.
+  - Dairy free, Nut free and Budget filters.
+  - Nutrition checked against USDA-based ingredient values: see `docs/recipe-macro-audit.md` and `tools/nutrition_audit.py`.
+- **Workouts (33 plans):**
+  - An exercise library (`#exercises`) linked from every plan, with form cues, muscles, equipment, easier and harder versions, and your records.
+  - In sessions: next-step progression suggestions, a plate calculator, effort (RPE), personal-best alerts and supersets.
+  - Share any plan as a link.
+- **Breathe & Mind:**
+  - Three Wim Hof-style exercises with holds you end yourself.
+  - A 7-day "Learn to breathe" course.
+  - Sleep sounds with a timer and two sleep wind-downs.
+- **Mobile app** (`mobile/`): an Expo + TypeScript app with Today, Log and Targets, backup import, and Supabase accounts with row-level security. See `mobile/README.md` and `docs/HEALTH.md`.
+
 ## Use it on your phone
 
 Open https://xsosaxdex.github.io/Ray/ on your phone, then add it to your home screen. It gets its own icon, opens full-screen without the browser bar, and works offline once it has been opened.
@@ -40,7 +75,7 @@ Then visit http://localhost:8000.
 
 ## Testing
 
-Serve the folder (`python3 -m http.server 8765`), then run `node tests/smoke.js` (needs Playwright). It opens every page at phone and desktop width with fresh, old-format and damaged saved data, and fails if any page is blank, shows an error, or scrolls sideways.
+Serve the folder (`python3 -m http.server 8765`), then run `node tests/smoke.js` (needs Playwright) and `node tests/library.js`. Mobile: `cd mobile && npm test`. It opens every page at phone and desktop width with fresh, old-format and damaged saved data, and fails if any page is blank, shows an error, or scrolls sideways.
 
 ## Deploy
 

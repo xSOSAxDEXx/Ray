@@ -481,7 +481,8 @@ body.calm-open { overflow: hidden; }
 .rinfo p { margin: 4px 0 0; font-size: .9rem; }
 .swaps, .notes { border-top: 1px solid var(--line); padding-top: 12px; }
 .stars { display: inline-flex; gap: 2px; }
-.star { background: none; border: 0; font-size: 1.5rem; color: var(--line); cursor: pointer; min-width: 36px; min-height: 36px; }
+.tag-allergen { background: var(--berry-soft); color: var(--berry); }
+.star { background: none; border: 0; font-size: 1.5rem; color: var(--muted); cursor: pointer; min-width: 36px; min-height: 36px; }
 .star.on { color: var(--carbs); }
 .note-list { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 4px; font-size: .9rem; }
 .ex-link { color: inherit; text-decoration: none; display: block; }
@@ -1371,16 +1372,16 @@ const RECIPES = [
     steps: ['Pat the steak dry and salt it on all sides. Let it sit 30 minutes at room temperature.',
       'Heat a cast-iron skillet over high until it just smokes. Add the tallow.',
       'Sear the steak 3 minutes without moving it, flip, and sear 2 minutes more.',
-      'Lower the heat to medium, add the butter and tilt the pan. Spoon the foaming butter over the steak for 1–2 minutes, until it reads 130°F (54°C) for medium-rare.',
+      'Lower the heat to medium, add the butter and tilt the pan. Spoon the foaming butter over the steak for 1–2 minutes, until it reads 145°F (63°C), the USDA safe minimum (many people prefer 130°F / 54°C, medium-rare; see the tip).',
       'Rest 5 minutes, slice against the grain and pour the pan butter over the top.'],
-    tip: 'Fat renders best at medium-rare to medium. Use a thermometer: color is unreliable.' },
+    tip: 'Use a thermometer: color is unreliable. USDA advises 145°F (63°C) plus a 3-minute rest for whole steaks. Medium-rare (130–135°F) is common but carries more risk, so avoid it if you\'re pregnant, older or immunocompromised.' },
   { id: 'carnivore-steak-eggs', title: 'Carnivore Steak & Eggs', meal: 'Breakfast', how: 'stove',
     tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb'], prep: 5, cook: 12, servings: 2,
     per: { kcal: 599, p: 68, c: 1, f: 33, fiber: 0, sugar: 1 },
     blurb: 'Seared sirloin and three butter-fried eggs. Nearly 70 g of protein to start the day, with nothing but salt.',
     ingredients: [[16, 'oz', 'top sirloin steak'], [6, '', 'eggs'], [2, 'tsp', 'butter'], [1, 'tsp', 'coarse salt']],
     steps: ['Pat the steak dry and salt it well.',
-      'Sear in a hot cast-iron skillet 3–4 minutes per side, to 130–135°F (54–57°C). Rest it on a board.',
+      'Sear in a hot cast-iron skillet 3–4 minutes per side, to 145°F (63°C), the USDA safe minimum. Rest it 3 minutes on a board.',
       'Lower the heat to medium, add the butter, and fry the eggs to your liking in the steak fat and butter.',
       'Slice the steak and serve with the eggs, salted.'],
     tip: 'Leftover steak from dinner works well: slice it thin and warm it in the pan for 30 seconds before the eggs.' },
@@ -1394,7 +1395,7 @@ const RECIPES = [
       'Cook 6–7 minutes without moving, until the flesh is opaque two-thirds of the way up.',
       'Flip, add the butter, and cook 1–2 minutes as it foams and turns nut-brown. Spoon it over the fish.',
       'Serve skin side up with the brown butter poured over.'],
-    tip: 'Wild salmon is leaner and cooks faster: pull it at 120°F (49°C) inside.' },
+    tip: 'Wild salmon is leaner and cooks faster, so start checking early. USDA advises 145°F (63°C), or until the flesh is opaque and flakes easily.' },
   { id: 'beef-liver-burgers', title: 'Beef & Liver Burgers', meal: 'Lunch', how: 'stove',
     tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb', 'Meal prep'], prep: 10, cook: 10, servings: 4,
     per: { kcal: 336, p: 25, c: 1, f: 25, fiber: 0, sugar: 0 },
@@ -1404,7 +1405,7 @@ const RECIPES = [
       'Shape into 4 patties about ¾ inch thick and press a dimple into the center of each.',
       'Heat the tallow in a skillet over medium-high. Cook the patties 4 minutes per side, to 160°F (71°C) inside.',
       'Rest 2 minutes and serve.'],
-    tip: 'Freeze the liver for 20 minutes first; it chops much more easily. Start with less liver if you\'re new to it.' },
+    tip: 'Freeze the liver for 20 minutes first; it chops much more easily. Start with less liver if you\'re new to it. Liver is extremely high in vitamin A, so keep it to about once a week, and avoid it if you\'re pregnant or trying to be.' },
   { id: 'salt-roasted-chicken-thighs', title: 'Crispy Salt-Roasted Chicken Thighs', meal: 'Dinner', how: 'oven',
     tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb', 'Meal prep'], prep: 5, cook: 40, servings: 4,
     per: { kcal: 518, p: 36, c: 0, f: 39, fiber: 0, sugar: 0 },
@@ -3694,7 +3695,7 @@ function recipeInfo(r, m) {
   const eq = equipmentOf(r, m), sw = swapsOf(r), note = S.recipeNotes[r.id] || {};
   return `<section class="panel span-12 rinfo" aria-label="Recipe details">
     <div class="rinfo-grid">
-      <div><div class="eyebrow">Allergens</div><p>${r.allergens.length ? r.allergens.map((a) => `<span class="tag tag-warn">${a}</span>`).join(' ') : 'None of the 9 major allergens'}</p></div>
+      <div><div class="eyebrow">Allergens</div><p>${r.allergens.length ? r.allergens.map((a) => `<span class="tag tag-allergen">${a}</span>`).join(' ') : 'None of the 9 major allergens'}</p></div>
       <div><div class="eyebrow">Cost</div><p><b class="num">~${money(r.cost)}</b> a serving <span class="muted">(estimate, typical US prices)</span></p></div>
       <div><div class="eyebrow">Equipment</div><p>${eq.length ? eq.map(esc).join(' · ') : 'Bowl and spoon'}</p></div>
       <div><div class="eyebrow">Storage</div><p>${storageOf(r)}</p></div>
