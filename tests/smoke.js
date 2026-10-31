@@ -4,7 +4,7 @@ const { chromium } = require('playwright');
 const URL = process.env.URL || 'http://localhost:8765/';
 const KEY = 'rep-ration-v1';
 const VIEWS = ['today', 'recipes', 'recipe-lemon-herb-salmon', 'mealplan', 'shopping', 'workouts', 'plan-foundations', 'session',
-  'log', 'progress', 'analytics', 'goals', 'settings', 'recipe-new', 'plan-new', 'breathe', 'breath-box', 'breath-power', 'mind', 'mind-iron-holds', 'recipe-beef-liver-burgers', 'recipe-avocado-chocolate-mousse'];
+  'log', 'progress', 'analytics', 'goals', 'settings', 'recipe-new', 'plan-new', 'breathe', 'breath-box', 'breath-power', 'mind', 'mind-iron-holds', 'recipe-beef-liver-burgers', 'recipe-avocado-chocolate-mousse', 'plan-rower-intervals', 'plan-zone2-base'];
 const STATES = {
   'fresh visitor': null,
   'saved before weekly goals and per-set reps': { v: 1, example: false, units: 'us',

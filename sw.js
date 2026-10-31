@@ -1,5 +1,5 @@
 // Offline support: pages try the network first (so new deploys show up), then fall back to the cache.
-const CACHE = 'rep-ration-v7';
+const CACHE = 'rep-ration-v8';
 const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
