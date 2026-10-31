@@ -423,6 +423,33 @@ body.calm-open { overflow: hidden; }
 .prof-row { display: flex; gap: 8px; align-items: center; }
 .prof-row .input { flex: 1; min-width: 0; }
 .cur-prof { margin-left: auto; font-size: .82rem; font-weight: 700; color: var(--accent); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
+.ex-next { font-size: .85rem; margin: 2px 0 6px; color: var(--accent); }
+.ex-plates:empty { display: none; }
+.ex-plates { font-size: .82rem; color: var(--muted); margin-bottom: 6px; font-family: var(--f-mono); }
+.rpe { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; font-size: .8rem; }
+.rpe .chip { min-width: 40px; min-height: 36px; justify-content: center; }
+.session-ex.ss { border-left: 3px solid var(--berry); padding-left: 12px; }
+.ss-tag { font-size: .78rem; font-weight: 700; color: var(--berry); margin-bottom: 4px; }
+.ex-ss { grid-column: 1 / -1; }
+.adapt { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; font-size: .92rem; }
+.micros { margin: -2px 0 12px; }
+.micro-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.micro { display: grid; gap: 2px; font-size: .74rem; position: relative; padding-bottom: 6px; }
+.micro b { font-size: .9rem; }
+.micro i { position: absolute; left: 0; bottom: 0; height: 3px; border-radius: 3px; background: var(--accent); }
+.micro.over i { background: var(--warn); }
+@media (max-width: 520px) { .micro-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.scan { border: 1px solid var(--line); border-radius: var(--r); padding: 12px; display: grid; gap: 8px; }
+.scan-video { width: 100%; max-height: 240px; border-radius: var(--r-sm); background: #000; object-fit: cover; }
+.scan-result { display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 8px; }
+.scan-btn { justify-self: start; display: inline-flex; gap: 6px; align-items: center; }
+.course { margin-bottom: 18px; }
+.course-dots { display: flex; gap: 6px; }
+.course-dots span { width: 26px; height: 6px; border-radius: 6px; background: var(--sunk); }
+.course-dots span.on { background: var(--tint); }
+.course-dots span.next { background: color-mix(in srgb, var(--tint) 40%, var(--sunk)); }
+.sleep-sounds { margin-bottom: 14px; }
+.calm-now { background: rgba(235, 215, 160, .22); border-color: rgba(235, 215, 160, .5); }
 .fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
 .fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
 .fbtn { display: inline-flex; align-items: center; gap: 8px; }
@@ -2394,7 +2421,9 @@ const ICON_PATHS = {
   repeat: 'M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5',
   clock: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7v5l3 2',
   wave: 'M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3.5-3 5-2',
-  leaf: 'M5 19c0-8 6-14 15-14 0 9-6 15-14 15M5 19l7-7'
+  leaf: 'M5 19c0-8 6-14 15-14 0 9-6 15-14 15M5 19l7-7',
+  barcode: 'M4 5v14M7 5v14M10 5v14M14 5v14M17 5v14M20 5v14',
+  moon: 'M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z'
 };
 const icon = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON_PATHS[name]}"/></svg>`;
 
@@ -2537,7 +2566,7 @@ const DEFAULTS = () => ({
   shopping: { recipes: [], checked: {}, extras: [], subs: {} },
   settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
   stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {} },
-  calm: { music: true, track: -1, vol: 0.5, tones: true, toneVol: 0.7, vibrate: true }, mind: { habits: {}, log: [] }
+  calm: { music: true, track: -1, vol: 0.5, tones: true, toneVol: 0.7, vibrate: true }, mind: { habits: {}, log: [], course: {} }
 });
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 function migrate() {
@@ -2986,7 +3015,8 @@ function viewPlanForm(id) {
         <input class="input num" data-d="days.${di}.ex.${ei}.2" value="${esc(e[2])}" placeholder="10 or 30 s" aria-label="Reps or time">
         <input class="input num" data-d="days.${di}.ex.${ei}.3" data-num type="number" min="0" max="600" value="${e[3] ?? ''}" aria-label="Rest in seconds">
         <button type="button" class="btn btn-ghost btn-sm" data-act="draft-del" data-path="days.${di}.ex" data-i="${ei}" aria-label="Remove exercise">✕</button>
-        <input class="input ex-cue-in" data-d="days.${di}.ex.${ei}.4" value="${esc(e[4])}" placeholder="Form tip (optional)" aria-label="Form tip"></div>`).join('')}
+        <input class="input ex-cue-in" data-d="days.${di}.ex.${ei}.4" value="${esc(e[4])}" placeholder="Form tip (optional)" aria-label="Form tip">
+        <select class="input ex-ss" data-d="days.${di}.ex.${ei}.5" aria-label="Superset"><option value="">Straight sets</option><option value="ss" ${e[5] === 'ss' ? 'selected' : ''}>Superset with the next exercise</option></select></div>`).join('')}
       <button type="button" class="btn btn-sm" data-act="draft-add" data-path="days.${di}.ex" style="align-self:start">+ Exercise</button>
     </section>`).join('')}
     <button type="button" class="btn" data-act="draft-add" data-path="days" style="align-self:start">+ Add another day</button>
@@ -3001,7 +3031,7 @@ function savePlanDraft() {
   const d = draft, err = (m) => { $('#form-err').textContent = m; };
   if (!String(d.title || '').trim()) return err('Give your plan a name.');
   const days = d.days.map((day, i) => ({ name: String(day.name || '').trim() || `Day ${String.fromCharCode(65 + i)}`, focus: String(day.focus || '').trim() || 'Workout',
-    ex: day.ex.filter((e) => String(e[0] || '').trim()).map((e) => [String(e[0]).trim(), Math.min(20, Math.max(1, Math.round(+e[1] || 3))), String(e[2] || '').trim() || '10', Math.max(0, Math.round(+e[3] || 0)), String(e[4] || '').trim()]) }))
+    ex: day.ex.filter((e) => String(e[0] || '').trim()).map((e) => [String(e[0]).trim(), Math.min(20, Math.max(1, Math.round(+e[1] || 3))), String(e[2] || '').trim() || '10', Math.max(0, Math.round(+e[3] || 0)), String(e[4] || '').trim(), e[5] === 'ss' ? 'ss' : ''].slice(0, e[5] === 'ss' ? 6 : 5)) }))
     .filter((day) => day.ex.length);
   if (!days.length) return err('Add at least one exercise.');
   const needs = EQUIPMENT.map((e) => e[0]).filter((g) => d.needs.includes(g));
@@ -3410,13 +3440,38 @@ function viewWorkouts() {
   ${S.workouts.length ? `<section class="panel" style="margin-top:20px"><div class="panel-head"><h2>Recent sessions</h2><a class="btn btn-sm btn-ghost" href="#log">Full history</a></div>${workoutList(5)}</section>` : ''}`;
 }
 let planDayTab = 0;
+/* A plan travels as a link: the plan's JSON, base64-encoded in the URL after #import-plan=. Nothing is uploaded. */
+const PLAN_FIELDS = ['title', 'diff', 'muscles', 'gear', 'needs', 'perWeek', 'minutes', 'equipment', 'noLoad', 'goal', 'schedule', 'warmup', 'progression', 'days'];
+const encodePlan = (p) => btoa(unescape(encodeURIComponent(JSON.stringify(Object.fromEntries(PLAN_FIELDS.map((k) => [k, p[k]]))))));
+function decodePlan(txt) {
+  try {
+    const p = JSON.parse(decodeURIComponent(escape(atob(txt))));
+    if (!p || typeof p.title !== 'string' || !Array.isArray(p.days) || !p.days.length || p.days.length > 14) return null;
+    const days = p.days.slice(0, 14).map((d) => ({ name: String(d.name || 'Day').slice(0, 40), focus: String(d.focus || '').slice(0, 80),
+      ex: (Array.isArray(d.ex) ? d.ex : []).slice(0, 30).map((e) => [String(e[0] || '').slice(0, 80), Math.min(20, Math.max(1, +e[1] || 3)), String(e[2] || '10').slice(0, 20), Math.max(0, Math.min(600, +e[3] || 0)), String(e[4] || '').slice(0, 200)].concat(e[5] === 'ss' ? ['ss'] : [])).filter((e) => e[0]) })).filter((d) => d.ex.length);
+    if (!days.length) return null;
+    return { title: p.title.slice(0, 60), diff: Math.min(4, Math.max(1, +p.diff || 1)), muscles: Array.isArray(p.muscles) ? p.muscles.filter((m) => MUSCLES.includes(m)) : ['Full body'],
+      needs: Array.isArray(p.needs) ? p.needs.filter(Array.isArray).map((o) => o.filter((g) => EQUIPMENT.some((x) => x[0] === g))).filter((o) => o.length) : [],
+      perWeek: Math.min(7, Math.max(1, +p.perWeek || 3)), minutes: Math.min(240, Math.max(5, +p.minutes || 45)), equipment: String(p.equipment || '').slice(0, 120), noLoad: !!p.noLoad,
+      goal: String(p.goal || '').slice(0, 400), schedule: String(p.schedule || '').slice(0, 300), warmup: String(p.warmup || '').slice(0, 300), progression: String(p.progression || '').slice(0, 400), days };
+  } catch (e) { return null; }
+}
+function viewImportPlan(code) {
+  const p = decodePlan(code);
+  if (!p) return `<div class="panel stack" style="max-width:560px">${emptyState('clock', "That plan link is incomplete or damaged. Ask for the link again.", '<a class="btn btn-primary btn-sm" href="#workouts">Browse plans</a>')}</div>`;
+  return `<div class="panel stack" style="max-width:640px"><div class="eyebrow">Shared plan</div><h1>${esc(p.title)}</h1><p class="muted">${esc(p.goal)}</p>
+    <p>${p.days.length} day${p.days.length === 1 ? '' : 's'} · ${p.perWeek}× a week · about ${p.minutes} min</p>
+    <ul>${p.days.map((d) => `<li><b>${esc(d.name)}</b>${d.focus ? ': ' + esc(d.focus) : ''} · ${d.ex.length} exercises</li>`).join('')}</ul>
+    <div class="row"><button class="btn btn-primary" data-act="plan-import" data-code="${esc(code)}">Save to my plans</button><a class="btn btn-ghost" href="#workouts">Cancel</a></div>
+    <p class="muted" style="font-size:.82rem">Shared plans come from other people. Check the exercises suit you before you start.</p></div>`;
+}
 function viewPlan(id) {
   const p = planById(id);
   if (!p) return notFound('That plan');
   if (planDayTab >= p.days.length) planDayTab = 0;
   const d = p.days[planDayTab];
   return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><a class="btn btn-ghost" href="#workouts">← All plans</a>
-    <div class="row">${favToggle('plans', p.id)}${p.custom ? `<a class="btn btn-sm" href="#plan-edit-${p.id}">Edit plan</a><span class="confirm">${delArmed ? `<span>Delete this plan?</span><button class="btn btn-sm btn-berry" data-act="del-plan" data-id="${p.id}">Yes, delete</button><button class="btn btn-sm" data-act="del-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="del-plan-arm">Delete</button>`}</span>` : ''}</div></div>
+    <div class="row"><button class="btn btn-sm btn-ghost" data-act="plan-share" data-id="${p.id}">Share</button>${favToggle('plans', p.id)}${p.custom ? `<a class="btn btn-sm" href="#plan-edit-${p.id}">Edit plan</a><span class="confirm">${delArmed ? `<span>Delete this plan?</span><button class="btn btn-sm btn-berry" data-act="del-plan" data-id="${p.id}">Yes, delete</button><button class="btn btn-sm" data-act="del-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="del-plan-arm">Delete</button>`}</span>` : ''}</div></div>
   <div class="page-head"><div><div class="row" style="margin-bottom:8px">${p.custom ? '<span class="tag tag-berry">Custom</span>' : ''}${diffMeter(p.diff)}${gearTag(p.gear)}${p.muscles.map((m) => `<span class="tag">${esc(m)}</span>`).join('')}<span class="tag">${p.perWeek}× / week</span><span class="tag">${p.minutes} min</span></div>
     <h1>${esc(p.title)}</h1><p class="muted">${esc(p.goal)}</p>
     ${canDo(p) ? '' : `<p class="tag tag-warn" style="margin-top:10px;display:inline-block;padding:6px 12px;font-size:.85rem">You'll need: ${esc(missing(p).join(', '))}</p>`}</div>
@@ -3458,6 +3513,41 @@ function setVal(s, e, i, j, f, last) {
   return l && l.r != null ? String(l.r) : String(repTarget(e[2]) ?? '');
 }
 const hasWeight = (p, e) => !p.noLoad && !/ s$/.test(e[2]);
+/* Next-step suggestion from last time, one small step at a time: add reps until every set reaches the top of the range,
+   then add the smallest sensible weight jump (about 5% for lower body, 2.5% for upper body). */
+const LOWER_BODY = /squat|deadlift|lunge|leg press|leg curl|leg extension|hip thrust|glute|calf|step-up|rdl|split|swing|hinge/i;
+function nextStep(p, e, last) {
+  if (!last || !last.length) return '';
+  const timed = / s$/.test(e[2]), nums = (String(e[2]).match(/\d+/g) || []).map(Number), top = nums.length ? Math.max(...nums.slice(0, 2)) : null;
+  if (!top) return '';
+  const allTop = last.length >= e[1] && last.every((x) => x.r >= top);
+  if (timed) return allTop ? `You held ${top} s on every set: try ${top + 5} s or the harder version.` : `Aim to hold the full ${top} s on every set.`;
+  if (!allTop) return `Stay at this weight and aim for ${top} reps on every set, adding a rep at a time.`;
+  const kg = last[0].kg;
+  if (!hasWeight(p, e) || !kg) return `You hit ${top} reps on every set: add 1–2 reps or move to the harder version.`;
+  const inc = us() ? 5 : 2.5, cur = showW(kg), step = Math.max(inc, Math.round((cur * (LOWER_BODY.test(e[0]) ? 0.05 : 0.025)) / inc) * inc);
+  return `You hit ${top} reps on every set: go up to ${round(cur + step, 1)} ${wUnit()} and start again at the bottom of the rep range.`;
+}
+// Plates for each side of a barbell: 45 lb / 20 kg bar, standard plates.
+const isBarbell = (p, e) => /barbell|bench press|back squat|front squat|deadlift|overhead press|bent-over row|pendlay/i.test(e[0]) && p.needs.some((o) => o.includes('barbell'));
+function platesFor(total) {
+  const bar = us() ? 45 : 20, set = us() ? [45, 35, 25, 10, 5, 2.5] : [25, 20, 15, 10, 5, 2.5, 1.25];
+  let side = (total - bar) / 2;
+  if (!(total > 0)) return '';
+  if (side < 0) return `Less than the ${bar} ${wUnit()} bar`;
+  if (side === 0) return 'Just the bar';
+  const out = [];
+  set.forEach((pl) => { while (side >= pl - 1e-9) { out.push(pl); side -= pl; } });
+  return `Each side: ${out.join(' + ')}${side > 0.01 ? ` (+${round(side, 2)} ${wUnit()} short)` : ''}`;
+}
+// Personal best check for one set: heavier estimated 1-rep max, or more reps for bodyweight moves.
+function isNewBest(name, kg, r) {
+  const list = exHistory().get(name) || [];
+  if (!list.length || !(r > 0)) return false;
+  if (kg > 0) { const best = Math.max(0, ...list.map((x) => x.e1 || 0)); return best > 0 && e1rm(kg, r) > best + 0.01; }
+  const best = Math.max(0, ...list.map((x) => x.top || 0)); return best > 0 && r > best;
+}
+const RPE_TXT = { 6: 'Easy, 4+ reps left', 7: 'About 3 reps left', 8: 'About 2 reps left', 9: '1 rep left', 10: 'Nothing left' };
 function viewSession() {
   const s = S.session;
   if (!s) return `<div class="panel stack" style="max-width:520px"><h2>No session running</h2><p class="muted">Start one from any workout plan.</p><a class="btn btn-primary" href="#workouts" style="align-self:start">Choose a workout</a></div>`;
@@ -3468,13 +3558,19 @@ function viewSession() {
     <p class="muted">Each set starts with what you did last time. Adjust with − and + if it changed, then tap the set number when you finish it to start the rest timer. A change carries forward to the sets after it.</p></div></div>
   <section class="panel">
     ${d.ex.map((e, i) => {
-      const last = lastSets(e[0]), wt = hasWeight(p, e), timed = / s$/.test(e[2]);
-      return `<div class="session-ex"><div class="ex-name">${esc(e[0])}</div><div class="ex-cue">${e[1]} × ${esc(e[2])} · ${e[3] ? 'rest ' + e[3] + 's' : 'no timed rest'} — ${esc(e[4])}</div>
+      const last = lastSets(e[0]), wt = hasWeight(p, e), timed = / s$/.test(e[2]), tip = nextStep(p, e, last);
+      const ss = e[5] === 'ss' ? 'a' : d.ex[i - 1] && d.ex[i - 1][5] === 'ss' ? 'b' : '';
+      const w0 = wt ? parseFloat(setVal(s, e, i, 0, 'w', last)) : NaN;
+      return `<div class="session-ex ${ss ? 'ss ss-' + ss : ''}">${ss === 'a' ? '<div class="ss-tag">Superset: do this, then go straight to the next exercise, then rest</div>' : ''}
+        <div class="ex-name">${esc(e[0])}${(s.prs || []).includes(e[0]) ? ' <span class="tag tag-berry">New best!</span>' : ''}</div><div class="ex-cue">${e[1]} × ${esc(e[2])} · ${e[3] ? 'rest ' + e[3] + 's' : 'no timed rest'} — ${esc(e[4])}</div>
         ${last ? `<div class="ex-last">Last time: ${exLine({ reps: last.map((x) => x.r), kg: last.map((x) => x.kg), timed })}</div>` : ''}
+        ${tip ? `<div class="ex-next"><b>Next step:</b> ${tip}</div>` : ''}
+        ${wt && isBarbell(p, e) ? `<div class="ex-plates" id="plates-${i}">${platesFor(w0)}</div>` : ''}
         <div class="srows ${wt ? '' : 'no-w'}"><div class="srow srow-h" aria-hidden="true"><span>Set</span>${wt ? `<span>${wUnit()}</span>` : ''}<span>${timed ? 'Seconds' : 'Reps'}</span></div>
         ${[...Array(e[1])].map((_, j) => { const k = i + '-' + j, lbl = `${e[0]} set ${j + 1}`;
           return `<div class="srow ${s.checks[k] ? 'done' : ''}"><button class="set" data-act="set" data-k="${k}" data-rest="${e[3]}" aria-pressed="${!!s.checks[k]}" aria-label="Mark ${esc(lbl)} done">${s.checks[k] ? '✓' : j + 1}</button>
-            ${wt ? stepper(k, 'w', setVal(s, e, i, j, 'w', last), esc(lbl) + ' weight', us() ? 5 : 2.5) : ''}${stepper(k, 'r', setVal(s, e, i, j, 'r', last), esc(lbl) + (timed ? ' seconds' : ' reps'), timed ? 5 : 1)}</div>`; }).join('')}</div></div>`;
+            ${wt ? stepper(k, 'w', setVal(s, e, i, j, 'w', last), esc(lbl) + ' weight', us() ? 5 : 2.5) : ''}${stepper(k, 'r', setVal(s, e, i, j, 'r', last), esc(lbl) + (timed ? ' seconds' : ' reps'), timed ? 5 : 1)}</div>`; }).join('')}</div>
+        ${timed ? '' : `<div class="rpe" role="group" aria-label="How hard was the last set of ${esc(e[0])}"><span class="muted">Effort</span>${[6, 7, 8, 9, 10].map((v) => `<button type="button" class="chip chip-sm" data-act="rpe" data-i="${i}" data-v="${v}" aria-pressed="${(s.rpe || {})[i] === v}" title="${RPE_TXT[v]}">${v}</button>`).join('')}<span class="muted rpe-txt">${(s.rpe || {})[i] ? RPE_TXT[(s.rpe || {})[i]] : 'RPE: 10 = nothing left'}</span></div>`}</div>`;
     }).join('')}
   </section>
   <div class="restbar">
@@ -3489,6 +3585,7 @@ function setSessionVal(k, f, v) {
   if (!s[key]) s[key] = {};
   s[key][k] = v;
   const [i, j] = k.split('-').map(Number);
+  const pl = $('#plates-' + i); if (pl && f === 'w' && j === 0) pl.textContent = platesFor(parseFloat(v));
   for (let x = j + 1; ; x += 1) {
     const inp = document.querySelector(`[data-sv="${f}"][data-k="${i}-${x}"]`);
     if (!inp) break;
@@ -3575,6 +3672,39 @@ const FOODS = [
   ['Tea, unsweetened', '1 cup', 2, 0, 0, 0, 'green matcha'], ['Coconut water', '1 cup', 45, 2, 9, 0, '']
 ].map(([name, portion, kcal, p, c, f, k]) => ({ name, portion, kcal, p, c, f, k: (name + ' ' + k).toLowerCase() }));
 
+/* Micronutrients per listed portion: [fiber g, sodium mg, potassium mg, iron mg, vitamin B12 µg].
+   Rounded from USDA FoodData Central values (estimated; verify before relying on them). */
+const FOOD_MICRO = {
+  'Eggs': [0, 142, 138, 1.8, 0.9], 'Egg': [0, 71, 69, 0.9, 0.45], 'Chicken breast, cooked': [0, 84, 289, 1.2, 0.4], 'Chicken thigh, cooked': [0, 96, 250, 1.3, 0.4],
+  'Ground beef 85/15, cooked': [0, 82, 357, 2.9, 2.9], 'Ground beef 90/10, cooked': [0, 82, 375, 3, 2.8], 'Ribeye steak, cooked': [0, 92, 515, 3.4, 2.7],
+  'Sirloin steak, cooked': [0, 95, 600, 3.3, 2.4], 'Beef liver, cooked': [0, 67, 299, 5.2, 60], 'Salmon, cooked': [0, 69, 433, 0.4, 3.2], 'Cod, cooked': [0, 88, 276, 0.6, 1.2],
+  'Shrimp, cooked': [0, 127, 194, 0.6, 1.7], 'Tuna, canned in water': [0, 290, 286, 1.8, 3], 'Sardines, canned': [0, 282, 365, 2.7, 8.2], 'Turkey breast, roasted': [0, 72, 280, 0.8, 0.4],
+  'Pork tenderloin, cooked': [0, 60, 475, 1.2, 0.6], 'Bone broth': [0, 500, 200, 0.5, 0], 'Greek yogurt, plain whole-milk': [0, 80, 320, 0.1, 1.7], 'Cottage cheese, full-fat': [0, 820, 235, 0.2, 0.9],
+  'Kefir, plain': [0, 100, 380, 0.1, 0.9], 'Whole milk': [0, 105, 366, 0.1, 1.1], 'Cheddar cheese': [0, 185, 22, 0.2, 0.3], 'Feta cheese': [0, 320, 18, 0.2, 0.5], 'Fresh mozzarella': [0, 50, 22, 0.1, 0.6],
+  'Butter': [0, 91, 3, 0, 0], 'Olive oil': [0, 0, 0, 0.1, 0], 'Avocado': [5, 5, 364, 0.4, 0], 'Whey protein, unflavored': [0, 50, 150, 0.3, 0.7], 'Collagen peptides': [0, 40, 0, 0, 0],
+  'Tofu, firm': [2.9, 15, 300, 3.4, 0], 'Edamame, shelled': [8, 9, 676, 3.5, 0], 'Black beans, cooked': [15, 2, 611, 3.6, 0], 'Lentils, cooked': [15.6, 4, 731, 6.6, 0],
+  'Chickpeas, cooked': [12.5, 11, 477, 4.7, 0], 'Hummus': [1.8, 115, 68, 0.7, 0], 'Rolled oats': [4, 2, 143, 1.7, 0], 'White rice, cooked': [0.6, 2, 55, 1.9, 0], 'Brown rice, cooked': [3.5, 10, 154, 0.8, 0],
+  'Quinoa, cooked': [5.2, 13, 318, 2.8, 0], 'Pasta, cooked': [2.5, 1, 62, 1.8, 0], 'Sourdough bread': [1, 260, 60, 1.5, 0], 'Corn tortilla': [1.5, 10, 50, 0.3, 0],
+  'Sweet potato, baked': [3.8, 41, 542, 0.8, 0], 'Potato, baked': [3.8, 17, 926, 1.9, 0], 'Banana': [3.1, 1, 422, 0.3, 0], 'Apple': [4.4, 2, 195, 0.2, 0], 'Orange': [3.1, 0, 237, 0.1, 0],
+  'Blueberries': [3.6, 1, 114, 0.4, 0], 'Strawberries': [3, 2, 233, 0.6, 0], 'Raspberries': [8, 1, 186, 0.8, 0], 'Grapes': [1.4, 3, 288, 0.5, 0], 'Mango': [2.6, 2, 277, 0.3, 0],
+  'Watermelon': [0.6, 2, 170, 0.4, 0], 'Medjool dates': [3.2, 1, 334, 0.4, 0], 'Broccoli, cooked': [5.1, 64, 457, 1, 0], 'Spinach, raw': [1.3, 47, 335, 1.6, 0], 'Mixed salad greens': [1.5, 20, 200, 0.8, 0],
+  'Carrots': [3.6, 88, 410, 0.4, 0], 'Bell pepper': [2.5, 5, 251, 0.5, 0], 'Cucumber': [0.5, 2, 152, 0.3, 0], 'Green beans, cooked': [4, 1, 182, 0.8, 0], 'Zucchini, cooked': [1.8, 5, 455, 0.6, 0],
+  'Almonds': [3.5, 0, 208, 1, 0], 'Walnuts': [1.9, 1, 125, 0.8, 0], 'Pistachios': [3, 0, 285, 1.1, 0], 'Natural peanut butter': [2, 140, 208, 0.6, 0], 'Almond butter': [3.3, 2, 240, 1.1, 0],
+  'Chia seeds': [8.3, 4, 98, 1.9, 0], 'Pumpkin seeds': [1.7, 5, 229, 2.3, 0], 'Dark chocolate 85%': [3.1, 6, 203, 3.4, 0], 'Coffee, black': [0, 5, 116, 0, 0],
+  'Coffee with whole milk': [0, 15, 160, 0, 0.1], 'Tea, unsweetened': [0, 7, 88, 0, 0], 'Coconut water': [2.6, 252, 600, 0.7, 0]
+};
+// FDA Daily Values used on food labels.
+const MICRO_DV = [['Fiber', 28, 'g'], ['Sodium', 2300, 'mg'], ['Potassium', 4700, 'mg'], ['Iron', 18, 'mg'], ['B12', 2.4, 'µg']];
+let RECIPE_MICRO = {}; // filled from the ingredient nutrient audit (per serving, same order as FOOD_MICRO)
+function microRow(list) {
+  const withData = list.filter((m) => Array.isArray(m.mic));
+  if (!list.length) return '';
+  const tot = [0, 0, 0, 0, 0];
+  withData.forEach((m) => m.mic.forEach((v, i) => { tot[i] += (+v || 0) * (m.qty || 1); }));
+  return `<div class="micros"><div class="micro-grid">${MICRO_DV.map(([n, dv, u], i) => { const pc = Math.round(tot[i] / dv * 100);
+    return `<div class="micro ${i === 1 && pc > 100 ? 'over' : ''}"><span>${n}</span><b class="num">${tot[i] >= 100 ? Math.round(tot[i]).toLocaleString() : round(tot[i], 1)}<small> ${u}</small></b><i style="width:${Math.min(100, pc)}%"></i><small class="muted num">${pc}% DV</small></div>`; }).join('')}</div>
+    <p class="muted" style="font-size:.76rem;margin:6px 0 0">Micronutrients from ${withData.length} of ${list.length} item${list.length === 1 ? '' : 's'} (foods you typed in yourself don't have them). Sodium is a limit, the others are targets.</p></div>`;
+}
 const LOG_MEALS = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
 const mealNow = () => { const h = new Date().getHours() + new Date().getMinutes() / 60; return h < 10.5 ? 'Breakfast' : h < 14.5 ? 'Lunch' : h < 17 ? 'Snack' : h < 21 ? 'Dinner' : 'Snack'; };
 let foodQ = '', logMeal = null, manualOpen = false;
@@ -3620,11 +3750,68 @@ function foodResults(date) {
     ${rec.length ? `<div class="eyebrow" style="margin:10px 0 6px">Your usual</div><div class="qchips">${rec.map((e) => `<button type="button" class="chip" data-act="qadd" data-src="m" data-id="${e.m.id}" title="${e.base.kcal} kcal">+ ${esc(e.m.name)}</button>`).join('')}</div>`
       : `<p class="muted" style="font-size:.85rem;margin-top:6px">Type to search, e.g. “eggs”, “salmon” or a recipe name. Foods you log show up here for one-tap adding next time.</p>`}`;
 }
+/* Barcode lookup: the camera (where the browser can read barcodes) or a typed number, then Open Food Facts, a free
+   public food database. Only the barcode number is sent. */
+let scan = null; // { open, code, busy, msg, product, grams }
+let scanStream = null, scanTimer = 0;
+const offNum = (n, k) => { const v = parseFloat(n[k]); return isFinite(v) ? v : null; };
+async function lookupBarcode(code) {
+  code = String(code).replace(/\D/g, '');
+  if (code.length < 8) { scan.msg = 'Enter the 8–14 digit number under the barcode.'; render(true); return; }
+  scan.busy = true; scan.msg = ''; render(true);
+  try {
+    const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,brands,nutriments,serving_quantity,serving_size`);
+    const data = await res.json();
+    const pr = data && data.status === 1 && data.product;
+    if (!pr || !pr.nutriments || offNum(pr.nutriments, 'energy-kcal_100g') == null) { scan.product = null; scan.msg = "That product isn't in Open Food Facts yet, or has no nutrition facts. Add it with your own numbers instead."; }
+    else {
+      const n = pr.nutriments, per = (k, mult = 1) => { const v = offNum(n, k); return v == null ? null : v * mult; };
+      scan.product = { code, name: [pr.product_name, pr.brands && pr.brands.split(',')[0]].filter(Boolean).join(' · ') || 'Scanned food',
+        kcal: per('energy-kcal_100g'), p: per('proteins_100g') || 0, c: per('carbohydrates_100g') || 0, f: per('fat_100g') || 0,
+        mic: [per('fiber_100g'), per('sodium_100g', 1000), per('potassium_100g', 1000), per('iron_100g', 1000), per('vitamin-b12_100g', 1e6)].map((v) => (v == null ? 0 : v)),
+        serving: parseFloat(pr.serving_quantity) || null, servingTxt: pr.serving_size || '' };
+      scan.grams = scan.product.serving || 100;
+    }
+  } catch (e) { scan.msg = "Couldn't reach Open Food Facts. Check your connection and try again."; }
+  scan.busy = false; render(true);
+}
+function stopCamera() { clearInterval(scanTimer); if (scanStream) scanStream.getTracks().forEach((t) => t.stop()); scanStream = null; }
+async function startCamera() {
+  if (!('BarcodeDetector' in window) || !navigator.mediaDevices) { scan.msg = "This browser can't read barcodes with the camera. Type the number under the barcode instead."; render(true); return; }
+  try {
+    const det = new window.BarcodeDetector({ formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e'] });
+    scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    scan.camera = true; render(true);
+    const v = $('#scan-video'); if (!v) { stopCamera(); return; }
+    v.srcObject = scanStream; await v.play();
+    scanTimer = setInterval(async () => {
+      try { const codes = await det.detect(v); if (codes[0]) { stopCamera(); scan.camera = false; scan.code = codes[0].rawValue; lookupBarcode(scan.code); } } catch (e) { /* keep trying */ }
+    }, 350);
+  } catch (e) { stopCamera(); scan.camera = false; scan.msg = 'Camera permission was denied. Type the number under the barcode instead.'; render(true); }
+}
+function scanPanel() {
+  if (!scan || !scan.open) return '';
+  const pr = scan.product, g = scan.grams || 100, f = g / 100;
+  return `<div class="scan">
+    ${scan.camera ? '<video id="scan-video" class="scan-video" playsinline muted></video><p class="muted" style="font-size:.82rem">Point the camera at the barcode.</p>' : ''}
+    <form id="scan-form" class="row" autocomplete="off"><input class="input num" id="scan-code" inputmode="numeric" placeholder="Barcode number" value="${esc(scan.code || '')}" aria-label="Barcode number" style="flex:1;min-width:140px">
+      <button class="btn" type="submit" ${scan.busy ? 'disabled' : ''}>${scan.busy ? 'Looking up…' : 'Look up'}</button>
+      ${scan.camera ? '' : '<button class="btn btn-ghost" type="button" data-act="scan-cam">Use camera</button>'}<button class="btn btn-ghost" type="button" data-act="scan-close">Close</button></form>
+    ${scan.msg ? `<p class="muted" role="status" style="font-size:.85rem">${esc(scan.msg)}</p>` : ''}
+    ${pr ? `<div class="scan-result"><b>${esc(pr.name)}</b>
+      <div class="row"><label class="fsel"><span class="eyebrow">Amount</span><input class="input num" id="scan-g" type="number" min="1" max="2000" inputmode="decimal" value="${g}" style="width:90px"> g</label>
+        ${pr.serving ? `<button type="button" class="chip chip-sm" data-act="scan-serv" aria-pressed="${g === pr.serving}">1 serving${pr.servingTxt ? ` (${esc(pr.servingTxt)})` : ''}</button>` : ''}</div>
+      <div class="muted num" style="font-size:.85rem">${Math.round(pr.kcal * f)} kcal · P ${round(pr.p * f)} · C ${round(pr.c * f)} · F ${round(pr.f * f)}</div>
+      <button class="btn btn-primary btn-sm" data-act="scan-add" style="justify-self:start">Add to ${(logMeal || mealNow()).toLowerCase()}</button>
+      <p class="muted" style="font-size:.75rem">Data from Open Food Facts (openfoodfacts.org), entered by volunteers: check it against the label.</p></div>` : ''}
+  </div>`;
+}
 function foodAdder(date) {
   const meal = logMeal || mealNow();
   return `<div class="fadd">
     <div class="seg" role="group" aria-label="Meal">${LOG_MEALS.map((m) => `<button type="button" class="chip" data-act="lmeal" data-m="${m}" aria-pressed="${m === meal}">${m}</button>`).join('')}</div>
     <input class="input fadd-q" id="food-q" type="search" placeholder="Search foods, recipes or your usual…" value="${esc(foodQ)}" autocomplete="off" enterkeyhint="search" aria-label="Search foods to add to ${meal.toLowerCase()}">
+    ${scan && scan.open ? scanPanel() : `<button type="button" class="btn btn-sm scan-btn" data-act="scan-open">${icon('barcode')} Scan a barcode</button>`}
     <div id="food-results" aria-live="polite">${foodResults(date)}</div>
     ${manualOpen ? `<form id="food-form" class="stack manual" autocomplete="off">
       <label class="field">Food<input class="input" id="f-name" required placeholder="e.g. Turkey sandwich" value="${esc(foodQ.trim())}"></label>
@@ -3667,6 +3854,7 @@ function viewLog() {
   <div class="grid">
     <section class="panel span-7" aria-labelledby="h-food">
       <div class="panel-head"><h2 id="h-food">Food · ${logDate === t ? 'today' : fmtDay(logDate)}</h2><span class="num">${Math.round(tot.kcal)} <span class="muted">/ ${S.targets.kcal} kcal</span></span></div>
+      ${microRow(meals)}
       <div class="mini-macros"><span style="color:var(--protein)">P ${Math.round(tot.p)}/${S.targets.p}g</span><span style="color:var(--carbs)">C ${Math.round(tot.c)}/${S.targets.c}g</span><span style="color:var(--fat)">F ${Math.round(tot.f)}/${S.targets.f}g</span></div>
       ${foodAdder(logDate)}
       ${mealGroups(logDate, meals)}
@@ -4182,6 +4370,37 @@ function shopAdd(id, servings) {
 }
 
 let clearArmed = false;
+/* Adaptive calorie target (the approach MacroFactor popularized): what you actually burn = what you ate minus what
+   your weight change says you stored. Uses the last 4 weeks; needs ≥10 well-logged days and ≥6 weigh-ins. Weight change
+   comes from a straight-line fit through all weigh-ins, so one heavy or light morning barely moves it. */
+const KCAL_PER_KG = 7700;
+function adaptiveTdee() {
+  const end = dayKey(), start = addDays(end, -27), daily = {};
+  S.meals.forEach((m) => { if (m.date >= start && m.date <= end) daily[m.date] = (daily[m.date] || 0) + (+m.kcal || 0); });
+  const logged = Object.values(daily).filter((k) => k >= 800), ws = S.weights.filter((w) => w.date >= start && w.date <= end && w.kg > 0);
+  const formula = calcTargets(S.profile).tdee;
+  if (logged.length < 10 || ws.length < 6) return { ok: false, logged: logged.length, weighIns: ws.length, formula };
+  const xs = ws.map((w) => (parseKey(w.date) - parseKey(start)) / 864e5), ys = ws.map((w) => w.kg), n = xs.length;
+  const mx = xs.reduce((a, b) => a + b, 0) / n, my = ys.reduce((a, b) => a + b, 0) / n;
+  const sxx = xs.reduce((a, x) => a + (x - mx) ** 2, 0), slope = sxx ? xs.reduce((a, x, i) => a + (x - mx) * (ys[i] - my), 0) / sxx : 0; // kg per day
+  const intake = logged.reduce((a, b) => a + b, 0) / logged.length, measured = intake - slope * KCAL_PER_KG;
+  const conf = Math.min(1, (logged.length / 21) * Math.min(1, ws.length / 12));
+  const est = Math.min(formula * 1.5, Math.max(formula * 0.6, conf * measured + (1 - conf) * formula));
+  return { ok: true, tdee: Math.round(est / 10) * 10, measured: Math.round(measured), formula, intake: Math.round(intake), kgWeek: round(slope * 7, 2), conf, logged: logged.length, weighIns: ws.length };
+}
+function adaptiveKcal(a) {
+  const p = S.profile, adj = p.goal === 'lose' ? -Math.min(500, a.tdee * 0.2) : p.goal === 'gain' ? Math.min(300, a.tdee * 0.1) : 0;
+  return Math.max(p.sex === 'male' ? 1500 : 1200, Math.round((a.tdee + adj) / 10) * 10);
+}
+function adaptiveCard() {
+  const a = adaptiveTdee();
+  if (!a.ok) return `<div class="adapt"><div class="eyebrow">Adaptive target</div><p class="muted" style="font-size:.86rem;margin:4px 0 0">Log food on ${Math.max(0, 10 - a.logged)} more day${10 - a.logged === 1 ? '' : 's'} and weigh in ${Math.max(0, 6 - a.weighIns)} more time${6 - a.weighIns === 1 ? '' : 's'} over the next few weeks, and we'll estimate your real daily burn from your own results.</p></div>`;
+  const kcal = adaptiveKcal(a), diff = kcal - S.targets.kcal;
+  return `<div class="adapt"><div class="eyebrow">Adaptive target · from your last 4 weeks</div>
+    <p style="margin:6px 0">You ate about <b class="num">${a.intake.toLocaleString()}</b> kcal a day and your weight trend moved <b class="num">${a.kgWeek > 0 ? '+' : ''}${showW(a.kgWeek, 2)}</b> ${wUnit()} a week, so you burn roughly <b class="num">${a.tdee.toLocaleString()}</b> kcal a day <span class="muted">(formula: ${a.formula.toLocaleString()})</span>.</p>
+    <p class="muted" style="font-size:.82rem;margin:0 0 8px">Confidence ${a.conf >= 0.8 ? 'good' : a.conf >= 0.5 ? 'moderate' : 'low'}: ${a.logged} logged days, ${a.weighIns} weigh-ins. Days you only partly logged make the estimate too low.</p>
+    ${Math.abs(diff) >= 50 ? `<button class="btn btn-sm btn-primary" data-act="adapt-use" data-v="${kcal}">Use ${kcal.toLocaleString()} kcal (${diff > 0 ? '+' : ''}${diff})</button>` : '<span class="goal-tag">✓ Your target already matches</span>'}</div>`;
+}
 function viewTargets() {
   const p = S.profile, T = S.targets;
   const ft = Math.floor(p.heightCm / 2.54 / 12), inch = Math.round(p.heightCm / 2.54 - ft * 12);
@@ -4226,6 +4445,7 @@ function viewTargets() {
       <h2 id="h-res">Your daily targets</h2>
       <div class="facts" style="grid-template-columns:repeat(2,1fr)"><div><b>${T.kcal.toLocaleString()}</b><span>kcal / day</span></div><div><b>${showWater(T.waterMl)}</b><span>${wUnitWater()} water</span></div></div>
       <div class="facts" style="grid-template-columns:repeat(3,1fr)"><div><b style="color:var(--protein)">${T.p}g</b><span>protein</span></div><div><b style="color:var(--carbs)">${T.c}g</b><span>carbs</span></div><div><b style="color:var(--fat)">${T.f}g</b><span>fat</span></div></div>
+      ${adaptiveCard()}
       <h2 style="margin-top:6px">Your weekly goal</h2>
       <div class="facts" style="grid-template-columns:repeat(2,1fr)"><div><b>${T.workoutsWeek}</b><span>workouts / week</span></div><div><b>${T.minutesWeek}</b><span>active min / week</span></div></div>
       <p class="muted" style="font-size:.88rem">Resting burn (BMR) <span class="num">${calc.bmr}</span> kcal · with activity (TDEE) <span class="num">${calc.tdee}</span> kcal${p.goal === 'maintain' ? '' : ` · ${p.goal === 'lose' ? 'deficit' : 'surplus'} <span class="num">${Math.abs(Math.round(calc.kcal - calc.tdee))}</span> kcal`}.</p>
@@ -4263,7 +4483,7 @@ function sessionEx(s) {
       reps.push(r); kg.push(w > 0 ? round(toKg(w), 2) : null);
     }
     const top = Math.max(0, ...kg.filter(Boolean));
-    return { n: e[0], load: top || null, timed, reps, kg: kg.some(Boolean) ? kg : undefined };
+    return { n: e[0], load: top || null, timed, reps, kg: kg.some(Boolean) ? kg : undefined, rpe: (s.rpe || {})[i] || undefined };
   }).filter((x) => x.reps.length);
 }
 // Each set as { r, kg }. Logs from before per-set weights used one weight (load) for every set.
@@ -4677,6 +4897,40 @@ const BREATHS = [
       'Take one big recovery breath in and hold it for 15 seconds.',
       'Let it go. That\'s one round.'],
     caution: 'Never do this in water, while driving, standing or anywhere fainting could hurt you. Not suitable if you are pregnant or have epilepsy, heart disease or high blood pressure. Tingling and light-headedness are common; stop if you feel unwell.' },
+  { id: 'whm-beginner', title: 'Wim Hof-Style Beginner Rounds', from: 'Inspired by the Wim Hof Method breathing technique', goals: ['Energy'], level: 3,
+    blurb: 'The method\'s classic round, gently: 30 full breaths, a relaxed hold on empty for as long as is comfortable, then a recovery breath. You end each hold yourself.',
+    build: (n) => { const out = []; for (let r = 1; r <= n; r += 1) { for (let i = 1; i <= 30; i += 1) out.push(['in', 1.6, 'Full breath in, belly then chest', `Round ${r} · breath ${i} of 30`, true], ['out', 1.6, 'Let it go, don\'t force it', `Round ${r} · breath ${i} of 30`, true]);
+      out.push(['holdOpen', 45, 'Breathe out and hold on empty. Relax. Tap when you need to breathe.', `Round ${r} · hold`], ['in', 3, 'Recovery breath: fill all the way up'], ['hold', 15, 'Hold it full, gently squeeze'], ['out', 4, 'Let go and breathe normally']); } return out; },
+    rounds: 3, range: [1, 4], unit: 'rounds',
+    steps: ['Sit or lie down somewhere safe and comfortable, ideally on an empty stomach.',
+      'Take 30 deep breaths: fully in through the nose or mouth, then let the breath fall out without pushing. Follow the pulsing circle.',
+      'After the last breath, breathe out and simply stop. Hold with empty lungs, relaxed, for as long as feels comfortable, then tap "Breathe in now". There is no target time.',
+      'Take one big recovery breath and hold it for 15 seconds.',
+      'Let it go. That\'s one round. Rest a moment and begin the next.'],
+    caution: 'Never do this in or near water, while driving, or standing up: the holds can make you faint without warning. Not for pregnancy, epilepsy, heart disease or high blood pressure. Tingling and light-headedness are normal; stop if you feel unwell, and never force a hold.' },
+  { id: 'whm-extended', title: 'Wim Hof-Style Extended Rounds', from: 'Inspired by the Wim Hof Method breathing technique', goals: ['Energy'], level: 4,
+    blurb: 'For people who already know the basic round: 40 breaths and four rounds. The holds get longer naturally; you still decide when each one ends.',
+    build: (n) => { const out = []; for (let r = 1; r <= n; r += 1) { for (let i = 1; i <= 40; i += 1) out.push(['in', 1.5, 'Full breath in', `Round ${r} · breath ${i} of 40`, true], ['out', 1.5, 'Let it go', `Round ${r} · breath ${i} of 40`, true]);
+      out.push(['holdOpen', 90, 'Out, and hold on empty. Stay relaxed. Tap when you need to breathe.', `Round ${r} · hold`], ['in', 3, 'Recovery breath in'], ['hold', 15, 'Hold it full'], ['out', 4, 'Let go']); }
+      out.push(['in', 5, 'Slow breath in through your nose', 'Settle'], ['out', 8, 'Long, slow breath out'], ['in', 5, 'Slow breath in'], ['out', 8, 'Long, slow breath out. Notice how you feel.']); return out; },
+    rounds: 4, range: [2, 5], unit: 'rounds',
+    steps: ['Only do this once the beginner rounds feel easy.',
+      'Lie down. Take 40 full breaths, letting each one fall out without forcing.',
+      'Breathe out and hold on empty until you feel the urge to breathe, then tap "Breathe in now".',
+      'Recovery breath, hold 15 seconds, release.',
+      'After the last round, two slow breaths to settle before you sit up slowly.'],
+    caution: 'Never do this in or near water, while driving, or standing up: the holds can make you faint without warning. Not for pregnancy, epilepsy, heart disease or high blood pressure. Tingling and light-headedness are normal; stop if you feel unwell, and never force a hold.' },
+  { id: 'whm-pushups', title: 'Breath-Hold Push-ups', from: 'An exercise described in Wim Hof Method materials', goals: ['Energy'], level: 4,
+    blurb: 'After a round of deep breathing, do slow push-ups while holding on empty. Many people find they do more than usual.',
+    build: (n) => { const out = []; for (let r = 1; r <= n; r += 1) { for (let i = 1; i <= 30; i += 1) out.push(['in', 1.6, 'Full breath in', `Round ${r} · breath ${i} of 30`, true], ['out', 1.6, 'Let it go', `Round ${r} · breath ${i} of 30`, true]);
+      out.push(['holdOpen', 45, 'Breathe out, hold on empty, and do slow push-ups. Stop and tap the moment you need air.', `Round ${r} · push-ups`], ['in', 3, 'Recovery breath in'], ['hold', 15, 'Hold it full'], ['out', 4, 'Let go and rest']); } return out; },
+    rounds: 2, range: [1, 3], unit: 'rounds',
+    steps: ['Kneel on a soft surface in front of where you\'ll do push-ups.',
+      'Do the 30 deep breaths sitting or kneeling.',
+      'Breathe out, hold, get into position and do slow, controlled push-ups (knees down is fine). Count them.',
+      'Stop as soon as you want to breathe, tap the button, and take the recovery breath kneeling.',
+      'Compare with a normal set of push-ups another day. Never do this near anything you could hit if you got dizzy.'],
+    caution: 'Never do this in or near water, while driving, or standing up: the holds can make you faint without warning. Not for pregnancy, epilepsy, heart disease or high blood pressure. Tingling and light-headedness are normal; stop if you feel unwell, and never force a hold.' },
   { id: 'sleep-exhale', title: 'Long Exhale for Sleep', from: 'Common to yoga nidra and sleep-clinic relaxation training', goals: ['Sleep'], level: 1, pace: true,
     blurb: 'Breathe out twice as long as you breathe in. Done in bed with the screen dimmed, it slows everything down.',
     pattern: [['in', 4, 'Breathe in through your nose'], ['out', 8, 'Breathe out slowly, let your body get heavy']], rounds: 25, range: [10, 50],
@@ -4690,7 +4944,7 @@ const BREATHS = [
 
 /* Mind training. Sessions are steps [title, seconds, cue]; holds alternate work with rest. */
 const MIND_CATS = [['meditate', 'Meditation', 'Train attention and calm with guided sits.'], ['yin', 'Long-hold yoga', 'Passive stretches held for minutes: patience for the body and mind.'],
-  ['iso', 'Stillness under strain', 'Calisthenics holds that train you to stay calm while uncomfortable.']];
+  ['iso', 'Stillness under strain', 'Calisthenics holds that train you to stay calm while uncomfortable.'], ['sleep', 'Sleep', 'Wind down in bed. The screen stays dim and the sound fades out on its own.']];
 const MIND = [
   { id: 'breath-focus', cat: 'meditate', title: 'Breath Focus', from: 'Focused-attention meditation (Samatha)', level: 1,
     blurb: 'The foundation of every practice: rest your attention on the breath and gently bring it back each time it wanders.',
@@ -4749,6 +5003,17 @@ const MIND = [
     segs: [['Legs up the wall', 300, 'Lie on your back with your legs resting up a wall.'], ['Supported child\'s pose', 180, 'Knees wide, a pillow under your chest and head.'],
       ['Reclined butterfly', 240, 'On your back, soles together, knees falling open onto pillows.'], ['Rest', 180, 'Lie flat. Let your breath slow down.']] },
 
+  { id: 'sleep-safe-place', cat: 'sleep', title: 'Safe Place Wind-Down', from: 'Guided imagery used in relaxation and CBT for insomnia', level: 1,
+    blurb: 'Picture a place where you feel completely at ease, one sense at a time, until your mind lets go of the day.',
+    steps: ['Lie in bed with the lights off and the volume low.', 'Follow each prompt slowly. There\'s nothing to get right.', 'If you drift off before the end, that\'s the point.'],
+    segs: [['Settle', 60, 'Let your body sink into the bed. Slow your breathing.'], ['Choose a place', 60, 'A beach, a cabin, a garden. Somewhere you feel safe and calm.'], ['What you see', 90, 'Notice the colors, the light, the shapes around you.'],
+      ['What you hear', 90, 'Waves, wind, birds or silence. Let the sounds come to you.'], ['What you feel', 90, 'The warmth, the air on your skin, the ground under you.'], ['Rest there', 180, 'Stay in this place. If thoughts of the day come, let them drift past.'], ['Drift', 120, 'Let the picture fade. There\'s nowhere you need to be.']] },
+  { id: 'sleep-478-scan', cat: 'sleep', title: 'Breathe & Release for Sleep', from: 'Combines the 4-7-8 breath with a progressive muscle relaxation scan', level: 1,
+    blurb: 'Four slow 4-7-8 breaths, then tense and release each part of your body from your feet up.',
+    steps: ['Lie on your back.', 'Start with four rounds of 4-7-8 breathing: in for 4, hold for 7, out for 8.', 'Then tense each body part for about 5 seconds as you breathe in, and let it go completely as you breathe out.'],
+    segs: [['4-7-8 breathing', 80, 'In through your nose for 4, hold for 7, whoosh out for 8. Four times.'], ['Feet & calves', 60, 'Curl your toes and tense your calves... then let go.'],
+      ['Thighs & hips', 60, 'Squeeze your thighs and glutes... and release.'], ['Belly & back', 60, 'Tighten your belly... and let it soften.'], ['Hands & arms', 60, 'Make fists, tense your arms... and let them fall heavy.'],
+      ['Shoulders & face', 60, 'Shrug up to your ears, scrunch your face... and let everything drop.'], ['Whole body', 120, 'Notice how heavy and loose you feel. Let sleep come.']] },
   { id: 'iron-holds', cat: 'iso', title: 'Iron Holds', from: 'Isometric calisthenics', level: 2, rounds: 2,
     blurb: 'Six holds that burn. The goal is to stay calm, breathe slowly through your nose and keep your face relaxed while it gets hard.',
     steps: ['Hold each position for the full time, or as long as you can with good form.', 'Breathe slowly through your nose the whole time. If you have to mouth-breathe, rest a few seconds.', 'Keep your face and hands relaxed: tension there is a sign of panic, not effort.', 'Rest between holds as shown. Two rounds.'],
@@ -4932,7 +5197,8 @@ function nextTrack() {
 /* ---------- Guided player ----------
    A session is a list of segments { k: kind, s: seconds, t: title, c: cue, n: counter, q: no tone }.
    The orb grows on in-breaths, shrinks on out-breaths and rests during holds; poses show a ring that fills. */
-const KIND_LABEL = { in: 'Breathe in', out: 'Breathe out', hold: 'Hold', rest: 'Hold, empty', ready: 'Get ready' };
+const KIND_LABEL = { in: 'Breathe in', out: 'Breathe out', hold: 'Hold', rest: 'Hold, empty', holdOpen: 'Hold, empty', ready: 'Get ready' };
+const TONE_ALIAS = { holdOpen: 'rest', 'rest-pose': 'rest' };
 function breathSegs(b, n, pace = 1) {
   let raw;
   if (b.build) raw = b.build(n);
@@ -4944,7 +5210,7 @@ function mindSegs(m, rounds = m.rounds || 1) {
   const out = [];
   for (let r = 1; r <= rounds; r += 1) m.segs.forEach(([t, s, c], j) => {
     if (r === rounds && j === m.segs.length - 1 && t === 'Rest' && m.cat === 'iso') return;
-    out.push({ k: m.cat === 'meditate' ? 'cue' : t === 'Rest' ? 'rest-pose' : 'pose', s, t, c, n: rounds > 1 ? `Round ${r} of ${rounds}` : '' });
+    out.push({ k: m.cat === 'meditate' || m.cat === 'sleep' ? 'cue' : t === 'Rest' ? 'rest-pose' : 'pose', s, t, c, n: rounds > 1 ? `Round ${r} of ${rounds}` : '' });
   });
   return out;
 }
@@ -4954,10 +5220,10 @@ const fmtMin = (sec) => (sec < 90 ? `${Math.round(sec)} s` : `${Math.round(sec /
 
 let calm = null, calmRaf = 0, calmTick = 0, wakeLock = null;
 const reduceMotion = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-function startCalm({ kind, ref, title, segs }) {
+function startCalm({ kind, ref, title, segs, track = null, course = null }) {
   audio();
-  segs = [{ k: 'ready', s: 5, c: segs[0].k === 'pose' || segs[0].k === 'cue' ? 'Get into position' : 'Sit comfortably and relax your shoulders', n: '' }, ...segs];
-  calm = { kind, ref, title, segs, i: 0, start: performance.now(), pausedAt: 0, total: segTotal(segs), done: false };
+  segs = [{ k: 'ready', s: kind === 'sleep' ? 0.01 : 5, c: segs[0].k === 'pose' || segs[0].k === 'cue' ? 'Get into position' : 'Sit comfortably and relax your shoulders', n: '', q: kind === 'sleep' }, ...segs];
+  calm = { kind, ref, title, segs, i: 0, start: performance.now(), pausedAt: 0, total: segTotal(segs), done: false, course };
   const box = document.createElement('div');
   box.id = 'calm'; box.className = 'calm'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', title);
   box.innerHTML = `<div class="calm-top"><span class="calm-title">${esc(title)}</span><span class="calm-left num" id="calm-left"></span>
@@ -4967,6 +5233,7 @@ function startCalm({ kind, ref, title, segs }) {
     <p class="calm-cue" id="calm-cue" aria-live="polite"></p><p class="calm-n" id="calm-n"></p>
     <div class="calm-bar"><i id="calm-prog"></i></div>
     <div class="calm-ctl">
+      <button class="calm-btn calm-main calm-now" data-act="calm-advance" id="calm-now" hidden>Breathe in now</button>
       <button class="calm-btn calm-main" data-act="calm-pause" id="calm-pause">Pause</button>
       <div class="calm-music"><button class="calm-btn" data-act="calm-music" aria-pressed="${S.calm.music}" id="calm-music-btn">${icon('music')} <span id="calm-track">${S.calm.music ? '…' : 'Music off'}</span></button>
         <button class="calm-btn" data-act="calm-next" aria-label="Next track" ${S.calm.music ? '' : 'hidden'} id="calm-next">${icon('skip')}</button></div>
@@ -4974,8 +5241,8 @@ function startCalm({ kind, ref, title, segs }) {
       <button class="calm-btn" data-act="calm-tones" aria-pressed="${S.calm.tones}" id="calm-tones">${S.calm.tones ? 'Tones on' : 'Tones off'}</button>
     </div>`;
   document.body.appendChild(box); document.body.classList.add('calm-open');
-  if (S.calm.music) nextTrack();
-  tone('ready');
+  if (track != null) { S.calm.music = true; playTrack(track); } else if (S.calm.music) nextTrack();
+  if (kind !== 'sleep') tone('ready');
   if ('wakeLock' in navigator) navigator.wakeLock.request('screen').then((l) => { wakeLock = l; }).catch(() => {});
   calmTick = setInterval(calmStep, 200); // keeps time even when animation frames are paused
   const loop = () => { calmStep(); if (calm) calmRaf = requestAnimationFrame(loop); };
@@ -4988,11 +5255,15 @@ function calmStep() {
   if (!calm || calm.done || calm.pausedAt) return;
   const now = performance.now();
   let seg = calm.segs[calm.i], el = (now - calm.start) / 1000;
+  // An open hold ends when you tap (or after 3 minutes, for safety); its length becomes however long you held.
+  if (seg.k === 'holdOpen') { if (calm.advance || el >= 180) { seg.s = Math.min(el, 180); calm.total = segTotal(calm.segs); calm.advance = false; } else seg.s = Math.max(seg.s, el + 1); }
+  const nb = $('#calm-now'); if (nb) nb.hidden = seg.k !== 'holdOpen';
+  if (calm.kind === 'sleep' && music && seg.s - el < 60 && !calm.fading) { calm.fading = true; music.gain.gain.setTargetAtTime(0, ac.currentTime, 15); }
   while (el >= seg.s) {
     calm.start += seg.s * 1000; calm.i += 1; el -= seg.s;
     if (calm.i >= calm.segs.length) { finishCalm(true); return; }
     seg = calm.segs[calm.i];
-    if (!seg.q) tone(seg.k === 'rest-pose' ? 'rest' : seg.k);
+    if (!seg.q) tone(TONE_ALIAS[seg.k] || seg.k);
     if (S.calm.vibrate && navigator.vibrate && !seg.q) navigator.vibrate(seg.k === 'in' ? 40 : seg.k === 'out' ? [20, 60, 20] : 25);
   }
   const p = el / seg.s, k = seg.k;
@@ -5001,7 +5272,7 @@ function calmStep() {
   else if (k === 'in') orbScale = 0.55 + 0.45 * ease(p);
   else if (k === 'out') orbScale = 1 - 0.45 * ease(p);
   else if (k === 'hold') orbScale = 1;
-  else if (k === 'rest') orbScale = 0.55;
+  else if (k === 'rest' || k === 'holdOpen') orbScale = 0.55;
   else orbScale = 0.72 + 0.06 * Math.sin((now / 1000) * (2 * Math.PI / 10));
   const orb = $('#calm-orb');
   if (!orb) return;
@@ -5010,7 +5281,7 @@ function calmStep() {
   orb.dataset.k = k;
   const left = seg.s - el, long = seg.s >= 20;
   $('#calm-label').textContent = seg.t && (k === 'pose' || k === 'cue' || k === 'rest-pose') ? seg.t : KIND_LABEL[k] || seg.t || '';
-  $('#calm-count').textContent = long ? fmtClock(left) : Math.ceil(left);
+  $('#calm-count').textContent = k === 'holdOpen' ? fmtClock(el) : long ? fmtClock(left) : Math.ceil(left);
   $('#calm-cue').textContent = seg.c || '';
   $('#calm-n').textContent = seg.n || '';
   $('#calm-ring').style.strokeDashoffset = long || k === 'pose' || k === 'rest-pose' || k === 'cue' ? String(100 - 100 * p) : '100';
@@ -5035,7 +5306,8 @@ function finishCalm(complete) {
   if (!calm) return;
   const sec = complete ? calm.total - calm.segs[0].s : calmElapsed();
   calm.done = true;
-  if (sec >= 60) {
+  if (complete && calm.course) { S.mind.course[calm.course] = dayKey(); save(); }
+  if (sec >= 60 && calm.kind !== 'sleep') {
     const d = dayKey();
     S.mind.log.push({ id: uid(), date: d, kind: calm.kind, ref: calm.ref, title: calm.title, min: Math.round(sec / 60) });
     if (S.mind.log.length > 500) S.mind.log = S.mind.log.slice(-500);
@@ -5043,7 +5315,7 @@ function finishCalm(complete) {
     if (!h.includes('breathe')) h.push('breathe');
     save();
   }
-  if (complete) { tone('end'); tone('cue', 0.6); tone('end', 1.3); }
+  if (complete && calm.kind !== 'sleep') { tone('end'); tone('cue', 0.6); tone('end', 1.3); }
   const box = $('#calm');
   if (complete && box) {
     box.querySelector('.calm-stage').innerHTML = '<div class="calm-orb calm-orb-done" style="transform:scale(.8)"></div><div class="calm-center"><div class="calm-label">Well done</div></div>';
@@ -5088,12 +5360,33 @@ function breathGlyph(b) {
   return `<svg class="breath-glyph" viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
 }
 const emptyState = (ic, text, action = '') => `<div class="empty"><span class="empty-ic">${icon(ic)}</span><p>${text}</p>${action}</div>`;
-const MIND_ICON = { meditate: 'wave', yin: 'leaf', iso: 'clock' };
+const MIND_ICON = { meditate: 'wave', yin: 'leaf', iso: 'clock', sleep: 'moon' };
+/* A 7-day introduction: one short session a day, each teaching one idea. */
+const COURSE = [
+  { title: 'Slow down', ex: 'coherent', n: 16, why: 'Breathing slowly through your nose, about 5–6 breaths a minute, is the foundation of everything else.' },
+  { title: 'The quick reset', ex: 'sigh', n: 20, why: 'A double inhale and long exhale is the fastest way to calm down. Use it any time you feel stressed.' },
+  { title: 'Steady under pressure', ex: 'box', n: 6, why: 'Equal sides and gentle holds train calm focus, the way special forces and first responders use it.' },
+  { title: 'Longer out-breaths', ex: 'sleep-exhale', n: 20, why: 'When the exhale is longer than the inhale, your heart rate slows. Try it tonight in bed.' },
+  { title: 'Balance', ex: 'nadi', n: 6, why: 'Alternate-nostril breathing is slow, quiet and very focusing.' },
+  { title: 'Breathe less', ex: 'buteyko', n: 15, why: 'Gentle air hunger builds tolerance to CO₂. Afterwards, try the control-pause test in the instructions.' },
+  { title: 'Make it yours', ex: 'zazen', n: 30, why: 'Counting breaths turns breathing into meditation. Then pick your favorite from the week and keep going.' }
+];
+function courseCard() {
+  const done = S.mind.course || {}, next = COURSE.findIndex((_, i) => !done[i + 1]), all = next === -1;
+  const today = !all && Object.values(done).includes(dayKey()) && next > 0;
+  return `<section class="panel course" aria-labelledby="h-course"><div class="panel-head"><h2 id="h-course">Learn to breathe in 7 days</h2><span class="muted">${Object.keys(done).length} of 7</span></div>
+    <div class="course-dots" aria-hidden="true">${COURSE.map((_, i) => `<span class="${done[i + 1] ? 'on' : i === next ? 'next' : ''}"></span>`).join('')}</div>
+    ${all ? '<p>You finished the course. Keep the exercise you liked best as a daily habit.</p>'
+      : `<p style="margin:8px 0 4px"><b>Day ${next + 1}: ${COURSE[next].title}</b> <span class="muted">· about ${Math.round(segTotal(breathSegs(BREATHS.find((x) => x.id === COURSE[next].ex), COURSE[next].n)) / 60)} min</span></p>
+        <p class="muted" style="font-size:.88rem;margin:0 0 10px">${COURSE[next].why}${today ? ' You already did today\'s session, so come back tomorrow (or carry on now).' : ''}</p>
+        <button class="btn btn-primary btn-sm" data-act="course-go" data-d="${next + 1}">Start day ${next + 1}</button>`}</section>`;
+}
 function viewBreathe() {
   const list = BREATHS.filter((b) => breathGoal === 'All' || b.goals.includes(breathGoal)), w = weekCalm();
   return `<div class="page-head"><div><div class="eyebrow">Breathwork</div><h1>Breathe</h1>
     <p class="muted">Guided breathing from around the world. Pick one, follow the circle and the soft tones, and let the timer do the counting.</p></div>
     ${w.n ? `<div class="calm-week"><b class="num">${w.min}</b> min this week<span class="muted"> · ${w.n} session${w.n === 1 ? '' : 's'}</span></div>` : ''}</div>
+  ${courseCard()}
   <div class="row" role="group" aria-label="Filter by goal" style="margin-bottom:16px">${['All', ...BREATH_GOALS].map((g) => `<button class="chip" data-act="bgoal" data-g="${g}" aria-pressed="${g === breathGoal}">${g}</button>`).join('')}</div>
   <div class="calm-cards">${list.map((b) => { const o = optsFor(b), segs = breathSegs(b, o.n, o.pace);
     return `<article class="panel calm-card"><a href="#breath-${b.id}" class="calm-card-link"><div class="calm-card-top"><span class="eyebrow">${b.goals.join(' · ')}</span>${breathGlyph(b)}</div><h3>${esc(b.title)}</h3>
@@ -5130,6 +5423,14 @@ function viewBreath(id) {
     <div class="span-5">${setupPanel(b, 'breathe', segs)}</div>
   </div>`;
 }
+let sleepTrack = 1, sleepMin = 30;
+function sleepSounds() {
+  return `<section class="panel sleep-sounds" aria-labelledby="h-sleep-s"><h3 id="h-sleep-s">Sleep sounds</h3>
+    <p class="muted" style="font-size:.86rem;margin:4px 0 10px">Choose a sound and a timer. It fades out gently at the end; the screen stays dark and still.</p>
+    <div class="row" role="group" aria-label="Sound">${TRACKS.map(([n], i) => `<button class="chip" data-act="sleep-track" data-i="${i}" aria-pressed="${i === sleepTrack}">${n}</button>`).join('')}</div>
+    <div class="row" role="group" aria-label="Timer" style="margin-top:8px"><span class="eyebrow">Timer</span>${[15, 30, 60].map((m) => `<button class="chip" data-act="sleep-min" data-v="${m}" aria-pressed="${m === sleepMin}">${m} min</button>`).join('')}</div>
+    <button class="btn btn-primary" data-act="sleep-go" style="margin-top:12px">Start sleep sounds</button></section>`;
+}
 function viewMind() {
   const d = dayKey(), done = S.mind.habits[d] || [], w = weekCalm();
   let streak = 0; for (let k = d; (S.mind.habits[k] || []).length; k = addDays(k, -1)) streak += 1;
@@ -5142,7 +5443,7 @@ function viewMind() {
     <p class="muted" style="font-size:.85rem;margin:-4px 0 10px">Ideas from longevity research and researchers like David Sinclair. Tick what you do; aim for a few a day, not all of them.</p>
     <div class="habit-grid">${MIND_HABITS.map(([id, t, why]) => `<button type="button" class="habit" data-act="habit" data-id="${id}" aria-pressed="${done.includes(id)}"><span class="habit-box" aria-hidden="true">${done.includes(id) ? '✓' : ''}</span><span><b>${esc(t)}</b><small>${esc(why)}</small></span></button>`).join('')}</div>
   </section>
-  ${MIND_CATS.map(([cat, title, desc]) => `<h2 class="an-section">${title}</h2><p class="muted" style="margin:-6px 0 12px">${desc}</p>
+  ${MIND_CATS.map(([cat, title, desc]) => `<h2 class="an-section">${title}</h2><p class="muted" style="margin:-6px 0 12px">${desc}</p>${cat === 'sleep' ? sleepSounds() : ''}
     <div class="calm-cards">${MIND.filter((m) => m.cat === cat).map((m) => { const segs = mindSegs(m, optsFor(m).n);
       return `<article class="panel calm-card"><a href="#mind-${m.id}" class="calm-card-link"><div class="calm-card-top"><span class="mind-ic">${icon(MIND_ICON[m.cat])}</span></div><h3>${esc(m.title)}</h3><p class="muted calm-from">${esc(m.from)}</p><p class="calm-blurb">${esc(m.blurb)}</p></a>
         <div class="calm-meta"><span>${fmtMin(segTotal(segs))}</span><span>${segs.filter((x) => x.k !== 'rest-pose').length} ${cat === 'meditate' ? 'parts' : 'holds'}</span><span>${LEVELS[m.level]}</span></div>
@@ -5330,6 +5631,7 @@ function renderView(keepScroll) {
   else if (h.startsWith('plan-edit-')) { html = viewPlanForm(h.slice(10)); tab = 'workouts'; }
   else if (h.startsWith('plan-')) { html = viewPlan(h.slice(5)); tab = 'workouts'; }
   else if (h === 'session') { html = viewSession(); tab = 'workouts'; }
+  else if (h.startsWith('import-plan=')) { html = viewImportPlan(h.slice(12)); tab = 'workouts'; }
   else if (h === 'shopping') { html = viewShopping(); tab = 'shopping'; }
   else if (h === 'breathe') { html = viewBreathe(); tab = 'breathe'; }
   else if (h.startsWith('breath-')) { html = viewBreath(h.slice(7)); tab = 'breathe'; }
@@ -5372,7 +5674,7 @@ function setMenu(open) {
 }
 $('#menu-btn').addEventListener('click', () => setMenu($('#site-menu').hidden));
 document.addEventListener('click', (e) => { if (!$('#site-menu').hidden && (e.target.closest('#site-menu .tab') || !e.target.closest('#site-menu, #menu-btn'))) setMenu(false); });
-window.addEventListener('hashchange', () => { if ($('#calm')) closeCalm(); clearArmed = false; shopClearArmed = false; delArmed = false; mpClearArmed = false; render(false); });
+window.addEventListener('hashchange', () => { stopCamera(); if (scan) scan = null; if ($('#calm')) closeCalm(); clearArmed = false; shopClearArmed = false; delArmed = false; mpClearArmed = false; render(false); });
 
 /* ---------- Actions ---------- */
 function addWater(ml, date, isUndo) {
@@ -5447,11 +5749,30 @@ document.addEventListener('click', (e) => {
     if (location.hash === '#session') render(false); else location.hash = 'session';
   }
   else if (a === 'set') {
-    const k = b.dataset.k, on = !S.session.checks[k];
-    S.session.checks[k] = on; save();
+    const k = b.dataset.k, on = !S.session.checks[k], s = S.session;
+    s.checks[k] = on;
+    if (on) {
+      const [i, j] = k.split('-').map(Number), p = planById(s.planId), e = p.days[s.dayIdx].ex[i], last = lastSets(e[0]);
+      const r = parseFloat(setVal(s, e, i, j, 'r', last)), w = hasWeight(p, e) ? toKg(parseFloat(setVal(s, e, i, j, 'w', last))) : 0;
+      s.prs = s.prs || [];
+      if (!/ s$/.test(e[2]) && !s.prs.includes(e[0]) && isNewBest(e[0], w, r)) { s.prs.push(e[0]); setTimeout(() => toast(`New personal best on ${e[0]}!`), 50); }
+    }
+    save();
     if (on && +b.dataset.rest) restEnd = Date.now() + +b.dataset.rest * 1000;
     render(true);
   }
+  else if (a === 'plan-share') {
+    const url = `${location.origin}${location.pathname}#import-plan=${encodePlan(planById(b.dataset.id))}`, title = planById(b.dataset.id).title;
+    if (navigator.share) navigator.share({ title, text: `${title} on Rep & Ration`, url }).catch(() => {});
+    else { try { navigator.clipboard.writeText(url).then(() => toast('Plan link copied'), () => prompt('Copy this link', url)); } catch (err) { prompt('Copy this link', url); } }
+  }
+  else if (a === 'plan-import') {
+    const p = decodePlan(b.dataset.code); if (!p) return;
+    const id = 'my-' + uid();
+    S.customPlans.push({ id, ...p, gear: !p.needs.length ? 'None' : p.needs.some((o) => o.some((g) => ['barbell', 'cables', 'machines', 'treadmill', 'rower', 'bike', 'airbike', 'elliptical', 'stairs', 'skierg'].includes(g))) ? 'Gym' : 'Minimal' });
+    syncCustom(); save(); toast('Plan saved to your plans'); location.hash = 'plan-' + id;
+  }
+  else if (a === 'rpe') { const s = S.session; s.rpe = s.rpe || {}; const i = +b.dataset.i, v = +b.dataset.v; s.rpe[i] = s.rpe[i] === v ? undefined : v; save(); render(true); }
   else if (a === 'cancel-session') {
     $('#cancel-wrap').innerHTML = `<span class="confirm"><span>Discard?</span><button class="btn btn-sm" data-act="cancel-yes">Yes</button><button class="btn btn-sm" data-act="cancel-no">No</button></span>`;
   }
@@ -5471,6 +5792,11 @@ document.addEventListener('click', (e) => {
   else if (a === 'calm-start') startById(b.dataset.type, b.dataset.id);
   else if (a === 'calm-close') closeCalm();
   else if (a === 'calm-pause') pauseCalm();
+  else if (a === 'sleep-track') { sleepTrack = +b.dataset.i; render(true); }
+  else if (a === 'sleep-min') { sleepMin = +b.dataset.v; render(true); }
+  else if (a === 'sleep-go') startCalm({ kind: 'sleep', ref: 'sleep-sounds', title: TRACKS[sleepTrack][0], track: sleepTrack, segs: [{ k: 'cue', s: sleepMin * 60, t: 'Sleep sounds', c: 'Close your eyes. The sound fades out on its own.', n: '', q: true }] });
+  else if (a === 'course-go') { const d = COURSE[+b.dataset.d - 1], bx = BREATHS.find((x) => x.id === d.ex); startCalm({ kind: 'breathe', ref: bx.id, title: `Day ${b.dataset.d}: ${d.title}`, segs: breathSegs(bx, d.n), course: b.dataset.d }); }
+  else if (a === 'calm-advance') { if (calm) { calm.advance = true; calmStep(); } }
   else if (a === 'calm-music') {
     S.calm.music = !S.calm.music; save(); audio();
     b.setAttribute('aria-pressed', S.calm.music); $('#calm-next').hidden = !S.calm.music;
@@ -5487,11 +5813,24 @@ document.addEventListener('click', (e) => {
   else if (a === 'calm-preview') { audio(); tone('in'); tone('out', 1.2); }
   else if (a === 'bgoal') { breathGoal = b.dataset.g; render(true); }
   else if (a === 'habit') { const d = dayKey(), h = S.mind.habits[d] || (S.mind.habits[d] = []), id = b.dataset.id; S.mind.habits[d] = h.includes(id) ? h.filter((x) => x !== id) : [...h, id]; save(); render(true); }
+  else if (a === 'adapt-use') {
+    const T = S.targets, kcal = +b.dataset.v; T.kcal = kcal; T.f = Math.round(kcal * 0.3 / 9); T.c = Math.max(0, Math.round((kcal - T.p * 4 - T.f * 9) / 4));
+    save(); toast(`Daily target set to ${kcal.toLocaleString()} kcal`); render(true);
+  }
+  else if (a === 'scan-open') { scan = { open: true, code: '', grams: 100 }; render(true); const c = $('#scan-code'); if (c) c.focus(); }
+  else if (a === 'scan-close') { stopCamera(); scan = null; render(true); }
+  else if (a === 'scan-cam') startCamera();
+  else if (a === 'scan-serv') { scan.grams = scan.product.serving; render(true); }
+  else if (a === 'scan-add') {
+    const pr = scan.product, f = (scan.grams || 100) / 100;
+    logFood({ name: pr.name, portion: `${scan.grams} g`, kcal: Math.round(pr.kcal * f), p: round(pr.p * f), c: round(pr.c * f), f: round(pr.f * f), mic: pr.mic.map((v) => round(v * f, 2)), barcode: pr.code }, logTo());
+    scan = null; render(true);
+  }
   else if (a === 'qadd') {
     const src = b.dataset.src, id = b.dataset.id, d = logTo();
-    if (src === 'f') { const f = FOODS[+id]; logFood({ name: f.name, portion: f.portion, kcal: f.kcal, p: f.p, c: f.c, f: f.f }, d); }
-    else if (src === 'r') { const r = recipeById(id); if (r) logFood({ name: r.title, portion: '1 serving', kcal: r.per.kcal, p: r.per.p, c: r.per.c, f: r.per.f }, d); }
-    else { const e = recentFoods().find((x) => x.m.id === id); if (e) logFood({ name: e.m.name, portion: e.m.portion, ...e.base }, d); }
+    if (src === 'f') { const f = FOODS[+id]; logFood({ name: f.name, portion: f.portion, kcal: f.kcal, p: f.p, c: f.c, f: f.f, mic: FOOD_MICRO[f.name] }, d); }
+    else if (src === 'r') { const r = recipeById(id); if (r) logFood({ name: r.title, portion: '1 serving', kcal: r.per.kcal, p: r.per.p, c: r.per.c, f: r.per.f, mic: RECIPE_MICRO[r.id] }, d); }
+    else { const e = recentFoods().find((x) => x.m.id === id); if (e) logFood({ name: e.m.name, portion: e.m.portion, mic: e.m.mic, ...e.base }, d); }
     foodQ = ''; render(true);
   }
   else if (a === 'lmeal') { logMeal = b.dataset.m; render(true); }
@@ -5652,6 +5991,7 @@ document.addEventListener('submit', (e) => {
     const ml = us() ? Math.min(v, 128) * ML_OZ : Math.min(v, 4000);
     const reached = addWater(ml, current === 'log' ? logDate : null); waterAdded();
     if (!reached) toast(`Added ${showWater(ml)} ${wUnitWater()} of water`);
+  } else if (f.id === 'scan-form') { scan.code = $('#scan-code').value; lookupBarcode(scan.code);
   } else if (f.id === 'food-form') {
     const v = (id) => Math.max(0, Math.round(+$('#' + id).value || 0));
     logFood({ name: $('#f-name').value.trim() || 'Food', kcal: v('f-kcal'), p: v('f-p'), c: v('f-c'), f: v('f-f') }, logTo());
@@ -5737,6 +6077,7 @@ document.addEventListener('input', (e) => {
   const t = e.target;
   if (t.id === 'recipe-search') { recipeSearch = t.value; $('#recipe-cards').innerHTML = recipeCards(); }
   else if (t.id === 'calm-vol' || t.id === 'set-vol' || t.id === 'set-tvol') { S.calm[t.id === 'set-tvol' ? 'toneVol' : 'vol'] = +t.value; audio(); setVolumes(); save(); }
+  else if (t.id === 'scan-g') { const g = parseFloat(t.value); if (g > 0 && scan) { scan.grams = g; const el = t.closest('.scan-result').querySelector('.muted.num'), pr = scan.product, f = g / 100; el.textContent = `${Math.round(pr.kcal * f)} kcal · P ${round(pr.p * f)} · C ${round(pr.c * f)} · F ${round(pr.f * f)}`; } }
   else if (t.id === 'food-q') {
     const had = !!foodQ.trim(); foodQ = t.value;
     if (had !== !!foodQ.trim() && manualOpen === false) { render(true); const q = $('#food-q'); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }
