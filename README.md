@@ -15,7 +15,7 @@ A diet and exercise website with recipes, workout plans and a daily tracker. It 
 | **Progress** | Body measurements (waist, hips, chest, arm, thigh, neck) with trend cards, an estimated body fat % (US Navy tape method), and progress photos with a side-by-side before/after view |
 | **Analytics** | Built from your workout log: workouts, active time, calories burned, total weight lifted and new personal bests for the last 4 weeks, 12 weeks or all time, compared with the period before. Weekly bars against your goal with a streak count. Per-exercise strength charts (weight used and estimated 1-rep max, or reps for bodyweight moves) and a personal records table. Cardio trends (session length and time spent working). Weight trend plus estimated lean vs fat mass from your measurements, to show muscle gain |
 | **Profile & goals** | Calorie and macro calculator (Mifflin-St Jeor), goal setting, a **weekly training goal** (workouts and active minutes per week, shown on Today and in Analytics), a default serving size (2 people unless changed) used by recipes, the shopping list and the meal planner, US/metric units, backup and restore, clear data |
-| **Settings** | Colour scheme (match device, light or dark), accent colour, text size, celebrations on or off, and units |
+| **Settings** | Colour scheme (match device, light or dark), accent colour, text size, celebrations on or off, and units. Every section is reached from a menu that opens when you tap the barbell logo |
 
 ## Use it on your phone
 

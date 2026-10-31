@@ -109,16 +109,21 @@ button, input, select { font: inherit; color: inherit; }
 .brand-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--accent); display: grid; place-items: center; }
 .brand-name { font-family: var(--f-display); font-weight: 800; font-size: 1.15rem; letter-spacing: -.02em; }
 .brand-name span { color: var(--accent); }
-.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1; }
-.tabs::-webkit-scrollbar { display: none; }
-.tab { padding: 8px 14px; border-radius: 999px; text-decoration: none; color: var(--muted); font-weight: 700; font-size: .93rem; white-space: nowrap; }
-.tab:hover { color: var(--ink); background: var(--sunk); }
+/* The barbell logo toggles a drop-down menu of every section; the pill on the right names the current page. */
+.top .wrap.top-bar { justify-content: space-between; gap: 12px; padding-block: 9px; }
+.brand { border: 0; background: none; font: inherit; cursor: pointer; padding: 4px 8px 4px 4px; margin-left: -4px; border-radius: 12px; }
+.brand:hover { background: var(--sunk); }
+.menu-caret { width: 18px; height: 18px; color: var(--muted); transition: transform .2s; }
+.brand[aria-expanded="true"] .menu-caret { transform: rotate(180deg); }
+.cur-page { font-weight: 700; font-size: .88rem; color: var(--accent); background: var(--accent-soft); padding: 6px 12px; border-radius: 999px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.menu { position: absolute; left: 0; right: 0; top: 100%; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: 0 18px 40px rgba(0, 0, 0, .18); max-height: calc(100vh - 64px); overflow-y: auto; animation: menu-in .18s ease; }
+.menu[hidden] { display: none; }
+.top .wrap.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 6px; padding-block: 12px 16px; }
+.tab { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 12px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: .98rem; }
+.tab:hover { background: var(--sunk); }
 .tab[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
-@media (max-width: 640px) {
-  .top .wrap { flex-wrap: wrap; gap: 6px; padding-block: 8px 6px; }
-  .tabs { flex-basis: 100%; gap: 2px 4px; position: relative; -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); padding-right: 24px; }
-  .tab { padding: 6px 10px; font-size: .86rem; }
-}
+.tab-i { width: 1.4em; text-align: center; font-size: 1.1rem; }
+@keyframes menu-in { from { opacity: 0; transform: translateY(-6px); } }
 
 main { padding-block: 28px 56px; }
 .page-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 24px; margin-bottom: 22px; }
@@ -451,26 +456,30 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
 </head>
 <body>
 <header class="top">
-  <div class="wrap">
-    <a class="brand" href="#today" aria-label="Rep &amp; Ration home">
+  <div class="wrap top-bar">
+    <button class="brand" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu">
       <span class="brand-mark" aria-hidden="true">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--on-accent)" stroke-width="2.4" stroke-linecap="round"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg>
       </span>
       <span class="brand-name">Rep <span>&amp;</span> Ration</span>
-    </a>
-    <nav class="tabs" aria-label="Sections">
-      <a class="tab" href="#today" data-tab="today">Today</a>
-      <a class="tab" href="#recipes" data-tab="recipes">Recipes</a>
-      <a class="tab" href="#mealplan" data-tab="mealplan">Meal plan</a>
-      <a class="tab" href="#shopping" data-tab="shopping">Shopping list</a>
-      <a class="tab" href="#workouts" data-tab="workouts">Workouts</a>
-      <a class="tab" href="#log" data-tab="log">Log</a>
-      <a class="tab" href="#progress" data-tab="progress">Progress</a>
-      <a class="tab" href="#analytics" data-tab="analytics">Analytics</a>
-      <a class="tab" href="#goals" data-tab="goals">Profile &amp; goals</a>
-      <a class="tab" href="#settings" data-tab="settings">Settings</a>
-    </nav>
+      <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <span class="cur-page" id="cur-page"></span>
   </div>
+  <nav class="menu" id="site-menu" aria-label="Sections" hidden>
+    <div class="wrap menu-grid">
+      <a class="tab" href="#today" data-tab="today"><span class="tab-i" aria-hidden="true">🏠</span><span class="tab-l">Today</span></a>
+      <a class="tab" href="#recipes" data-tab="recipes"><span class="tab-i" aria-hidden="true">🥗</span><span class="tab-l">Recipes</span></a>
+      <a class="tab" href="#mealplan" data-tab="mealplan"><span class="tab-i" aria-hidden="true">📅</span><span class="tab-l">Meal plan</span></a>
+      <a class="tab" href="#shopping" data-tab="shopping"><span class="tab-i" aria-hidden="true">🛒</span><span class="tab-l">Shopping list</span></a>
+      <a class="tab" href="#workouts" data-tab="workouts"><span class="tab-i" aria-hidden="true">🏋️</span><span class="tab-l">Workouts</span></a>
+      <a class="tab" href="#log" data-tab="log"><span class="tab-i" aria-hidden="true">📝</span><span class="tab-l">Log</span></a>
+      <a class="tab" href="#progress" data-tab="progress"><span class="tab-i" aria-hidden="true">📏</span><span class="tab-l">Progress</span></a>
+      <a class="tab" href="#analytics" data-tab="analytics"><span class="tab-i" aria-hidden="true">📈</span><span class="tab-l">Analytics</span></a>
+      <a class="tab" href="#goals" data-tab="goals"><span class="tab-i" aria-hidden="true">🎯</span><span class="tab-l">Profile &amp; goals</span></a>
+      <a class="tab" href="#settings" data-tab="settings"><span class="tab-i" aria-hidden="true">⚙️</span><span class="tab-l">Settings</span></a>
+    </div>
+  </nav>
 </header>
 
 <main class="wrap" id="app" tabindex="-1"></main>
@@ -3472,8 +3481,8 @@ function render(keepScroll) {
   const y = window.scrollY;
   app.innerHTML = html;
   document.querySelectorAll('.tab').forEach((a) => { if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
-  const strip = $('.tabs'), cur = strip && strip.querySelector('[aria-current]');
-  if (cur && strip.scrollWidth > strip.clientWidth) strip.scrollLeft = cur.offsetLeft - (strip.clientWidth - cur.offsetWidth) / 2;
+  const at = document.querySelector('.tab[aria-current]'), cp = $('#cur-page');
+  if (cp) cp.textContent = at ? at.querySelector('.tab-l').textContent : '';
   if (keepScroll) window.scrollTo(0, y);
   else if (h !== current) { window.scrollTo(0, 0); }
   if (!/^(recipe|plan)-(new|edit-)/.test(h)) { draft = null; draftFor = ''; }
@@ -3481,7 +3490,17 @@ function render(keepScroll) {
   if (h === 'session' && S.session && !ticker) { ticker = setInterval(tick, 250); }
   if (h === 'session') tick();
 }
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const c = $('#celebrate'); if (c) c.remove(); } });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const c = $('#celebrate'); if (c) c.remove(); else if (!$('#site-menu').hidden) { setMenu(false); $('#menu-btn').focus(); } } });
+
+/* Section menu, opened from the logo */
+function setMenu(open) {
+  const btn = $('#menu-btn'), menu = $('#site-menu');
+  menu.hidden = !open;
+  btn.setAttribute('aria-expanded', String(open)); btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  if (open) (menu.querySelector('[aria-current]') || menu.querySelector('.tab')).focus();
+}
+$('#menu-btn').addEventListener('click', () => setMenu($('#site-menu').hidden));
+document.addEventListener('click', (e) => { if (!$('#site-menu').hidden && (e.target.closest('#site-menu .tab') || !e.target.closest('#site-menu, #menu-btn'))) setMenu(false); });
 window.addEventListener('hashchange', () => { clearArmed = false; shopClearArmed = false; delArmed = false; mpClearArmed = false; render(false); });
 
 /* ---------- Actions ---------- */
