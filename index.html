@@ -319,6 +319,81 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .mk { min-width: 36px; text-align: right; }
 .diet-box { font-size: .82rem; background: var(--sunk); border-radius: var(--r); padding: 8px 12px; }
 .diet-box ul { margin: 4px 0 0; padding-left: 18px; }
+.calm-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 14px; }
+.calm-card { display: flex; flex-direction: column; gap: 10px; }
+.calm-card-link { color: inherit; text-decoration: none; display: grid; gap: 4px; }
+.calm-card-link:hover h3 { color: var(--accent); }
+.calm-card h3 { font-size: 1.08rem; }
+.calm-from { font-size: .8rem; }
+.calm-blurb { font-size: .9rem; }
+.calm-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .78rem; color: var(--muted); margin-top: auto; }
+.calm-week { background: var(--accent-soft); border-radius: var(--r); padding: 10px 14px; align-self: start; }
+.calm-week b { font-size: 1.3rem; }
+.phase-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.phase { border-radius: var(--r); padding: 10px; background: var(--sunk); display: grid; gap: 2px; }
+.phase b { font-size: 1.2rem; }
+.phase small { color: var(--muted); font-size: .76rem; }
+.phase-in { box-shadow: inset 3px 0 0 var(--accent); }
+.phase-out { box-shadow: inset 3px 0 0 var(--water); }
+.phase-hold, .phase-rest { box-shadow: inset 3px 0 0 var(--carbs); }
+.calm-steps { padding-left: 20px; display: grid; gap: 8px; }
+.seg-list { list-style: none; padding: 0; display: grid; gap: 6px; }
+.seg-list li { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border-radius: var(--r); background: var(--sunk); }
+.seg-list li.is-rest { background: transparent; border: 1px dashed var(--line); }
+.seg-list .grow { display: grid; }
+.seg-list small { color: var(--muted); }
+.calm-setup { position: sticky; top: 76px; }
+.calm-go { font-size: 1.05rem; padding-block: 14px; }
+.calm-quick { align-self: start; }
+@media (min-width: 900px) { .calm-quick { display: none; } }
+.sound-row { gap: 6px; font-size: .85rem; }
+.habit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 8px; }
+.habit { all: unset; box-sizing: border-box; cursor: pointer; display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+.habit:focus-visible { outline: 2px solid var(--accent); }
+.habit b { display: block; font-size: .9rem; }
+.habit small { color: var(--muted); font-size: .76rem; display: block; margin-top: 2px; }
+.habit-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--line); flex: none; display: grid; place-items: center; font-weight: 800; color: var(--on-accent); }
+.habit[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.habit[aria-pressed="true"] .habit-box { background: var(--accent); border-color: var(--accent); }
+.set-vol { display: flex; align-items: center; gap: 10px; font-size: .85rem; }
+.set-vol input { flex: 1; }
+/* Guided session: a quiet, full-screen space */
+body.calm-open { overflow: hidden; }
+.calm { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: max(16px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+  background: radial-gradient(120% 90% at 50% 35%, #1d3540 0%, #12222b 45%, #0b151b 100%); color: #e6f0f2; animation: calm-in .6s ease; }
+@keyframes calm-in { from { opacity: 0; } }
+.calm-top { width: 100%; max-width: 640px; display: flex; align-items: center; gap: 12px; }
+.calm-title { font-weight: 700; flex: 1; opacity: .85; }
+.calm-left { opacity: .6; font-size: .85rem; }
+.calm-x { background: none; border: 0; color: inherit; font-size: 1.2rem; opacity: .7; cursor: pointer; padding: 6px 10px; border-radius: 8px; }
+.calm-x:hover, .calm-x:focus-visible { opacity: 1; background: rgba(255, 255, 255, .08); }
+.calm-stage { position: relative; width: min(72vw, 46vh, 340px); aspect-ratio: 1; margin-top: auto; display: grid; place-items: center; }
+.calm-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+.calm-ring circle { fill: none; stroke-width: 1.2; }
+.calm-ring-bg { stroke: rgba(255, 255, 255, .08); }
+.calm-ring-fg { stroke: rgba(150, 220, 215, .55); stroke-linecap: round; transition: stroke-dashoffset .2s linear; }
+.calm-orb { position: absolute; inset: 8%; border-radius: 50%; transform: scale(.55); will-change: transform;
+  background: radial-gradient(circle at 40% 35%, rgba(170, 235, 225, .55), rgba(80, 160, 170, .28) 55%, rgba(40, 90, 110, .12) 75%, transparent 76%);
+  box-shadow: 0 0 60px rgba(120, 210, 200, .18); transition: background 1.2s ease; }
+.calm-orb[data-k="hold"], .calm-orb[data-k="rest"] { background: radial-gradient(circle at 40% 35%, rgba(235, 215, 160, .45), rgba(170, 140, 80, .2) 55%, rgba(110, 90, 40, .1) 75%, transparent 76%); }
+.calm-orb[data-k="pose"], .calm-orb[data-k="cue"], .calm-orb[data-k="rest-pose"] { background: radial-gradient(circle at 40% 35%, rgba(190, 185, 240, .4), rgba(110, 100, 180, .2) 55%, rgba(60, 50, 120, .1) 75%, transparent 76%); }
+.calm-center { position: relative; text-align: center; padding: 0 12%; }
+.calm-label { font-size: clamp(1.1rem, 4.5vw, 1.5rem); font-weight: 600; letter-spacing: .01em; }
+.calm-count { font-size: clamp(1.8rem, 9vw, 3rem); font-weight: 300; opacity: .8; margin-top: 2px; }
+.calm-cue { max-width: 34ch; text-align: center; opacity: .78; min-height: 2.8em; margin: 6px 0 0; font-size: 1rem; }
+.calm-n { opacity: .5; font-size: .82rem; min-height: 1.2em; margin: 0; }
+.calm-bar { width: min(100%, 420px); height: 3px; background: rgba(255, 255, 255, .08); border-radius: 3px; overflow: hidden; margin-top: auto; }
+.calm-bar i { display: block; height: 100%; width: 0; background: rgba(150, 220, 215, .5); }
+.calm-ctl { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 10px; max-width: 640px; }
+.calm-btn { background: rgba(255, 255, 255, .07); color: inherit; border: 1px solid rgba(255, 255, 255, .12); border-radius: 999px; padding: 8px 14px; font: inherit; font-size: .85rem; cursor: pointer; }
+.calm-btn:hover, .calm-btn:focus-visible { background: rgba(255, 255, 255, .14); outline: none; }
+.calm-btn[aria-pressed="false"] { opacity: .55; }
+.calm-main { padding: 10px 26px; font-size: .95rem; background: rgba(150, 220, 215, .16); border-color: rgba(150, 220, 215, .35); }
+.calm-music { display: inline-flex; gap: 4px; }
+.calm-vol { display: inline-flex; align-items: center; gap: 8px; font-size: .78rem; opacity: .8; }
+.calm .calm-vol input { width: 110px; accent-color: #8fd3cc; }
+.calm.paused .calm-orb { opacity: .45; }
+@media (max-height: 600px) { .calm-stage { width: min(60vw, 40vh); } .calm-cue { min-height: 0; } }
 .fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
 .fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
 .fbtn { display: inline-flex; align-items: center; gap: 8px; }
@@ -564,6 +639,8 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
       <a class="tab" href="#mealplan" data-tab="mealplan"><span class="tab-l">Meal plan</span></a>
       <a class="tab" href="#shopping" data-tab="shopping"><span class="tab-l">Shopping list</span></a>
       <a class="tab" href="#workouts" data-tab="workouts"><span class="tab-l">Workouts</span></a>
+      <a class="tab" href="#breathe" data-tab="breathe"><span class="tab-l">Breathe</span></a>
+      <a class="tab" href="#mind" data-tab="mind"><span class="tab-l">Mind</span></a>
       <a class="tab" href="#log" data-tab="log"><span class="tab-l">Log</span></a>
       <a class="tab" href="#progress" data-tab="progress"><span class="tab-l">Progress</span></a>
       <a class="tab" href="#analytics" data-tab="analytics"><span class="tab-l">Analytics</span></a>
@@ -2269,7 +2346,8 @@ const DEFAULTS = () => ({
   mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2,
   shopping: { recipes: [], checked: {}, extras: [], subs: {} },
   settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
-  stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {} }
+  stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {} },
+  calm: { music: true, track: -1, vol: 0.5, tones: true, toneVol: 0.7, vibrate: true }, mind: { habits: {}, log: [] }
 });
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 function migrate() {
@@ -4269,6 +4347,622 @@ function applyPrefs() {
   const set = (k, v, def) => { if (!v || v === def) delete r.dataset[k]; else r.dataset[k] = v; };
   set('theme', p.theme, 'system'); set('accent', p.accent, 'green'); set('text', p.text, 'md');
 }
+/* ---------- Content: breathwork and mind training ----------
+   A breath pattern is a list of phases [kind, seconds, cue]; kinds: in, hold (lungs full), out, rest (lungs empty).
+   It repeats for the chosen number of rounds. Exercises that aren't a simple cycle build their own segments. */
+const BREATH_GOALS = ['Calm', 'Sleep', 'Focus', 'Energy', 'Recovery'];
+const BREATHS = [
+  { id: 'box', title: 'Box Breathing', from: 'Used by US Navy SEALs, police and first responders', goals: ['Calm', 'Focus'], level: 1, pace: true,
+    blurb: 'Four equal sides: in, hold, out, hold. Steadies your heart rate and attention under pressure.',
+    pattern: [['in', 4, 'Breathe in through your nose'], ['hold', 4, 'Hold, relaxed'], ['out', 4, 'Breathe out slowly'], ['rest', 4, 'Hold, empty']], rounds: 8, range: [4, 20],
+    steps: ['Sit upright with your feet flat, or lie down. Rest your hands on your thighs.',
+      'Breathe in through your nose for 4 counts, filling your belly first, then your chest.',
+      'Hold your breath for 4 counts. Keep your jaw, throat and shoulders soft: no straining.',
+      'Breathe out through your nose or softly parted lips for 4 counts.',
+      'Hold empty for 4 counts, then begin again.'],
+    caution: 'If the holds feel tense, choose a faster pace or shorten them until it feels easy.' },
+  { id: 'sigh', title: 'Physiological Sigh', from: 'Stanford research on cyclic sighing (2023)', goals: ['Calm', 'Recovery'], level: 1,
+    blurb: 'Two inhales, then one long exhale. The quickest way to bring stress down, and the most effective in a recent five-minute study.',
+    pattern: [['in', 2, 'Breathe in through your nose'], ['in', 1, 'Sip in a little more'], ['out', 6, 'Long, slow sigh out through your mouth']], rounds: 30, range: [5, 60],
+    steps: ['Sit or stand comfortably.',
+      'Take a full breath in through your nose.',
+      'Without breathing out, take a second short sip of air through your nose to fill your lungs completely.',
+      'Let it all out slowly through your mouth, as a long relaxed sigh, about twice as long as the inhales.',
+      'Repeat for 5 minutes, or do 1–3 sighs any time you feel stressed.'],
+    caution: '' },
+  { id: 'coherent', title: 'Coherent Breathing', from: 'The "perfect breath" described by James Nestor in Breath', goals: ['Calm', 'Focus', 'Recovery'], level: 1, pace: true,
+    blurb: 'Five and a half seconds in, five and a half out: about 5.5 breaths a minute, the rhythm that best balances heart and nervous system.',
+    pattern: [['in', 5.5, 'Breathe in softly through your nose'], ['out', 5.5, 'Breathe out softly through your nose']], rounds: 55, range: [20, 110],
+    steps: ['Sit up straight with your shoulders relaxed and lips closed.',
+      'Breathe in gently through your nose for 5.5 seconds, letting your belly expand first.',
+      'Breathe out through your nose for 5.5 seconds, letting your belly fall.',
+      'Keep each breath light and quiet: you should barely hear it.',
+      'Continue for 5–10 minutes. It works best done daily.'],
+    caution: '' },
+  { id: '478', title: '4-7-8 Relaxing Breath', from: 'Popularized by Dr. Andrew Weil, adapted from yogic pranayama', goals: ['Sleep', 'Calm'], level: 2, pace: true,
+    blurb: 'A long hold and an even longer exhale switch on the body\'s rest-and-digest response. Ideal in bed.',
+    pattern: [['in', 4, 'Breathe in quietly through your nose'], ['hold', 7, 'Hold your breath'], ['out', 8, 'Whoosh out through your mouth']], rounds: 4, range: [2, 8],
+    steps: ['Rest the tip of your tongue on the ridge just behind your top front teeth, and keep it there.',
+      'Breathe out completely through your mouth with a whoosh.',
+      'Close your mouth and breathe in quietly through your nose for 4 counts.',
+      'Hold for 7 counts.',
+      'Breathe out through your mouth, around your tongue, with a whoosh for 8 counts.',
+      'Start with 4 breaths. After a month of practice you can build to 8.'],
+    caution: 'Feeling a little light-headed at first is normal. Sit or lie down, and use the faster pace until you\'re used to it.' },
+  { id: 'nadi', title: 'Alternate Nostril Breathing', from: 'Nadi Shodhana, a classical pranayama from India', goals: ['Calm', 'Focus'], level: 1, pace: true,
+    blurb: 'Breathing through one nostril at a time. Calming and balancing; good before work that needs focus.',
+    pattern: [['in', 4, 'In through the LEFT nostril'], ['hold', 2, 'Close both, pause'], ['out', 6, 'Out through the RIGHT nostril'],
+      ['in', 4, 'In through the RIGHT nostril'], ['hold', 2, 'Close both, pause'], ['out', 6, 'Out through the LEFT nostril']], rounds: 10, range: [4, 20],
+    steps: ['Sit tall. Rest your left hand in your lap.',
+      'Bring your right hand up: you\'ll use your thumb to close the right nostril and your ring finger to close the left.',
+      'Close the right nostril with your thumb and breathe in through the left.',
+      'Close both nostrils for a short pause, then release the thumb and breathe out through the right.',
+      'Breathe in through the right, pause, then breathe out through the left. That\'s one round.',
+      'Keep the breath smooth and silent. Follow the on-screen side each time.'],
+    caution: 'Skip it if your nose is blocked; use Coherent Breathing instead.' },
+  { id: 'bhramari', title: 'Humming Bee Breath', from: 'Bhramari pranayama, India', goals: ['Calm', 'Sleep'], level: 1,
+    blurb: 'A long humming exhale. The vibration is soothing and lengthens the out-breath without effort.',
+    pattern: [['in', 4, 'Breathe in through your nose'], ['out', 8, 'Hum "mmm" as you breathe out']], rounds: 10, range: [5, 20],
+    steps: ['Sit comfortably and close your eyes.',
+      'Optionally, press your ear flaps gently closed with your index fingers.',
+      'Breathe in through your nose.',
+      'With your lips closed, breathe out while making a steady, low "mmm" hum, like a bee.',
+      'Feel the vibration in your face and head. Let each hum be a little longer and softer.'],
+    caution: '' },
+  { id: 'buteyko', title: 'Light Breathing', from: 'Inspired by Konstantin Buteyko\'s method, Soviet Union', goals: ['Calm', 'Recovery'], level: 2,
+    blurb: 'Breathing less, not more: small nasal breaths with relaxed pauses build tolerance to CO₂, which helps with over-breathing and anxiety.',
+    pattern: [['in', 2.5, 'Small, soft breath in through your nose'], ['out', 3.5, 'Relaxed breath out'], ['rest', 4, 'Pause, empty and relaxed']], rounds: 30, range: [10, 60],
+    steps: ['Sit upright and relaxed, mouth closed. Put one hand on your chest and one on your belly.',
+      'Take smaller, slower breaths than you want to: about 70% of a normal breath.',
+      'After each relaxed out-breath, pause with your lungs empty for a few seconds.',
+      'You should feel a mild, tolerable "air hunger". That feeling is the training.',
+      'If the air hunger gets strong, take a few normal breaths and continue.',
+      'Bonus test: after a normal exhale, pinch your nose and time how long until the first urge to breathe (the "control pause"). Over weeks, it should rise.'],
+    caution: 'Never strain or gasp. It should stay comfortable.' },
+  { id: 'resisted', title: 'Resisted Power Breaths', from: 'Inspired by Bas Rutten\'s breathing-muscle training for fighters', goals: ['Energy', 'Recovery'], level: 2,
+    blurb: 'Fighters train the breathing muscles like any other. Strong inhales through pursed lips build them up so you gas out less.',
+    build: (n) => { const out = []; for (let s = 1; s <= 2; s += 1) { for (let i = 1; i <= n; i += 1) out.push(['in', 3, 'Inhale HARD through pursed lips', `Set ${s} · rep ${i} of ${n}`], ['hold', 2, 'Hold, brace your core'], ['out', 3, 'Exhale forcefully through your mouth']); if (s === 1) out.push(['rest', 45, 'Rest: easy breaths through your nose', 'Rest before set 2']); } return out; },
+    rounds: 10, range: [5, 15], unit: 'reps per set',
+    steps: ['Stand or sit tall. Purse your lips as if breathing through a thin straw (or use a breathing trainer if you have one).',
+      'Inhale forcefully through the small opening for about 3 seconds, filling your lungs from the bottom up. You should feel your diaphragm and ribs working.',
+      'Hold for 2 seconds while bracing your core, as if about to take a punch.',
+      'Exhale forcefully through your mouth.',
+      'Do one set, rest 45 seconds breathing calmly through your nose, then do a second set.',
+      'Through the day, keep your mouth closed and breathe through your nose, a habit Rutten stresses for endurance.'],
+    caution: 'Start with fewer reps; your breathing muscles get sore like any muscle. Stop if you feel dizzy.' },
+  { id: 'fighter-recovery', title: 'Fighter\'s Recovery Breath', from: 'Combat-sports nasal recovery, the way MMA corners teach it', goals: ['Recovery', 'Calm'], level: 1,
+    blurb: 'Bring your heart rate down fast between rounds or sets: nose in, long exhale out.',
+    pattern: [['in', 3, 'Breathe in through your nose'], ['out', 6, 'Long exhale through your mouth']], rounds: 10, range: [5, 30],
+    steps: ['Stand tall or put your hands on your head: don\'t fold over your knees, it squashes your diaphragm.',
+      'Breathe in through your nose for 3 seconds.',
+      'Breathe out through relaxed lips for 6 seconds, twice as long as the inhale.',
+      'Drop your shoulders on every exhale.',
+      'Use it between sets, after sprints or for a minute after any hard effort.'],
+    caution: '' },
+  { id: 'ujjayi', title: 'Ocean Breath', from: 'Ujjayi pranayama, used throughout yoga practice', goals: ['Focus', 'Calm'], level: 1, pace: true,
+    blurb: 'A slow breath with a soft "ocean" sound in the throat. Gives your mind something steady to follow.',
+    pattern: [['in', 5, 'In through your nose, soft throat sound'], ['out', 5, 'Out through your nose, same sound']], rounds: 30, range: [10, 60],
+    steps: ['Sit or stand tall with your mouth closed.',
+      'Gently narrow the back of your throat, as if fogging a mirror, but with your mouth shut.',
+      'Breathe in and out through your nose, keeping that soft whispering sound, like distant waves.',
+      'Make the inhale and exhale equal and smooth.',
+      'Listen to the sound. When your mind wanders, return to it.'],
+    caution: '' },
+  { id: 'sitali', title: 'Cooling Breath', from: 'Sitali pranayama, India', goals: ['Calm', 'Recovery'], level: 1,
+    blurb: 'Breathing in over a curled tongue cools you down. Good after training or on a hot day.',
+    pattern: [['in', 4, 'In through your curled tongue'], ['hold', 2, 'Close your mouth, pause'], ['out', 6, 'Out slowly through your nose']], rounds: 10, range: [5, 20],
+    steps: ['Sit comfortably.',
+      'Stick your tongue out slightly and curl its sides up into a tube. If you can\'t curl it, breathe in through clenched teeth with lips parted.',
+      'Breathe in slowly through the tube and feel the cool air.',
+      'Close your mouth and pause briefly.',
+      'Breathe out slowly through your nose.'],
+    caution: 'Skip it in very cold or polluted air.' },
+  { id: 'zazen', title: 'Counting Breaths', from: 'Susokukan, the breath-counting practice of Japanese Zen', goals: ['Focus', 'Calm'], level: 1,
+    blurb: 'Count each out-breath from one to ten, then start again. Simple, and harder than it sounds.',
+    build: (n) => { const out = []; for (let i = 0; i < n; i += 1) out.push(['in', 4, 'Breathe in naturally', `Breath ${(i % 10) + 1}`], ['out', 6, `Count "${(i % 10) + 1}" as you breathe out`, `Breath ${(i % 10) + 1}`]); return out; },
+    rounds: 40, range: [20, 100], unit: 'breaths',
+    steps: ['Sit on a cushion or chair with your spine upright and your hands resting in your lap.',
+      'Lower your gaze to the floor a few feet ahead, or close your eyes.',
+      'Breathe naturally through your nose. Silently count "one" on the first out-breath, "two" on the next, up to ten.',
+      'At ten, start again at one.',
+      'If you lose count or drift into thought, simply start again at one without judging yourself. Returning is the practice.'],
+    caution: '' },
+  { id: 'power', title: 'Power Breathing with Holds', from: 'Tibetan Tummo tradition, popularized by Wim Hof', goals: ['Energy'], level: 4,
+    blurb: 'Rounds of 30 deep, quick breaths followed by a relaxed breath-hold. Energizing and intense. Read the safety note first.',
+    build: (n) => { const out = []; for (let r = 1; r <= n; r += 1) { for (let i = 1; i <= 30; i += 1) out.push(['in', 1.5, 'Deep breath in', `Round ${r} · breath ${i} of 30`, true], ['out', 1.5, 'Let it go', `Round ${r} · breath ${i} of 30`, true]);
+      out.push(['rest', 45 + r * 15, 'Breathe out and hold, empty and relaxed', `Round ${r} · hold`], ['in', 3, 'Big recovery breath in'], ['hold', 15, 'Hold it full'], ['out', 4, 'Let go and breathe normally']); } return out; },
+    rounds: 3, range: [1, 4], unit: 'rounds',
+    steps: ['Lie on your back or sit somewhere safe and comfortable.',
+      'Take 30 deep, quick breaths: fully in through the nose or mouth, let it fall out without forcing. Follow the pulse on screen.',
+      'After the last breath, breathe out and hold with empty lungs. Relax completely. Holds get longer each round (60, 75, 90 s); breathe in early whenever you need to.',
+      'Take one big recovery breath in and hold it for 15 seconds.',
+      'Let it go. That\'s one round.'],
+    caution: 'Never do this in water, while driving, standing or anywhere fainting could hurt you. Not suitable if you are pregnant or have epilepsy, heart disease or high blood pressure. Tingling and light-headedness are common; stop if you feel unwell.' },
+  { id: 'sleep-exhale', title: 'Long Exhale for Sleep', from: 'Common to yoga nidra and sleep-clinic relaxation training', goals: ['Sleep'], level: 1, pace: true,
+    blurb: 'Breathe out twice as long as you breathe in. Done in bed with the screen dimmed, it slows everything down.',
+    pattern: [['in', 4, 'Breathe in through your nose'], ['out', 8, 'Breathe out slowly, let your body get heavy']], rounds: 25, range: [10, 50],
+    steps: ['Lie on your back in bed with your arms by your sides.',
+      'Breathe in through your nose for 4 counts.',
+      'Breathe out through your nose or mouth for 8 counts, letting your body sink into the bed.',
+      'If 8 is too long, start with 6 and use the slower pace later.',
+      'Keep going until you feel drowsy. It\'s fine to drift off mid-session.'],
+    caution: '' }
+];
+
+/* Mind training. Sessions are steps [title, seconds, cue]; holds alternate work with rest. */
+const MIND_CATS = [['meditate', 'Meditation', 'Train attention and calm with guided sits.'], ['yin', 'Long-hold yoga', 'Passive stretches held for minutes: patience for the body and mind.'],
+  ['iso', 'Stillness under strain', 'Calisthenics holds that train you to stay calm while uncomfortable.']];
+const MIND = [
+  { id: 'breath-focus', cat: 'meditate', title: 'Breath Focus', from: 'Focused-attention meditation (Samatha)', level: 1,
+    blurb: 'The foundation of every practice: rest your attention on the breath and gently bring it back each time it wanders.',
+    steps: ['Sit upright but relaxed, on a chair or cushion. Close your eyes or lower your gaze.', 'Notice where you feel the breath most clearly: nostrils, chest or belly.', 'Rest your attention there. Don\'t control the breath, just feel it.', 'When you notice your mind has wandered, which it will many times, note "thinking" and return to the breath. Each return is one repetition for your focus.'],
+    segs: [['Settle in', 45, 'Get comfortable. Let your shoulders drop and your hands rest.'], ['Find the breath', 60, 'Notice where you feel the breath most clearly.'],
+      ['Rest on the breath', 150, 'Feel each in-breath and each out-breath. No need to change it.'], ['Return', 150, 'When your mind wanders, notice it kindly and come back to the breath.'],
+      ['Widen', 45, 'Let your attention widen to your whole body sitting here.'], ['Close', 30, 'Take one deeper breath. Open your eyes when you\'re ready.']] },
+  { id: 'body-scan', cat: 'meditate', title: 'Body Scan', from: 'Mindfulness-based stress reduction (MBSR)', level: 1,
+    blurb: 'Move your attention slowly from your feet to your head, noticing and softening. Great before sleep or after training.',
+    steps: ['Lie on your back or sit comfortably.', 'Follow the prompts, moving your attention to each part of the body.', 'Notice whatever is there: warmth, tension, tingling or nothing at all. There\'s no right feeling.', 'On each out-breath, let that area soften a little.'],
+    segs: [['Arrive', 45, 'Lie or sit still. Feel the weight of your body supported.'], ['Feet', 60, 'Bring attention to your feet: toes, soles, heels.'], ['Legs', 60, 'Move up through your calves, knees and thighs.'],
+      ['Hips & lower back', 60, 'Notice your hips and lower back. Let them get heavy.'], ['Belly & chest', 60, 'Feel your belly and chest rise and fall.'], ['Hands & arms', 60, 'Your fingers, hands, forearms and upper arms.'],
+      ['Shoulders & neck', 60, 'Notice any tension in your shoulders and neck. Let it melt on each exhale.'], ['Face', 45, 'Soften your jaw, your eyes, your forehead.'],
+      ['Whole body', 60, 'Feel your whole body at once, breathing.'], ['Close', 30, 'Wiggle your fingers and toes. Take your time getting up.']] },
+  { id: 'loving-kindness', cat: 'meditate', title: 'Loving-Kindness', from: 'Metta practice from the Buddhist tradition', level: 1,
+    blurb: 'Silently wish yourself and others well. Builds warmth and eases self-criticism; studies link it to lower stress.',
+    steps: ['Sit comfortably and close your eyes.', 'For each person, silently repeat: "May you be safe. May you be healthy. May you be happy. May you live with ease."', 'Picture them clearly as you say it. Feelings may or may not come; the intention is what counts.'],
+    segs: [['Settle', 30, 'Take a few slow breaths and settle.'], ['Yourself', 90, '"May I be safe. May I be healthy. May I be happy. May I live with ease."'], ['Someone you love', 90, 'Picture them. "May you be safe, healthy, happy, at ease."'],
+      ['Someone neutral', 75, 'A neighbor or a cashier you see often. Wish them the same.'], ['Someone difficult', 75, 'Someone you find hard. Wish them well, as best you can.'], ['Everyone', 75, '"May all beings be safe, healthy, happy and at ease."'], ['Close', 30, 'Rest for a moment in the feeling.']] },
+  { id: 'noting', cat: 'meditate', title: 'Open Awareness', from: 'Noting practice from Vipassana (insight) meditation', level: 2,
+    blurb: 'Instead of one anchor, notice whatever arises (sound, sensation, thought) and label it softly.',
+    steps: ['Sit upright and close your eyes.', 'Let your attention be open. When something grabs it, give it a one-word label: "hearing", "itching", "planning", "remembering".', 'Then let it go and wait for the next thing.', 'Keep the labels light, about one every few seconds. You\'re learning to watch your mind instead of being carried by it.'],
+    segs: [['Anchor', 60, 'Start with a few breaths to settle.'], ['Sounds', 90, 'Notice sounds as they come and go. Label them "hearing".'], ['Body', 90, 'Notice sensations in the body. Label them "feeling".'],
+      ['Thoughts', 120, 'Notice thoughts arising. Label them "thinking", "planning", "remembering".'], ['Everything', 120, 'Let anything arise. Label it and let it pass.'], ['Close', 30, 'Return to the breath. Open your eyes.']] },
+  { id: 'walking', cat: 'meditate', title: 'Walking Meditation', from: 'Zen kinhin and the walking practice taught by Thich Nhat Hanh', level: 1,
+    blurb: 'Slow, deliberate steps with full attention. For when sitting still feels impossible.',
+    steps: ['Find 10–20 steps of clear space, indoors or out.', 'Walk much slower than normal. Feel each foot lift, move and touch down.', 'Coordinate with the breath if you like: one step on the in-breath, one on the out-breath.', 'At the end of your path, pause, turn slowly and continue.'],
+    segs: [['Stand', 30, 'Stand still. Feel your feet on the ground.'], ['Slow steps', 180, 'Lift, move, place. Feel every part of each step.'], ['With the breath', 180, 'One step as you breathe in, one as you breathe out.'],
+      ['Natural pace', 120, 'Walk a little faster, keeping your attention on your feet.'], ['Stand', 30, 'Stop. Notice how your body feels.']] },
+  { id: 'rehearsal', cat: 'meditate', title: 'Mental Rehearsal', from: 'Visualization used by Olympic and pro athletes', level: 2,
+    blurb: 'Vividly picture yourself performing well. Your brain treats rehearsal much like practice.',
+    steps: ['Choose something coming up: a lift, a race, a conversation, a presentation.', 'Close your eyes and picture it in first person, as if through your own eyes.', 'Include sounds, smells and how your body feels.', 'See yourself handling a setback calmly, then finishing strong.'],
+    segs: [['Settle', 45, 'A few slow breaths. Choose what you\'ll rehearse.'], ['Set the scene', 60, 'Where are you? What do you see, hear and feel?'], ['Perform', 120, 'Go through it step by step, executing well.'],
+      ['A setback', 60, 'Something goes wrong. Watch yourself reset calmly and keep going.'], ['Finish strong', 60, 'See yourself finishing. Feel the satisfaction.'], ['Close', 30, 'Open your eyes and keep that feeling.']] },
+  { id: 'gratitude', cat: 'meditate', title: 'Three Good Things', from: 'A positive-psychology exercise from Martin Seligman\'s research', level: 1,
+    blurb: 'A three-minute reflection on what went well and why. Studied for lasting effects on mood.',
+    steps: ['Think back over the last day.', 'Pick three things that went well, big or small.', 'For each one, ask why it happened and what your part in it was.', 'Optionally, write them down after.'],
+    segs: [['Settle', 20, 'A couple of slow breaths.'], ['First good thing', 50, 'What went well? Why did it happen?'], ['Second good thing', 50, 'Another, however small.'], ['Third good thing', 50, 'One more. What was your part in it?'], ['Close', 20, 'Notice how you feel now.']] },
+
+  { id: 'yin-hips', cat: 'yin', title: 'Hips & Lower Back Release', from: 'Yin yoga', level: 1,
+    blurb: 'Long, passive holds for tight hips and a stiff lower back. Ideal after leg day or a long day of sitting.',
+    steps: ['Use a mat and, if you have them, a pillow or yoga blocks for support.', 'Come into each pose to about 70% of your stretch: you should feel it, but it shouldn\'t hurt.', 'Then stay still and let your muscles go soft. The stretch deepens on its own.', 'Breathe slowly through your nose. Come out of any pose that causes sharp pain.'],
+    segs: [['Butterfly', 180, 'Soles of the feet together, knees out, fold forward with a round back.'], ['Dragon · left leg forward', 120, 'Low lunge, back knee down, hips sink forward.'],
+      ['Dragon · right leg forward', 120, 'Switch sides. Let the hips hang.'], ['Sphinx', 180, 'Lie on your belly, propped on your forearms. Let your lower back sag.'],
+      ['Child\'s pose', 120, 'Knees wide, big toes together, forehead down.'], ['Twist · left', 120, 'On your back, drop both knees to the left, arms wide.'],
+      ['Twist · right', 120, 'Knees to the right. Let gravity do it.'], ['Rest', 180, 'Lie flat, palms up, completely still.']] },
+  { id: 'yin-upper', cat: 'yin', title: 'Spine & Shoulders', from: 'Yin yoga', level: 1,
+    blurb: 'Opens the chest and upper back after hunching over desks and phones.',
+    steps: ['Have a cushion handy for your head and knees.', 'Find a gentle edge in each pose and stay still.', 'Keep breathing slowly. Let the breath move into the tight places.'],
+    segs: [['Melting heart', 150, 'From hands and knees, walk your hands forward and lower your chest toward the floor, hips over knees.'], ['Thread the needle · left', 120, 'From hands and knees, slide your left arm under your body and rest your shoulder down.'],
+      ['Thread the needle · right', 120, 'Switch sides.'], ['Seal', 120, 'On your belly, straight arms, gently lift your chest. Back off if your lower back pinches.'],
+      ['Caterpillar', 180, 'Sit with legs out and fold forward with a round back. Let your head hang.'], ['Rest', 150, 'Lie flat and let everything go.']] },
+  { id: 'yin-evening', cat: 'yin', title: 'Evening Wind-Down', from: 'Restorative and yin yoga', level: 1,
+    blurb: 'Four restful shapes to switch off before bed. Pairs well with the Long Exhale breath.',
+    steps: ['Dim the lights. Use pillows generously: this is about rest, not stretch.', 'Close your eyes in each pose and breathe slowly.'],
+    segs: [['Legs up the wall', 300, 'Lie on your back with your legs resting up a wall.'], ['Supported child\'s pose', 180, 'Knees wide, a pillow under your chest and head.'],
+      ['Reclined butterfly', 240, 'On your back, soles together, knees falling open onto pillows.'], ['Rest', 180, 'Lie flat. Let your breath slow down.']] },
+
+  { id: 'iron-holds', cat: 'iso', title: 'Iron Holds', from: 'Isometric calisthenics', level: 2, rounds: 2,
+    blurb: 'Six holds that burn. The goal is to stay calm, breathe slowly through your nose and keep your face relaxed while it gets hard.',
+    steps: ['Hold each position for the full time, or as long as you can with good form.', 'Breathe slowly through your nose the whole time. If you have to mouth-breathe, rest a few seconds.', 'Keep your face and hands relaxed: tension there is a sign of panic, not effort.', 'Rest between holds as shown. Two rounds.'],
+    segs: [['Wall sit', 60, 'Back flat on the wall, thighs parallel to the floor.'], ['Rest', 30, 'Shake it out. Slow breaths.'], ['Forearm plank', 60, 'Squeeze glutes and abs; straight line from head to heels.'], ['Rest', 30, 'Breathe.'],
+      ['Dead hang', 40, 'Hang from a bar, shoulders active. No bar: hold a deep squat.'], ['Rest', 30, 'Breathe.'], ['Hollow body hold', 30, 'Lower back pressed down, arms and legs reaching.'], ['Rest', 30, 'Breathe.'],
+      ['Horse stance', 60, 'Wide stance, deep squat, back upright.'], ['Rest', 30, 'Breathe.'], ['Glute bridge hold', 45, 'Hips high, squeeze, don\'t arch your lower back.'], ['Rest', 45, 'Rest before the next round.']] },
+  { id: 'long-holds', cat: 'iso', title: 'The Long Hold', from: 'Kung fu stance training and isometric endurance work', level: 3,
+    blurb: 'Four long holds of two to three minutes. Stillness under real discomfort is the point.',
+    steps: ['Choose an easier version of any hold if needed (higher wall sit, plank on your knees).', 'Breathe slowly in through your nose and out through your mouth.', 'When your mind says stop, notice the thought, take one more slow breath, and see if you can stay.', 'Stop for any sharp or joint pain. That\'s different from burning muscles.'],
+    segs: [['Horse stance', 120, 'Deep, wide, upright. Breathe low into your belly.'], ['Rest', 45, 'Stand and breathe.'], ['Plank', 120, 'Forearms, perfectly still.'], ['Rest', 45, 'Breathe.'],
+      ['Wall sit', 120, 'Hands off your thighs.'], ['Rest', 45, 'Breathe.'], ['Deep squat hold', 180, 'Heels down, chest up, elbows pressing knees out. Settle in.']] }
+];
+
+/* Daily habits for a healthy, long-lived brain: what longevity researchers such as David Sinclair practice, plus well-studied basics. */
+const MIND_HABITS = [
+  ['learn', 'Learn something new for 15 minutes', 'A language, an instrument, a skill. Novelty and challenge build new connections at any age.'],
+  ['move', 'Walk after a meal', 'A 10-minute walk after eating blunts the blood-sugar spike; steady blood sugar is good for the brain.'],
+  ['sun', 'Get morning daylight', '10 minutes outside soon after waking sets your body clock for better sleep.'],
+  ['social', 'Connect with someone', 'A real conversation. Strong relationships are one of the most reliable predictors of a long, healthy life.'],
+  ['cold', 'Finish your shower cold', 'Sinclair uses cold exposure. 30–90 seconds is plenty to start. Skip it if you have a heart condition.'],
+  ['window', 'Stop eating 3 hours before bed', 'A daily eating window, which Sinclair practices, and better sleep.'],
+  ['read', 'Read or play a strategy game', '20 minutes of deep reading, chess or puzzles instead of scrolling.'],
+  ['breathe', 'Breathe or meditate for 5 minutes', 'Any session from Breathe or Mind counts, and ticks this automatically.'],
+  ['sleep', 'Phone away an hour before bed', 'Protects 7–9 hours of sleep, when the brain clears out waste.']
+];
+
+/* ---------- Calm audio: soft cue tones and generated music ----------
+   Everything is synthesized with Web Audio, so there are no files to download and the tracks never loop audibly. */
+let ac = null, musicBus, toneBus, reverbIn;
+function audio() {
+  if (!ac) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    ac = new AC();
+    const master = ac.createGain(); master.gain.value = 0.9; master.connect(ac.destination);
+    // A gentle reverb from a decaying noise impulse.
+    const conv = ac.createConvolver(), len = ac.sampleRate * 3.2, imp = ac.createBuffer(2, len, ac.sampleRate);
+    for (let c = 0; c < 2; c += 1) { const d = imp.getChannelData(c); for (let i = 0; i < len; i += 1) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 2.6; }
+    conv.buffer = imp; reverbIn = ac.createGain(); reverbIn.gain.value = 0.5; reverbIn.connect(conv); conv.connect(master);
+    musicBus = ac.createGain(); musicBus.connect(master); musicBus.connect(reverbIn);
+    toneBus = ac.createGain(); toneBus.connect(master); toneBus.connect(reverbIn);
+  }
+  if (ac.state === 'suspended') ac.resume();
+  setVolumes();
+  return ac;
+}
+function setVolumes() {
+  if (!ac) return;
+  const c = S.calm, t = ac.currentTime;
+  musicBus.gain.setTargetAtTime(c.music ? c.vol * 0.55 : 0, t, 0.4);
+  toneBus.gain.setTargetAtTime(c.tones ? c.toneVol * 0.5 : 0, t, 0.05);
+}
+// A soft bell: sine plus a quiet octave, slow attack and long fade. Pitch hints at the phase.
+const TONE_HZ = { in: 523.25, out: 392, hold: 440, rest: 349.23, pose: 329.63, cue: 293.66, ready: 440, end: 261.63 };
+function tone(kind, when = 0) {
+  if (!ac || !S.calm.tones) return;
+  const t = ac.currentTime + when, f = TONE_HZ[kind] || 440;
+  [[f, 0.32], [f * 2, 0.07], [f * 3.01, 0.025]].forEach(([hz, amp]) => {
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = 'sine'; o.frequency.value = hz;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(amp, t + 0.06); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+    o.connect(g); g.connect(toneBus); o.start(t); o.stop(t + 2.3);
+  });
+}
+let noiseBuf = null;
+function noise() {
+  if (noiseBuf) return noiseBuf;
+  const len = ac.sampleRate * 6; noiseBuf = ac.createBuffer(1, len, ac.sampleRate);
+  const d = noiseBuf.getChannelData(0); let b0 = 0, b1 = 0, b2 = 0;
+  for (let i = 0; i < len; i += 1) { const w = Math.random() * 2 - 1; b0 = 0.997 * b0 + w * 0.029; b1 = 0.985 * b1 + w * 0.032; b2 = 0.95 * b2 + w * 0.048; d[i] = (b0 + b1 + b2) * 0.9; } // pink-ish
+  return noiseBuf;
+}
+const noiseSrc = () => { const s = ac.createBufferSource(); s.buffer = noise(); s.loop = true; s.loopStart = Math.random(); return s; };
+const midi = (n) => 440 * 2 ** ((n - 69) / 12);
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+// Each track starts on its own gain node and returns a stop function that fades it out.
+const TRACKS = [
+  ['Still Water', 'Warm, slowly shifting chords', (out) => {
+    const chords = [[48, 55, 64, 71], [45, 52, 60, 67], [41, 48, 57, 64], [43, 50, 59, 66]], lp = ac.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 900; lp.connect(out);
+    let k = 0;
+    const play = () => {
+      const t = ac.currentTime;
+      chords[k % chords.length].forEach((n) => [-5, 5].forEach((cents) => {
+        const o = ac.createOscillator(), g = ac.createGain(); o.type = cents < 0 ? 'sine' : 'triangle'; o.frequency.value = midi(n); o.detune.value = cents;
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.045, t + 3.5); g.gain.setValueAtTime(0.045, t + 9); g.gain.linearRampToValueAtTime(0, t + 13);
+        o.connect(g); g.connect(lp); o.start(t); o.stop(t + 13.2);
+      }));
+      k += 1;
+    };
+    play(); const id = setInterval(play, 10000);
+    return () => clearInterval(id);
+  }],
+  ['Tide', 'Ocean waves at a slow breathing pace', (out) => {
+    const src = noiseSrc(), lp = ac.createBiquadFilter(), g = ac.createGain(), lfo = ac.createOscillator(), depth = ac.createGain();
+    lp.type = 'lowpass'; lp.frequency.value = 650; g.gain.value = 0.35; lfo.frequency.value = 1 / 10; depth.gain.value = 0.3;
+    lfo.connect(depth); depth.connect(g.gain); src.connect(lp); lp.connect(g); g.connect(out); src.start(); lfo.start();
+    return () => { src.stop(ac.currentTime + 3); lfo.stop(ac.currentTime + 3); };
+  }],
+  ['Kalimba Drift', 'Sparse, gentle plucked notes', (out) => {
+    const notes = [60, 62, 64, 67, 69, 72, 74, 76, 79], dl = ac.createDelay(), fb = ac.createGain();
+    dl.delayTime.value = 0.42; fb.gain.value = 0.35; dl.connect(fb); fb.connect(dl); dl.connect(out);
+    let id;
+    const pluck = () => {
+      const t = ac.currentTime, f = midi(pick(notes));
+      [[f, 0.11, 2.6], [f * 5.4, 0.012, 0.4]].forEach(([hz, amp, dec]) => {
+        const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = hz;
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(amp, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + dec);
+        o.connect(g); g.connect(out); g.connect(dl); o.start(t); o.stop(t + dec + 0.1);
+      });
+      id = setTimeout(pluck, 500 + Math.random() * 1400);
+    };
+    pluck();
+    return () => clearTimeout(id);
+  }],
+  ['Singing Bowls', 'Resonant bowls struck now and then', (out) => {
+    let id;
+    const strike = () => {
+      const t = ac.currentTime, f = pick([196, 220, 261.63, 293.66]);
+      [[1, 0.09], [2.76, 0.04], [5.4, 0.018], [8.9, 0.007]].forEach(([m, amp]) => [1, 1.003].forEach((d) => {
+        const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f * m * d;
+        g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(amp, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 9 / Math.sqrt(m));
+        o.connect(g); g.connect(out); o.start(t); o.stop(t + 9.5);
+      }));
+      id = setTimeout(strike, 6500 + Math.random() * 5000);
+    };
+    strike();
+    return () => clearTimeout(id);
+  }],
+  ['Low Pulse', 'A deep drone with a slow, steady heartbeat', (out) => {
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 260; lp.connect(out);
+    const drones = [55, 82.41, 110.3].map((hz, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = hz; g.gain.value = [0.12, 0.06, 0.03][i]; o.connect(g); g.connect(lp); o.start(); return o; });
+    const beat = () => [0, 0.3].forEach((dt, i) => {
+      const t = ac.currentTime + dt, o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.setValueAtTime(70, t); o.frequency.exponentialRampToValueAtTime(38, t + 0.18);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(i ? 0.12 : 0.2, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
+      o.connect(g); g.connect(lp); o.start(t); o.stop(t + 0.3);
+    });
+    beat(); const id = setInterval(beat, 60000 / 54);
+    return () => { clearInterval(id); drones.forEach((o) => o.stop(ac.currentTime + 3)); };
+  }],
+  ['Soft Rain', 'Steady rain with the odd drip', (out) => {
+    const src = noiseSrc(), hp = ac.createBiquadFilter(), lp = ac.createBiquadFilter(), g = ac.createGain();
+    hp.type = 'highpass'; hp.frequency.value = 500; lp.type = 'lowpass'; lp.frequency.value = 5000; g.gain.value = 0.22;
+    src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(out); src.start();
+    let id;
+    const drip = () => {
+      const t = ac.currentTime, o = ac.createOscillator(), dg = ac.createGain(); o.frequency.setValueAtTime(1800 + Math.random() * 2200, t); o.frequency.exponentialRampToValueAtTime(900, t + 0.05);
+      dg.gain.setValueAtTime(0.02, t); dg.gain.exponentialRampToValueAtTime(0.0001, t + 0.06); o.connect(dg); dg.connect(out); o.start(t); o.stop(t + 0.08);
+      id = setTimeout(drip, 120 + Math.random() * 600);
+    };
+    drip();
+    return () => { clearTimeout(id); src.stop(ac.currentTime + 3); };
+  }]
+];
+let music = null; // { idx, gain, stop, timer }
+function playTrack(idx) {
+  if (!audio()) return;
+  stopMusic();
+  const gain = ac.createGain(); gain.gain.setValueAtTime(0, ac.currentTime); gain.gain.linearRampToValueAtTime(1, ac.currentTime + 3); gain.connect(musicBus);
+  const stop = TRACKS[idx][2](gain);
+  // Shuffle moves to another track every 5 minutes.
+  const timer = S.calm.track === -1 ? setTimeout(() => nextTrack(), 5 * 60000) : null;
+  music = { idx, gain, stop, timer };
+  const el = $('#calm-track'); if (el) el.textContent = TRACKS[idx][0];
+}
+function stopMusic() {
+  if (!music) return;
+  const m = music; music = null;
+  clearTimeout(m.timer); m.stop();
+  m.gain.gain.cancelScheduledValues(ac.currentTime); m.gain.gain.setTargetAtTime(0, ac.currentTime, 0.6);
+  setTimeout(() => m.gain.disconnect(), 3500);
+}
+function nextTrack() {
+  const cur = music ? music.idx : -1;
+  let i = S.calm.track >= 0 && !music ? S.calm.track : Math.floor(Math.random() * TRACKS.length);
+  if (i === cur) i = (i + 1 + Math.floor(Math.random() * (TRACKS.length - 1))) % TRACKS.length;
+  playTrack(i);
+}
+
+/* ---------- Guided player ----------
+   A session is a list of segments { k: kind, s: seconds, t: title, c: cue, n: counter, q: no tone }.
+   The orb grows on in-breaths, shrinks on out-breaths and rests during holds; poses show a ring that fills. */
+const KIND_LABEL = { in: 'Breathe in', out: 'Breathe out', hold: 'Hold', rest: 'Hold, empty', ready: 'Get ready' };
+function breathSegs(b, n, pace = 1) {
+  let raw;
+  if (b.build) raw = b.build(n);
+  else { raw = []; for (let i = 1; i <= n; i += 1) b.pattern.forEach(([k, s, c], j) => raw.push([k, s * pace, c, j ? '' : `Round ${i} of ${n}`])); }
+  let last = '';
+  return raw.map(([k, s, c, cnt, q]) => { if (cnt) last = cnt; return { k, s, c, n: last, q: !!q }; });
+}
+function mindSegs(m, rounds = m.rounds || 1) {
+  const out = [];
+  for (let r = 1; r <= rounds; r += 1) m.segs.forEach(([t, s, c], j) => {
+    if (r === rounds && j === m.segs.length - 1 && t === 'Rest' && m.cat === 'iso') return;
+    out.push({ k: m.cat === 'meditate' ? 'cue' : t === 'Rest' ? 'rest-pose' : 'pose', s, t, c, n: rounds > 1 ? `Round ${r} of ${rounds}` : '' });
+  });
+  return out;
+}
+const segTotal = (segs) => segs.reduce((a, x) => a + x.s, 0);
+const fmtClock = (sec) => { sec = Math.max(0, Math.ceil(sec)); return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; };
+const fmtMin = (sec) => (sec < 90 ? `${Math.round(sec)} s` : `${Math.round(sec / 60)} min`);
+
+let calm = null, calmRaf = 0, calmTick = 0, wakeLock = null;
+const reduceMotion = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function startCalm({ kind, ref, title, segs }) {
+  audio();
+  segs = [{ k: 'ready', s: 5, c: segs[0].k === 'pose' || segs[0].k === 'cue' ? 'Get into position' : 'Sit comfortably and relax your shoulders', n: '' }, ...segs];
+  calm = { kind, ref, title, segs, i: 0, start: performance.now(), pausedAt: 0, total: segTotal(segs), done: false };
+  const box = document.createElement('div');
+  box.id = 'calm'; box.className = 'calm'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', title);
+  box.innerHTML = `<div class="calm-top"><span class="calm-title">${esc(title)}</span><span class="calm-left num" id="calm-left"></span>
+      <button class="calm-x" data-act="calm-close" aria-label="End session">✕</button></div>
+    <div class="calm-stage" aria-hidden="true"><svg class="calm-ring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" class="calm-ring-bg"/><circle cx="50" cy="50" r="47" class="calm-ring-fg" id="calm-ring" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/></svg>
+      <div class="calm-orb" id="calm-orb"></div><div class="calm-center"><div class="calm-label" id="calm-label"></div><div class="calm-count num" id="calm-count"></div></div></div>
+    <p class="calm-cue" id="calm-cue" aria-live="polite"></p><p class="calm-n num" id="calm-n"></p>
+    <div class="calm-bar"><i id="calm-prog"></i></div>
+    <div class="calm-ctl">
+      <button class="calm-btn calm-main" data-act="calm-pause" id="calm-pause">Pause</button>
+      <div class="calm-music"><button class="calm-btn" data-act="calm-music" aria-pressed="${S.calm.music}" id="calm-music-btn">♪ <span id="calm-track">${S.calm.music ? '…' : 'Music off'}</span></button>
+        <button class="calm-btn" data-act="calm-next" aria-label="Next track" ${S.calm.music ? '' : 'hidden'} id="calm-next">⏭</button></div>
+      <label class="calm-vol"><span>Volume</span><input type="range" min="0" max="1" step="0.05" value="${S.calm.vol}" id="calm-vol" aria-label="Music volume"></label>
+      <button class="calm-btn" data-act="calm-tones" aria-pressed="${S.calm.tones}" id="calm-tones">${S.calm.tones ? 'Tones on' : 'Tones off'}</button>
+    </div>`;
+  document.body.appendChild(box); document.body.classList.add('calm-open');
+  if (S.calm.music) nextTrack();
+  tone('ready');
+  if ('wakeLock' in navigator) navigator.wakeLock.request('screen').then((l) => { wakeLock = l; }).catch(() => {});
+  calmTick = setInterval(calmStep, 200); // keeps time even when animation frames are paused
+  const loop = () => { calmStep(); if (calm) calmRaf = requestAnimationFrame(loop); };
+  calmRaf = requestAnimationFrame(loop);
+  $('#calm-pause').focus();
+}
+const ease = (p) => 0.5 - Math.cos(Math.PI * Math.min(1, Math.max(0, p))) / 2;
+let orbScale = 0.55;
+function calmStep() {
+  if (!calm || calm.done || calm.pausedAt) return;
+  const now = performance.now();
+  let seg = calm.segs[calm.i], el = (now - calm.start) / 1000;
+  while (el >= seg.s) {
+    calm.start += seg.s * 1000; calm.i += 1; el -= seg.s;
+    if (calm.i >= calm.segs.length) { finishCalm(true); return; }
+    seg = calm.segs[calm.i];
+    if (!seg.q) tone(seg.k === 'rest-pose' ? 'rest' : seg.k);
+    if (S.calm.vibrate && navigator.vibrate && !seg.q) navigator.vibrate(seg.k === 'in' ? 40 : seg.k === 'out' ? [20, 60, 20] : 25);
+  }
+  const p = el / seg.s, k = seg.k;
+  // The orb: grows on in, shrinks on out, stays put on holds, breathes slowly on its own for poses and meditation.
+  if (k === 'in' && calm.segs[calm.i - 1] && calm.segs[calm.i - 1].k === 'in') orbScale = 0.85 + 0.15 * ease(p); // a second, topping-up inhale
+  else if (k === 'in') orbScale = 0.55 + 0.45 * ease(p);
+  else if (k === 'out') orbScale = 1 - 0.45 * ease(p);
+  else if (k === 'hold') orbScale = 1;
+  else if (k === 'rest') orbScale = 0.55;
+  else orbScale = 0.72 + 0.06 * Math.sin((now / 1000) * (2 * Math.PI / 10));
+  const orb = $('#calm-orb');
+  if (!orb) return;
+  if (reduceMotion()) { orb.style.transform = 'scale(.8)'; orb.style.opacity = String(0.45 + 0.5 * (orbScale - 0.55) / 0.45); }
+  else orb.style.transform = `scale(${orbScale.toFixed(3)})`;
+  orb.dataset.k = k;
+  const left = seg.s - el, long = seg.s >= 20;
+  $('#calm-label').textContent = seg.t && (k === 'pose' || k === 'cue' || k === 'rest-pose') ? seg.t : KIND_LABEL[k] || seg.t || '';
+  $('#calm-count').textContent = long ? fmtClock(left) : Math.ceil(left);
+  $('#calm-cue').textContent = seg.c || '';
+  $('#calm-n').textContent = seg.n || '';
+  $('#calm-ring').style.strokeDashoffset = long || k === 'pose' || k === 'rest-pose' || k === 'cue' ? String(100 - 100 * p) : '100';
+  const doneSec = calm.segs.slice(0, calm.i).reduce((a, x) => a + x.s, 0) + el;
+  $('#calm-prog').style.width = (doneSec / calm.total * 100).toFixed(2) + '%';
+  $('#calm-left').textContent = fmtClock(calm.total - doneSec) + ' left';
+}
+function pauseCalm() {
+  if (!calm || calm.done) return;
+  if (calm.pausedAt) { calm.start += performance.now() - calm.pausedAt; calm.pausedAt = 0; if (S.calm.music && music) music.gain.gain.setTargetAtTime(1, ac.currentTime, 0.5); }
+  else { calm.pausedAt = performance.now(); if (music) music.gain.gain.setTargetAtTime(0.25, ac.currentTime, 0.5); }
+  const b = $('#calm-pause'); if (b) b.textContent = calm.pausedAt ? 'Resume' : 'Pause';
+  $('#calm').classList.toggle('paused', !!calm.pausedAt);
+}
+function calmElapsed() {
+  if (!calm) return 0;
+  const now = calm.pausedAt || performance.now();
+  return calm.segs.slice(1, calm.i).reduce((a, x) => a + x.s, 0) + (calm.i ? (now - calm.start) / 1000 : 0);
+}
+// Finished (or ended after at least a minute): log it, tick the daily habit and show a quiet summary.
+function finishCalm(complete) {
+  if (!calm) return;
+  const sec = complete ? calm.total - calm.segs[0].s : calmElapsed();
+  calm.done = true;
+  if (sec >= 60) {
+    const d = dayKey();
+    S.mind.log.push({ id: uid(), date: d, kind: calm.kind, ref: calm.ref, title: calm.title, min: Math.round(sec / 60) });
+    if (S.mind.log.length > 500) S.mind.log = S.mind.log.slice(-500);
+    const h = S.mind.habits[d] || (S.mind.habits[d] = []);
+    if (!h.includes('breathe')) h.push('breathe');
+    save();
+  }
+  if (complete) { tone('end'); tone('cue', 0.6); tone('end', 1.3); }
+  const box = $('#calm');
+  if (complete && box) {
+    box.querySelector('.calm-stage').innerHTML = '<div class="calm-orb calm-orb-done" style="transform:scale(.8)"></div><div class="calm-center"><div class="calm-label">Well done</div></div>';
+    $('#calm-cue').textContent = `${fmtMin(sec)} of ${calm.kind === 'breathe' ? 'breathwork' : 'practice'}. Take a moment before you move on.`;
+    $('#calm-n').textContent = ''; $('#calm-prog').style.width = '100%'; $('#calm-left').textContent = '';
+    const p = $('#calm-pause'); p.textContent = 'Done'; p.dataset.act = 'calm-close'; p.focus();
+    clearInterval(calmTick); cancelAnimationFrame(calmRaf);
+  } else closeCalm();
+}
+function closeCalm() {
+  if (calm && !calm.done) finishCalm(false);
+  clearInterval(calmTick); cancelAnimationFrame(calmRaf);
+  calm = null; stopMusic();
+  if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+  const box = $('#calm'); if (box) box.remove();
+  document.body.classList.remove('calm-open');
+  render(true);
+}
+document.addEventListener('visibilitychange', () => { if (calm && !calm.done && document.visibilityState === 'visible' && 'wakeLock' in navigator && !wakeLock) navigator.wakeLock.request('screen').then((l) => { wakeLock = l; }).catch(() => {}); });
+
+/* ---------- Breathe and Mind pages ---------- */
+let breathGoal = 'All', previewStop = 0;
+const calmOpts = {}; // per exercise: { n: rounds, pace }
+const optsFor = (x) => calmOpts[x.id] || (calmOpts[x.id] = { n: x.rounds || 1, pace: 1 });
+const patternTxt = (b) => (b.pattern ? b.pattern.map(([k, s]) => `${{ in: 'In', out: 'Out', hold: 'Hold', rest: 'Hold' }[k]} ${s}`).join(' · ') : '');
+function weekCalm() {
+  const mon = mondayOf(dayKey()), l = S.mind.log.filter((x) => x.date >= mon);
+  return { n: l.length, min: l.reduce((a, x) => a + x.min, 0) };
+}
+function soundRow() {
+  const c = S.calm;
+  return `<div class="row sound-row"><span class="eyebrow">Sound</span>
+    <button type="button" class="chip" data-act="calm-pref" data-k="music" data-v="${!c.music}" aria-pressed="${c.music}">Music ${c.music ? 'on' : 'off'}</button>
+    <button type="button" class="chip" data-act="calm-pref" data-k="tones" data-v="${!c.tones}" aria-pressed="${c.tones}">Cue tones ${c.tones ? 'on' : 'off'}</button>
+    <a class="btn btn-sm btn-ghost" href="#settings">More sound settings</a></div>`;
+}
+function viewBreathe() {
+  const list = BREATHS.filter((b) => breathGoal === 'All' || b.goals.includes(breathGoal)), w = weekCalm();
+  return `<div class="page-head"><div><div class="eyebrow">Breathwork</div><h1>Breathe</h1>
+    <p class="muted">Guided breathing from around the world. Pick one, follow the circle and the soft tones, and let the timer do the counting.</p></div>
+    ${w.n ? `<div class="calm-week num"><b>${w.min}</b> min this week<span class="muted"> · ${w.n} session${w.n === 1 ? '' : 's'}</span></div>` : ''}</div>
+  <div class="row" role="group" aria-label="Filter by goal" style="margin-bottom:16px">${['All', ...BREATH_GOALS].map((g) => `<button class="chip" data-act="bgoal" data-g="${g}" aria-pressed="${g === breathGoal}">${g}</button>`).join('')}</div>
+  <div class="calm-cards">${list.map((b) => { const o = optsFor(b), segs = breathSegs(b, o.n, o.pace);
+    return `<article class="panel calm-card"><a href="#breath-${b.id}" class="calm-card-link"><div class="eyebrow">${b.goals.join(' · ')}</div><h3>${esc(b.title)}</h3>
+      <p class="muted calm-from">${esc(b.from)}</p><p class="calm-blurb">${esc(b.blurb)}</p></a>
+      <div class="calm-meta num">${b.pattern ? `<span>${patternTxt(b)}</span>` : ''}<span>~${fmtMin(segTotal(segs))}</span><span>${LEVELS[b.level]}</span></div>
+      <div class="row"><button class="btn btn-primary btn-sm" data-act="calm-start" data-type="breathe" data-id="${b.id}">Start</button><a class="btn btn-sm btn-ghost" href="#breath-${b.id}">How to</a></div></article>`; }).join('')}</div>
+  <p class="muted" style="font-size:.82rem;margin-top:16px">Breathwork is safe for most people, but stop if you feel dizzy or unwell. Never practice breath holds in water or while driving.</p>`;
+}
+function setupPanel(x, type, segs) {
+  const o = optsFor(x), unit = x.unit || (type === 'breathe' ? 'rounds' : 'rounds');
+  const [lo, hi] = x.range || [1, 4];
+  return `<section class="panel calm-setup stack" aria-labelledby="h-setup">
+    <h2 id="h-setup">Your session</h2>
+    ${x.range || (type === 'mind' && x.rounds) ? `<div class="row" style="justify-content:space-between"><span>${unit[0].toUpperCase() + unit.slice(1)}</span>
+      <div class="stepper" role="group" aria-label="${unit}"><button type="button" data-act="calm-n" data-id="${x.id}" data-d="-1" aria-label="Fewer" ${o.n <= lo ? 'disabled' : ''}>−</button><output>${o.n}</output><button type="button" data-act="calm-n" data-id="${x.id}" data-d="1" aria-label="More" ${o.n >= hi ? 'disabled' : ''}>+</button></div></div>` : ''}
+    ${x.pace ? `<div class="row" style="justify-content:space-between"><span>Pace</span><div class="row" role="group" aria-label="Pace">${[[1.25, 'Slower'], [1, 'Normal'], [0.8, 'Faster']].map(([v, l]) => `<button class="chip" data-act="calm-pace" data-id="${x.id}" data-v="${v}" aria-pressed="${o.pace === v}">${l}</button>`).join('')}</div></div>` : ''}
+    <div class="facts" style="grid-template-columns:repeat(2,1fr)"><div><b class="num">${fmtClock(segTotal(segs))}</b><span>total time</span></div><div><b class="num">${type === 'breathe' ? segs.length : segs.filter((x) => x.k !== 'rest-pose').length}</b><span>${type === 'breathe' ? 'cues' : 'steps'}</span></div></div>
+    <button class="btn btn-primary calm-go" data-act="calm-start" data-type="${type}" data-id="${x.id}">Start</button>
+    ${soundRow()}
+  </section>`;
+}
+function viewBreath(id) {
+  const b = BREATHS.find((x) => x.id === id);
+  if (!b) return notFound('That exercise');
+  const o = optsFor(b), segs = breathSegs(b, o.n, o.pace);
+  return `<a class="btn btn-ghost" href="#breathe" style="margin-bottom:10px">← All breathing</a>
+  <div class="grid">
+    <section class="panel span-7 stack calm-detail">
+      <div class="eyebrow">${b.goals.join(' · ')} · ${LEVELS[b.level]}</div><h1>${esc(b.title)}</h1><p class="muted">${esc(b.from)}</p><p>${esc(b.blurb)}</p><button class="btn btn-primary calm-quick" data-act="calm-start" data-type="breathe" data-id="${b.id}">Start · ${fmtClock(segTotal(segs))}</button>
+      ${b.pattern ? `<div class="phase-row">${b.pattern.map(([k, s, c]) => `<div class="phase phase-${k}"><b class="num">${round(s * o.pace, 1)}s</b><span>${{ in: 'In', out: 'Out', hold: 'Hold', rest: 'Hold empty' }[k]}</span><small>${esc(c)}</small></div>`).join('')}</div>` : ''}
+      <h2>How to do it</h2><ol class="calm-steps">${b.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>
+      ${b.caution ? `<p class="tip"><b>Safety:</b> ${esc(b.caution)}</p>` : ''}
+    </section>
+    <div class="span-5">${setupPanel(b, 'breathe', segs)}</div>
+  </div>`;
+}
+function viewMind() {
+  const d = dayKey(), done = S.mind.habits[d] || [], w = weekCalm();
+  let streak = 0; for (let k = d; (S.mind.habits[k] || []).length; k = addDays(k, -1)) streak += 1;
+  const recent = [...S.mind.log].reverse().slice(0, 5);
+  return `<div class="page-head"><div><div class="eyebrow">Mental strength &amp; relaxation</div><h1>Mind</h1>
+    <p class="muted">Meditation, long-hold yoga and calm-under-strain holds, plus small daily habits for a sharp mind as you age. Every session has a guided timer and optional music.</p></div>
+    ${w.n ? `<div class="calm-week num"><b>${w.min}</b> min this week<span class="muted"> · ${w.n} session${w.n === 1 ? '' : 's'}</span></div>` : ''}</div>
+  <section class="panel habits" aria-labelledby="h-habits">
+    <div class="panel-head"><h2 id="h-habits">Today's brain habits</h2><span class="muted num">${done.length} of ${MIND_HABITS.length}${streak > 1 ? ` · ${streak}-day streak` : ''}</span></div>
+    <p class="muted" style="font-size:.85rem;margin:-4px 0 10px">Ideas from longevity research and researchers like David Sinclair. Tick what you do; aim for a few a day, not all of them.</p>
+    <div class="habit-grid">${MIND_HABITS.map(([id, t, why]) => `<button type="button" class="habit" data-act="habit" data-id="${id}" aria-pressed="${done.includes(id)}"><span class="habit-box" aria-hidden="true">${done.includes(id) ? '✓' : ''}</span><span><b>${esc(t)}</b><small>${esc(why)}</small></span></button>`).join('')}</div>
+  </section>
+  ${MIND_CATS.map(([cat, title, desc]) => `<h2 class="an-section">${title}</h2><p class="muted" style="margin:-6px 0 12px">${desc}</p>
+    <div class="calm-cards">${MIND.filter((m) => m.cat === cat).map((m) => { const segs = mindSegs(m, optsFor(m).n);
+      return `<article class="panel calm-card"><a href="#mind-${m.id}" class="calm-card-link"><div class="eyebrow">${esc(m.from)}</div><h3>${esc(m.title)}</h3><p class="calm-blurb">${esc(m.blurb)}</p></a>
+        <div class="calm-meta num"><span>${fmtMin(segTotal(segs))}</span><span>${segs.filter((x) => x.k !== 'rest-pose').length} ${cat === 'meditate' ? 'parts' : 'holds'}</span><span>${LEVELS[m.level]}</span></div>
+        <div class="row"><button class="btn btn-primary btn-sm" data-act="calm-start" data-type="mind" data-id="${m.id}">Start</button><a class="btn btn-sm btn-ghost" href="#mind-${m.id}">Details</a></div></article>`; }).join('')}</div>`).join('')}
+  <h2 class="an-section">Recent sessions</h2>
+  <section class="panel">${recent.length ? `<ul class="list">${recent.map((x) => `<li><div class="grow"><b>${esc(x.title)}</b><div class="muted" style="font-size:.82rem">${x.kind === 'breathe' ? 'Breathwork' : 'Mind'} · ${fmtDay(x.date)}</div></div><span class="num">${x.min} min</span></li>`).join('')}</ul>`
+    : '<p class="muted">Your finished breathing and mind sessions will show here. Try <a href="#breath-coherent">Coherent Breathing</a> or <a href="#mind-breath-focus">Breath Focus</a> for five minutes.</p>'}</section>`;
+}
+function viewMindSession(id) {
+  const m = MIND.find((x) => x.id === id);
+  if (!m) return notFound('That session');
+  const o = optsFor(m), segs = mindSegs(m, o.n);
+  return `<a class="btn btn-ghost" href="#mind" style="margin-bottom:10px">← Mind</a>
+  <div class="grid">
+    <section class="panel span-7 stack calm-detail">
+      <div class="eyebrow">${MIND_CATS.find((c) => c[0] === m.cat)[1]} · ${LEVELS[m.level]}</div><h1>${esc(m.title)}</h1><p class="muted">${esc(m.from)}</p><p>${esc(m.blurb)}</p><button class="btn btn-primary calm-quick" data-act="calm-start" data-type="mind" data-id="${m.id}">Start · ${fmtClock(segTotal(segs))}</button>
+      <h2>How to do it</h2><ol class="calm-steps">${m.steps.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>
+      <h2>${m.cat === 'meditate' ? 'The session' : 'Holds'}${m.rounds ? ` <span class="muted" style="font-size:.9rem">(each round)</span>` : ''}</h2>
+      <ol class="seg-list">${m.segs.map(([t, s, c]) => `<li class="${t === 'Rest' ? 'is-rest' : ''}"><span class="grow"><b>${esc(t)}</b><small>${esc(c)}</small></span><span class="num">${fmtClock(s)}</span></li>`).join('')}</ol>
+    </section>
+    <div class="span-5">${setupPanel({ ...m, range: m.rounds ? [1, 4] : null, unit: 'rounds' }, 'mind', segs)}</div>
+  </div>`;
+}
+function startById(type, id) {
+  if (type === 'breathe') { const b = BREATHS.find((x) => x.id === id), o = optsFor(b); startCalm({ kind: 'breathe', ref: id, title: b.title, segs: breathSegs(b, o.n, o.pace) }); }
+  else { const m = MIND.find((x) => x.id === id), o = optsFor(m); startCalm({ kind: 'mind', ref: id, title: m.title, segs: mindSegs(m, o.n) }); }
+}
+
 function viewSettings() {
   const p = S.settings;
   const chip = (k, v, label, pre = '') => `<button type="button" class="chip" data-act="pref" data-k="${k}" data-v="${v}" aria-pressed="${String(p[k]) === v}">${pre}${label}</button>`;
@@ -4283,6 +4977,15 @@ function viewSettings() {
     <h2 style="margin-top:22px">Behaviour</h2>
     ${row('Celebrations', 'Confetti when you hit your water or food goal, finish a workout or complete your weekly goal. Off shows a short message instead.', chip('celebrate', 'true', 'On') + chip('celebrate', 'false', 'Off'))}
     ${row('Units', 'For weights, measurements and water.', `<button type="button" class="chip" data-act="units" data-u="us" aria-pressed="${us()}">US (lb, oz)</button><button type="button" class="chip" data-act="units" data-u="metric" aria-pressed="${!us()}">Metric (kg, ml)</button>`)}
+    <h2 style="margin-top:22px">Breathe &amp; mind sessions</h2>
+    ${(() => { const c = S.calm, cc = (k, v, l) => `<button type="button" class="chip" data-act="calm-pref" data-k="${k}" data-v="${v}" aria-pressed="${String(c[k]) === String(v)}">${l}</button>`;
+      return `${row('Music', 'Soft generated tracks that play during guided sessions. Shuffle changes track every 5 minutes.', cc('music', true, 'On') + cc('music', false, 'Off'))}
+      ${row('Track', 'Tap one to hear a short preview.', cc('track', -1, 'Shuffle') + TRACKS.map(([n], i) => cc('track', i, n)).join(''))}
+      <div class="set-row"><div><h3>Volume</h3><p class="muted">Music and cue tones, separately.</p></div><div class="stack" style="gap:6px;min-width:200px">
+        <label class="calm-vol set-vol"><span>Music</span><input type="range" min="0" max="1" step="0.05" value="${c.vol}" id="set-vol"></label>
+        <label class="calm-vol set-vol"><span>Tones</span><input type="range" min="0" max="1" step="0.05" value="${c.toneVol}" id="set-tvol"></label></div></div>
+      ${row('Cue tones', 'A gentle bell when it\'s time to breathe in, out or hold, or move to the next pose.', cc('tones', true, 'On') + cc('tones', false, 'Off') + '<button type="button" class="chip" data-act="calm-preview">Hear them</button>')}
+      ${row('Vibration', 'A light buzz at each change, on phones that support it.', cc('vibrate', true, 'On') + cc('vibrate', false, 'Off'))}`; })()}
     <p class="muted" style="font-size:.85rem;margin-top:14px">Your details, calorie targets, weekly workout goal, backup and restore are on <a href="#goals">Profile &amp; goals</a>.</p>
   </section>`;
 }
@@ -4318,6 +5021,10 @@ function renderView(keepScroll) {
   else if (h.startsWith('plan-')) { html = viewPlan(h.slice(5)); tab = 'workouts'; }
   else if (h === 'session') { html = viewSession(); tab = 'workouts'; }
   else if (h === 'shopping') { html = viewShopping(); tab = 'shopping'; }
+  else if (h === 'breathe') { html = viewBreathe(); tab = 'breathe'; }
+  else if (h.startsWith('breath-')) { html = viewBreath(h.slice(7)); tab = 'breathe'; }
+  else if (h === 'mind') { html = viewMind(); tab = 'mind'; }
+  else if (h.startsWith('mind-')) { html = viewMindSession(h.slice(5)); tab = 'mind'; }
   else if (h === 'log') { html = viewLog(); tab = 'log'; }
   else if (h === 'progress') { html = viewProgress(); tab = 'progress'; }
   else if (h === 'analytics') { html = viewAnalytics(); tab = 'analytics'; }
@@ -4341,7 +5048,7 @@ let errToastAt = 0;
 const onAppError = () => { if (Date.now() - errToastAt > 5000) { errToastAt = Date.now(); toast('Something went wrong there. Your data is safe; try again.'); } };
 window.addEventListener('error', onAppError);
 window.addEventListener('unhandledrejection', onAppError);
-document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.id === 'food-q') { e.preventDefault(); const f = $('#food-results .fres'); if (f) f.click(); return; } if (e.key === 'Escape') { const c = $('#celebrate'); if (c) c.remove(); else if (!$('#site-menu').hidden) { setMenu(false); $('#menu-btn').focus(); } } });
+document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.id === 'food-q') { e.preventDefault(); const f = $('#food-results .fres'); if (f) f.click(); return; } if (e.key === 'Escape') { const c = $('#celebrate'); if (c) c.remove(); else if ($('#calm')) closeCalm(); else if (!$('#site-menu').hidden) { setMenu(false); $('#menu-btn').focus(); } } });
 
 /* Section menu, opened from the logo */
 function setMenu(open) {
@@ -4448,6 +5155,25 @@ document.addEventListener('click', (e) => {
     setTimeout(() => { if (!celebrateWorkout(w, weekly)) toast(`Workout logged · ${done}/${total} sets · ≈ ${kcal} kcal burned${weekly ? ' · weekly goal reached!' : ''}`); }, 300);
   }
   else if (a === 'del-workout') { S.workouts = S.workouts.filter((w) => w.id !== b.dataset.id); save(); render(true); }
+  else if (a === 'calm-start') startById(b.dataset.type, b.dataset.id);
+  else if (a === 'calm-close') closeCalm();
+  else if (a === 'calm-pause') pauseCalm();
+  else if (a === 'calm-music') {
+    S.calm.music = !S.calm.music; save(); audio();
+    b.setAttribute('aria-pressed', S.calm.music); $('#calm-next').hidden = !S.calm.music;
+    if (S.calm.music) nextTrack(); else { stopMusic(); $('#calm-track').textContent = 'Music off'; }
+  }
+  else if (a === 'calm-next') nextTrack();
+  else if (a === 'calm-tones') { S.calm.tones = !S.calm.tones; save(); setVolumes(); b.setAttribute('aria-pressed', S.calm.tones); b.textContent = S.calm.tones ? 'Tones on' : 'Tones off'; }
+  else if (a === 'calm-n') { const x = BREATHS.find((y) => y.id === b.dataset.id) || MIND.find((y) => y.id === b.dataset.id), o = optsFor(x), [lo, hi] = x.range || [1, 4]; o.n = Math.min(hi, Math.max(lo, o.n + +b.dataset.d * (hi - lo > 30 ? 5 : 1))); render(true); }
+  else if (a === 'calm-pace') { optsFor(BREATHS.find((y) => y.id === b.dataset.id)).pace = +b.dataset.v; render(true); }
+  else if (a === 'calm-pref') {
+    const k = b.dataset.k, v = b.dataset.v; S.calm[k] = v === 'true' ? true : v === 'false' ? false : +v; save(); setVolumes(); render(true);
+    if (k === 'track' && S.calm.music && +v >= 0) { playTrack(+v); clearTimeout(previewStop); previewStop = setTimeout(stopMusic, 8000); }
+  }
+  else if (a === 'calm-preview') { audio(); tone('in'); tone('out', 1.2); }
+  else if (a === 'bgoal') { breathGoal = b.dataset.g; render(true); }
+  else if (a === 'habit') { const d = dayKey(), h = S.mind.habits[d] || (S.mind.habits[d] = []), id = b.dataset.id; S.mind.habits[d] = h.includes(id) ? h.filter((x) => x !== id) : [...h, id]; save(); render(true); }
   else if (a === 'qadd') {
     const src = b.dataset.src, id = b.dataset.id, d = logTo();
     if (src === 'f') { const f = FOODS[+id]; logFood({ name: f.name, portion: f.portion, kcal: f.kcal, p: f.p, c: f.c, f: f.f }, d); }
@@ -4681,6 +5407,7 @@ document.addEventListener('change', (e) => {
 document.addEventListener('input', (e) => {
   const t = e.target;
   if (t.id === 'recipe-search') { recipeSearch = t.value; $('#recipe-cards').innerHTML = recipeCards(); }
+  else if (t.id === 'calm-vol' || t.id === 'set-vol' || t.id === 'set-tvol') { S.calm[t.id === 'set-tvol' ? 'toneVol' : 'vol'] = +t.value; audio(); setVolumes(); save(); }
   else if (t.id === 'food-q') {
     const had = !!foodQ.trim(); foodQ = t.value;
     if (had !== !!foodQ.trim() && manualOpen === false) { render(true); const q = $('#food-q'); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }
