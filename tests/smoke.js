@@ -41,6 +41,9 @@ const STATES = {
       if (await page.$('#app a[href="#sources"]')) { await page.click('#app a[href="#sources"]'); await page.waitForTimeout(100);
         const back = await page.$eval('#app', (a) => (a.querySelector('.back-top a') || {}).textContent || '');
         if (!/Back to Guide/.test(back)) { failures += 1; console.log(`FAIL ${name} @${width}px: no "Back to Guide" on Links & facts`); } }
+      await page.goto(URL + '#mealplan'); await page.waitForTimeout(100);
+      const cal = await page.$$eval('#app .mp-cell', (l) => l.length);
+      if (!/setup/.test(name) && (cal < 28 || cal > 42 || !(await page.$('#app .mp-month .mp-day')))) { failures += 1; console.log(`FAIL ${name} @${width}px: meal plan calendar has ${cal} cells`); }
       const groups = await page.$$eval('#site-menu .menu-h', (l) => l.map((x) => x.textContent));
       if (groups.join('|') !== 'Food|Training|Mind & breath|Progress|You|Help') { failures += 1; console.log(`FAIL ${name} @${width}px: menu groups are ${groups.join(', ')}`); }
       if (errors.length) { failures += 1; console.log(`FAIL ${name} @${width}px: ${errors[0]}`); }
