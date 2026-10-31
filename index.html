@@ -1814,7 +1814,8 @@ function migrate() {
   if (S.appliance === undefined) S.appliance = null;
   if (!S.servings) S.servings = 2;
   syncCustom();
-  if (S.targets.workoutsWeek == null) S.targets.workoutsWeek = (planById(S.activePlan) || PLANS[0]).perWeek;
+  // planById is declared further down, so look the plan up directly here.
+  if (S.targets.workoutsWeek == null) S.targets.workoutsWeek = (PLANS.find((p) => p.id === S.activePlan) || PLANS[0]).perWeek;
   if (S.targets.minutesWeek == null) S.targets.minutesWeek = 150;
 }
 migrate();
