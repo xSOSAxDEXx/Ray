@@ -4812,7 +4812,7 @@ function viewSetup() {
       <label class="field" style="max-width:240px">Workouts per week<input class="input num" id="s-wk" type="number" min="1" max="14" value="${S.targets.workoutsWeek || 3}"></label>
       <div class="row"><button class="btn btn-ghost" data-act="setup-step" data-v="1">Back</button><button class="btn btn-primary" data-act="setup-done">See my targets</button></div>`;
   return `<div class="setup panel stack">${dots}${body}
-    ${step === 0 ? `<div class="row"><button class="btn btn-primary" data-act="setup-step" data-v="1">Next</button><button class="btn btn-ghost" data-act="setup-example">Look around with example data first</button></div>` : ''}</div>`;
+    ${step === 0 ? `<div class="row"><button class="btn btn-primary" data-act="setup-step" data-v="1">Next</button><button class="btn btn-ghost" data-act="setup-example">Look around with example data first</button></div>${PROFILES.list.length > 1 ? `<p class="muted" style="font-size:.85rem">Added this profile by mistake? <button class="btn btn-sm btn-ghost" data-act="setup-leave">Cancel and go back</button></p>` : ''}` : ''}</div>`;
 }
 /* Adaptive calorie target (the approach MacroFactor popularized): what you actually burn = what you ate minus what
    your weight change says you stored. Uses the last 4 weeks; needs ≥10 well-logged days and ≥6 weigh-ins. Weight change
@@ -6301,6 +6301,12 @@ document.addEventListener('click', (e) => {
   else if (a === 'setup-units') { S.units = b.dataset.u; save(); render(true); }
   else if (a === 'setup-step') { setupStep = +b.dataset.v; render(false); }
   else if (a === 'setup-goal') { S.profile.goal = b.dataset.g; render(true); }
+  else if (a === 'setup-leave') { // leave a new, unused profile: remove it and go back to another one
+    const cur = PROFILES.active, other = PROFILES.list.find((p) => p.id !== cur); if (!other) return;
+    if (cur !== 'p1' && !S.meals.length && !S.workouts.length && !S.weights.length) { try { localStorage.removeItem(keyFor(cur)); } catch (e) { /* ignore */ } PROFILES.list = PROFILES.list.filter((p) => p.id !== cur); }
+    else save();
+    PROFILES.active = other.id; saveProfiles(); location.hash = '#today'; location.reload();
+  }
   else if (a === 'setup-example') { const units = S.units; S = { ...seed(), units }; migrate(); save(); location.hash = 'today'; render(false); }
   else if (a === 'setup-done') {
     const wk = parseFloat(($('#s-wk') || {}).value);
