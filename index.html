@@ -416,6 +416,13 @@ body.calm-open { overflow: hidden; }
 .calm .calm-vol input { width: 110px; accent-color: #8fd3cc; }
 .calm.paused .calm-orb { opacity: .45; }
 @media (max-height: 600px) { .calm-stage { width: min(60vw, 40vh); } .calm-cue { min-height: 0; } }
+.nudge { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; background: var(--accent-soft); border-radius: var(--r); padding: 12px 16px; margin-bottom: 16px; font-size: .92rem; }
+.privacy { background: var(--sunk); border-radius: var(--r); padding: 12px 14px; font-size: .88rem; }
+.restore-box { border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 8px; }
+.restore-box ul { margin: 0; padding-left: 18px; }
+.prof-row { display: flex; gap: 8px; align-items: center; }
+.prof-row .input { flex: 1; min-width: 0; }
+.cur-prof { margin-left: auto; font-size: .82rem; font-weight: 700; color: var(--accent); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; }
 .fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
 .fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
 .fbtn { display: inline-flex; align-items: center; gap: 8px; }
@@ -663,6 +670,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
       <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <span class="cur-page" id="cur-page"></span>
+    <a class="cur-prof" id="cur-prof" href="#settings" hidden></a>
   </div>
   <nav class="menu" id="site-menu" aria-label="Sections" hidden>
     <div class="wrap menu-grid">
@@ -2404,7 +2412,32 @@ const round = (n, d = 0) => { const f = 10 ** d; return Math.round(n * f) / f; }
 const KG_LB = 2.20462, ML_OZ = 29.5735;
 
 /* ---------- State ---------- */
-const KEY = 'rep-ration-v1';
+/* Profiles: each person on this device has their own saved data. The first profile keeps the original key, so
+   data saved before profiles existed is simply profile 1. */
+const BASE_KEY = 'rep-ration-v1', PKEY = 'rep-ration-profiles';
+const keyFor = (id) => (id === 'p1' ? BASE_KEY : `${BASE_KEY}:${id}`);
+function loadProfiles() {
+  try { const x = JSON.parse(localStorage.getItem(PKEY)); if (x && Array.isArray(x.list) && x.list.length && x.list.every((p) => p && typeof p.id === 'string')) return x; } catch (e) { /* first run or blocked */ }
+  return { active: 'p1', list: [{ id: 'p1', name: '' }] };
+}
+const PROFILES = loadProfiles();
+if (!PROFILES.list.some((p) => p.id === PROFILES.active)) PROFILES.active = PROFILES.list[0].id;
+const saveProfiles = () => { try { localStorage.setItem(PKEY, JSON.stringify(PROFILES)); } catch (e) { /* storage blocked */ } };
+const activeProfile = () => PROFILES.list.find((p) => p.id === PROFILES.active);
+let KEY = keyFor(PROFILES.active);
+/* Saved-data versions. Each migration upgrades one version to the next; data is never reset because of its version.
+   A save from a newer copy of the app keeps its version and is loaded as-is (unknown fields are left alone). */
+const SCHEMA = 2;
+const MIGRATIONS = {
+  1: (d) => { d.lastBackup = d.lastBackup || null; } // v1 → v2: backup reminders
+};
+function upgrade(d) {
+  if (d === null || typeof d !== 'object' || Array.isArray(d)) return null;
+  let v = Number.isInteger(d.v) && d.v >= 1 ? d.v : 1;
+  while (v < SCHEMA) { if (MIGRATIONS[v]) MIGRATIONS[v](d); v += 1; }
+  if (!(d.v >= SCHEMA)) d.v = SCHEMA;
+  return d;
+}
 /* Targets follow the mainstream consensus (see "How these are set" on Profile & goals):
    - Calories: Mifflin-St Jeor BMR × activity, with a deficit of at most 500 kcal or 20% (fat loss) or a small 10% surplus capped at 300 (muscle).
    - Protein: 1.6 g/kg to maintain, 1.8 to build, 2.0 while cutting (ISSN range 1.4–2.2 g/kg), on a "reference" weight capped near the top
@@ -2476,7 +2509,7 @@ function seed() {
   const workouts = exampleWorkouts(t);
   const water = {}; water[t] = 1250;
   const measures = [21, 14, 7, 0].map((ago, i) => ({ id: uid(), date: addDays(t, -ago), waist: round(86.5 - i * 0.7, 1), hips: round(104 - i * 0.5, 1), chest: round(97 - i * 0.3, 1), arm: 30.5, thigh: round(60 - i * 0.4, 1), neck: 34 }));
-  return { v: 1, example: true, units: 'us', profile, targets: { ...calcTargets(profile), waterMl: waterFor(profile), workoutsWeek: 4, minutesWeek: 150 },
+  return { v: SCHEMA, example: true, lastBackup: null, units: 'us', profile, targets: { ...calcTargets(profile), waterMl: waterFor(profile), workoutsWeek: 4, minutesWeek: 150 },
     meals, weights, workouts, water, measures, activePlan: 'foundations', session: null, customRecipes: [], customPlans: [], mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2, settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
     shopping: { recipes: [{ id: 'chicken-burrito-bowls', servings: 4 }, { id: 'berry-overnight-oats', servings: 4 }], checked: {}, extras: [] } };
 }
@@ -2484,14 +2517,23 @@ function fresh() {
   const s = seed();
   return { ...s, example: false, meals: [], weights: [], workouts: [], water: {}, measures: [], session: null, shopping: { recipes: [], checked: {}, extras: [], subs: {} } };
 }
-let S;
-try { const raw = localStorage.getItem(KEY); S = raw ? JSON.parse(raw) : seed(); } catch (e) { S = seed(); }
-if (!S || S.v !== 1) S = seed();
+let S, unreadable = false;
+{
+  let raw = null;
+  try { raw = localStorage.getItem(KEY); } catch (e) { /* storage blocked: run in memory */ }
+  try { S = raw ? upgrade(JSON.parse(raw)) : null; } catch (e) { S = null; }
+  if (raw && !S) {
+    // Never throw unreadable data away: keep a copy beside it before starting fresh.
+    unreadable = true;
+    try { localStorage.setItem(`${KEY}:unreadable-${new Date().toISOString().slice(0, 10)}`, raw); } catch (e) { /* no room */ }
+  }
+  if (!S) S = seed();
+}
 /* Fill in fields added after a save (or backup) was made, and repair anything with the wrong shape so one bad
    field can't stop the whole app from loading. Only uses things declared above this point (it runs at startup). */
 const DEFAULTS = () => ({
   meals: [], weights: [], workouts: [], water: {}, measures: [], session: null, myGear: null, customRecipes: [], customPlans: [],
-  mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2,
+  mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2, lastBackup: null, backupSnooze: null,
   shopping: { recipes: [], checked: {}, extras: [], subs: {} },
   settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
   stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {} },
@@ -2554,7 +2596,7 @@ async function loadPhotos() {
   try {
     const rows = await idbDone((await photoStore('readonly')).getAll());
     photos.forEach((p) => URL.revokeObjectURL(p.url));
-    photos = rows.map((r) => ({ id: r.id, date: r.date, pose: r.pose, url: URL.createObjectURL(r.blob) })).sort((a, b) => a.date.localeCompare(b.date));
+    photos = rows.filter((r) => (r.profile || 'p1') === PROFILES.active).map((r) => ({ id: r.id, date: r.date, pose: r.pose, url: URL.createObjectURL(r.blob) })).sort((a, b) => a.date.localeCompare(b.date));
   } catch (e) { photosOk = false; }
   photosReady = true;
   if (current === 'progress') render(true);
@@ -2575,12 +2617,18 @@ function shrinkImage(file) {
 }
 async function addPhoto(file, date, pose) {
   const blob = await shrinkImage(file);
-  await idbDone((await photoStore('readwrite')).put({ id: uid(), date, pose, blob }));
+  await idbDone((await photoStore('readwrite')).put({ id: uid(), date, pose, blob, profile: PROFILES.active }));
   await loadPhotos();
 }
 async function deletePhoto(id) { await idbDone((await photoStore('readwrite')).delete(id)); await loadPhotos(); }
-async function clearPhotos() {
-  try { await idbDone((await photoStore('readwrite')).clear()); await idbDone((await photoStore('readwrite', 'recipePhotos')).clear()); } catch (e) { /* nothing stored */ }
+// Deletes one profile's progress photos (recipe photos are shared by everyone on the device).
+async function clearPhotos(profile = PROFILES.active) {
+  try {
+    const rows = await idbDone((await photoStore('readonly')).getAll());
+    const st = await photoStore('readwrite');
+    rows.filter((r) => (r.profile || 'p1') === profile).forEach((r) => st.delete(r.id));
+    await idbDone(st);
+  } catch (e) { /* nothing stored */ }
   await loadPhotos(); await loadRecipePhotos();
 }
 
@@ -3125,7 +3173,7 @@ function viewToday() {
   const pLeft = Math.round(T.p - tot.p);
   const plan = planById(S.activePlan) || PLANS[0];
 
-  return `${exampleBanner()}
+  return `${exampleBanner()}${unreadable ? '<div class="nudge" role="alert"><span>Some saved data couldn\'t be read, so a copy was kept aside and the app started fresh. Nothing was deleted.</span></div>' : ''}${backupNudge()}
   <div class="page-head"><div><div class="eyebrow">${fmtDay(t, { weekday: 'long', month: 'long', day: 'numeric' })}</div><h1>${greet}.</h1></div>
     <div class="row"><a class="btn" href="#h-meals" data-act="jump-food">Log food</a><a class="btn btn-primary" href="#recipes">Find a recipe</a></div></div>
   <div class="today-grid">
@@ -4191,10 +4239,8 @@ function viewTargets() {
         <p class="muted" style="font-size:.8rem">Treat them as starting points and adjust after two weeks of tracking.</p></details>
       <hr style="border:0;border-top:1px solid var(--line);width:100%;margin:4px 0">
       <div class="eyebrow">Your data</div>
-      <p class="muted" style="font-size:.88rem">Everything is stored in this browser only. Download a backup to move your log to another device or browser. Clearing removes all meals, weigh-ins, measurements, photos and workouts.</p>
-      <div class="row"><button class="btn btn-sm" data-act="backup">Download backup</button>
-        <label class="btn btn-sm" for="restore-file" style="position:relative">Restore from backup<input type="file" id="restore-file" accept="application/json,.json" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%"></label></div>
-      <div class="confirm">${clearArmed ? `<span>Delete everything?</span><button class="btn btn-sm btn-berry" data-act="clear-all">Yes, delete</button><button class="btn btn-sm" data-act="clear-cancel">Keep</button>` : `<button class="btn btn-sm" data-act="clear-arm">Clear all data</button>`}</div>
+      <p class="muted" style="font-size:.88rem">Everything stays in this browser. Backups, restore, profiles and privacy are in <a href="#settings">Settings</a>.</p>
+      <div class="row"><button class="btn btn-sm" data-act="backup" data-scope="profile">Download backup</button><a class="btn btn-sm btn-ghost" href="#settings">Restore or manage profiles</a></div>
     </section>
   </div>`;
 }
@@ -5125,6 +5171,107 @@ function startById(type, id) {
   else { const m = MIND.find((x) => x.id === id), o = optsFor(m); startCalm({ kind: 'mind', ref: id, title: m.title, segs: mindSegs(m, o.n) }); }
 }
 
+
+/* ---------- Backup, restore and profiles ---------- */
+const readProfileData = (id) => { if (id === PROFILES.active) return S; try { return upgrade(JSON.parse(localStorage.getItem(keyFor(id)))); } catch (e) { return null; } };
+function makeBackup(scope) {
+  const ids = scope === 'all' ? PROFILES.list.map((p) => p.id) : [PROFILES.active];
+  return { app: 'rep-and-ration', format: 1, schema: SCHEMA, exportedAt: new Date().toISOString(), scope,
+    profiles: ids.map((id) => ({ id, name: (PROFILES.list.find((p) => p.id === id) || {}).name || '', data: readProfileData(id) })).filter((x) => x.data) };
+}
+let backupFallback = null, restorePending = null, backupScope = 'profile';
+function downloadBackup(scope) {
+  const b = makeBackup(scope), text = JSON.stringify(b, null, 1), name = `rep-and-ration-backup-${dayKey()}.json`;
+  try {
+    const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    backupFallback = null;
+  } catch (e) { backupFallback = text; } // some in-app browsers block downloads: show the text to copy instead
+  const now = new Date().toISOString();
+  S.lastBackup = now; save();
+  if (scope === 'all') PROFILES.list.forEach((p) => { if (p.id !== PROFILES.active) { const d = readProfileData(p.id); if (d) { d.lastBackup = now; try { localStorage.setItem(keyFor(p.id), JSON.stringify(d)); } catch (err) { /* full */ } } } });
+  toast(backupFallback ? 'Download blocked: copy the backup text below' : `Backup saved as ${name}`);
+  render(true);
+}
+// What a backup holds, for the preview before restoring. Accepts this format and the older single-profile file.
+function readBackup(txt) {
+  let raw; try { raw = JSON.parse(txt); } catch (e) { return null; }
+  let list;
+  if (raw && raw.app === 'rep-and-ration' && Array.isArray(raw.profiles)) list = raw.profiles.map((x) => ({ name: String(x.name || ''), data: upgrade(x.data) }));
+  else list = [{ name: '', data: upgrade(raw) }];
+  list = list.filter((x) => x.data && Array.isArray(x.data.meals) && Array.isArray(x.data.weights) && isObj(x.data.profile) && isObj(x.data.targets));
+  if (!list.length) return null;
+  return { exportedAt: raw && raw.exportedAt, list: list.map((x) => {
+    const d = x.data, dates = [...d.meals, ...d.weights, ...(d.workouts || [])].map((e) => e && e.date).filter((k) => typeof k === 'string').sort();
+    return { ...x, from: dates[0], to: dates[dates.length - 1], meals: d.meals.length, workouts: (d.workouts || []).length, weighIns: d.weights.length };
+  }) };
+}
+function applyRestore(mode) {
+  const r = restorePending; if (!r) return;
+  if (mode === 'replace' && r.list.length === 1) { S = { ...fresh(), ...r.list[0].data, session: null }; migrate(); save(); }
+  else {
+    // Add each profile in the file as a new profile (or replace all when the file has several and that was chosen).
+    if (mode === 'replace') { PROFILES.list.forEach((p) => { if (p.id !== 'p1') try { localStorage.removeItem(keyFor(p.id)); } catch (e) { /* ignore */ } }); PROFILES.list = []; }
+    r.list.forEach((x, i) => {
+      const id = mode === 'replace' && i === 0 ? 'p1' : 'p' + uid();
+      PROFILES.list.push({ id, name: x.name || `Profile ${PROFILES.list.length + 1}` });
+      try { localStorage.setItem(keyFor(id), JSON.stringify({ ...x.data, session: null })); } catch (e) { toast('Not enough storage for that backup'); }
+    });
+    if (mode === 'replace') PROFILES.active = 'p1';
+    saveProfiles();
+    if (mode === 'replace') { location.reload(); return; }
+  }
+  restorePending = null; toast('Backup restored'); render(true);
+}
+function switchProfile(id) {
+  if (!PROFILES.list.some((p) => p.id === id) || id === PROFILES.active) return;
+  save(); PROFILES.active = id; saveProfiles();
+  location.hash = '#today'; location.reload();
+}
+const backupAge = () => (S.lastBackup ? Math.floor((Date.now() - new Date(S.lastBackup).getTime()) / 864e5) : null);
+// A gentle nudge on Today when there's real data and no backup in the last 7 days.
+function backupNudge() {
+  const has = !S.example && S.meals.length + S.workouts.length + S.weights.length >= 5, age = backupAge();
+  if (!has || (age != null && age < 7) || (S.backupSnooze && S.backupSnooze > dayKey())) return '';
+  return `<div class="nudge" role="status"><span>${age == null ? "You haven't backed up yet." : `Your last backup was ${age} days ago.`} Your data lives only in this browser, so a backup keeps it safe.</span>
+    <span class="row"><button class="btn btn-sm btn-primary" data-act="backup" data-scope="profile">Download backup</button><button class="btn btn-sm btn-ghost" data-act="backup-later">Later</button></span></div>`;
+}
+const profName = (p, i) => esc(p.name || (PROFILES.list.length > 1 ? `Profile ${i + 1}` : 'You'));
+function dataPanel() {
+  const r = restorePending, age = backupAge();
+  return `<section class="panel stack" id="your-data" aria-labelledby="h-data" style="max-width:780px">
+    <h2 id="h-data">Your data</h2>
+    <div class="privacy"><b>Privacy:</b> your profile, targets, food and workout logs, measurements and photos are stored only in this browser on this device. There's no account and nothing is uploaded.
+      The only times the app contacts another service are when you ask it to: the store finder sends the zip code or location you enter to OpenStreetMap, and barcode lookup sends the barcode number to Open Food Facts. Fonts load from Google Fonts.</div>
+    <div class="set-row"><div><h3>Backup</h3><p class="muted">${age == null ? 'No backup yet.' : `Last backup ${age === 0 ? 'today' : age === 1 ? 'yesterday' : age + ' days ago'}.`} A backup is one file you can keep or move to another device.</p></div>
+      <div class="stack" style="gap:8px">${PROFILES.list.length > 1 ? `<div class="row" role="group" aria-label="What to back up"><button class="chip" data-act="backup-scope" data-v="profile" aria-pressed="${backupScope === 'profile'}">This profile</button><button class="chip" data-act="backup-scope" data-v="all" aria-pressed="${backupScope === 'all'}">All profiles</button></div>` : ''}
+        <button class="btn btn-primary" data-act="backup" data-scope="${PROFILES.list.length > 1 ? backupScope : 'profile'}">Download backup</button></div></div>
+    ${backupFallback ? `<label class="field">Copy this text and save it as a .json file<textarea class="input" rows="5" readonly id="backup-text">${esc(backupFallback)}</textarea></label>` : ''}
+    <div class="set-row"><div><h3>Restore</h3><p class="muted">Choose a backup file. You'll see what's in it before anything changes.</p></div>
+      <label class="btn" for="restore-file" style="position:relative">Choose backup file<input type="file" id="restore-file" accept="application/json,.json" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%"></label></div>
+    ${r ? `<div class="restore-box" role="region" aria-label="Backup preview"><b>This backup holds${r.exportedAt ? ` (made ${fmtDay(r.exportedAt.slice(0, 10), { month: 'short', day: 'numeric', year: 'numeric' })})` : ''}:</b>
+      <ul>${r.list.map((x, i) => `<li><b>${esc(x.name || (r.list.length > 1 ? `Profile ${i + 1}` : 'Your data'))}</b>: ${x.from ? `${fmtDay(x.from, { month: 'short', day: 'numeric', year: 'numeric' })} to ${fmtDay(x.to, { month: 'short', day: 'numeric', year: 'numeric' })}` : 'no dated entries'} · ${plural(x.meals, 'meal')} · ${plural(x.workouts, 'workout')} · ${plural(x.weighIns, 'weigh-in')}</li>`).join('')}</ul>
+      <div class="row"><button class="btn btn-berry btn-sm" data-act="restore-go" data-mode="replace">${r.list.length > 1 ? 'Replace all profiles' : 'Replace this profile'}</button>
+        <button class="btn btn-sm" data-act="restore-go" data-mode="add">Add as new profile${r.list.length > 1 ? 's' : ''}</button><button class="btn btn-sm btn-ghost" data-act="restore-cancel">Cancel</button></div>
+      <p class="muted" style="font-size:.8rem">Replacing overwrites what's here now. Download a backup first if you might want it back.</p></div>` : ''}
+    <div class="set-row" id="profiles"><div><h3>Profiles</h3><p class="muted">Share this device: each profile has its own name, units, targets and logs.</p></div>
+      <div class="stack" style="gap:8px;min-width:min(100%,280px)">
+        ${PROFILES.list.map((p, i) => `<div class="prof-row ${p.id === PROFILES.active ? 'on' : ''}"><input class="input" value="${esc(p.name)}" placeholder="${p.id === PROFILES.active ? 'Your name' : `Profile ${i + 1}`}" data-pname="${p.id}" aria-label="Profile name">
+          ${p.id === PROFILES.active ? '<span class="tag tag-accent">Active</span>' : `<button class="btn btn-sm" data-act="prof-switch" data-id="${p.id}">Switch</button>`}
+          ${PROFILES.list.length > 1 ? (profDelArm === p.id ? `<button class="btn btn-sm btn-berry" data-act="prof-del" data-id="${p.id}">Delete all its data</button>` : `<button class="btn btn-sm btn-ghost" data-act="prof-del-arm" data-id="${p.id}" aria-label="Delete ${profName(p, i)}">✕</button>`) : ''}</div>`).join('')}
+        <button class="btn btn-sm" data-act="prof-add">+ Add a profile</button></div></div>
+    <div class="confirm">${clearArmed ? `<span>Delete everything in this profile?</span><button class="btn btn-sm btn-berry" data-act="clear-all">Yes, delete</button><button class="btn btn-sm" data-act="clear-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="clear-arm">Clear this profile's data</button>`}</div>
+  </section>`;
+}
+let profDelArm = null;
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+function paintProfile() {
+  const el = $('#cur-prof'); if (!el) return;
+  const i = PROFILES.list.findIndex((p) => p.id === PROFILES.active);
+  el.hidden = PROFILES.list.length < 2; el.textContent = PROFILES.list[i] ? (PROFILES.list[i].name || `Profile ${i + 1}`) : '';
+  el.setAttribute('aria-label', `Profile: ${el.textContent}. Manage profiles`);
+}
 function viewSettings() {
   const p = S.settings;
   const chip = (k, v, label, pre = '') => `<button type="button" class="chip" data-act="pref" data-k="${k}" data-v="${v}" aria-pressed="${String(p[k]) === v}">${pre}${label}</button>`;
@@ -5149,7 +5296,8 @@ function viewSettings() {
       ${row('Cue tones', 'A gentle bell when it\'s time to breathe in, out or hold, or move to the next pose.', cc('tones', true, 'On') + cc('tones', false, 'Off') + '<button type="button" class="chip" data-act="calm-preview">Hear them</button>')}
       ${row('Vibration', 'A light buzz at each change, on phones that support it.', cc('vibrate', true, 'On') + cc('vibrate', false, 'Off'))}`; })()}
     <p class="muted" style="font-size:.85rem;margin-top:14px">Your details, calorie targets, weekly workout goal, backup and restore are on <a href="#goals">Profile &amp; goals</a>.</p>
-  </section>`;
+  </section>
+  ${dataPanel()}`;
 }
 
 function notFound(what) {
@@ -5198,6 +5346,7 @@ function renderView(keepScroll) {
   app.dataset.view = tab || 'none';
   if (h !== current && !keepScroll) { app.classList.remove('enter'); void app.offsetWidth; app.classList.add('enter'); }
   document.querySelectorAll('.tab').forEach((a) => { if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  paintProfile();
   const at = document.querySelector('.tab[aria-current]'), cp = $('#cur-page');
   if (cp) cp.textContent = at ? at.querySelector('.tab-l').textContent : '';
   if (keepScroll) window.scrollTo(0, y);
@@ -5450,11 +5599,30 @@ document.addEventListener('click', (e) => {
   else if (a === 'rem-cancel') { remDraft = null; render(true); }
   else if (a === 'rem-off') { S.reminders = null; save(); toast('Reminders turned off. Remove the event from your calendar too.'); render(true); }
   else if (a === 'rem-ics') { downloadFile('workout-reminders.ics', reminderIcs(), 'text/calendar'); toast('Open the downloaded file to add it to your calendar'); }
-  else if (a === 'backup') {
-    const url = URL.createObjectURL(new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' }));
-    const link = document.createElement('a'); link.href = url; link.download = `rep-ration-backup-${dayKey()}.json`;
-    document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast('Backup downloaded');
+  else if (a === 'backup') downloadBackup(b.dataset.scope || 'profile');
+  else if (a === 'backup-scope') { backupScope = b.dataset.v; render(true); }
+  else if (a === 'backup-later') { S.backupSnooze = addDays(dayKey(), 3); save(); render(true); }
+  else if (a === 'restore-go') applyRestore(b.dataset.mode);
+  else if (a === 'restore-cancel') { restorePending = null; render(true); }
+  else if (a === 'prof-switch') switchProfile(b.dataset.id);
+  else if (a === 'prof-add') {
+    const id = 'p' + uid(); PROFILES.list.push({ id, name: '' }); saveProfiles();
+    try { localStorage.setItem(keyFor(id), JSON.stringify({ ...fresh(), units: S.units, setup: false })); } catch (e) { toast('Not enough storage for another profile'); return; }
+    switchProfile(id);
+  }
+  else if (a === 'prof-del-arm') { profDelArm = b.dataset.id; render(true); }
+  else if (a === 'prof-del') {
+    const id = b.dataset.id; if (PROFILES.list.length < 2) return;
+    try { localStorage.removeItem(keyFor(id)); } catch (e) { /* ignore */ }
+    clearPhotos(id);
+    PROFILES.list = PROFILES.list.filter((p) => p.id !== id); profDelArm = null;
+    if (id === 'p1') { // keep profile 1's key in use: move the next profile's data into it
+      const next = PROFILES.list[0], d = localStorage.getItem(keyFor(next.id));
+      if (d) { localStorage.setItem(BASE_KEY, d); localStorage.removeItem(keyFor(next.id)); }
+      next.id = 'p1';
+    }
+    if (!PROFILES.list.some((p) => p.id === PROFILES.active) || id === 'p1') { PROFILES.active = PROFILES.list[0].id; saveProfiles(); location.reload(); return; }
+    saveProfiles(); toast('Profile deleted'); render(true);
   }
 });
 
@@ -5557,11 +5725,12 @@ document.addEventListener('change', (e) => {
   } else if (t.id === 'rem-alert' && remDraft) { remDraft.alert = +t.value;
   } else if (t.id === 'restore-file' && t.files[0]) {
     t.files[0].text().then((txt) => {
-      const data = JSON.parse(txt);
-      if (!data || data.v !== 1 || !Array.isArray(data.meals) || !Array.isArray(data.weights) || !data.profile || !data.targets) throw new Error('shape');
-      S = { ...fresh(), ...data, session: null }; migrate();
-      save(); toast('Backup restored'); render(true);
+      const r = readBackup(txt);
+      if (!r) throw new Error('shape');
+      restorePending = r; render(true); const box = $('.restore-box'); if (box) box.scrollIntoView({ block: 'center' });
     }).catch(() => { toast("That file isn't a Rep & Ration backup"); t.value = ''; });
+  } else if (t.dataset.pname) {
+    const pr = PROFILES.list.find((x) => x.id === t.dataset.pname); if (pr) { pr.name = t.value.trim().slice(0, 30); saveProfiles(); paintProfile(); }
   }
 });
 document.addEventListener('input', (e) => {
