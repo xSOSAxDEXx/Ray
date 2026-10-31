@@ -317,6 +317,8 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .stepper-sm button { width: 30px; height: 30px; font-size: 1rem; }
 .stepper-sm output { min-width: 36px; font-size: .82rem; }
 .mk { min-width: 36px; text-align: right; }
+.diet-box { font-size: .82rem; background: var(--sunk); border-radius: var(--r); padding: 8px 12px; }
+.diet-box ul { margin: 4px 0 0; padding-left: 18px; }
 .fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
 .fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
 .fbtn { display: inline-flex; align-items: center; gap: 8px; }
@@ -589,13 +591,13 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
 const RECIPES = [
   { id: 'berry-overnight-oats', title: 'Berry Protein Overnight Oats', meal: 'Breakfast',
     tags: ['Vegetarian', 'High protein', 'Meal prep'], prep: 5, cook: 0, extra: 'Chill 4 h or overnight', servings: 2,
-    per: { kcal: 440, p: 29, c: 51, f: 13, fiber: 9, sugar: 12 },
+    per: { kcal: 430, p: 29, c: 48, f: 13, fiber: 9, sugar: 9 },
     blurb: 'A no-cook breakfast you mix in five minutes the night before. Whole-milk Greek yogurt and a clean, unflavored whey push it to about 30 g of protein.',
     ingredients: [[1, 'cup', 'rolled oats'], [1, 'cup', 'plain whole-milk Greek yogurt'], [0.75, 'cup', 'unsweetened almond milk (just almonds and water) or whole milk'],
       [2, 'tbsp', 'chia seeds'], [1, 'scoop', 'unflavored grass-fed whey or collagen (about 30 g; no sweeteners or gums)'], [1, 'tsp', 'vanilla extract'], [1, 'cup', 'mixed berries, fresh or frozen'],
-      [1, 'tsp', 'raw honey or pure maple syrup'], [null, '', 'pinch of salt and cinnamon']],
+      [null, '', 'pure monk fruit sweetener to taste, or 1 tsp coconut sugar (optional)'], [null, '', 'pinch of salt and cinnamon']],
     steps: ['In a bowl, whisk the protein powder into the almond milk until no lumps remain.',
-      'Stir in the Greek yogurt, oats, chia seeds, honey, vanilla, salt and cinnamon.',
+      'Stir in the Greek yogurt, oats, chia seeds, sweetener (if using), vanilla, salt and cinnamon. The berries add most of the sweetness.',
       'Divide between two jars. Top each with half the berries.',
       'Cover and refrigerate at least 4 hours. Eat cold, or microwave 60–90 seconds if you prefer it warm.'],
     tip: 'Keeps 4 days in the fridge. Make four jars on Sunday and breakfast is done through Thursday.' },
@@ -662,9 +664,9 @@ const RECIPES = [
     ingredients: [[14, 'oz', 'extra-firm tofu, pressed and cubed'], [1, 'tbsp', 'arrowroot powder'], [1, 'tbsp', 'avocado oil'],
       [3, 'cup', 'broccoli florets'], [1, '', 'red bell pepper, sliced'], [1, 'cup', 'snap peas'],
       [2, 'tbsp', 'natural peanut butter'], [2, 'tbsp', 'coconut aminos'], [1, 'tbsp', 'rice vinegar'],
-      [1.5, 'tsp', 'pure maple syrup'], [1, 'tsp', 'fresh ginger, grated'], [1, 'clove', 'garlic, grated'], [1.5, 'cup', 'cooked jasmine rice']],
+      [1.5, 'tsp', 'coconut sugar'], [1, 'tsp', 'fresh ginger, grated'], [1, 'clove', 'garlic, grated'], [1.5, 'cup', 'cooked jasmine rice']],
     steps: ['Press the tofu for 10 minutes between towels under something heavy. Cut into 3/4-inch cubes and toss with the arrowroot.',
-      'Whisk the peanut butter, coconut aminos, vinegar, maple syrup, ginger, garlic and 2 tbsp warm water into a smooth sauce.',
+      'Whisk the peanut butter, coconut aminos, vinegar, coconut sugar, ginger, garlic and 2 tbsp warm water into a smooth sauce.',
       'Heat the oil in a large nonstick pan over medium-high. Fry the tofu 8–10 minutes, turning, until golden on most sides. Remove.',
       'Add the broccoli, pepper and snap peas with a splash of water. Cook 4–5 minutes until bright and crisp-tender.',
       'Return the tofu, pour in the sauce and toss for 1 minute until glossy. Serve over the rice.'],
@@ -735,12 +737,12 @@ const RECIPES = [
     tip: 'Blend a third of the soup for a creamier texture. Freezes well for up to 3 months.' },
   { id: 'beef-broccoli', title: 'Beef & Broccoli with Brown Rice', meal: 'Dinner',
     tags: ['High protein'], prep: 15, cook: 15, servings: 4,
-    per: { kcal: 445, p: 30, c: 49, f: 14, fiber: 5, sugar: 8 },
+    per: { kcal: 442, p: 30, c: 48, f: 14, fiber: 5, sugar: 7 },
     blurb: 'Better than takeout in 30 minutes, with about half the sodium and twice the broccoli.',
     ingredients: [[16, 'oz', 'flank steak, thinly sliced against the grain'], [4, 'cup', 'broccoli florets'],
-      [0.25, 'cup', 'coconut aminos'], [2, 'tsp', 'raw honey'], [1, 'tbsp', 'arrowroot powder'], [3, 'clove', 'garlic, minced'],
+      [0.25, 'cup', 'coconut aminos'], [2, 'tsp', 'coconut sugar'], [1, 'tbsp', 'arrowroot powder'], [3, 'clove', 'garlic, minced'],
       [1, 'tbsp', 'fresh ginger, grated'], [1, 'tbsp', 'avocado oil'], [1, 'tsp', 'toasted sesame oil, to finish'], [3, 'cup', 'cooked brown rice'], [null, '', 'sliced green onion and sesame seeds to serve']],
-    steps: ['Whisk the coconut aminos, honey, arrowroot, garlic, ginger and 1/3 cup water to make the sauce.',
+    steps: ['Whisk the coconut aminos, coconut sugar, arrowroot, garlic, ginger and 1/3 cup water to make the sauce.',
       'Heat half the oil in a large skillet or wok over high heat. Sear the beef in one layer for 1–2 minutes per side, then remove.',
       'Add the remaining oil and the broccoli with 2 tbsp water. Cover and steam-fry 3 minutes until bright green.',
       'Return the beef, pour in the sauce and toss for 1–2 minutes until it thickens and coats everything.',
@@ -787,25 +789,25 @@ const RECIPES = [
     tip: 'For more protein, stir in a cup of cooked lentils or serve with a side of Greek yogurt (if not vegan).' },
   { id: 'pb-protein-bites', title: 'Peanut Butter Protein Bites', meal: 'Snack',
     tags: ['Vegetarian', 'No cook', 'Meal prep'], prep: 15, cook: 0, extra: 'Chill 30 min', servings: 6,
-    per: { kcal: 285, p: 12, c: 24, f: 16, fiber: 5, sugar: 10 },
+    per: { kcal: 253, p: 12, c: 15, f: 16, fiber: 5, sugar: 1 },
     blurb: 'Twelve no-bake bites. Two make a serving: a quick snack before training or a better dessert.',
-    ingredients: [[1, 'cup', 'rolled oats'], [0.5, 'cup', 'natural peanut butter'], [3, 'tbsp', 'raw honey'],
+    ingredients: [[1, 'cup', 'rolled oats'], [0.5, 'cup', 'natural peanut butter'], [3, 'tbsp', 'pure monk fruit syrup (no erythritol), or 2 tbsp coconut sugar + 1 tbsp water'],
       [1, 'scoop', 'unflavored grass-fed whey or collagen (about 30 g; no sweeteners or gums)'], [1, 'tsp', 'vanilla extract'], [2, 'tbsp', 'ground flaxseed'], [1.5, 'oz', '85% dark chocolate, finely chopped']],
-    steps: ['Stir the peanut butter and honey together in a bowl until smooth. Warm 15 seconds in the microwave if stiff.',
+    steps: ['Stir the peanut butter and monk fruit syrup together in a bowl until smooth. Warm 15 seconds in the microwave if stiff.',
       'Add the oats, protein powder, flaxseed and chopped chocolate. Mix until evenly combined. If the mix is too dry to roll, add 1–2 tbsp milk.',
       'If the mixture is crumbly, add water a teaspoon at a time until it holds together when squeezed.',
       'Roll into 12 balls, about 1 heaped tablespoon each.',
       'Chill 30 minutes to firm up. Keep in the fridge up to a week.'],
-    tip: 'Freeze half the batch on a tray, then bag them. They thaw in about 10 minutes.' },
+    tip: 'Freeze half the batch on a tray, then bag them. They thaw in about 10 minutes. Using coconut sugar instead adds about 6 g sugar per serving.' },
   { id: 'cottage-cheese-parfait', title: 'Cottage Cheese Berry Parfait', meal: 'Snack',
     tags: ['Vegetarian', 'High protein', 'No cook', 'Gluten free'], prep: 3, cook: 0, servings: 1,
-    per: { kcal: 310, p: 31, c: 17, f: 13, fiber: 4, sugar: 13 },
+    per: { kcal: 300, p: 31, c: 14, f: 13, fiber: 4, sugar: 10 },
     blurb: 'Thirty grams of protein in three minutes. A good evening snack because it keeps you full.',
     ingredients: [[1, 'cup', 'full-fat cottage cheese (no added gums)'], [0.5, 'cup', 'mixed berries, fresh or frozen'], [1, 'tbsp', 'chopped walnuts or pecans'],
-      [1, 'tsp', 'pumpkin or hemp seeds'], [0.5, 'tsp', 'raw honey'], [null, '', 'pinch of salt and cinnamon']],
+      [1, 'tsp', 'pumpkin or hemp seeds'], [null, '', 'pure monk fruit sweetener (optional)'], [null, '', 'pinch of salt and cinnamon']],
     steps: ['Spoon the cottage cheese into a bowl or jar. Whip it smooth with a fork or quick blend if you dislike the curds.',
       'Top with the berries, then the nuts and seeds.',
-      'Drizzle with honey and a pinch of cinnamon.'],
+      'Finish with a pinch of cinnamon, and a little monk fruit if you like it sweeter.'],
     tip: 'Add the nuts just before eating so they stay crunchy.' },
   /* Sugar free (no sweeteners or fruit), high protein, whole-food recipes. */
   { id: 'steak-egg-skillet', title: 'Steak & Egg Breakfast Skillet', meal: 'Breakfast',
@@ -1055,6 +1057,121 @@ const RECIPES = [
     steps: ['Add everything except the ice to a blender and blend 20 seconds.',
       'Add the ice and blend again until thick and frothy. Drink right away.'],
     tip: 'A pinch of salt rounds out the cocoa\'s bitterness. Check the powder\'s label: the only ingredient should be whey protein.' },
+  // ---- Desserts: no refined sugar; sweetness from fruit, pure monk fruit or a little coconut sugar ----
+  { id: 'avocado-chocolate-mousse', title: 'Dark Chocolate Avocado Mousse', meal: 'Dessert', how: 'none',
+    tags: ['Vegetarian', 'Vegan', 'Whole foods', 'Minimally processed', 'Low carb', 'No cook'], prep: 10, cook: 0, extra: 'Chill 30 min', servings: 4,
+    per: { kcal: 196, p: 3, c: 11, f: 17, fiber: 7, sugar: 1 },
+    blurb: 'Silky and deeply chocolatey, made from avocado, cocoa and coconut milk. Monk fruit sweetens it without a gram of sugar.',
+    ingredients: [[2, '', 'ripe avocados'], [0.33, 'cup', 'unsweetened cocoa powder'], [0.33, 'cup', 'full-fat coconut milk (no gums)'],
+      [2, 'tbsp', 'pure monk fruit sweetener (no erythritol), or to taste'], [1, 'tsp', 'vanilla extract'], [null, '', 'pinch of salt'], [null, '', 'raspberries or cacao nibs to serve (optional)']],
+    steps: ['Scoop the avocado flesh into a food processor or blender.',
+      'Add the cocoa, coconut milk, monk fruit, vanilla and salt.',
+      'Blend 1–2 minutes, scraping down the sides, until completely smooth with no green flecks.',
+      'Taste and add a little more monk fruit if you like it sweeter. Spoon into 4 small glasses and chill 30 minutes.',
+      'Top with a few raspberries or cacao nibs.'],
+    tip: 'Pure monk fruit is very sweet: start small. Many "monk fruit" bags are mostly erythritol, so check that monk fruit is the only ingredient, or use 2 tbsp coconut sugar instead (adds about 6 g sugar per serving).' },
+  { id: 'cinnamon-baked-apples', title: 'Cinnamon Baked Apples with Walnuts & Yogurt', meal: 'Dessert', how: 'oven',
+    tags: ['Vegetarian', 'Whole foods', 'Minimally processed'], prep: 10, cook: 30, servings: 4,
+    per: { kcal: 234, p: 7, c: 16, f: 17, fiber: 3, sugar: 12 },
+    blurb: 'Warm, soft apple halves with buttery cinnamon walnuts and a cool spoon of Greek yogurt. No added sugar: the apple does the work.',
+    ingredients: [[2, '', 'crisp apples (Honeycrisp or Pink Lady), halved and cored'], [2, 'tbsp', 'butter, melted'], [0.5, 'cup', 'walnuts, chopped'],
+      [1, 'tsp', 'ground cinnamon'], [null, '', 'pinch of nutmeg and salt'], [1, 'cup', 'plain whole-milk Greek yogurt']],
+    steps: ['Heat the oven to 375°F (190°C). Set the apple halves cut side up in a small baking dish.',
+      'Mix the melted butter, walnuts, cinnamon, nutmeg and salt. Pile it into the hollow of each apple.',
+      'Add 3 tbsp water to the dish, cover with foil and bake 20 minutes.',
+      'Uncover and bake 10 minutes more, until the apples are tender when poked with a knife.',
+      'Serve warm with a spoonful of yogurt and any juices from the dish.'],
+    tip: 'Sweet apple varieties caramelize on their own. If you want it sweeter, sprinkle ½ tsp coconut sugar over each half before baking.' },
+  { id: 'vanilla-chia-pudding', title: 'Vanilla Chia Pudding with Raspberries', meal: 'Dessert', how: 'none',
+    tags: ['Vegetarian', 'Whole foods', 'Minimally processed', 'No cook', 'Meal prep'], prep: 5, cook: 0, extra: 'Chill 3 h or overnight', servings: 4,
+    per: { kcal: 188, p: 8, c: 18, f: 10, fiber: 9, sugar: 7 },
+    blurb: 'Thick, creamy and spoonable, with tart raspberries. The only sugar is from the milk and fruit.',
+    ingredients: [[0.5, 'cup', 'chia seeds'], [2, 'cup', 'whole milk (or full-fat coconut milk thinned with water)'], [1, 'tsp', 'vanilla extract'],
+      [null, '', 'pure monk fruit sweetener, to taste (optional)'], [null, '', 'pinch of salt'], [1, 'cup', 'raspberries']],
+    steps: ['Whisk the chia seeds, milk, vanilla, salt and monk fruit (if using) in a bowl or jar.',
+      'Rest 10 minutes, then whisk again to break up any clumps.',
+      'Cover and chill at least 3 hours, or overnight, until thick.',
+      'Spoon into 4 glasses and top with raspberries, lightly crushed so they release their juice.'],
+    tip: 'Keeps 4 days in the fridge, so make a batch for the week.' },
+  { id: 'almond-butter-cookies', title: 'Almond Butter Cookies', meal: 'Dessert', how: 'oven',
+    tags: ['Vegetarian', 'Minimally processed'], prep: 10, cook: 10, servings: 7,
+    per: { kcal: 261, p: 9, c: 14, f: 21, fiber: 4, sugar: 7 },
+    blurb: 'Five pantry ingredients, no flour of any kind, and only a quarter cup of coconut sugar for the whole batch. Two cookies per serving.',
+    ingredients: [[1, 'cup', 'almond butter (just almonds and salt), well stirred'], [1, '', 'eggs'], [0.25, 'cup', 'coconut sugar'],
+      [0.5, 'tsp', 'baking soda'], [1, 'tsp', 'vanilla extract'], [null, '', 'flaky salt, to finish']],
+    steps: ['Heat the oven to 350°F (175°C) and line a baking sheet with parchment.',
+      'Stir the almond butter, egg, coconut sugar, baking soda and vanilla together until it forms a thick dough.',
+      'Roll into 14 balls, set them 2 inches apart and flatten each with a fork in a criss-cross.',
+      'Sprinkle with a few flakes of salt and bake 9–10 minutes, until just golden at the edges. They firm up as they cool.',
+      'Cool 10 minutes on the tray before moving.'],
+    tip: 'Press a square of 85% dark chocolate into each cookie straight from the oven for a chocolate version (check the label for soy lecithin if you avoid soy).' },
+  { id: 'berry-yogurt-bark', title: 'Frozen Berry Yogurt Bark', meal: 'Dessert', how: 'none',
+    tags: ['Vegetarian', 'High protein', 'Whole foods', 'Minimally processed', 'Low carb', 'No cook', 'Meal prep'], prep: 10, cook: 0, extra: 'Freeze 2 h', servings: 6,
+    per: { kcal: 112, p: 8, c: 7, f: 6, fiber: 1, sugar: 4 },
+    blurb: 'Thick Greek yogurt frozen in a thin sheet with berries and pistachios, then snapped into pieces. Cold, crunchy and barely sweet.',
+    ingredients: [[2, 'cup', 'plain whole-milk Greek yogurt'], [1, 'tsp', 'vanilla extract'], [null, '', 'pure monk fruit sweetener, to taste (optional)'],
+      [1, 'cup', 'mixed berries, fresh or frozen'], [0.25, 'cup', 'pistachios, chopped']],
+    steps: ['Line a small baking sheet with parchment.',
+      'Stir the vanilla and monk fruit (if using) into the yogurt, then spread it about ¼ inch thick on the parchment.',
+      'Scatter the berries and pistachios over the top and press them in lightly.',
+      'Freeze 2 hours, until firm, then break into pieces.',
+      'Keep frozen in a bag; let a piece sit 2 minutes before eating.'],
+    tip: 'Blueberries and chopped strawberries freeze best. Thicker yogurt makes creamier, less icy bark.' },
+
+  // ---- Carnivore: only meat, fish, eggs, animal fats and salt ----
+  { id: 'butter-basted-ribeye', title: 'Butter-Basted Ribeye', meal: 'Dinner', how: 'stove',
+    tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb'], prep: 5, cook: 12, extra: 'Rest 30 min at room temp first', servings: 2,
+    per: { kcal: 597, p: 41, c: 0, f: 48, fiber: 0, sugar: 0 },
+    blurb: 'A thick ribeye seared hard in tallow, then basted with foaming butter. Salt is the only seasoning it needs.',
+    ingredients: [[16, 'oz', 'ribeye steak, about 1¼ inches thick'], [1, 'tbsp', 'beef tallow or ghee'], [2, 'tbsp', 'butter'], [1, 'tsp', 'coarse salt']],
+    steps: ['Pat the steak dry and salt it on all sides. Let it sit 30 minutes at room temperature.',
+      'Heat a cast-iron skillet over high until it just smokes. Add the tallow.',
+      'Sear the steak 3 minutes without moving it, flip, and sear 2 minutes more.',
+      'Lower the heat to medium, add the butter and tilt the pan. Spoon the foaming butter over the steak for 1–2 minutes, until it reads 130°F (54°C) for medium-rare.',
+      'Rest 5 minutes, slice against the grain and pour the pan butter over the top.'],
+    tip: 'Fat renders best at medium-rare to medium. Use a thermometer: color is unreliable.' },
+  { id: 'carnivore-steak-eggs', title: 'Carnivore Steak & Eggs', meal: 'Breakfast', how: 'stove',
+    tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb'], prep: 5, cook: 12, servings: 2,
+    per: { kcal: 599, p: 68, c: 1, f: 33, fiber: 0, sugar: 1 },
+    blurb: 'Seared sirloin and three butter-fried eggs. Nearly 70 g of protein to start the day, with nothing but salt.',
+    ingredients: [[16, 'oz', 'top sirloin steak'], [6, '', 'eggs'], [2, 'tsp', 'butter'], [1, 'tsp', 'coarse salt']],
+    steps: ['Pat the steak dry and salt it well.',
+      'Sear in a hot cast-iron skillet 3–4 minutes per side, to 130–135°F (54–57°C). Rest it on a board.',
+      'Lower the heat to medium, add the butter, and fry the eggs to your liking in the steak fat and butter.',
+      'Slice the steak and serve with the eggs, salted.'],
+    tip: 'Leftover steak from dinner works well: slice it thin and warm it in the pan for 30 seconds before the eggs.' },
+  { id: 'brown-butter-salmon', title: 'Crispy-Skin Salmon in Brown Butter', meal: 'Dinner', how: 'stove',
+    tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb'], prep: 5, cook: 12, servings: 4,
+    per: { kcal: 367, p: 31, c: 0, f: 27, fiber: 0, sugar: 0 },
+    blurb: 'Skin-on salmon cooked skin side down until it shatters, finished with nutty browned butter.',
+    ingredients: [[24, 'oz', 'skin-on salmon fillets (4 pieces)'], [3, 'tbsp', 'butter'], [1, 'tsp', 'salt']],
+    steps: ['Pat the salmon very dry, especially the skin, and salt both sides.',
+      'Heat a dry stainless or cast-iron skillet over medium-high. Lay the fillets in skin side down and press each for 10 seconds so the skin stays flat.',
+      'Cook 6–7 minutes without moving, until the flesh is opaque two-thirds of the way up.',
+      'Flip, add the butter, and cook 1–2 minutes as it foams and turns nut-brown. Spoon it over the fish.',
+      'Serve skin side up with the brown butter poured over.'],
+    tip: 'Wild salmon is leaner and cooks faster: pull it at 120°F (49°C) inside.' },
+  { id: 'beef-liver-burgers', title: 'Beef & Liver Burgers', meal: 'Lunch', how: 'stove',
+    tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb', 'Meal prep'], prep: 10, cook: 10, servings: 4,
+    per: { kcal: 268, p: 28, c: 1, f: 16, fiber: 0, sugar: 0 },
+    blurb: 'A little finely chopped liver hidden in juicy beef patties: you can\'t taste it, but you get its iron, B12 and vitamin A.',
+    ingredients: [[16, 'oz', '80/20 ground beef'], [4, 'oz', 'beef liver, very finely chopped or blended'], [1, 'tsp', 'salt'], [1, 'tsp', 'beef tallow or butter']],
+    steps: ['Mix the ground beef, liver and salt with your hands until just combined.',
+      'Shape into 4 patties about ¾ inch thick and press a dimple into the center of each.',
+      'Heat the tallow in a skillet over medium-high. Cook the patties 4 minutes per side, to 160°F (71°C) inside.',
+      'Rest 2 minutes and serve.'],
+    tip: 'Freeze the liver for 20 minutes first; it chops much more easily. Start with less liver if you\'re new to it.' },
+  { id: 'salt-roasted-chicken-thighs', title: 'Crispy Salt-Roasted Chicken Thighs', meal: 'Dinner', how: 'oven',
+    tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb', 'Meal prep'], prep: 5, cook: 40, servings: 4,
+    per: { kcal: 458, p: 46, c: 0, f: 30, fiber: 0, sugar: 0 },
+    blurb: 'Bone-in, skin-on thighs roasted hot until the skin crackles. Save the drippings for cooking eggs.',
+    ingredients: [[8, '', 'bone-in skin-on chicken thighs'], [1.5, 'tsp', 'salt'], [1, 'tsp', 'beef tallow, ghee or butter, melted']],
+    steps: ['Heat the oven to 425°F (220°C). Pat the thighs very dry.',
+      'Salt them on both sides and brush the skin with the melted fat.',
+      'Arrange skin side up on a rack set in a baking sheet, or in a cast-iron skillet.',
+      'Roast 35–40 minutes, until the skin is deep golden and the meat reads 175°F (80°C) at the bone.',
+      'Rest 5 minutes before serving.'],
+    tip: 'Salt the thighs the night before and leave them uncovered in the fridge for the crispiest skin.' },
 ];
 
 /* ---------- Content: workout plans ---------- */
@@ -1638,19 +1755,19 @@ const COOK = {
   'tofu-peanut-stir-fry': { how: 'stove', alt: {
     oven: { cook: 30, steps: [
       'Heat the oven to 425°F (220°C). Press the tofu, cube it and toss with the arrowroot and half the oil.',
-      'Whisk the peanut butter, coconut aminos, vinegar, maple syrup, ginger, garlic and 2 tbsp warm water into a smooth sauce.',
+      'Whisk the peanut butter, coconut aminos, vinegar, coconut sugar, ginger, garlic and 2 tbsp warm water into a smooth sauce.',
       'Roast the tofu on a lined sheet pan 15 minutes.',
       'Add the broccoli, pepper and snap peas tossed in the remaining oil. Roast 10–12 minutes more until the tofu is golden and the veg is crisp-tender.',
       'Toss everything with the sauce on the pan and serve over the rice.'] },
     air: { cook: 22, note: 'Air-fried tofu gets the crispiest edges of any method.', steps: [
       'Press the tofu, cube it and toss with the arrowroot and half the oil.',
-      'Whisk the peanut butter, coconut aminos, vinegar, maple syrup, ginger, garlic and 2 tbsp warm water into a smooth sauce.',
+      'Whisk the peanut butter, coconut aminos, vinegar, coconut sugar, ginger, garlic and 2 tbsp warm water into a smooth sauce.',
       'Air fry the tofu at 400°F (200°C) 12–15 minutes, shaking twice, until crisp. Remove.',
       'Air fry the broccoli, pepper and snap peas with the remaining oil 6–7 minutes, shaking once.',
       'Toss the tofu and veg with the sauce and serve over the rice.'] },
     micro: { cook: 10, note: 'The tofu stays soft rather than crisp, but it\'s a fast weeknight version.', steps: [
       'Press and cube the tofu (skip the arrowroot).',
-      'Whisk the peanut butter, coconut aminos, vinegar, maple syrup, ginger, garlic and 2 tbsp warm water into a smooth sauce.',
+      'Whisk the peanut butter, coconut aminos, vinegar, coconut sugar, ginger, garlic and 2 tbsp warm water into a smooth sauce.',
       'Put the broccoli, pepper and snap peas in a microwave-safe bowl with 2 tbsp water. Cover and microwave 3–4 minutes until crisp-tender. Drain.',
       'Add the tofu and sauce, stir, cover and microwave 2 minutes until hot.',
       'Serve over the rice.'] } } },
@@ -1703,13 +1820,13 @@ const COOK = {
       'Add the lemon juice and adjust the salt.'] } } },
   'beef-broccoli': { how: 'stove', alt: {
     oven: { cook: 15, note: 'Uses the broiler for a quick high-heat sear.', steps: [
-      'Whisk the coconut aminos, honey, arrowroot, garlic, ginger and 1/3 cup water to make the sauce.',
+      'Whisk the coconut aminos, coconut sugar, arrowroot, garlic, ginger and 1/3 cup water to make the sauce.',
       'Heat the broiler with a rack 4 inches from the heat. Toss the beef and broccoli with the oil on a foil-lined sheet pan in one layer.',
       'Broil 4 minutes, toss, then broil 3–4 minutes more until the beef is browned and the broccoli is charred at the tips.',
       'Microwave the sauce 60–90 seconds, stirring once, until thick and glossy.',
       'Toss everything with the sauce and serve over the rice with green onion and sesame seeds.'] },
     air: { cook: 14, steps: [
-      'Whisk the coconut aminos, honey, arrowroot, garlic, ginger and 1/3 cup water to make the sauce.',
+      'Whisk the coconut aminos, coconut sugar, arrowroot, garlic, ginger and 1/3 cup water to make the sauce.',
       'Toss the broccoli with half the oil and air fry at 390°F (200°C) 6 minutes, shaking once. Remove.',
       'Toss the beef with the remaining oil and air fry 5–6 minutes in a single layer, shaking halfway.',
       'Microwave the sauce 60–90 seconds, stirring once, until thick and glossy.',
@@ -1998,7 +2115,45 @@ const COOK = {
       'Stir the herbs and a pinch of salt into the yogurt.',
       'Spread a little yogurt on each turkey slice, add a cucumber spear and roll up.'] } } }
 };
-RECIPES.forEach((r) => Object.assign(r, COOK[r.id] || { how: 'none' }));
+/* Gluten-free and soy-free labels are worked out from each recipe's ingredients rather than typed by hand, so they stay
+   right when a recipe (or your own) changes. A recipe qualifies only if it's naturally free of them: no processed
+   "gluten-free" substitutes. Ingredients that are naturally free but often cross-contaminated or blended get a
+   "buy certified / check the label" note instead. */
+const DIET_RULES = {
+  gluten: {
+    no: /\bwheat|(?<!almond |coconut |chickpea |cassava )\bflour\b|bread|panko|pasta|noodle|couscous|barley|\brye\b|bulgur|farro|seitan|spelt|semolina|soy sauce|\bbeer\b|\bmalt|\bpita\b|cracker|granola|flour tortilla/,
+    processed: /gluten[- ]free (bread|pasta|flour|bagel|wrap|cracker|cookie|mix)/,
+    check: [[/\boats?\b/, 'oats: buy certified gluten-free (regular oats are usually cross-contaminated with wheat)'],
+      [/corn tortilla/, 'corn tortillas: look for a certified gluten-free brand'],
+      [/broth|stock/, 'broth or stock: some contain wheat or yeast extract'],
+      [/whey|collagen|protein powder/, 'protein powder: check it is labelled gluten-free'],
+      [/chili powder|curry powder/, 'spice blends: a few contain wheat as an anti-caking agent'],
+      [/dark chocolate/, 'dark chocolate: avoid brands with barley malt'],
+      [/baking powder/, 'baking powder: some contain wheat starch'],
+      [/tamari/, 'tamari: choose one labelled gluten-free']]
+  },
+  soy: {
+    no: /\bsoy|tofu|tempeh|edamame|miso|tamari|natto/,
+    check: [[/whey|collagen|protein powder/, 'protein powder: some contain soy lecithin'],
+      [/dark chocolate/, 'dark chocolate: many contain soy lecithin'],
+      [/broth|stock/, 'broth or stock: some contain soy protein']]
+  }
+};
+const ingText = (r) => (r.ingredients || []).map((i) => String(i[2] || '').toLowerCase());
+function dietCheck(r, rule) {
+  const ings = ingText(r);
+  if (ings.some((n) => rule.no.test(n) && !/coconut aminos/.test(n)) || (rule.processed && ings.some((n) => rule.processed.test(n)))) return null;
+  return [...new Set(rule.check.filter(([re]) => ings.some((n) => re.test(n))).map(([, note]) => note))];
+}
+function applyDiet(r) {
+  r.tags = r.tags.filter((t) => t !== 'Gluten free' && t !== 'Soy free');
+  const gf = dietCheck(r, DIET_RULES.gluten), sf = dietCheck(r, DIET_RULES.soy);
+  if (gf) r.tags.push('Gluten free');
+  if (sf) r.tags.push('Soy free');
+  r.dietNotes = { gf, sf };
+  return r;
+}
+RECIPES.forEach((r) => applyDiet(Object.assign(r, COOK[r.id] || (r.how ? {} : { how: 'none' }))));
 /* Typical MET (energy cost vs. rest) for a session of each plan, from the Compendium of Physical Activities ranges. */
 const PLAN_MET = { foundations: 3.5, 'upper-lower': 5, 'home-circuit': 6, 'push-pull-legs': 6, 'walk-to-5k': 5, 'mobility-core': 2.5, 'first-steps': 3.5, 'core-builder': 3.8,
   'legs-glutes-home': 4.5, 'one-dumbbell': 4.5, 'band-upper': 4, 'hiit-conditioning': 8, 'bodyweight-advanced': 6, 'kb-hiit-starter': 7, 'kb-hiit-burn': 8.5, 'kb-hiit-inferno': 9.5,
@@ -2413,7 +2568,7 @@ async function setRecipePhoto(id, file) {
 async function removeRecipePhoto(id) { await idbDone((await photoStore('readwrite', 'recipePhotos')).delete(id)); await loadRecipePhotos(); }
 const hashStr = (s) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
 const FOOD_COLS = ['#e4572e', '#f3a712', '#7bb661', '#2e8b57', '#c0392b', '#e9c46a', '#8d5524', '#f4a261', '#6a994e', '#d62828', '#ffd166', '#a7c957'];
-const BG_COLS = { Breakfast: ['#fde8c8', '#f9c98b'], Lunch: ['#dff1d8', '#a8d5a2'], Dinner: ['#f6d6d1', '#e7a199'], Snack: ['#e3e0f6', '#b9b2e8'] };
+const BG_COLS = { Breakfast: ['#fde8c8', '#f9c98b'], Lunch: ['#dff1d8', '#a8d5a2'], Dinner: ['#f6d6d1', '#e7a199'], Snack: ['#e3e0f6', '#b9b2e8'], Dessert: ['#f3e1d6', '#d9a98a'] };
 function recipeArt(r) {
   const h = hashStr(r.id), pick = (n, k) => FOOD_COLS[(h >>> (k * 3)) % FOOD_COLS.length];
   const [b1, b2] = BG_COLS[r.meal] || BG_COLS.Lunch, drink = /smoothie|shake/i.test(r.title);
@@ -2447,7 +2602,7 @@ const recipeImg = (r, cls = 'rimg') => {
 function syncCustom() {
   for (let i = RECIPES.length - 1; i >= 0; i -= 1) if (RECIPES[i].custom) RECIPES.splice(i, 1);
   for (let i = PLANS.length - 1; i >= 0; i -= 1) if (PLANS[i].custom) PLANS.splice(i, 1);
-  (S.customRecipes || []).forEach((r) => RECIPES.push({ ...r, custom: true }));
+  (S.customRecipes || []).forEach((r) => RECIPES.push(applyDiet({ ...r, tags: [...(r.tags || [])], custom: true })));
   (S.customPlans || []).forEach((p) => PLANS.push({ ...p, custom: true, level: LEVELS[p.diff] }));
 }
 const RECIPE_TAGS = ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Vegetarian', 'Vegan', 'Low carb', 'Gluten free', 'Meal prep', 'No cook'];
@@ -2479,7 +2634,7 @@ function viewRecipeForm(id) {
   <form id="recipe-form" class="grid" autocomplete="off" novalidate>
     <section class="panel span-7 stack">
       ${fld('Recipe name', 'title', d.title, 'required maxlength="80" placeholder="e.g. Grandma\'s chicken soup"')}
-      <div class="row" role="group" aria-label="Meal"><span class="eyebrow" style="margin-right:6px">Meal</span>${['Breakfast', 'Lunch', 'Dinner', 'Snack'].map((m) => `<button type="button" class="chip" data-act="draft-set" data-path="meal" data-v="${m}" aria-pressed="${d.meal === m}">${m}</button>`).join('')}</div>
+      <div class="row" role="group" aria-label="Meal"><span class="eyebrow" style="margin-right:6px">Meal</span>${['Breakfast', 'Lunch', 'Dinner', 'Snack', 'Dessert'].map((m) => `<button type="button" class="chip" data-act="draft-set" data-path="meal" data-v="${m}" aria-pressed="${d.meal === m}">${m}</button>`).join('')}</div>
       <div class="row" role="group" aria-label="Cooked on"><span class="eyebrow" style="margin-right:6px">Cooked on</span>${[...APPLIANCES, ['none', 'No cooking']].map(([a, l]) => `<button type="button" class="chip" data-act="draft-set" data-path="how" data-v="${a}" aria-pressed="${(d.how || 'stove') === a}">${l}</button>`).join('')}</div>
       <label class="field">Short description<textarea class="input" data-d="blurb" rows="2" maxlength="240">${esc(d.blurb)}</textarea></label>
       <div class="form-grid">${numFld('Servings', 'servings', d.servings, 'min="1" max="24"')}${numFld('Prep (min)', 'prep', d.prep)}${numFld('Cook (min)', 'cook', d.cook)}</div>
@@ -2807,10 +2962,14 @@ function filterBar(id, { count = 0, lead = '', extra = '', panel = '', active = 
 }
 const clearChip = (label, act, attrs) => `<button class="chip" aria-pressed="true" data-act="${act}" ${attrs} aria-label="Remove filter ${esc(label)}">${esc(label)} ✕</button>`;
 const SHOW_FILTERS = ['All', 'Favorites', 'My recipes'];
-const DIET_FILTERS = ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Vegetarian', 'Vegan', 'Low carb', 'Meal prep'];
+const DIET_FILTERS = ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Gluten free', 'Soy free', 'Carnivore', 'Vegetarian', 'Vegan', 'Low carb', 'Meal prep', 'Dessert'];
 const FILTER_NOTES = {
   'Sugar free': 'No sugar, honey, syrups, sweeteners or fruit. Any sugar listed comes naturally from dairy or vegetables, 8 g or less per serving.',
   'Whole foods': 'Only unprocessed, single-ingredient foods: meat, fish, eggs, plain dairy, dried legumes, vegetables, nuts, seeds, herbs and spices.',
+  'Gluten free': 'Naturally gluten free: no wheat, barley, rye or regular oats, and no processed gluten-free breads, pastas or flour blends. Where an ingredient is often cross-contaminated (oats, corn tortillas, broth, protein powder, spice blends), the recipe says what to buy certified.',
+  'Soy free': 'No soy sauce, tofu, tempeh, edamame, miso or tamari. Recipes flag ingredients that sometimes hide soy lecithin or soy protein, like protein powder, dark chocolate and broth.',
+  Carnivore: 'Only animal foods: meat, fish, eggs, butter and animal fats, seasoned with salt. No plants, spices or sweeteners.',
+  Dessert: 'No refined sugar. Sweetness comes from fruit, pure monk fruit or a little coconut sugar, at 12 g of sugar or less per serving.',
   'Minimally processed': 'Whole-food recipes plus a few clean staples: canned beans, tuna and tomatoes, bone broth or stock, full-fat coconut milk, 3-ingredient corn tortillas, Dijon and unflavored grass-fed whey or collagen.'
 };
 function recipeCards() {
@@ -2837,13 +2996,13 @@ function recipeCards() {
       <div class="group-head"><span class="group-icon" aria-hidden="true">${MEAL_ICON[meal]}</span><h2 id="gh-${meal}">${MEAL_PLURAL[meal]}</h2><span class="muted num">${rs.length} recipe${rs.length === 1 ? '' : 's'}</span></div>
       <div class="cards">${rs.map(card).join('')}</div></section>`).join('')}`;
 }
-const MEAL_ORDER = ['Snack', 'Breakfast', 'Lunch', 'Dinner'];
-const MEAL_ICON = { Snack: '🍎', Breakfast: '🍳', Lunch: '🥗', Dinner: '🍽️' };
-const MEAL_PLURAL = { Snack: 'Snacks', Breakfast: 'Breakfast', Lunch: 'Lunch', Dinner: 'Dinner' };
+const MEAL_ORDER = ['Snack', 'Breakfast', 'Lunch', 'Dinner', 'Dessert'];
+const MEAL_ICON = { Snack: '🍎', Breakfast: '🍳', Lunch: '🥗', Dinner: '🍽️', Dessert: '🍫' };
+const MEAL_PLURAL = { Snack: 'Snacks', Breakfast: 'Breakfast', Lunch: 'Lunch', Dinner: 'Dinner', Dessert: 'Desserts' };
 function viewRecipes() {
   return `<div class="page-head"><div><div class="eyebrow">${RECIPES.length} recipes · macros per serving</div><h1>Recipes</h1>
     <p class="muted">High-protein meals built from everyday groceries, with calories and macros per serving that scale to the number of people you're feeding.</p>
-    <p class="muted" style="font-size:.85rem"><b>Ingredient standards:</b> no seed oils or cooking sprays (olive oil, avocado oil, butter or ghee instead), full-fat dairy, whole eggs, unflavored whey or collagen without sweeteners, and raw honey or maple only in small amounts.</p></div>
+    <p class="muted" style="font-size:.85rem"><b>Ingredient standards:</b> no seed oils or cooking sprays (olive oil, avocado oil, butter or ghee instead), full-fat dairy, whole eggs, unflavored whey or collagen without sweeteners, and no refined sugar, honey or syrups: when a recipe needs sweetness it uses fruit, pure monk fruit or a little coconut sugar.</p></div>
     <a class="btn btn-primary" href="#recipe-new">+ Add your own recipe</a></div>
     ${filterBar('recipes', { count: recipeFilter === 'All' ? 0 : 1,
       lead: `<input class="input fsearch" id="recipe-search" type="search" placeholder="Search by ingredient…" value="${esc(recipeSearch)}" aria-label="Search recipes">`,
@@ -2880,6 +3039,12 @@ function ingList(r) {
     return `<li><label><input type="checkbox" id="ing-${r.id}-${i}"><span class="q">${fmtQty(q, ing[1])} ${unitLabel(q, ing[1])}</span><span>${esc(ing[2])}</span></label></li>`;
   }).join('');
 }
+function dietBox(r) {
+  const d = r.dietNotes || {}, notes = [...new Set([...(d.gf || []), ...(d.sf || [])])];
+  if (!d.gf && !d.sf) return '';
+  const what = [d.gf && 'gluten free', d.sf && 'soy free'].filter(Boolean).join(' and ');
+  return `<div class="diet-box"><b>Naturally ${what}.</b>${notes.length ? ` To keep it that way, check: <ul>${notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : ' Nothing to check.'}</div>`;
+}
 function viewRecipe(id) {
   const r = recipeById(id);
   if (!r) return notFound('That recipe');
@@ -2896,6 +3061,7 @@ function viewRecipe(id) {
     <div class="stack">
       <div class="eyebrow">Per serving</div>
       <div class="facts"><div><b>${r.per.kcal}</b><span>kcal</span></div><div><b style="color:var(--protein)">${r.per.p}g</b><span>protein</span></div><div><b style="color:var(--carbs)">${r.per.c}g</b><span>carbs</span></div><div><b style="color:var(--fat)">${r.per.f}g</b><span>fat</span></div></div>
+      ${dietBox(r)}
       <div class="row muted" style="font-size:.85rem;justify-content:space-between"><span>Fiber ${r.per.fiber} g${r.per.sugar != null ? ` · Sugar ${r.per.sugar} g` : ''}</span><span>${Math.round(r.per.p * 4 / r.per.kcal * 100)}% of calories from protein</span></div>
       <div class="row"><button class="btn btn-primary" data-act="log-recipe" data-id="${r.id}" style="flex:1">Log a serving to today</button><button class="btn" data-act="shop-add" data-id="${r.id}" style="flex:1">${onList(r.id) ? 'Update shopping list' : 'Add to shopping list'}</button></div>
     </div>
@@ -3350,7 +3516,7 @@ function aisleOf(name, unit) {
   if (/lettuce/.test(n)) return 'Produce';
   if (/frozen|\bice\b|corn kernels/.test(n)) return 'Frozen';
   if (/\bsalt\b|black pepper|chili powder|cumin|paprika|dill|cinnamon|oregano|garlic powder|curry powder|baking powder|vanilla|cooking spray|sesame seeds|dried (sage|thyme|rosemary)|nutmeg|turmeric|mustard powder|pepper flakes/.test(n)) return 'Spices & baking';
-  if (unit === 'can' || /tuna|oats|rice|quinoa|lentil|tortilla|broth|salsa|pico|peanut butter|honey|maple|soy sauce|vinegar|\boil\b|cornstarch|chia|flax|cocoa|protein powder|whey|collagen|arrowroot|aminos|stock|coconut milk|granola|chocolate|mustard|tahini|hemp seeds|almond butter|sliced almonds|pine nuts|walnuts|pecans|pumpkin seeds/.test(n)) return 'Pantry & canned';
+  if (unit === 'can' || /tuna|oats|rice|quinoa|lentil|tortilla|broth|salsa|pico|peanut butter|honey|maple|monk fruit|coconut sugar|baking soda|tallow|soy sauce|vinegar|\boil\b|cornstarch|chia|flax|cocoa|protein powder|whey|collagen|arrowroot|aminos|stock|coconut milk|granola|chocolate|mustard|tahini|hemp seeds|almond butter|sliced almonds|pine nuts|walnuts|pecans|pumpkin seeds/.test(n)) return 'Pantry & canned';
   if (/chicken|turkey|salmon|shrimp|steak|beef|pork|cod\b/.test(n)) return 'Meat & seafood';
   if (/egg|yogurt|feta|cheddar|cheese|parmesan|milk|butter|tofu/.test(n)) return 'Dairy, eggs & tofu';
   if (/spinach|pepper|onion|garlic|lemon|lime|avocado|cilantro|parsley|berries|banana|potato|bean|broccoli|snap peas|ginger|tomato|cucumber|lettuce|kale|carrot|celery|apple|zucchini|cauliflower|brussels|shallot|radish|romaine|greens|basil|mint|chives|rosemary|thyme/.test(n)) return 'Produce';
@@ -3407,13 +3573,18 @@ const PRICE_RULES = [
   [/whey|collagen/, { scoop: 30 }, 39.99, { s: 2, sub: 'unflavored whey protein (no sweeteners)' }],
   [/hemp seeds/, { tbsp: 16, tsp: 48 }, 9.99, { s: 2, sub: 'pumpkin seeds' }],
   [/bone broth/, { cup: 4 }, 5.99, { s: 1, sub: 'low-sodium chicken stock' }],
+  [/monk fruit/, { tsp: 96, tbsp: 32 }, 9.99, { s: 1, p: 1, sub: 'coconut sugar' }],
+  [/coconut sugar/, { tsp: 96, tbsp: 32, cup: 2 }, 4.99, { s: 1, p: 1 }],
   [/raw honey/, { tsp: 72, tbsp: 24 }, 8.99, { s: 1, sub: 'honey' }],
   [/dark chocolate/, { oz: 3.5 }, 3.99, { s: 1, sub: '70%+ dark chocolate' }],
   [/tahini/, { tbsp: 32 }, 6.99, { s: 1, sub: 'natural almond or peanut butter' }],
   [/pine nuts/, { tbsp: 8 }, 7.99, { s: 1, sub: 'chopped walnuts' }],
   [/coconut milk/, { cup: 1.6 }, 2.99, { s: 1 }],
-  [/wild salmon/, { each: 2 }, 14.99, { s: 1, sub: 'salmon fillets' }],
-  [/salmon/, { each: 2 }, 11.99, {}],
+  [/wild salmon/, { each: 2, oz: 16 }, 14.99, { s: 1, sub: 'salmon fillets' }],
+  [/salmon/, { each: 2, oz: 16 }, 11.99, {}],
+  [/ribeye/, { oz: 16 }, 16.99, {}],
+  [/liver/, { oz: 16 }, 4.99, { s: 1 }],
+  [/tallow/, { tsp: 72, tbsp: 24 }, 9.99, { s: 1, p: 1, sub: 'ghee' }],
   [/cod/, { each: 2 }, 9.99, {}],
   [/shrimp/, { oz: 16 }, 10.99, {}],
   [/tuna/, { can: 1 }, 1.79, {}],
@@ -3421,6 +3592,7 @@ const PRICE_RULES = [
   [/chicken stock/, { cup: 4 }, 2.99, {}],
   [/chicken/, { oz: 32 }, 8.99, {}],
   [/ground turkey/, { oz: 16 }, 6.49, {}],
+  [/ground beef/, { oz: 16 }, 6.99, {}],
   [/turkey breast/, { oz: 24 }, 10.99, {}],
   [/flank steak/, { oz: 16 }, 11.99, {}],
   [/sirloin|steak/, { oz: 16 }, 10.99, {}],
@@ -3455,6 +3627,8 @@ const PRICE_RULES = [
   [/pumpkin/, { tbsp: 16, tsp: 48 }, 4.99, {}],
   [/walnuts|pecans/, { tbsp: 32 }, 7.99, {}],
   [/almonds/, { tbsp: 16 }, 3.99, {}],
+  [/pistachios/, { cup: 1.5, tbsp: 24 }, 7.99, {}],
+  [/baking soda/, { tsp: 96 }, 1.29, { p: 1 }],
   [/cocoa/, { tbsp: 30 }, 4.99, {}],
   [/berries/, { cup: 2 }, 4.99, {}],
   [/edamame/, { cup: 3 }, 3.49, {}],
