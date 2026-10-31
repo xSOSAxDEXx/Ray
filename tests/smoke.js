@@ -37,6 +37,10 @@ const STATES = {
         const problem = r.text.trim().length < 40 ? 'empty' : /Something went wrong/.test(r.text) ? 'error panel' : r.sw > width ? `scrolls sideways (${r.sw}px)` : null;
         if (problem) { failures += 1; console.log(`FAIL ${name} @${width}px #${view}: ${problem}`); }
       }
+      await page.goto(URL + '#guide'); await page.waitForTimeout(100);
+      if (await page.$('#app a[href="#sources"]')) { await page.click('#app a[href="#sources"]'); await page.waitForTimeout(100);
+        const back = await page.$eval('#app', (a) => (a.querySelector('.back-top a') || {}).textContent || '');
+        if (!/Back to Guide/.test(back)) { failures += 1; console.log(`FAIL ${name} @${width}px: no "Back to Guide" on Links & facts`); } }
       const groups = await page.$$eval('#site-menu .menu-h', (l) => l.map((x) => x.textContent));
       if (groups.join('|') !== 'Food|Training|Mind & breath|Progress|You|Help') { failures += 1; console.log(`FAIL ${name} @${width}px: menu groups are ${groups.join(', ')}`); }
       if (errors.length) { failures += 1; console.log(`FAIL ${name} @${width}px: ${errors[0]}`); }

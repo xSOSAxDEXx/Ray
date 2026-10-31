@@ -130,6 +130,7 @@ button, input, select { font: inherit; color: inherit; }
 .cur-page { font-weight: 700; font-size: .88rem; color: var(--accent); background: var(--accent-soft); padding: 6px 12px; border-radius: 999px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .menu { position: absolute; left: 0; right: 0; top: 100%; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: 0 18px 40px rgba(0, 0, 0, .18); max-height: calc(100vh - 64px); overflow-y: auto; animation: menu-in .18s ease; }
 .menu[hidden] { display: none; }
+.back-top { margin-bottom: 8px; }
 .sess-bar { background: var(--accent-soft); border-top: 1px solid var(--line); }
 .sess-bar[hidden] { display: none; }
 .sess-bar-in { display: flex; align-items: center; gap: 10px; padding-block: 8px; font-size: .9rem; }
@@ -2711,7 +2712,6 @@ function viewExercises() {
   <div class="row" role="group" aria-label="Filter by area" style="margin-bottom:14px">${EX_GROUPS.map(([n]) => `<button class="chip" data-act="ex-group" data-g="${n}" aria-pressed="${n === exMuscle}">${n}</button>`).join('')}</div>
   <div class="calm-cards" id="ex-cards">${list.map((x) => `<a class="panel calm-card ex-card" href="#ex-${x.id}"><h3>${esc(x.name)}</h3><p class="muted" style="font-size:.85rem">${esc(x.muscles)}</p><p class="calm-meta"><span>${esc(x.eq)}</span></p></a>`).join('') || emptyState('clock', 'No exercises match that search.')}</div>`;
 }
-let exFrom = ''; // the page you came from, for the right back button
 function viewExercise(id) {
   const x = EX_LIB.find((y) => y.id === id);
   if (!x) return notFound('That exercise');
@@ -2719,10 +2719,7 @@ function viewExercise(id) {
   const uses = PLANS.filter((p) => p.days.some((d) => d.ex.some((e) => libFor(e[0]) === x)));
   const best = names.map((n) => { const l = hist.get(n), b = l.reduce((a, e) => (exScore(e) > exScore(a) ? e : a)); return { n, b, l }; });
   const series = best.filter((r) => r.l.some((e) => e.e1)).slice(0, 1).map((r) => ({ name: `Est. 1-rep max (${wUnit()})`, color: 'var(--accent)', pts: r.l.filter((e) => e.e1).map((e) => ({ d: e.date, v: showW(e.e1) })) }))[0];
-  const back = exFrom === 'session' && S.session ? `<a class="btn btn-primary" href="#session">← Back to your workout</a><a class="btn btn-ghost" href="#exercises">Exercise library</a>`
-    : exFrom.startsWith('plan-') ? `<a class="btn btn-ghost" href="#${esc(exFrom)}">← Back to plan</a><a class="btn btn-ghost" href="#exercises">Exercise library</a>`
-    : `<a class="btn btn-ghost" href="#exercises">← Exercise library</a>`;
-  return `<div class="row" style="margin-bottom:10px">${back}</div>
+  return `<div class="row" style="margin-bottom:10px">${backBtn('ex', 'exercises', 'Exercise library')}</div>
   <div class="grid">
     <section class="panel span-7 stack"><div class="eyebrow">${esc(x.muscles)}</div><h1>${esc(x.name)}</h1><p class="muted">Equipment: ${esc(x.eq)}</p>
       <div class="demo-ph" role="img" aria-label="Demonstration coming soon">${icon('clock')}<span>Demo video or illustration coming soon</span></div>
@@ -3757,7 +3754,7 @@ function viewRecipe(id) {
   const r = recipeById(id);
   if (!r) return notFound('That recipe');
   const n = servingsState[r.id] || S.servings, m = methodFor(r, S.appliance);
-  return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><a class="btn btn-ghost" href="#recipes">← All recipes</a>
+  return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><div class="row">${backBtn('recipe', 'recipes', 'All recipes')}</div>
     <div class="row">${favToggle('recipes', r.id)}${!r.custom ? `<button class="btn btn-sm" data-act="share-recipe" data-id="${r.id}">Share</button>` : ''}${r.custom ? `<a class="btn btn-sm" href="#recipe-edit-${r.id}">Edit recipe</a><span class="confirm">${delArmed ? `<span>Delete this recipe?</span><button class="btn btn-sm btn-berry" data-act="del-recipe" data-id="${r.id}">Yes, delete</button><button class="btn btn-sm" data-act="del-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="del-recipe-arm">Delete</button>`}</span>` : ''}</div></div>
   <div class="recipe-photo">${recipeImg(r, 'rimg rimg-hero')}
     <div class="photo-actions"><label class="btn btn-sm" style="position:relative">${recipePhotos[r.id] ? 'Change photo' : 'Add your photo'}<input type="file" id="rp-file" data-id="${r.id}" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%"></label>
@@ -3875,7 +3872,7 @@ function viewPlan(id) {
   if (!p) return notFound('That plan');
   if (planDayTab >= p.days.length) planDayTab = 0;
   const d = p.days[planDayTab];
-  return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><a class="btn btn-ghost" href="#workouts">← All plans</a>
+  return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><div class="row">${backBtn('plan', 'workouts', 'All plans')}</div>
     <div class="row"><button class="btn btn-sm btn-ghost" data-act="plan-share" data-id="${p.id}">Share</button>${favToggle('plans', p.id)}${p.custom ? `<a class="btn btn-sm" href="#plan-edit-${p.id}">Edit plan</a><span class="confirm">${delArmed ? `<span>Delete this plan?</span><button class="btn btn-sm btn-berry" data-act="del-plan" data-id="${p.id}">Yes, delete</button><button class="btn btn-sm" data-act="del-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="del-plan-arm">Delete</button>`}</span>` : ''}</div></div>
   <div class="page-head"><div><div class="row" style="margin-bottom:8px">${p.custom ? '<span class="tag tag-berry">Custom</span>' : ''}${diffMeter(p.diff)}${gearTag(p.gear)}${p.muscles.map((m) => `<span class="tag">${esc(m)}</span>`).join('')}<span class="tag">${p.perWeek}× / week</span><span class="tag">${p.minutes} min</span></div>
     <h1>${esc(p.title)}</h1><p class="muted">${esc(p.goal)}</p>
@@ -6068,7 +6065,7 @@ function viewBreath(id) {
   const b = BREATHS.find((x) => x.id === id);
   if (!b) return notFound('That exercise');
   const o = optsFor(b), segs = breathSegs(b, o.n, o.pace);
-  return `<a class="btn btn-ghost" href="#breathe" style="margin-bottom:10px">← All breathing</a>
+  return `<div class="row" style="margin-bottom:10px">${backBtn('breath', 'breathe', 'All breathing')}</div>
   <div class="grid">
     <section class="panel span-7 stack calm-detail">
       <div class="eyebrow">${b.goals.join(' · ')} · ${LEVELS[b.level]}</div><h1>${esc(b.title)}</h1><p class="muted">${esc(b.from)}</p><p>${esc(b.blurb)}</p><button class="btn btn-primary calm-quick" data-act="calm-start" data-type="breathe" data-id="${b.id}">Start · ${fmtClock(segTotal(segs))}</button>
@@ -6112,7 +6109,7 @@ function viewMindSession(id) {
   const m = MIND.find((x) => x.id === id);
   if (!m) return notFound('That session');
   const o = optsFor(m), segs = mindSegs(m, o.n);
-  return `<a class="btn btn-ghost" href="#mind" style="margin-bottom:10px">← Mind</a>
+  return `<div class="row" style="margin-bottom:10px">${backBtn('mindx', 'mind', 'Mind')}</div>
   <div class="grid">
     <section class="panel span-7 stack calm-detail">
       <div class="eyebrow">${MIND_CATS.find((c) => c[0] === m.cat)[1]} · ${LEVELS[m.level]}</div><h1>${esc(m.title)}</h1><p class="muted">${esc(m.from)}</p><p>${esc(m.blurb)}</p><button class="btn btn-primary calm-quick" data-act="calm-start" data-type="mind" data-id="${m.id}">Start · ${fmtClock(segTotal(segs))}</button>
@@ -6297,7 +6294,7 @@ function viewGuide() {
       <li>Log what you eat in <a href="#log">Log</a>: search, tap your usual foods, scan a barcode, or pick an everyday meal or drink.</li>
       <li>Pick a plan in <a href="#workouts">Workouts</a> and start a session; it's saved to your log when you finish.</li>
       <li>Check <a href="#today">Today</a> each day and download a backup from <a href="#settings">Settings</a> every week or two.</li></ol>
-    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the Rep &amp; Ration name) to move between sections. It's grouped into Food, Training, Mind &amp; breath, Progress and You, with help links at the bottom. Rep &amp; Ration works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
+    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the Rep &amp; Ration name) to move between sections. It's grouped into Food, Training, Mind &amp; breath, Progress and You, with help links at the bottom. When a link takes you to another page, a <b>← Back to…</b> button returns you to where you were. Rep &amp; Ration works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
   <div class="grid" style="margin-top:16px">${GUIDE.map(([id, t, what, how]) => `<section class="panel span-6 guide-card"><div class="panel-head"><h2>${t}</h2><a class="btn btn-sm btn-ghost" href="#${id}">Open</a></div>
     <p>${esc(what)}</p><ul>${how.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}</div>
   <section class="panel stack" style="margin-top:16px"><h2>Something not working?</h2><p>Tell us on the <a href="#report">Report an issue</a> page. It takes a minute and helps fix it for everyone.</p></section>`;
@@ -6506,10 +6503,49 @@ function sessBar() {
   const t = () => { const x = $('#sess-bar-t'); if (!x || !S.session) return; const sec = Math.floor((Date.now() - S.session.started) / 1000); x.textContent = Math.floor(sec / 60) + ':' + z(sec % 60); };
   t(); sessBarTimer = setInterval(t, 1000);
 }
+/* "Back to where you were": when a link inside a page takes you somewhere, remember where you came from.
+   Menu, header and footer links start fresh. Pages are grouped so moving inside a group (recipe -> edit -> recipe)
+   or coming back from a page opened here (plan -> exercise -> plan) keeps the original origin. */
+const backFrom = {};
+let viaMenu = false;
+document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (a) viaMenu = !!a.closest('header, .foot-links'); }, true);
+const routeGroup = (h) => { const m = /^(recipe|plan|ex|breath|mind)-/.exec(h); return m ? (m[1] === 'mind' ? 'mindx' : m[1]) : h.startsWith('import-plan=') ? 'plan' : h.startsWith('cheer=') ? 'cheer' : h || 'today'; };
+const DETAIL_GROUPS = ['recipe', 'plan', 'ex', 'breath', 'mindx'];
+const NO_BACK = ['session', 'report', 'cheer', 'today'];
+function trackBack(h) {
+  if (h === current) return;
+  const g = routeGroup(h), cg = routeGroup(current);
+  if (viaMenu || !current) delete backFrom[g];
+  else if (cg !== g && backFrom[cg] !== h) backFrom[g] = current;
+  viaMenu = false;
+}
+function pageLabel(r) {
+  if (!r) return null;
+  if (r === 'session') return S.session ? 'your workout' : null;
+  const g = routeGroup(r);
+  if (r === 'recipe-new' || r === 'plan-new' || /-edit-/.test(r)) return null;
+  const detail = { recipe: 'recipe', plan: 'plan', ex: 'exercise', breath: 'breathing', mindx: 'session details', cheer: 'message' }[g];
+  if (detail) return detail;
+  const tab = document.querySelector(`#site-menu .tab[data-tab="${r === '' ? 'today' : r}"] .tab-l`);
+  return tab ? tab.textContent : null;
+}
+// Detail pages: "← Back to X" plus the usual list link, or just the list link.
+function backBtn(g, def, defLabel) {
+  const f = backFrom[g], l = f && f !== def ? pageLabel(f) : null;
+  return l ? `<a class="btn btn-primary" href="#${esc(f)}">← Back to ${esc(l)}</a><a class="btn btn-ghost" href="#${def}">${esc(defLabel)}</a>`
+    : `<a class="btn btn-ghost" href="#${def}">← ${esc(defLabel)}</a>`;
+}
+// Top-level pages reached by a link inside another page.
+function backTop(h) {
+  const g = routeGroup(h); if (DETAIL_GROUPS.includes(g) || NO_BACK.includes(g) || /^(recipe|plan)-new$/.test(h)) return '';
+  const f = backFrom[g], l = f && f !== h ? pageLabel(f) : null;
+  return l ? `<div class="row back-top"><a class="btn btn-sm btn-ghost" href="#${esc(f)}">← Back to ${esc(l)}</a></div>` : '';
+}
 function renderView(keepScroll) {
   const h = (location.hash || '#today').slice(1);
   let html, tab;
   if (S.setup === false) { app.innerHTML = viewSetup(); app.dataset.view = 'setup'; document.querySelectorAll('.tab').forEach((a) => a.removeAttribute('aria-current')); const cp = $('#cur-page'); if (cp) cp.textContent = 'Setup'; current = h; return; }
+  trackBack(h);
   if (h === 'today' || h === '') { html = viewToday(); tab = 'today'; }
   else if (h === 'recipes') { html = viewRecipes(); tab = 'recipes'; }
   else if (h === 'recipe-new') { html = viewRecipeForm(null); tab = 'recipes'; }
@@ -6522,7 +6558,7 @@ function renderView(keepScroll) {
   else if (h.startsWith('plan-')) { html = viewPlan(h.slice(5)); tab = 'workouts'; }
   else if (h === 'session') { html = viewSession(); tab = 'workouts'; }
   else if (h === 'exercises') { html = viewExercises(); tab = 'exercises'; }
-  else if (h.startsWith('ex-')) { if (!current.startsWith('ex-')) exFrom = current; html = viewExercise(h.slice(3)); tab = 'exercises'; }
+  else if (h.startsWith('ex-')) { html = viewExercise(h.slice(3)); tab = 'exercises'; }
   else if (h.startsWith('import-plan=')) { html = viewImportPlan(h.slice(12)); tab = 'workouts'; }
   else if (h === 'shopping') { html = viewShopping(); tab = 'shopping'; }
   else if (h === 'breathe') { html = viewBreathe(); tab = 'breathe'; }
@@ -6541,7 +6577,7 @@ function renderView(keepScroll) {
   else if (h === 'report') { if (current !== 'report') report.from = current; html = viewReport(); tab = 'report'; }
   else { html = notFound('That page'); tab = ''; }
   const y = window.scrollY;
-  app.innerHTML = html;
+  app.innerHTML = backTop(h) + html;
   app.dataset.view = tab || 'none';
   if (h !== current && !keepScroll) { app.classList.remove('enter'); void app.offsetWidth; app.classList.add('enter'); }
   document.querySelectorAll('.tab').forEach((a) => { if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
