@@ -159,7 +159,22 @@ main { padding-block: 28px 56px; }
 .btn-ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 6px 8px; }
 .btn-ghost:hover { color: var(--ink); background: var(--sunk); }
 .btn-sm { padding: 6px 11px; font-size: .85rem; }
-.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.btn[disabled], a.btn.disabled { opacity: .5; cursor: not-allowed; }
+a.btn.disabled { pointer-events: none; }
+.foot-links { margin-top: 8px; }
+.foot-links a { color: inherit; }
+.guide-steps, .calc-steps { padding-left: 1.3em; display: grid; gap: 8px; margin: 0; }
+.guide-card ul, .src-list { padding-left: 1.2em; margin: 8px 0 0; display: grid; gap: 6px; }
+.src-list a { overflow-wrap: anywhere; }
+.unverified { display: grid; gap: 4px 0; margin: 0; }
+.unverified dt { font-weight: 700; margin-top: 8px; }
+.unverified dd { margin: 0; color: var(--muted); }
+.rep-preview { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--sunk); padding: 12px; border-radius: var(--r-sm); font-size: .8rem; max-height: 240px; overflow: auto; }
+textarea.input { resize: vertical; min-height: 120px; font: inherit; }
+.share-item { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+.feed-item.is-cheer { background: var(--accent-soft); border-radius: var(--r-sm); padding-left: 10px; padding-right: 10px; }
+.cheer-pick { width: 100%; padding: 8px 0; }
+.cheer-msg { font-family: var(--f-display); font-size: 1.4rem; font-weight: 700; margin: 0; }
 label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; font-weight: 700; color: var(--muted); min-width: 0; }
 .input, select.input { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: var(--r-sm); padding: 9px 11px; font-size: 1rem; color: var(--ink); min-width: 0; }
 .input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
@@ -751,11 +766,15 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
       <a class="tab" href="#workouts" data-tab="workouts"><span class="tab-l">Workouts</span></a>
       <a class="tab" href="#breathe" data-tab="breathe"><span class="tab-l">Breathe</span></a>
       <a class="tab" href="#mind" data-tab="mind"><span class="tab-l">Mind</span></a>
+      <a class="tab" href="#friends" data-tab="friends"><span class="tab-l">Friends</span></a>
       <a class="tab" href="#log" data-tab="log"><span class="tab-l">Log</span></a>
       <a class="tab" href="#progress" data-tab="progress"><span class="tab-l">Progress</span></a>
       <a class="tab" href="#analytics" data-tab="analytics"><span class="tab-l">Analytics</span></a>
       <a class="tab" href="#goals" data-tab="goals"><span class="tab-l">Profile &amp; goals</span></a>
       <a class="tab" href="#settings" data-tab="settings"><span class="tab-l">Settings</span></a>
+      <a class="tab" href="#guide" data-tab="guide"><span class="tab-l">Guide</span></a>
+      <a class="tab" href="#sources" data-tab="sources"><span class="tab-l">Links &amp; facts</span></a>
+      <a class="tab" href="#report" data-tab="report"><span class="tab-l">Report an issue</span></a>
     </div>
   </nav>
 </header>
@@ -765,6 +784,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
 <footer>
   <div class="wrap">
     Rep &amp; Ration offers general guidance, not medical advice. Check with a doctor or registered dietitian before starting a new diet or training program, especially if you are pregnant or have a health condition. Your entries are saved only in this browser.
+    <nav class="foot-links" aria-label="Help"><a href="#guide">Guide</a> · <a href="#sources">Links &amp; facts</a> · <a href="#report">Report an issue</a></nav>
   </div>
 </footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2840,7 +2860,8 @@ const DEFAULTS = () => ({
   shopping: { recipes: [], checked: {}, extras: [], subs: {}, have: [], auto: false },
   settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
   stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {} },
-  calm: { music: true, track: -1, vol: 0.5, tones: true, toneVol: 0.7, vibrate: true }, mind: { habits: {}, log: [], course: {} }
+  calm: { music: true, track: -1, vol: 0.5, tones: true, toneVol: 0.7, vibrate: true }, mind: { habits: {}, log: [], course: {} },
+  friends: { name: '', me: '', list: [], feed: [] }
 });
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 function migrate() {
@@ -3721,7 +3742,7 @@ function viewRecipe(id) {
   if (!r) return notFound('That recipe');
   const n = servingsState[r.id] || S.servings, m = methodFor(r, S.appliance);
   return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><a class="btn btn-ghost" href="#recipes">← All recipes</a>
-    <div class="row">${favToggle('recipes', r.id)}${r.custom ? `<a class="btn btn-sm" href="#recipe-edit-${r.id}">Edit recipe</a><span class="confirm">${delArmed ? `<span>Delete this recipe?</span><button class="btn btn-sm btn-berry" data-act="del-recipe" data-id="${r.id}">Yes, delete</button><button class="btn btn-sm" data-act="del-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="del-recipe-arm">Delete</button>`}</span>` : ''}</div></div>
+    <div class="row">${favToggle('recipes', r.id)}${!r.custom ? `<button class="btn btn-sm" data-act="share-recipe" data-id="${r.id}">Share</button>` : ''}${r.custom ? `<a class="btn btn-sm" href="#recipe-edit-${r.id}">Edit recipe</a><span class="confirm">${delArmed ? `<span>Delete this recipe?</span><button class="btn btn-sm btn-berry" data-act="del-recipe" data-id="${r.id}">Yes, delete</button><button class="btn btn-sm" data-act="del-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="del-recipe-arm">Delete</button>`}</span>` : ''}</div></div>
   <div class="recipe-photo">${recipeImg(r, 'rimg rimg-hero')}
     <div class="photo-actions"><label class="btn btn-sm" style="position:relative">${recipePhotos[r.id] ? 'Change photo' : 'Add your photo'}<input type="file" id="rp-file" data-id="${r.id}" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%"></label>
       ${recipePhotos[r.id] ? `<button class="btn btn-sm" data-act="rp-remove" data-id="${r.id}">Remove photo</button>` : ''}</div></div>
@@ -4061,6 +4082,113 @@ const FOOD_MICRO = {
   'Chia seeds': [8.3, 4, 98, 1.9, 0], 'Pumpkin seeds': [1.7, 5, 229, 2.3, 0], 'Dark chocolate 85%': [3.1, 6, 203, 3.4, 0], 'Coffee, black': [0, 5, 116, 0, 0],
   'Coffee with whole milk': [0, 15, 160, 0, 0.1], 'Tea, unsweetened': [0, 7, 88, 0, 0], 'Coconut water': [2.6, 252, 600, 0.7, 0]
 };
+/* Everyday meals and drinks for quick logging, so real life is easy to track too. Typical averages (rounded from USDA FNDDS
+   and common restaurant nutrition guides); chain restaurants publish exact numbers for their own items.
+   [category, name, portion, kcal, protein, carbs, fat, search words, [fiber g, sodium mg, potassium mg, iron mg, B12 µg], alcohol g]
+   Alcohol has 7 kcal per gram that isn't protein, carbs or fat, so drinks' calories are more than their macros add up to. */
+const COMMON_CATS = [['fast', 'Fast food & takeout'], ['home', 'Home-style meals'], ['bfast', 'Breakfast & bakery'], ['snack', 'Snacks & sweets'], ['drink', 'Drinks'], ['alcohol', 'Alcohol']];
+const COMMON_FOODS = [
+  ['fast', 'Cheeseburger, fast-food single', '1 burger', 300, 15, 32, 13, 'hamburger burger', [1.5, 720, 240, 2.7, 1.2]],
+  ['fast', 'Hamburger, fast-food single', '1 burger', 250, 12, 31, 9, 'burger', [1.5, 510, 230, 2.6, 1]],
+  ['fast', 'Double cheeseburger', '1 burger', 450, 25, 34, 24, 'hamburger burger', [2, 1100, 380, 3.9, 2.2]],
+  ['fast', 'Restaurant burger with cheese', '1/3 lb, with bun', 750, 40, 45, 45, 'hamburger burger pub', [2.5, 1300, 600, 5, 3]],
+  ['fast', 'Pizza, cheese', '1 slice of a 14" pizza', 285, 12, 36, 10, 'pie', [2.5, 640, 185, 2.6, 0.5]],
+  ['fast', 'Pizza, pepperoni', '1 slice of a 14" pizza', 313, 13, 36, 13, 'pie', [2.5, 760, 200, 2.7, 0.6]],
+  ['fast', 'Pizza, thin crust cheese', '1 slice of a 14" pizza', 230, 10, 25, 10, 'pie', [1.5, 500, 150, 1.9, 0.5]],
+  ['fast', 'Hot dog in a bun', '1', 290, 10, 24, 17, 'frankfurter', [1, 800, 160, 2.3, 0.6]],
+  ['fast', 'French fries, small', 'small order', 230, 3, 30, 11, 'chips', [3, 190, 450, 0.6, 0]],
+  ['fast', 'French fries, medium', 'medium order', 320, 5, 43, 15, 'chips', [4, 260, 620, 0.8, 0]],
+  ['fast', 'Chicken nuggets', '6 pieces', 250, 14, 15, 15, 'tenders', [1, 470, 230, 0.7, 0.2]],
+  ['fast', 'Chicken nuggets, 10 pieces', '10 pieces', 410, 23, 25, 24, 'tenders', [1.5, 790, 380, 1.1, 0.3]],
+  ['fast', 'Fried chicken breast', '1 piece, with skin', 360, 35, 12, 19, 'kfc', [0.5, 1000, 450, 1.5, 0.5]],
+  ['fast', 'Fried chicken sandwich', '1 sandwich', 500, 28, 45, 22, '', [2, 1300, 400, 2.5, 0.4]],
+  ['fast', 'Grilled chicken sandwich', '1 sandwich', 380, 35, 40, 8, '', [3, 900, 450, 2.5, 0.4]],
+  ['fast', 'Buffalo wings', '6 wings', 490, 42, 3, 34, 'chicken hot', [0, 1600, 350, 1.9, 0.5]],
+  ['fast', 'Chicken burrito', '1 large burrito', 1000, 55, 110, 35, 'mexican tex-mex', [15, 2200, 1100, 7, 0.8]],
+  ['fast', 'Chicken burrito bowl', '1 bowl', 650, 50, 65, 22, 'mexican', [13, 1700, 1000, 5, 0.6]],
+  ['fast', 'Beef tacos, hard shell', '2 tacos', 340, 16, 26, 20, 'mexican', [4, 620, 350, 2.4, 1.2]],
+  ['fast', 'Chicken quesadilla', '1 quesadilla', 750, 40, 50, 42, 'mexican', [3, 1500, 450, 4, 1]],
+  ['fast', 'Turkey sub, 6 inch', '6"', 280, 18, 46, 4, 'sandwich hoagie', [5, 760, 400, 3, 0.3]],
+  ['fast', 'Italian sub, 12 inch', '12"', 900, 40, 90, 40, 'sandwich hoagie cold cut', [6, 2600, 700, 6, 1.5]],
+  ['fast', 'Chicken fried rice', '2 cups', 650, 25, 85, 22, 'chinese takeout', [3, 1400, 400, 3, 0.4]],
+  ['fast', 'Orange chicken', '1 entrée (about 1 cup)', 490, 25, 51, 23, 'chinese takeout', [2, 820, 300, 1.5, 0.3]],
+  ['fast', "General Tso's chicken", '1 cup', 430, 22, 40, 20, 'chinese takeout', [1.5, 1000, 330, 1.8, 0.3]],
+  ['fast', 'Lo mein with chicken', '2 cups', 600, 22, 80, 20, 'chinese takeout noodles', [5, 1800, 450, 3.5, 0.3]],
+  ['fast', 'Pad thai with chicken', '2 cups', 700, 30, 85, 26, 'thai noodles', [4, 1500, 450, 3, 0.5]],
+  ['fast', 'California roll', '8 pieces', 255, 9, 38, 7, 'sushi', [6, 430, 230, 1, 0.5]],
+  ['fast', 'Spicy tuna roll', '8 pieces', 290, 24, 26, 11, 'sushi', [3.5, 550, 340, 1.4, 2]],
+  ['fast', 'Fish and chips', '1 plate', 900, 40, 85, 45, 'fried fish', [6, 1300, 1300, 2.5, 1.5]],
+  ['fast', 'Caesar salad with chicken', 'restaurant entrée', 500, 35, 15, 34, '', [4, 1100, 650, 2.5, 0.6]],
+  ['home', 'Spaghetti with meat sauce', '2 cups', 660, 30, 85, 20, 'pasta bolognese', [8, 900, 800, 5, 1.4]],
+  ['home', 'Macaroni and cheese', '1 cup', 380, 14, 45, 16, 'mac pasta', [2, 750, 200, 1.7, 0.6]],
+  ['home', 'Chili with beans', '1 cup', 290, 20, 25, 13, '', [8, 1000, 750, 4, 1.4]],
+  ['home', 'Chicken noodle soup, canned', '1 cup', 90, 6, 10, 3, '', [1, 800, 150, 0.8, 0.1]],
+  ['home', 'Instant ramen', '1 package', 380, 8, 52, 14, 'noodles', [2, 1700, 150, 3.5, 0]],
+  ['home', 'Grilled cheese sandwich', '1 sandwich', 370, 14, 30, 22, '', [1.5, 820, 140, 2.2, 0.5]],
+  ['home', 'Turkey sandwich', '1 sandwich, on bread', 350, 22, 35, 12, 'deli', [4, 1100, 350, 2.6, 0.3]],
+  ['home', 'Peanut butter and jelly sandwich', '1 sandwich', 380, 12, 50, 16, 'pbj', [4, 400, 300, 2.3, 0]],
+  ['home', 'Garden salad with dressing', '1 side salad', 150, 3, 10, 11, '', [3, 300, 350, 1, 0]],
+  ['home', 'Rotisserie chicken, with skin', '1/4 chicken (about 5 oz)', 350, 40, 0, 20, '', [0, 700, 400, 1.6, 0.4]],
+  ['home', 'Steak dinner plate', '8 oz steak, potato, vegetables', 900, 60, 50, 50, '', [6, 700, 1700, 6, 4]],
+  ['home', 'Tuna salad sandwich', '1 sandwich', 450, 22, 33, 25, '', [3, 800, 300, 2.3, 1.5]],
+  ['bfast', 'Bagel with cream cheese', '1 bagel, 2 tbsp', 360, 12, 56, 10, '', [2, 600, 160, 4, 0.1]],
+  ['bfast', 'Breakfast sandwich, sausage, egg and cheese', '1 sandwich', 480, 20, 30, 31, 'mcmuffin biscuit', [2, 860, 280, 3, 1]],
+  ['bfast', 'Pancakes with syrup and butter', '3 pancakes', 590, 11, 100, 16, 'hotcakes', [2, 1100, 280, 3.5, 0.4]],
+  ['bfast', 'Glazed donut', '1 medium', 250, 4, 31, 12, 'doughnut', [1, 210, 60, 1.2, 0.1]],
+  ['bfast', 'Blueberry muffin, bakery', '1 large', 400, 6, 58, 16, '', [1.5, 380, 120, 1.6, 0.1]],
+  ['bfast', 'Croissant', '1 medium', 230, 5, 26, 12, '', [1.5, 270, 70, 1.2, 0.1]],
+  ['bfast', 'Cereal with 2% milk', '1 cup cereal, 1/2 cup milk', 210, 7, 35, 4, '', [2, 260, 250, 8, 1.5]],
+  ['bfast', 'Flavored instant oatmeal', '1 packet', 160, 4, 32, 2, 'oats porridge', [3, 250, 120, 3.6, 0]],
+  ['snack', 'Potato chips', '1 oz bag', 150, 2, 15, 10, 'crisps', [1, 150, 350, 0.4, 0]],
+  ['snack', 'Tortilla chips and salsa', '1 oz chips, 1/4 cup salsa', 160, 2, 22, 7, '', [2, 400, 200, 0.5, 0]],
+  ['snack', 'Popcorn, buttered', '3 cups popped', 165, 3, 18, 10, 'movie', [3, 300, 75, 0.6, 0]],
+  ['snack', 'Milk chocolate candy bar', '1.5 oz bar', 220, 3, 26, 13, 'candy sweets', [1, 35, 160, 0.9, 0.2]],
+  ['snack', 'Chocolate chip cookie, large', '1 cookie', 220, 2, 30, 11, '', [1, 150, 70, 1, 0]],
+  ['snack', 'Brownie', '1 square', 230, 3, 36, 9, '', [1, 150, 90, 1.2, 0]],
+  ['snack', 'Ice cream, vanilla', '1 cup', 275, 5, 31, 15, 'dessert', [1, 105, 260, 0.2, 0.8]],
+  ['snack', 'Cheesecake', '1 slice', 400, 7, 32, 28, 'dessert', [0.5, 300, 120, 0.7, 0.3]],
+  ['snack', 'Apple pie', '1 slice', 410, 4, 58, 19, 'dessert', [2, 330, 120, 1.6, 0]],
+  ['snack', 'Granola bar', '1 bar', 190, 3, 29, 7, '', [2, 150, 120, 1, 0]],
+  ['snack', 'Protein bar', '1 bar', 200, 20, 22, 7, '', [5, 200, 200, 2, 0.5]],
+  ['drink', 'Cola, 12 oz can', '12 oz', 140, 0, 39, 0, 'soda pop coke pepsi', [0, 45, 10, 0.1, 0]],
+  ['drink', 'Cola, 20 oz bottle', '20 oz', 240, 0, 65, 0, 'soda pop coke pepsi', [0, 75, 15, 0.2, 0]],
+  ['drink', 'Lemon-lime soda, 12 oz can', '12 oz', 140, 0, 38, 0, 'soda pop sprite', [0, 65, 5, 0.1, 0]],
+  ['drink', 'Root beer, 12 oz can', '12 oz', 165, 0, 45, 0, 'soda pop', [0, 50, 5, 0.1, 0]],
+  ['drink', 'Diet soda, 12 oz can', '12 oz', 0, 0, 0, 0, 'zero sugar pop coke', [0, 40, 20, 0, 0]],
+  ['drink', 'Energy drink, 16 oz can', '16 oz', 210, 0, 54, 0, 'red bull monster', [0, 370, 0, 0, 6]],
+  ['drink', 'Energy drink, sugar-free, 16 oz', '16 oz', 10, 0, 3, 0, 'red bull monster zero', [0, 370, 0, 0, 6]],
+  ['drink', 'Sports drink, 20 oz', '20 oz', 140, 0, 36, 0, 'gatorade powerade', [0, 270, 75, 0, 0]],
+  ['drink', 'Orange juice', '1 cup', 112, 2, 26, 0, 'oj', [0.5, 2, 496, 0.5, 0]],
+  ['drink', 'Sweet tea, 16 oz', '16 oz', 180, 0, 45, 0, 'iced', [0, 10, 70, 0, 0]],
+  ['drink', 'Lemonade, 12 oz', '12 oz', 150, 0, 39, 0, '', [0, 15, 50, 0.1, 0]],
+  ['drink', 'Coffee with cream and sugar', '8 oz, 2 tbsp half-and-half, 2 tsp sugar', 70, 1, 9, 3, '', [0, 15, 160, 0, 0.1]],
+  ['drink', 'Latte with 2% milk, 16 oz', '16 oz', 190, 13, 19, 7, 'coffee starbucks', [0, 170, 600, 0.1, 1.3]],
+  ['drink', 'Blended coffee drink with whipped cream, 16 oz', '16 oz', 380, 5, 57, 15, 'frappuccino coffee', [0, 230, 300, 0.4, 0.6]],
+  ['drink', 'Hot chocolate, 12 oz', '12 oz, made with milk', 230, 8, 32, 8, 'cocoa', [2, 160, 500, 1, 1]],
+  ['drink', 'Fruit smoothie, 16 oz', '16 oz, shop-made', 300, 4, 70, 1, '', [5, 40, 700, 1, 0]],
+  ['drink', 'Milk, 2%', '1 cup', 122, 8, 12, 5, '', [0, 115, 366, 0, 1.3]],
+  ['alcohol', 'Beer, regular', '12 oz', 153, 2, 13, 0, 'lager', [0, 14, 96, 0.1, 0.1], 14],
+  ['alcohol', 'Beer, light', '12 oz', 103, 1, 6, 0, 'lager lite', [0, 14, 75, 0.1, 0], 11],
+  ['alcohol', 'IPA or craft beer', '12 oz, about 7% alcohol', 200, 2, 17, 0, 'ale', [0, 14, 100, 0.1, 0.1], 18],
+  ['alcohol', 'Hard seltzer', '12 oz', 100, 0, 2, 0, 'white claw truly', [0, 20, 0, 0, 0], 14],
+  ['alcohol', 'Hard cider', '12 oz', 200, 0, 21, 0, '', [0, 10, 100, 0.2, 0], 16],
+  ['alcohol', 'Red wine', '5 oz glass', 125, 0, 4, 0, 'merlot cabernet', [0, 6, 187, 0.7, 0], 16],
+  ['alcohol', 'White wine', '5 oz glass', 121, 0, 4, 0, 'chardonnay pinot', [0, 7, 104, 0.4, 0], 15],
+  ['alcohol', 'Sparkling wine', '5 oz glass', 120, 0, 4, 0, 'champagne prosecco', [0, 7, 100, 0.4, 0], 15],
+  ['alcohol', 'Liquor shot, 80 proof', '1.5 oz (vodka, whiskey, rum, tequila, gin)', 97, 0, 0, 0, 'spirits shot vodka whiskey bourbon rum tequila gin', [0, 0, 1, 0, 0], 14],
+  ['alcohol', 'Vodka soda', '1.5 oz vodka with soda water', 97, 0, 0, 0, 'cocktail', [0, 20, 1, 0, 0], 14],
+  ['alcohol', 'Rum and cola', '1.5 oz rum, 6 oz cola', 170, 0, 20, 0, 'cocktail', [0, 20, 5, 0, 0], 14],
+  ['alcohol', 'Gin and tonic', '1.5 oz gin, 6 oz tonic', 165, 0, 16, 0, 'cocktail', [0, 20, 1, 0, 0], 14],
+  ['alcohol', 'Margarita, restaurant', '8 oz', 290, 0, 36, 0, 'cocktail tequila', [0, 600, 40, 0.1, 0], 20],
+  ['alcohol', 'Mojito', '1 glass', 210, 0, 24, 0, 'cocktail rum', [0, 10, 40, 0.1, 0], 14],
+  ['alcohol', 'Piña colada', '8 oz', 425, 1, 56, 5, 'cocktail rum', [1, 15, 170, 0.5, 0], 20],
+  ['alcohol', 'Old fashioned', '2 oz whiskey', 150, 0, 4, 0, 'cocktail bourbon whiskey', [0, 1, 2, 0, 0], 19],
+  ['alcohol', 'Bloody Mary', '1 glass', 120, 1, 7, 0, 'cocktail vodka', [1, 650, 300, 0.6, 0], 14]
+];
+COMMON_FOODS.forEach(([cat, name, portion, kcal, p, c, f, k, mic, alc]) => {
+  FOODS.push({ name, portion: alc ? `${portion} · ${alc} g alcohol` : portion, kcal, p, c, f, k: (name + ' ' + k + ' ' + cat).toLowerCase(), cat, alc: alc || 0 });
+  FOOD_MICRO[name] = mic;
+});
 // FDA Daily Values used on food labels.
 const MICRO_DV = [['Fiber', 28, 'g'], ['Sodium', 2300, 'mg'], ['Potassium', 4700, 'mg'], ['Iron', 18, 'mg'], ['B12', 2.4, 'µg']];
 let RECIPE_MICRO = {'berry-overnight-oats': [10.5,414,578,3.4,1.2], 'spinach-feta-egg-muffins': [0.9,544,361,3.3,1.7], 'chicken-burrito-bowls': [11.7,711,1326,3.7,0.4], 'lemon-herb-salmon': [7.3,683,1537,3.3,4.5], 'turkey-black-bean-chili': [10.1,868,1044,5.5,1.2], 'tofu-peanut-stir-fry': [7.4,248,779,5.1,0.0], 'tuna-white-bean-salad': [7.7,887,1102,6.2,2.8], 'chocolate-pb-smoothie': [8.5,227,1002,3.1,0.6], 'banana-protein-pancakes': [5.6,1095,614,4.0,1.4], 'greek-chicken-quinoa-bowls': [5.2,719,1146,3.5,1.1], 'lentil-vegetable-soup': [8.2,558,710,4.0,0.0], 'beef-broccoli': [4.3,366,736,3.1,2.5], 'turkey-taco-lettuce-wraps': [4.7,667,826,3.1,1.6], 'shrimp-fajita-sheet-pan': [6.3,646,782,2.0,1.7], 'chickpea-spinach-curry': [14.4,863,768,5.5,0.0], 'pb-protein-bites': [4.3,54,284,2.0,0.1], 'cottage-cheese-parfait': [2.8,1383,373,0.9,0.9], 'steak-egg-skillet': [4.6,797,1194,5.2,2.6], 'green-shakshuka': [3.3,932,835,5.6,2.4], 'sage-turkey-patties': [1.1,610,504,3.4,1.6], 'savory-cottage-bowl': [1.5,1457,642,3.3,1.4], 'black-bean-egg-tacos': [10.1,746,711,4.8,1.5], 'tuna-stuffed-avocados': [10.7,670,1068,2.8,3.1], 'herb-chicken-avocado-salad': [8.7,678,1439,3.0,0.4], 'garlic-shrimp-zoodles': [2.3,782,1042,1.5,2.0], 'warm-lentil-egg-salad': [8.8,727,939,7.9,1.2], 'turkey-burger-lettuce-wraps': [4.4,544,805,3.3,1.5], 'herb-pork-tenderloin': [6.7,714,1377,4.3,0.9], 'garlic-butter-cod': [5.1,776,1115,2.7,1.6], 'chicken-cauliflower-traybake': [5.3,856,1135,4.4,1.4], 'turkey-white-bean-kale': [8.0,1016,1047,6.0,1.3], 'pesto-salmon-broccolini': [6.6,819,1384,3.9,5.7], 'yogurt-deviled-eggs': [0.1,342,172,1.8,1.0], 'chili-lime-edamame': [8.5,199,719,3.8,0.0], 'roast-turkey-rollups': [0.9,468,552,1.4,0.9], 'herby-yogurt-dip': [2.1,377,519,0.9,0.9], 'cocoa-almond-protein-shake': [8.3,778,562,3.3,0.6], 'smoked-salmon-scramble': [0.1,646,341,3.2,3.3], 'sweet-potato-turkey-hash': [5.7,905,1085,5.0,2.1], 'savory-oats-jammy-egg': [4.8,667,584,4.0,0.5], 'lemony-chicken-lentil-salad': [5.0,512,774,3.2,0.2], 'tuna-nicoise-plate': [8.4,1055,1498,6.4,3.7], 'avocado-chocolate-mousse': [7.7,155,514,2.0,0.0], 'cinnamon-baked-apples': [3.3,212,252,0.6,0.4], 'vanilla-chia-pudding': [9.3,202,296,1.9,0.5], 'almond-butter-cookies': [3.7,132,297,1.4,0.1], 'berry-yogurt-bark': [1.2,27,188,0.3,0.6], 'butter-basted-ribeye': [0.0,892,684,4.1,5.0], 'carnivore-steak-eggs': [0.0,1046,979,6.3,4.7], 'brown-butter-salmon': [0.0,750,620,0.6,5.5], 'beef-liver-burgers': [0.0,676,395,3.6,19.2], 'salt-roasted-chicken-thighs': [0.0,1065,456,1.6,0.9]}; // per serving, from tools/nutrition_audit.py
@@ -4100,7 +4228,9 @@ function foodMatches(q) {
   recentFoods().forEach((e) => { if (hit(e.m.name.toLowerCase())) out.push({ src: 'm', id: e.m.id, name: e.m.name, note: 'You’ve had this' + (e.n > 1 ? ` ${e.n}×` : ''), ...e.base }); });
   FOODS.forEach((f, i) => { if (hit(f.k) && !out.some((o) => o.name.toLowerCase() === f.name.toLowerCase())) out.push({ src: 'f', id: i, name: f.name, note: f.portion, kcal: f.kcal, p: f.p, c: f.c, f: f.f }); });
   RECIPES.forEach((r) => { if (hit((r.title + ' ' + r.meal).toLowerCase()) && !out.some((o) => o.name === r.title)) out.push({ src: 'r', id: r.id, name: r.title, note: 'Recipe · 1 serving', ...r.per }); });
-  return out.slice(0, 12);
+  // Whole-word matches first (so "cola" finds Cola before Chocolate), keeping the original order otherwise.
+  const starts = (n) => words.every((w) => (' ' + n.toLowerCase().replace(/[^a-z0-9%]+/g, ' ')).includes(' ' + w));
+  return out.map((o, i) => [o, starts(o.name) ? 0 : 1, i]).sort((a, b) => a[1] - b[1] || a[2] - b[2]).map((x) => x[0]).slice(0, 12);
 }
 const resBtn = (o) => `<button type="button" class="fres" data-act="qadd" data-src="${o.src}" data-id="${esc(String(o.id))}">
     <span class="grow"><b>${esc(o.name)}</b><span class="muted">${esc(o.note)} · P ${Math.round(o.p)} · C ${Math.round(o.c)} · F ${Math.round(o.f)}</span></span>
@@ -4109,14 +4239,24 @@ function foodResults(date) {
   const meal = logMeal || mealNow();
   if (foodQ.trim()) {
     const list = foodMatches(foodQ.trim());
-    return `${list.length ? `<div class="fres-list">${list.map(resBtn).join('')}</div>` : `<p class="muted" style="font-size:.88rem">No match in your foods, the whole-food list or recipes.</p>`}
+    return `${list.length ? `<div class="fres-list">${list.map(resBtn).join('')}</div>` : `<p class="muted" style="font-size:.88rem">No match in your foods, the food list or recipes.</p>`}
       <button type="button" class="btn btn-sm btn-ghost fres-own" data-act="manual-open">+ Add “${esc(foodQ.trim())}” with your own numbers</button>`;
   }
   const favs = S.favFoods || [], rec = recentFoods().filter((e) => !favs.some((f) => f.name.toLowerCase() === e.m.name.toLowerCase())).slice(0, Math.max(0, 8 - favs.length)), y = addDays(date, -1), same = S.meals.filter((m) => m.date === y && m.meal === meal);
   const yk = same.reduce((a, m) => a + m.kcal, 0);
   return `${same.length ? `<button type="button" class="btn btn-sm repeat-btn" data-act="repeat-meal" data-meal="${meal}">${icon('repeat')} Same ${meal.toLowerCase()} as yesterday <span class="muted">(${same.length} item${same.length === 1 ? '' : 's'}, ${yk} kcal)</span></button>` : ''}
     ${rec.length || favs.length ? `<div class="eyebrow" style="margin:10px 0 6px">Your usual</div><div class="qchips">${favs.map((f, i) => `<button type="button" class="chip chip-fav" data-act="qadd" data-src="v" data-id="${i}" title="${Math.round(f.base.kcal)} kcal">${icon('heart', 'ic-fill')} ${esc(f.name)}</button>`).join('')}${rec.map((e) => `<button type="button" class="chip" data-act="qadd" data-src="m" data-id="${e.m.id}" title="${e.base.kcal} kcal">+ ${esc(e.m.name)}</button>`).join('')}</div>`
-      : `<p class="muted" style="font-size:.85rem;margin-top:6px">Type to search, e.g. “eggs”, “salmon” or a recipe name. Foods you log show up here for one-tap adding next time.</p>`}`;
+      : `<p class="muted" style="font-size:.85rem;margin-top:6px">Type to search, e.g. “eggs”, “pizza” or a recipe name. Foods you log show up here for one-tap adding next time.</p>`}
+    ${commonPanel()}`;
+}
+// Everyday meals and drinks by category, for the times you eat out or off-plan.
+let commonCat = null;
+function commonPanel() {
+  const list = commonCat ? FOODS.map((f, i) => [f, i]).filter(([f]) => f.cat === commonCat) : [];
+  return `<div class="common"><div class="eyebrow" style="margin:12px 0 6px">Everyday meals &amp; drinks</div>
+    <div class="qchips" role="group" aria-label="Everyday meals and drinks">${COMMON_CATS.map(([id, l]) => `<button type="button" class="chip" data-act="ccat" data-c="${id}" aria-pressed="${commonCat === id}">${l}</button>`).join('')}</div>
+    ${list.length ? `<div class="fres-list" style="margin-top:8px">${list.map(([f, i]) => resBtn({ src: 'f', id: i, name: f.name, note: f.portion, kcal: f.kcal, p: f.p, c: f.c, f: f.f })).join('')}</div>
+      <p class="muted" style="font-size:.8rem">Typical averages; restaurants publish exact numbers for their own items. ${commonCat === 'alcohol' ? 'Alcohol has 7 kcal per gram on top of protein, carbs and fat, so these calories are higher than the macros add up to.' : 'Use the portion buttons in your log to adjust the amount.'}</p>` : ''}</div>`;
 }
 /* Barcode lookup: the camera (where the browser can read barcodes) or a typed number, then Open Food Facts, a free
    public food database. Only the barcode number is sent. */
@@ -6061,6 +6201,227 @@ function render(keepScroll) {
       <p class="muted" style="font-size:.8rem">Details: ${esc(String((e && e.message) || e))}</p></div>`;
   }
 }
+/* ---------- Guide, Links & facts, Report an issue, Friends ---------- */
+const REPO = 'xSOSAxDEXx/Ray', APP_VERSION = '2026.10.31';
+const GUIDE = [
+  ['today', 'Today', 'Your day at a glance: calories and protein left, water, today\'s workout and quick buttons for logging.', ['Tap a meal card or + to log food; tap the water glasses to add a glass.', 'The weekly ring shows workouts and active minutes toward your weekly goal.', 'Banners appear when there\'s something useful: a backup reminder, a suggested calorie target, or a plan session that\'s due.']],
+  ['log', 'Log', 'Everything you ate, drank, lifted and weighed, day by day.', ['Search foods, recipes or your usual, or scan a barcode. Use “Everyday meals & drinks” for takeout, snacks, soda and alcohol.', 'Use − and + on an item to change portions, Edit to fix the numbers, and the heart to make it a favorite. Every change can be undone from the message at the bottom.', '“Same as yesterday” copies a whole meal in one tap. The arrows at the top move between days.', 'Log your weight here too; the trend powers the adaptive calorie target.']],
+  ['recipes', 'Recipes', 'Over 50 recipes with macros, allergens, cost per serving and swaps.', ['Filter by meal, diet (carnivore, gluten free, soy free, dairy free, nut free, budget) or favorites.', 'Open a recipe to scale servings, see micronutrients, add it to your log or meal plan, rate it and keep notes.', 'Add your own with “New recipe”; calories are worked out from protein, carbs and fat if you leave them blank.']],
+  ['mealplan', 'Meal plan', 'Plan the week by dragging recipes onto days.', ['Tap a day slot to choose a recipe. The week\'s totals show against your targets.', 'Turn on “Build from my meal plan” in the shopping list to fill it automatically.']],
+  ['shopping', 'Shopping list', 'One combined list from the recipes you choose, with store prices and package sizes.', ['Add recipes, then tick items off as you shop. “Have it” hides things already in your pantry.', 'Enter a zip code to find nearby stores, open them in maps, or order online.', 'Share, email, text or print the list.']],
+  ['workouts', 'Workouts', '33 plans for gyms, homes and no equipment, plus a builder for your own.', ['Set your equipment once and plans you can\'t do are marked.', 'Start a session to get a timer, rest countdowns, a plate calculator, effort ratings and a “next step” suggestion based on last time.', 'The Exercise library explains every movement with cues and easier or harder versions.', 'Share any plan as a link.']],
+  ['breathe', 'Breathe', 'Guided breathing from many traditions with a calm timer, tones and optional music.', ['Pick by goal: calm, focus, energy or sleep. Each exercise says where it comes from and how to do it.', 'New to it? The 7-day “Learn to breathe” course gives one short session a day.', 'Wim Hof-style and power breathing carry safety warnings: never do them in or near water, driving or standing.']],
+  ['mind', 'Mind', 'Meditation, long-hold yoga and calisthenics holds, sleep sounds and daily brain habits.', ['Sessions run on the same calm timer as Breathe.', 'Tick off daily habits to build a streak; sleep sounds fade out on a timer.']],
+  ['friends', 'Friends', 'Share workouts, recipes and milestones, and cheer each other on.', ['There are no accounts yet: everything travels as a link you send by text or chat.', 'When a friend sends you something, open the link to add them and send a cheer back.']],
+  ['progress', 'Progress', 'Weight, body measurements, body-fat estimate and progress photos.', ['Photos stay on this device only.', 'Body fat uses the US Navy tape method (neck, waist and, for women, hips).']],
+  ['analytics', 'Analytics', 'Charts of calories, macros, weight, workouts and personal bests.', ['Choose a preset range or set your own dates.', 'Personal bests use an estimated one-rep max.']],
+  ['goals', 'Profile & goals', 'Your details, goal and daily targets.', ['Targets are worked out for you (see Links & facts for how), and you can edit any of them.', 'After about four weeks of logging, an adaptive target can suggest a better calorie number from your real results.']],
+  ['settings', 'Settings', 'Look, sounds, reminders, backups, profiles and privacy.', ['Download a backup now and then: your data lives only in this browser.', 'Profiles let two people share one device.']]
+];
+function viewGuide() {
+  return `<div class="page-head"><div><div class="eyebrow">Help</div><h1>Guide</h1></div><a class="btn btn-sm" href="#sources">Links &amp; facts</a></div>
+  <section class="panel stack"><h2>Getting started</h2>
+    <ol class="guide-steps"><li>Set up your profile in <a href="#goals">Profile &amp; goals</a> so your calorie, protein and water targets fit you.</li>
+      <li>Log what you eat in <a href="#log">Log</a>: search, tap your usual foods, scan a barcode, or pick an everyday meal or drink.</li>
+      <li>Pick a plan in <a href="#workouts">Workouts</a> and start a session; it's saved to your log when you finish.</li>
+      <li>Check <a href="#today">Today</a> each day and download a backup from <a href="#settings">Settings</a> every week or two.</li></ol>
+    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the Rep &amp; Ration name) to move between sections. Rep &amp; Ration works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
+  <div class="grid" style="margin-top:16px">${GUIDE.map(([id, t, what, how]) => `<section class="panel span-6 guide-card"><div class="panel-head"><h2>${t}</h2><a class="btn btn-sm btn-ghost" href="#${id}">Open</a></div>
+    <p>${esc(what)}</p><ul>${how.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}</div>
+  <section class="panel stack" style="margin-top:16px"><h2>Something not working?</h2><p>Tell us on the <a href="#report">Report an issue</a> page. It takes a minute and helps fix it for everyone.</p></section>`;
+}
+
+/* Sources: what the app's numbers and methods are based on. Each link was checked when it was added (October 2026). */
+const SOURCES = [
+  ['Calories and macros', [
+    ['Mifflin-St Jeor equation (1990), the resting-burn formula used for your targets', 'https://pubmed.ncbi.nlm.nih.gov/2305711/'],
+    ['Frankenfield et al. (2005): Mifflin-St Jeor was the most accurate of the common equations', 'https://pubmed.ncbi.nlm.nih.gov/15883556/'],
+    ['Morton et al. (2018): protein benefits for muscle level off around 1.6 g/kg a day', 'https://bjsm.bmj.com/content/52/6/376'],
+    ['International Society of Sports Nutrition position stand on protein and exercise (2017)', 'https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0177-8'],
+    ['Hall et al. (2011): how body weight responds to changes in calories', 'https://pubmed.ncbi.nlm.nih.gov/21872751/'],
+    ['FDA Daily Values used for fiber, sodium, potassium, iron and B12', 'https://www.fda.gov/food/nutrition-facts-label/daily-value-nutrition-and-supplement-facts-labels'],
+    ['National Academies: water and electrolyte intakes (2004)', 'https://nap.nationalacademies.org/catalog/10925'],
+    ['Dietary Guidelines for Americans', 'https://www.dietaryguidelines.gov/']]],
+  ['Food data and safety', [
+    ['USDA FoodData Central, the reference for ingredient nutrition', 'https://fdc.nal.usda.gov/'],
+    ['Open Food Facts, the free database behind barcode lookup', 'https://world.openfoodfacts.org/'],
+    ['USDA safe minimum cooking temperatures', 'https://www.fsis.usda.gov/food-safety/safe-food-handling-and-preparation/food-safety-basics/safe-temperature-chart'],
+    ['FoodSafety.gov temperature chart', 'https://www.foodsafety.gov/food-safety-charts/safe-minimum-internal-temperatures'],
+    ['FDA 2025 allergen guidance: coconut no longer counted as a tree nut (Allergic Living)', 'https://www.allergicliving.com/2025/01/17/fda-on-top-allergen-labels-coconut-off-list-milk-sources-expand/'],
+    ['NIH Office of Dietary Supplements: vitamin A (why liver is limited in pregnancy)', 'https://ods.od.nih.gov/factsheets/VitaminA-HealthProfessional/'],
+    ['NIAAA: what counts as a standard drink (14 g of alcohol)', 'https://www.niaaa.nih.gov/alcohols-effects-health/what-standard-drink'],
+    ['Lennerz et al. (2021): survey of 2,029 adults on a carnivore diet', 'https://pubmed.ncbi.nlm.nih.gov/34934897/']]],
+  ['Workouts', [
+    ['US Physical Activity Guidelines (150 minutes a week, strength twice a week)', 'https://odphp.health.gov/our-work/nutrition-physical-activity/physical-activity-guidelines'],
+    ['Compendium of Physical Activities (MET values for workout calories)', 'https://pacompendium.com/'],
+    ['ACSM position stand: progression models in resistance training', 'https://pubmed.ncbi.nlm.nih.gov/?term=Progression+models+in+resistance+training+for+healthy+adults'],
+    ['Buffey et al. (2022): short walks after sitting lower blood sugar', 'https://pubmed.ncbi.nlm.nih.gov/35147898/']]],
+  ['Breathing and mind', [
+    ['Balban et al. (2023, Stanford): cyclic sighing and mood', 'https://www.cell.com/cell-reports-medicine/fulltext/S2666-3791(22)00474-8'],
+    ['Lehrer & Gevirtz (2014): slow breathing near 6 breaths a minute and heart rate variability', 'https://www.frontiersin.org/articles/10.3389/fpsyg.2014.00756/full'],
+    ['Dr. Andrew Weil: the 4-7-8 breath', 'https://www.drweil.com/videos-features/videos/breathing-exercises-4-7-8-breath/'],
+    ['Wim Hof Method safety warnings', 'https://www.wimhofmethod.com/safety-warnings'],
+    ['Kox et al. (2014, PNAS): breathing, cold and meditation training and the immune response', 'https://pubmed.ncbi.nlm.nih.gov/24799686/'],
+    ['Live Science: experts on the risks of Wim Hof breathing', 'https://livescience.com/health/gambling-with-your-life-experts-weigh-in-on-dangers-of-the-wim-hof-method'],
+    ['James Nestor, author of Breath', 'https://www.mrjamesnestor.com/'],
+    ['Harvard Study of Adult Development (relationships and healthy aging)', 'https://www.adultdevelopmentstudy.org/']]]
+];
+const UNVERIFIED = [
+  ['Ingredient and recipe nutrition', 'Recipe numbers were recalculated from USDA-based values for each ingredient, but the USDA database couldn\'t be reached while building this, so the values came from reference figures rather than a live lookup. Expect them to be within about 10%, and treat them as estimates.'],
+  ['Everyday meals and drinks', 'Takeout, snacks and drinks use typical averages. Real items vary a lot: one restaurant\'s burger can have twice the calories of another\'s. Check the restaurant\'s own nutrition page when you can.'],
+  ['Barcode results', 'Open Food Facts is filled in by volunteers. Most entries match the label, but some are wrong or out of date.'],
+  ['Cost per serving', 'Rough estimates from typical US grocery prices, not your local store.'],
+  ['Allergens', 'Worked out automatically from ingredient names. Always read labels: packaged ingredients can contain allergens their names don\'t show, and “Nut free” can include coconut.'],
+  ['Workout calories', 'Use MET values scaled to your own resting burn. That\'s a recognized method, but it reads about 20% lower than the textbook formula for some people, and any estimate can be off by a lot for one person.'],
+  ['Adaptive calorie target', 'Assumes about 7,700 kcal per kilogram of weight change. That\'s a rule of thumb; research (Hall 2011) shows the real figure changes as you lose or gain. It also needs complete logs: days you only partly log make your burn look lower than it is.'],
+  ['Water target', 'Blends the National Academies\' adequate intakes with advice from Paul Saladino and David Sinclair. Their specific numbers come from podcasts and books, not clinical trials, so the target is a sensible starting point rather than a proven amount.'],
+  ['Carnivore recipes', 'There\'s very little long-term research on carnivore diets. The main study is a self-reported online survey, and it found LDL cholesterol rose markedly for many people. Talk to a doctor before eating this way long term.'],
+  ['Breathing and mind claims', 'Many traditions here have little controlled research behind them. The descriptions say where each comes from, not that it\'s proven. Wim Hof studies are small (24 people in the best known one).'],
+  ['Longevity habits', 'Some habit ideas come from David Sinclair\'s work, much of which rests on animal studies and is debated by other scientists.'],
+  ['Body fat estimate', 'The US Navy tape method is typically within 3–4 percentage points, but can be further off for very lean or very muscular people.'],
+  ['Exercise instructions', 'Written for this app and not yet reviewed by a certified trainer. Stop any movement that causes pain.']
+];
+function viewSources() {
+  const T = calcTargets(S.profile), u = S.units === 'metric';
+  return `<div class="page-head"><div><div class="eyebrow">Help</div><h1>Links &amp; facts</h1></div><a class="btn btn-sm" href="#guide">Guide</a></div>
+  <section class="panel stack"><h2>How your calories and macros are worked out</h2>
+    <ol class="calc-steps">
+      <li><b>Resting burn (BMR)</b> uses the Mifflin-St Jeor equation: 10 × weight in kg + 6.25 × height in cm − 5 × age, then +5 for men or −161 for women. Yours is about <span class="num">${T.bmr}</span> kcal a day.</li>
+      <li><b>Daily burn (TDEE)</b> is BMR times your activity level, from 1.2 (mostly sitting) to 1.9 (very active). Yours is about <span class="num">${T.tdee}</span> kcal.</li>
+      <li><b>Goal adjustment:</b> to lose fat, eat 500 kcal less or 20% less, whichever is smaller. To build muscle, eat 300 kcal more or 10% more, whichever is smaller. The target never goes below 1,500 kcal for men or 1,200 for women.</li>
+      <li><b>Protein:</b> 1.6 g per kg of body weight to maintain, 1.8 to build muscle and 2.0 while losing fat, which helps keep muscle. For people above a BMI of 27.5, it uses the weight at a BMI of 27.5, so the target isn't inflated by body fat.</li>
+      <li><b>Fat</b> is 30% of calories (9 kcal per gram). <b>Carbs</b> fill the rest (4 kcal per gram, as does protein).</li>
+      <li><b>Water:</b> 33 ml per kg of body weight, at least ${u ? '3.0 L for men or 2.2 L for women' : '101 oz for men or 74 oz for women'}, plus more for active days, capped at ${u ? '4.5 L' : '152 oz'}.</li>
+      <li><b>Alcohol</b> has 7 kcal per gram that isn't protein, carbs or fat, so drinks' calories are higher than their macros add up to.</li>
+      <li><b>Workout calories:</b> the exercise's MET value × your resting burn per minute × minutes.</li>
+      <li><b>Adaptive target:</b> average daily calories logged over about 4 weeks, minus your weight trend × 7,700 kcal per kg, gives your real daily burn. It's only suggested, never applied on its own.</li>
+      <li><b>One-rep max</b> uses the Epley estimate: weight × (1 + reps ÷ 30).</li></ol>
+    <p class="muted" style="font-size:.85rem">These are estimates that work for most people. Bodies vary, so watch your results for 2–3 weeks and adjust. <a href="#goals">See or change your targets</a>.</p></section>
+  <section class="panel stack" style="margin-top:16px"><h2>What we couldn't fully verify</h2>
+    <p class="muted">We'd rather tell you than have you trust a number too much.</p>
+    <dl class="unverified">${UNVERIFIED.map(([t, d]) => `<dt>${esc(t)}</dt><dd>${esc(d)}</dd>`).join('')}</dl>
+    <p style="font-size:.88rem">Spotted a wrong number or a broken link? <a href="#report">Report it</a>.</p></section>
+  ${SOURCES.map(([h, list]) => `<section class="panel stack" style="margin-top:16px"><h2>${esc(h)}</h2><ul class="src-list">${list.map(([t, url]) => `<li><a href="${url}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join('')}</ul></section>`).join('')}
+  <p class="muted" style="font-size:.82rem;margin-top:12px">General guidance, not medical advice. Links open on other sites, which we don't control.</p>`;
+}
+
+/* Report an issue: opens a pre-filled GitHub issue (free account needed) or copies the report. Nothing is sent from here. */
+let report = { kind: 'Something is broken', text: '', device: true, from: '' };
+const REPORT_KINDS = ['Something is broken', 'A number or fact looks wrong', 'Idea or request', 'Other'];
+function reportBody() {
+  const dev = report.device ? `\n\n---\nPage: #${report.from || 'unknown'}\nApp version: ${APP_VERSION}\nScreen: ${innerWidth}×${innerHeight}\nBrowser: ${navigator.userAgent}` : '';
+  return `**Type:** ${report.kind}\n\n**What happened:**\n${report.text.trim() || '(not filled in)'}${dev}`;
+}
+function viewReport() {
+  const ok = report.text.trim().length >= 5;
+  const title = `[${report.kind}] ${report.text.trim().split('\n')[0].slice(0, 70)}`;
+  const url = `https://github.com/${REPO}/issues/new?template=site-report.md&title=${encodeURIComponent(title)}&body=${encodeURIComponent(reportBody())}`;
+  return `<div class="page-head"><div><div class="eyebrow">Help</div><h1>Report an issue</h1></div></div>
+  <section class="panel stack" style="max-width:720px">
+    <p>Found a bug, a wrong number or have an idea? Describe it below, then send it on GitHub, where the site's owner reviews every report.</p>
+    <div class="seg" role="group" aria-label="Type of report">${REPORT_KINDS.map((k) => `<button type="button" class="chip" data-act="rep-kind" data-k="${esc(k)}" aria-pressed="${report.kind === k}">${esc(k)}</button>`).join('')}</div>
+    <label class="field">What happened, and where?<textarea class="input" id="rep-text" rows="6" placeholder="e.g. On the Log page, tapping + on pizza added two slices instead of one.">${esc(report.text)}</textarea></label>
+    <label class="check"><input type="checkbox" id="rep-device" ${report.device ? 'checked' : ''}> Include the page, screen size and browser (helps fix bugs)</label>
+    <details><summary>Preview what will be sent</summary><pre class="rep-preview">${esc(reportBody())}</pre></details>
+    <div class="row"><a class="btn btn-primary ${ok ? '' : 'disabled'}" id="rep-send" href="${ok ? esc(url) : '#report'}" target="_blank" rel="noopener" ${ok ? '' : 'aria-disabled="true"'}>Send on GitHub</a>
+      <button class="btn" data-act="rep-copy" ${ok ? '' : 'disabled'}>Copy report</button></div>
+    <p class="muted" style="font-size:.85rem">Sending needs a free GitHub account. Reports are public, so don't include personal or health details. No GitHub account? Copy the report and send it to whoever shared this site with you.</p></section>`;
+}
+
+/* Friends: share workouts, recipes and milestones as links, and send cheers back. There are no accounts yet; nothing is
+   uploaded. A shared item travels in the link after #cheer= as base64 JSON, and is checked and length-limited on arrival. */
+const CHEERS = ['Great work!', 'So proud of you', 'Keep it going', 'You crushed it', 'Inspiring!', 'See you at the next one'];
+const myShareName = () => (S.friends.name || (PROFILES.list.find((p) => p.id === PROFILES.active) || {}).name || '').trim();
+const encodeShare = (o) => btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+function decodeShare(txt) {
+  try {
+    const o = JSON.parse(decodeURIComponent(escape(atob(txt))));
+    if (!o || !['w', 'r', 'g', 'c'].includes(o.k)) return null;
+    const str = (v, n) => String(v == null ? '' : v).slice(0, n);
+    return { k: o.k, n: str(o.n, 40) || 'A friend', i: str(o.i, 20).replace(/[^a-z0-9]/gi, ''), t: str(o.t, 100), d: str(o.d, 200), x: /^\d{4}-\d{2}-\d{2}$/.test(o.x) ? o.x : '', r: str(o.r, 80).replace(/[^a-z0-9-]/gi, ''), m: str(o.m, 200), to: str(o.to, 40) };
+  } catch (e) { return null; }
+}
+function myId() { if (!S.friends.me) { S.friends.me = uid().replace(/[^a-z0-9]/gi, '').slice(0, 12); save(); } return S.friends.me; }
+function shareLink(o, title) {
+  const url = `${location.origin}${location.pathname}#cheer=${encodeShare({ n: myShareName(), i: myId(), x: dayKey(), ...o })}`, text = title;
+  if (navigator.share) navigator.share({ title: 'Rep & Ration', text, url }).catch(() => {});
+  else { try { navigator.clipboard.writeText(`${text} ${url}`).then(() => toast('Link copied. Paste it into a text or chat.'), () => prompt('Copy this link', url)); } catch (err) { prompt('Copy this link', url); } }
+}
+function lastWorkoutShare() {
+  const w = S.workouts[S.workouts.length - 1]; if (!w) return null;
+  const p = planById(w.planId), day = p && p.days[w.dayIdx];
+  return { k: 'w', t: `${p ? p.title : 'A workout'}${day ? ' · ' + day.name : ''}`, d: `${w.minutes} min${w.sets ? ` · ${w.sets} sets` : ''}`, x: w.date };
+}
+function milestones() {
+  const out = [], t = dayKey(), wk = S.workouts.filter((w) => w.date > addDays(t, -7));
+  if (S.workouts.length) out.push({ k: 'g', t: `${S.workouts.length} workout${S.workouts.length === 1 ? '' : 's'} logged`, d: 'Total sessions on Rep & Ration' });
+  if (wk.length) out.push({ k: 'g', t: `${wk.length} workout${wk.length === 1 ? '' : 's'} this week`, d: `${wk.reduce((a, w) => a + w.minutes, 0)} active minutes${weekGoalHit(t) ? ' · weekly goal hit' : ''}` });
+  const ws = S.weights.slice().sort((a, b) => (a.date < b.date ? -1 : 1));
+  if (ws.length >= 2) {
+    const dKg = ws[ws.length - 1].kg - ws[0].kg, amt = S.units === 'metric' ? `${Math.abs(dKg).toFixed(1)} kg` : `${Math.abs(dKg * 2.20462).toFixed(1)} lb`;
+    if (Math.abs(dKg) >= 0.5 && ((S.profile.goal === 'lose' && dKg < 0) || (S.profile.goal === 'gain' && dKg > 0))) out.push({ k: 'g', t: `${dKg < 0 ? 'Down' : 'Up'} ${amt}`, d: `Since ${fmtDay(ws[0].date)}` });
+  }
+  const logged = new Set(S.meals.map((m) => m.date)); let run = 0; for (let k = t; logged.has(k); k = addDays(k, -1)) run += 1;
+  if (run >= 3) out.push({ k: 'g', t: `${run}-day food logging streak`, d: 'Every day logged' });
+  return out;
+}
+const kindLabel = { w: 'finished a workout', r: 'shared a recipe', g: 'reached a milestone', c: 'sent you a cheer' };
+function feedItem(f) {
+  return `<li class="feed-item ${f.k === 'c' ? 'is-cheer' : ''}"><div class="grow"><b>${esc(f.n)}</b> ${kindLabel[f.k]}${f.x ? ` <span class="muted">· ${fmtDay(f.x)}</span>` : ''}
+    <div>${f.k === 'c' ? `“${esc(f.m)}”${f.t ? ` <span class="muted">on ${esc(f.t)}</span>` : ''}` : `${f.k === 'r' && RECIPES.some((r) => r.id === f.r) ? `<a href="#recipe-${f.r}">${esc(f.t)}</a>` : esc(f.t)}${f.d ? ` <span class="muted">· ${esc(f.d)}</span>` : ''}`}</div></div>
+    ${f.k !== 'c' ? `<button class="btn btn-sm" data-act="cheer-pick" data-id="${f.id}">Cheer</button>` : ''}</li>`;
+}
+let cheerFor = null; // feed item id or 'f:<friend id>' while choosing a message
+function cheerPicker(target) {
+  return `<div class="cheer-pick stack">${myShareName() ? '' : `<label class="field" style="max-width:280px">Your name, so they know who it's from<input class="input" id="share-name" maxlength="40" placeholder="e.g. Alex"></label>`}<div class="qchips">${CHEERS.map((m) => `<button type="button" class="chip" data-act="cheer-send" data-m="${esc(m)}" data-to="${esc(target)}">${esc(m)}</button>`).join('')}</div>
+    <form class="row" data-cheer-form="${esc(target)}"><input class="input" name="msg" maxlength="200" placeholder="Or write your own" aria-label="Your message" style="flex:1"><button class="btn btn-sm btn-primary">Send</button><button class="btn btn-sm btn-ghost" type="button" data-act="cheer-pick" data-id="">Cancel</button></form></div>`;
+}
+function viewFriends() {
+  const F = S.friends, last = lastWorkoutShare(), ms = milestones(), favR = (S.favs.recipes || []).map((id) => RECIPES.find((r) => r.id === id)).filter(Boolean).slice(0, 6);
+  return `<div class="page-head"><div><div class="eyebrow">Community</div><h1>Friends</h1></div></div>
+  <div class="grid">
+    <section class="panel span-7 stack" aria-labelledby="h-share"><h2 id="h-share">Share and celebrate</h2>
+      <label class="field" style="max-width:320px">Your name on shares<input class="input" id="share-name" maxlength="40" value="${esc(myShareName())}" placeholder="e.g. Alex"></label>
+      ${last ? `<div class="share-item"><div class="grow"><b>Latest workout</b><div class="muted">${esc(last.t)} · ${esc(last.d)}</div></div><button class="btn btn-sm btn-primary" data-act="share-last">Share</button></div>` : ''}
+      ${ms.map((m, i) => `<div class="share-item"><div class="grow"><b>${esc(m.t)}</b><div class="muted">${esc(m.d)}</div></div><button class="btn btn-sm" data-act="share-ms" data-i="${i}">Share</button></div>`).join('')}
+      ${favR.length ? `<div class="eyebrow">Favorite recipes</div>${favR.map((r) => `<div class="share-item"><div class="grow"><b>${esc(r.title)}</b><div class="muted">${r.per.kcal} kcal · ${r.per.p} g protein</div></div><button class="btn btn-sm" data-act="share-recipe" data-id="${r.id}">Share</button></div>`).join('')}` : ''}
+      ${!last && !ms.length && !favR.length ? emptyState('heart', 'Finish a workout, log a few days or favorite a recipe, and you\'ll have something to share here.') : ''}
+      <div class="row"><button class="btn btn-sm btn-ghost" data-act="share-invite">Invite a friend to Rep &amp; Ration</button></div></section>
+    <section class="panel span-5 stack" aria-labelledby="h-friends"><h2 id="h-friends">Your friends</h2>
+      ${F.list.length ? `<ul class="list">${F.list.map((f) => `<li><div class="grow"><b>${esc(f.name)}</b><div class="muted" style="font-size:.82rem">Added ${fmtDay(f.added)}</div></div>
+        <button class="btn btn-sm" data-act="cheer-pick" data-id="f:${f.id}">Encourage</button><button class="btn btn-sm btn-ghost" data-act="friend-del" data-id="${f.id}" aria-label="Remove ${esc(f.name)}">✕</button>
+        ${cheerFor === 'f:' + f.id ? cheerPicker('f:' + f.id) : ''}</li>`).join('')}</ul>`
+        : emptyState('heart', 'No friends yet. When someone sends you a Rep &amp; Ration link, open it to add them here.')}</section>
+    <section class="panel span-12 stack" aria-labelledby="h-feed"><div class="panel-head"><h2 id="h-feed">Activity</h2>${F.feed.length ? '<button class="btn btn-sm btn-ghost" data-act="feed-clear">Clear</button>' : ''}</div>
+      ${F.feed.length ? `<ul class="list feed">${F.feed.slice().reverse().slice(0, 50).map((f) => feedItem(f) + (cheerFor === f.id ? `<li>${cheerPicker(f.id)}</li>` : '')).join('')}</ul>` : emptyState('heart', 'Workouts, milestones and cheers your friends send you will show up here.')}</section>
+  </div>
+  <p class="muted" style="font-size:.85rem;margin-top:12px">How this works: there are no accounts yet. Everything you share travels inside the link you send, by text or chat, and what you receive is saved only in this browser. Accounts with a shared feed are planned.</p>`;
+}
+function viewCheer(code) {
+  const o = decodeShare(code);
+  if (!o) return `<div class="panel stack" style="max-width:560px">${emptyState('heart', 'That link is incomplete or damaged. Ask your friend to send it again.', '<a class="btn btn-primary btn-sm" href="#friends">Go to Friends</a>')}</div>`;
+  const key = [o.k, o.i, o.x, o.t, o.m].join('|'), mine = o.i && o.i === S.friends.me;
+  if (!mine && !S.friends.feed.some((f) => f.key === key)) { S.friends.feed.push({ id: uid(), key, ...o, at: Date.now() }); S.friends.feed = S.friends.feed.slice(-200); save(); }
+  const item = S.friends.feed.find((f) => f.key === key), isFriend = S.friends.list.some((f) => f.id === o.i), rec = o.k === 'r' && RECIPES.find((r) => r.id === o.r);
+  return `<div class="panel stack cheer-card" style="max-width:640px"><div class="eyebrow">${o.k === 'c' ? 'A cheer for you' : 'From a friend'}</div>
+    <h1>${esc(o.n)} ${kindLabel[o.k]}</h1>
+    ${o.k === 'c' ? `<p class="cheer-msg">“${esc(o.m)}”</p>${o.t ? `<p class="muted">On: ${esc(o.t)}</p>` : ''}` : `<p class="cheer-msg">${esc(o.t)}</p>${o.d ? `<p class="muted">${esc(o.d)}</p>` : ''}`}
+    ${o.x ? `<p class="muted" style="font-size:.85rem">${fmtDay(o.x)}</p>` : ''}
+    ${mine ? '<p class="muted">This is your own link. Send it to a friend so they can see it.</p>' : `<div class="row">
+      ${!isFriend && o.i ? `<button class="btn btn-primary" data-act="friend-add" data-id="${o.i}" data-n="${esc(o.n)}">Add ${esc(o.n)} as a friend</button>` : isFriend ? `<span class="tag tag-accent">In your friends</span>` : ''}
+      ${o.k !== 'c' && item ? `<button class="btn" data-act="cheer-pick" data-id="${item.id}">Send a cheer back</button>` : ''}
+      ${rec ? `<a class="btn" href="#recipe-${rec.id}">Open the recipe</a>` : ''}<a class="btn btn-ghost" href="#friends">Friends</a></div>
+      ${item && cheerFor === item.id ? cheerPicker(item.id) : ''}`}</div>`;
+}
+function sendCheer(target, msg) {
+  msg = String(msg || '').trim().slice(0, 200); if (!msg) return;
+  let to = '', re = '';
+  if (target.startsWith('f:')) { const f = S.friends.list.find((x) => x.id === target.slice(2)); to = f ? f.name : ''; }
+  else { const f = S.friends.feed.find((x) => x.id === target); if (f) { to = f.n; re = f.t; } }
+  cheerFor = null; render(true);
+  shareLink({ k: 'c', m: msg, t: re, to }, `${myShareName() || 'A friend'} cheered you on: “${msg}”`);
+}
+
 function renderView(keepScroll) {
   const h = (location.hash || '#today').slice(1);
   let html, tab;
@@ -6089,6 +6450,11 @@ function renderView(keepScroll) {
   else if (h === 'analytics') { html = viewAnalytics(); tab = 'analytics'; }
   else if (h === 'settings') { html = viewSettings(); tab = 'settings'; }
   else if (h === 'goals' || h === 'targets') { html = viewTargets(); tab = 'goals'; }
+  else if (h === 'friends') { html = viewFriends(); tab = 'friends'; }
+  else if (h.startsWith('cheer=')) { html = viewCheer(h.slice(6)); tab = 'friends'; }
+  else if (h === 'guide') { html = viewGuide(); tab = 'guide'; }
+  else if (h === 'sources') { html = viewSources(); tab = 'sources'; }
+  else if (h === 'report') { if (current !== 'report') report.from = current; html = viewReport(); tab = 'report'; }
   else { html = notFound('That page'); tab = ''; }
   const y = window.scrollY;
   app.innerHTML = html;
@@ -6281,6 +6647,18 @@ document.addEventListener('click', (e) => {
     logFood({ name: pr.name, portion: `${scan.grams} g`, kcal: Math.round(pr.kcal * f), p: round(pr.p * f), c: round(pr.c * f), f: round(pr.f * f), mic: pr.mic.map((v) => round(v * f, 2)), barcode: pr.code }, logTo());
     scan = null; render(true);
   }
+  else if (a === 'rep-kind') { report.kind = b.dataset.k; render(true); }
+  else if (a === 'rep-copy') { const txt = reportBody(); try { navigator.clipboard.writeText(txt).then(() => toast('Report copied'), () => prompt('Copy this report', txt)); } catch (err) { prompt('Copy this report', txt); } }
+  else if (a === 'share-last') { const o = lastWorkoutShare(); if (o) shareLink(o, `${myShareName() || 'I'} finished ${o.t} (${o.d})`); }
+  else if (a === 'share-ms') { const o = milestones()[+b.dataset.i]; if (o) shareLink(o, `${myShareName() || 'Milestone'}: ${o.t}`); }
+  else if (a === 'share-recipe') { const r = RECIPES.find((x) => x.id === b.dataset.id); if (r) shareLink({ k: 'r', r: r.id, t: r.title, d: `${r.per.kcal} kcal · ${r.per.p} g protein a serving` }, `Try this recipe: ${r.title}`); }
+  else if (a === 'share-invite') { const url = `${location.origin}${location.pathname}`, text = 'Track food, workouts and breathing with me on Rep & Ration'; if (navigator.share) navigator.share({ title: 'Rep & Ration', text, url }).catch(() => {}); else { try { navigator.clipboard.writeText(`${text}: ${url}`).then(() => toast('Invite link copied')); } catch (err) { prompt('Copy this link', url); } } }
+  else if (a === 'friend-add') { const id = b.dataset.id; if (id && !S.friends.list.some((f) => f.id === id)) { S.friends.list.push({ id, name: b.dataset.n || 'A friend', added: dayKey() }); save(); toast(`${b.dataset.n || 'Friend'} added`); } render(true); }
+  else if (a === 'friend-del') { const f = S.friends.list.find((x) => x.id === b.dataset.id); S.friends.list = S.friends.list.filter((x) => x.id !== b.dataset.id); save(); render(true); if (f) toast(`Removed ${f.name}`, () => { S.friends.list.push(f); save(); render(true); }); }
+  else if (a === 'feed-clear') { const old = S.friends.feed; S.friends.feed = []; save(); render(true); toast('Activity cleared', () => { S.friends.feed = old; save(); render(true); }); }
+  else if (a === 'cheer-pick') { cheerFor = b.dataset.id && cheerFor !== b.dataset.id ? b.dataset.id : null; render(true); }
+  else if (a === 'cheer-send') sendCheer(b.dataset.to, b.dataset.m);
+  else if (a === 'ccat') { commonCat = commonCat === b.dataset.c ? null : b.dataset.c; render(true); }
   else if (a === 'qadd') {
     const src = b.dataset.src, id = b.dataset.id, d = logTo();
     if (src === 'f') { const f = FOODS[+id]; logFood({ name: f.name, portion: f.portion, kcal: f.kcal, p: f.p, c: f.c, f: f.f, mic: FOOD_MICRO[f.name] }, d); }
@@ -6473,6 +6851,7 @@ function readProfile() {
 document.addEventListener('submit', (e) => {
   e.preventDefault();
   const f = e.target;
+  if (f.dataset.cheerForm != null) { sendCheer(f.dataset.cheerForm, f.elements.msg.value); return; }
   if (f.dataset.waterForm != null) {
     const v = parseFloat(f.elements.oz.value);
     if (!(v > 0)) return;
@@ -6528,6 +6907,8 @@ document.addEventListener('submit', (e) => {
 });
 document.addEventListener('change', (e) => {
   const t = e.target;
+  if (t.id === 'share-name') { S.friends.name = t.value.trim().slice(0, 40); save(); return; }
+  if (t.id === 'rep-device') { report.device = t.checked; render(true); return; }
   if (t.id === 'shop-auto') { S.shopping.auto = t.checked; save(); render(true);
   } else if (t.id === 'shop-add-recipe' && t.value) { shopAdd(t.value); render(true);
   } else if (t.dataset.shop != null) {
@@ -6578,6 +6959,12 @@ document.addEventListener('change', (e) => {
 });
 document.addEventListener('input', (e) => {
   const t = e.target;
+  if (t.id === 'rep-text') {
+    report.text = t.value; const ok = report.text.trim().length >= 5, a = $('#rep-send'), c = $('[data-act=rep-copy]'), pv = $('.rep-preview');
+    const title = `[${report.kind}] ${report.text.trim().split('\n')[0].slice(0, 70)}`;
+    if (a) { a.href = ok ? `https://github.com/${REPO}/issues/new?template=site-report.md&title=${encodeURIComponent(title)}&body=${encodeURIComponent(reportBody())}` : '#report'; a.classList.toggle('disabled', !ok); if (ok) a.removeAttribute('aria-disabled'); else a.setAttribute('aria-disabled', 'true'); }
+    if (c) c.disabled = !ok; if (pv) pv.textContent = reportBody(); return;
+  }
   if (t.id === 'recipe-search') { recipeSearch = t.value; $('#recipe-cards').innerHTML = recipeCards(); }
   else if (t.id === 'calm-vol' || t.id === 'set-vol' || t.id === 'set-tvol') { S.calm[t.id === 'set-tvol' ? 'toneVol' : 'vol'] = +t.value; audio(); setVolumes(); save(); }
   else if (t.id === 'scan-g') { const g = parseFloat(t.value); if (g > 0 && scan) { scan.grams = g; const el = t.closest('.scan-result').querySelector('.muted.num'), pr = scan.product, f = g / 100; el.textContent = `${Math.round(pr.kcal * f)} kcal · P ${round(pr.p * f)} · C ${round(pr.c * f)} · F ${round(pr.f * f)}`; } }

@@ -54,6 +54,14 @@ A diet and exercise website with recipes, workout plans and a daily tracker. It 
   - Sleep sounds with a timer and two sleep wind-downs.
 - **Mobile app** (`mobile/`): an Expo + TypeScript app with Today, Log and Targets, backup import, and Supabase accounts with row-level security. See `mobile/README.md` and `docs/HEALTH.md`.
 
+## Added after the roadmap update
+
+- **Everyday meals & drinks** in the Log: about 90 takeout meals, home-style meals, snacks, sodas, coffee drinks and alcoholic drinks for one-tap logging. Alcohol's calories (7 kcal per gram) are included.
+- **Guide** (`#guide`): an overview of every section with basic instructions.
+- **Links & facts** (`#sources`): the sources behind the nutrition, workout and breathing content, how calories and macros are worked out, and what couldn't be fully verified.
+- **Report an issue** (`#report`): opens a pre-filled GitHub issue with the `site-report` template, or copies the report.
+- **Friends** (`#friends`): share workouts, milestones and recipes as links, add friends and send cheers. No accounts yet; see `docs/SOCIAL.md` for the planned Supabase version.
+
 ## Use it on your phone
 
 Open https://xsosaxdex.github.io/Ray/ on your phone, then add it to your home screen. It gets its own icon, opens full-screen without the browser bar, and works offline once it has been opened.

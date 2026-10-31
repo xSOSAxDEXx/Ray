@@ -4,7 +4,7 @@ const { chromium } = require('playwright');
 const URL = process.env.URL || 'http://localhost:8765/';
 const KEY = 'rep-ration-v1';
 const VIEWS = ['today', 'recipes', 'recipe-lemon-herb-salmon', 'mealplan', 'shopping', 'workouts', 'plan-foundations', 'session',
-  'log', 'progress', 'analytics', 'goals', 'settings', 'recipe-new', 'plan-new', 'breathe', 'breath-box', 'breath-power', 'mind', 'mind-iron-holds', 'recipe-beef-liver-burgers', 'recipe-avocado-chocolate-mousse', 'plan-rower-intervals', 'plan-zone2-base', 'breath-whm-beginner', 'mind-sleep-safe-place', 'import-plan=bad', 'exercises', 'ex-goblet-squat', 'plan-strong-steady', 'recipe-tuna-nicoise-plate'];
+  'log', 'progress', 'analytics', 'goals', 'settings', 'recipe-new', 'plan-new', 'breathe', 'breath-box', 'breath-power', 'mind', 'mind-iron-holds', 'recipe-beef-liver-burgers', 'recipe-avocado-chocolate-mousse', 'plan-rower-intervals', 'plan-zone2-base', 'breath-whm-beginner', 'mind-sleep-safe-place', 'import-plan=bad', 'exercises', 'ex-goblet-squat', 'plan-strong-steady', 'recipe-tuna-nicoise-plate', 'guide', 'sources', 'report', 'friends', 'cheer=bad'];
 const STATES = {
   'fresh visitor (setup screen)': null,
   'example data': 'example',
