@@ -130,6 +130,7 @@ button, input, select { font: inherit; color: inherit; }
 .cur-page { font-weight: 700; font-size: .88rem; color: var(--accent); background: var(--accent-soft); padding: 6px 12px; border-radius: 999px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .menu { position: absolute; left: 0; right: 0; top: 100%; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: 0 18px 40px rgba(0, 0, 0, .18); max-height: calc(100vh - 64px); overflow-y: auto; animation: menu-in .18s ease; }
 .menu[hidden] { display: none; }
+.back-top { margin-bottom: 8px; }
 .sess-bar { background: var(--accent-soft); border-top: 1px solid var(--line); }
 .sess-bar[hidden] { display: none; }
 .sess-bar-in { display: flex; align-items: center; gap: 10px; padding-block: 8px; font-size: .9rem; }
@@ -596,6 +597,29 @@ body.calm-open { overflow: hidden; }
   .ing-row > :nth-child(3) { grid-column: 1 / -2; grid-row: 2; }
   .ing-row > :nth-child(4) { grid-column: -2; grid-row: 1 / 3; }
 }
+.mp-bar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-bottom: 10px; }
+.mp-sum { font-size: .88rem; margin: 0 0 12px; }
+.mp-month { display: grid; gap: 16px; align-items: start; margin-bottom: 18px; }
+@media (min-width: 900px) { .mp-month { grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); } }
+.mp-cal-wrap { padding: 10px; }
+.mp-cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.mp-dow { font-family: var(--f-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); text-align: center; padding-bottom: 2px; }
+.mp-cell { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 3px; min-height: 64px; padding: 5px 6px; border-radius: var(--r-sm); background: var(--sunk); min-width: 0; }
+.mp-cell:hover { box-shadow: inset 0 0 0 1px var(--line); }
+.mp-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.mp-cell.is-out { opacity: .45; }
+.mp-cell.is-sel { background: var(--accent-soft); box-shadow: inset 0 0 0 2px var(--accent); }
+.mp-date { font-weight: 700; font-size: .85rem; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; }
+.mp-cell.is-today .mp-date { background: var(--accent); color: var(--on-accent); }
+.mp-dots { display: flex; flex-wrap: wrap; gap: 3px; }
+.mp-dots i, .mp-key i, .mp-prot i, .mp-tools .btn i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+.mp-kc { font-size: .7rem; color: var(--muted); margin-top: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mp-key { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .78rem; color: var(--muted); margin: 10px 2px 0; }
+.mp-key span, .mp-prot { display: inline-flex; align-items: center; gap: 5px; }
+.mp-prot { text-transform: none; letter-spacing: 0; font-family: var(--f-body); font-weight: 600; margin-left: 6px; }
+.mp-tools { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 18px; }
+.mp-tools .btn i { margin-right: 2px; }
+@media (max-width: 640px) { .mp-kc { display: none; } .mp-cal-wrap { padding: 6px; } .mp-cal { gap: 3px; } .mp-cell { min-height: 48px; padding: 4px; align-items: center; } .mp-dots { justify-content: center; } .mp-dots i { width: 6px; height: 6px; } }
 .mp-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 .mp-day.is-today { outline: 2px solid var(--accent); outline-offset: -2px; }
 .mp-slot { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; align-items: center; padding: 6px 0; }
@@ -2711,7 +2735,6 @@ function viewExercises() {
   <div class="row" role="group" aria-label="Filter by area" style="margin-bottom:14px">${EX_GROUPS.map(([n]) => `<button class="chip" data-act="ex-group" data-g="${n}" aria-pressed="${n === exMuscle}">${n}</button>`).join('')}</div>
   <div class="calm-cards" id="ex-cards">${list.map((x) => `<a class="panel calm-card ex-card" href="#ex-${x.id}"><h3>${esc(x.name)}</h3><p class="muted" style="font-size:.85rem">${esc(x.muscles)}</p><p class="calm-meta"><span>${esc(x.eq)}</span></p></a>`).join('') || emptyState('clock', 'No exercises match that search.')}</div>`;
 }
-let exFrom = ''; // the page you came from, for the right back button
 function viewExercise(id) {
   const x = EX_LIB.find((y) => y.id === id);
   if (!x) return notFound('That exercise');
@@ -2719,10 +2742,7 @@ function viewExercise(id) {
   const uses = PLANS.filter((p) => p.days.some((d) => d.ex.some((e) => libFor(e[0]) === x)));
   const best = names.map((n) => { const l = hist.get(n), b = l.reduce((a, e) => (exScore(e) > exScore(a) ? e : a)); return { n, b, l }; });
   const series = best.filter((r) => r.l.some((e) => e.e1)).slice(0, 1).map((r) => ({ name: `Est. 1-rep max (${wUnit()})`, color: 'var(--accent)', pts: r.l.filter((e) => e.e1).map((e) => ({ d: e.date, v: showW(e.e1) })) }))[0];
-  const back = exFrom === 'session' && S.session ? `<a class="btn btn-primary" href="#session">← Back to your workout</a><a class="btn btn-ghost" href="#exercises">Exercise library</a>`
-    : exFrom.startsWith('plan-') ? `<a class="btn btn-ghost" href="#${esc(exFrom)}">← Back to plan</a><a class="btn btn-ghost" href="#exercises">Exercise library</a>`
-    : `<a class="btn btn-ghost" href="#exercises">← Exercise library</a>`;
-  return `<div class="row" style="margin-bottom:10px">${back}</div>
+  return `<div class="row" style="margin-bottom:10px">${backBtn('ex', 'exercises', 'Exercise library')}</div>
   <div class="grid">
     <section class="panel span-7 stack"><div class="eyebrow">${esc(x.muscles)}</div><h1>${esc(x.name)}</h1><p class="muted">Equipment: ${esc(x.eq)}</p>
       <div class="demo-ph" role="img" aria-label="Demonstration coming soon">${icon('clock')}<span>Demo video or illustration coming soon</span></div>
@@ -3372,43 +3392,177 @@ const draftTemplates = { ingredients: () => [null, '', ''], steps: () => '', day
 /* ---------- Meal planner ---------- */
 const MEALS = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
 const mondayOf = (k) => addDays(k, -((parseKey(k).getDay() + 6) % 7));
-let mpWeek = null, mpClearArmed = false;
+let mpSel = null, mpView = 'month', mpRange = 'week', mpClearArmed = false, mpFillStyle = 'variety', mpProtMeals = ['Dinner'], mpProtStyle = 'rotate', mpUndo = null, mpServN = 0, mpServMeal = 'All';
 const planDay = (k) => S.mealPlan[k] || {};
+const monthOf = (k) => k.slice(0, 8) + '01';
+const daysInMonth = (k) => { const d = parseKey(k); return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); };
+const mpEffRange = () => (mpView === 'week' ? 'week' : mpRange);
+function mpDays(range = mpEffRange()) {
+  if (range === 'month') { const m = monthOf(mpSel); return [...Array(daysInMonth(m))].map((_, i) => addDays(m, i)); }
+  const w = mondayOf(mpSel); return [...Array(7)].map((_, i) => addDays(w, i));
+}
+const mpRangeName = (range = mpEffRange()) => (range === 'month' ? fmtDay(mpSel, { month: 'long' }) : 'the week of ' + fmtDay(mondayOf(mpSel), { month: 'short', day: 'numeric' }));
+const MP_FILL = [['variety', 'Variety', 'A random recipe for each empty meal.'], ['budget', 'Budget', 'Picks from the cheapest third of recipes for each meal.'],
+  ['quick', 'Quick', 'Only recipes ready in 30 minutes or less.'], ['batch', 'Batch cook', 'One low-cost recipe per meal, repeated: cook once, eat all week.']];
+
+/* Main protein of a recipe, for "same protein" planning: the first meat or fish in the ingredients, else eggs, tofu or beans. */
+const PROTEINS = [['salmon', 'Salmon', /salmon/], ['tuna', 'Tuna', /tuna/], ['shrimp', 'Shrimp', /shrimp|prawn/], ['fish', 'White fish', /\bcod\b|tilapia|halibut|white fish|mahi|haddock|pollock/],
+  ['chicken', 'Chicken', /chicken/], ['turkey', 'Turkey', /turkey/], ['beef', 'Beef', /beef|steak|sirloin|chuck|brisket|bison/], ['pork', 'Pork', /pork|bacon|\bham\b|sausage|prosciutto/], ['lamb', 'Lamb', /lamb/]];
+const PLANT_PROTEINS = [['eggs', 'Eggs', /\beggs?\b|egg whites?/], ['tofu', 'Tofu', /tofu|tempeh|edamame/], ['beans', 'Beans & lentils', /beans|lentils?|chickpeas?/]];
+const PROT_COLOR = { salmon: '#e07a5f', tuna: '#2c66a8', shrimp: '#d6577d', fish: '#4f9dc9', chicken: '#c08a1a', turkey: '#a8862b', beef: '#9a2b59', pork: '#c9735a', lamb: '#7b4b94', eggs: '#e2b93b', tofu: '#3d9a6b', beans: '#6a8f3e', other: '#8a9a90' };
+function proteinOf(r) {
+  const names = r.ingredients.map((x) => String(x[2]).toLowerCase()).filter((n) => !/broth|stock|bouillon/.test(n));
+  for (const list of [PROTEINS, PLANT_PROTEINS]) for (const n of names) { const hit = list.find((x) => x[2].test(n)); if (hit) return hit[0]; }
+  return 'other';
+}
+const protName = (k) => ([...PROTEINS, ...PLANT_PROTEINS].find((x) => x[0] === k) || [0, 'Veg & other'])[1];
+const protDot = (k) => `<i style="background:${PROT_COLOR[k] || PROT_COLOR.other}"></i>`;
+function mpStats(days) {
+  const prot = {}, ings = new Set(); let meals = 0, cost = 0;
+  days.forEach((k) => Object.entries(planDay(k)).forEach(([m, x]) => {
+    const r = recipeById(x.id); if (!r) return;
+    meals += 1; cost += (r.cost || 0) * (x.s || 1);
+    if (m === 'Lunch' || m === 'Dinner') { const pr = proteinOf(r); prot[pr] = (prot[pr] || 0) + 1; }
+    r.ingredients.forEach((i) => { if (i[0] != null) ings.add(String(i[2]).split(',')[0].trim().toLowerCase()); });
+  }));
+  return { meals, cost, prot, ings: ings.size };
+}
+// Keep a copy of the days an action changes, so it can be undone.
+function mpSnap(days, label) {
+  const snap = {}; days.forEach((k) => { if (S.mealPlan[k]) snap[k] = JSON.parse(JSON.stringify(S.mealPlan[k])); });
+  mpUndo = { days, snap, label };
+}
+function pickFor(m, style) {
+  let opts = RECIPES.filter((r) => r.meal === m); if (!opts.length) return null;
+  if (style === 'budget') opts = [...opts].sort((x, y) => (x.cost || 99) - (y.cost || 99)).slice(0, Math.max(2, Math.ceil(opts.length / 3)));
+  if (style === 'quick') { const q = opts.filter((r) => (r.prep || 0) + (r.cook || 0) <= 30); if (q.length) opts = q; }
+  return opts[Math.floor(Math.random() * opts.length)];
+}
+function mpFill() {
+  const t = dayKey(), days = mpDays().filter((k) => k >= t), batch = {};
+  mpSnap(days, 'fill');
+  let n = 0;
+  days.forEach((k) => MEALS.forEach((m) => {
+    if (planDay(k)[m]) return;
+    const r = mpFillStyle === 'batch' ? (batch[m] || (batch[m] = pickFor(m, 'budget'))) : pickFor(m, mpFillStyle);
+    if (!r) return;
+    S.mealPlan[k] = { ...planDay(k), [m]: { id: r.id, s: S.servings } }; n += 1;
+  }));
+  save();
+  return n;
+}
+// Swap planned meals to recipes with one main protein: one shop, one bulk pack, one prep session.
+function mpSameProtein(pr) {
+  const days = mpDays(), before = mpStats(days), stable = (list) => [...list].sort((x, y) => (x.cost || 99) - (y.cost || 99));
+  mpSnap(days, 'protein change');
+  let n = 0; const rot = {}, one = {};
+  const poolFor = (m) => { const own = RECIPES.filter((r) => r.meal === m && proteinOf(r) === pr); return stable(own.length ? own : RECIPES.filter((r) => (r.meal === 'Lunch' || r.meal === 'Dinner') && proteinOf(r) === pr)); };
+  days.forEach((k) => mpProtMeals.forEach((m) => {
+    const slot = planDay(k)[m], cur = slot && recipeById(slot.id);
+    if (!cur) return;
+    const pool = poolFor(m); if (!pool.length) return;
+    let r;
+    if (mpProtStyle === 'same') {
+      if (!one[m]) { // keep a recipe already in the plan if there is one, else the cheapest
+        const used = {}; days.forEach((d) => { const x = planDay(d)[m]; if (x && pool.some((q) => q.id === x.id)) used[x.id] = (used[x.id] || 0) + 1; });
+        const top = Object.entries(used).sort((x, y) => y[1] - x[1])[0];
+        one[m] = top ? recipeById(top[0]) : pool[0];
+      }
+      r = one[m];
+    } else {
+      if (proteinOf(cur) === pr) return;
+      const i = rot[m] || 0; r = pool[i % pool.length]; rot[m] = i + 1;
+    }
+    if (r.id === cur.id) return;
+    S.mealPlan[k] = { ...planDay(k), [m]: { id: r.id, s: slot.s || S.servings } }; n += 1;
+  }));
+  save();
+  const after = mpStats(days), diff = after.cost - before.cost, fewer = before.ings - after.ings;
+  if (!n) { mpUndo = null; return toast(`Every planned ${mpProtMeals.length === 2 ? 'lunch and dinner' : mpProtMeals[0].toLowerCase()} already uses ${protName(pr).toLowerCase()}`); }
+  toast(`Changed ${n} meal${n === 1 ? '' : 's'} to ${protName(pr).toLowerCase()} · about ${money(Math.abs(diff))} ${diff <= 0 ? 'less' : 'more'}${fewer > 0 ? ` · ${fewer} fewer ingredient${fewer === 1 ? '' : 's'} to buy` : ''}`);
+}
+function mpCard(k) {
+  const t = dayKey(), T = S.targets, sorted = [...RECIPES].sort((x, y) => x.title.localeCompare(y.title));
+  const dp = planDay(k), list = MEALS.map((m) => dp[m] && recipeById(dp[m].id)).filter(Boolean);
+  const tot = totals(list.map((r) => r.per)), pct = Math.min(100, (tot.kcal / T.kcal) * 100);
+  return `<section class="panel mp-day ${k === t ? 'is-today' : ''}" aria-label="${fmtDay(k, { weekday: 'long', month: 'long', day: 'numeric' })}">
+    <div class="panel-head" style="margin-bottom:8px"><h3>${fmtDay(k, { weekday: 'short', month: 'short', day: 'numeric' })}${k === t ? ' <span class="tag tag-accent">Today</span>' : ''}</h3>
+      <span class="num muted" style="font-size:.85rem">${Math.round(tot.kcal)} / ${T.kcal}</span></div>
+    <div class="bar" style="height:6px;margin-bottom:10px"><i style="width:${pct}%;background:${tot.kcal > T.kcal * 1.05 ? 'var(--warn)' : 'var(--accent)'}"></i></div>
+    ${MEALS.map((m) => { const slot = dp[m], r = slot && recipeById(slot.id);
+      return `<div class="mp-slot">${r ? `<a href="#recipe-${r.id}" class="mp-thumb" aria-hidden="true" tabindex="-1">${recipeImg(r, 'rimg')}</a>` : '<span class="mp-thumb mp-empty" aria-hidden="true"></span>'}
+        <div class="mp-pick"><div class="mp-label"><span class="eyebrow">${m}${r ? ` <span class="mp-prot">${protDot(proteinOf(r))}${esc(protName(proteinOf(r)))}</span>` : ''}</span>${r ? `<label class="mp-serv" title="Servings to cook"><span class="sr-only">Servings of ${esc(r.title)} to cook</span><select class="input" data-mps="${k}|${m}">${[...new Set([1, 2, 3, 4, 5, 6, 8, slot.s])].sort((x, y) => x - y).map((n) => `<option value="${n}" ${slot.s === n ? 'selected' : ''}>×${n}</option>`).join('')}</select></label>` : ''}</div>
+          <select class="input" data-mp="${k}|${m}" aria-label="${m} on ${fmtDay(k)}"><option value="">—</option>
+            ${sorted.some((x) => isFav('recipes', x.id)) ? `<optgroup label="Favorites">${sorted.filter((x) => isFav('recipes', x.id)).map((x) => `<option value="${x.id}" ${slot && slot.id === x.id ? 'selected' : ''}>${esc(x.title)}</option>`).join('')}</optgroup>` : ''}
+            <optgroup label="${m}">${sorted.filter((x) => x.meal === m && !isFav('recipes', x.id)).map((x) => `<option value="${x.id}" ${slot && slot.id === x.id ? 'selected' : ''}>${esc(x.title)}</option>`).join('')}</optgroup>
+            <optgroup label="Other recipes">${sorted.filter((x) => x.meal !== m && !isFav('recipes', x.id)).map((x) => `<option value="${x.id}" ${slot && slot.id === x.id ? 'selected' : ''}>${esc(x.title)}</option>`).join('')}</optgroup></select></div></div>`; }).join('')}
+    <p class="muted num" style="font-size:.8rem;margin-top:6px">P ${Math.round(tot.p)}g · C ${Math.round(tot.c)}g · F ${Math.round(tot.f)}g</p>
+  </section>`;
+}
+function mpCalendar() {
+  const m = monthOf(mpSel), last = addDays(m, daysInMonth(m) - 1), end = addDays(mondayOf(last), 6), t = dayKey(), seen = new Set(), cells = [];
+  for (let k = mondayOf(m); k <= end; k = addDays(k, 1)) cells.push(k);
+  const html = cells.map((k) => {
+    const dp = planDay(k), list = MEALS.map((x) => dp[x] && recipeById(dp[x].id)).filter(Boolean), kc = Math.round(totals(list.map((r) => r.per)).kcal);
+    const dots = list.map((r) => { const pr = proteinOf(r); if (k.slice(0, 7) === m.slice(0, 7)) seen.add(pr); return protDot(pr); }).join('');
+    return `<button type="button" class="mp-cell${k.slice(0, 7) !== m.slice(0, 7) ? ' is-out' : ''}${k === t ? ' is-today' : ''}${k === mpSel ? ' is-sel' : ''}" data-act="mp-day" data-k="${k}" aria-pressed="${k === mpSel}" aria-label="${fmtDay(k, { weekday: 'long', month: 'long', day: 'numeric' })}: ${list.length ? `${list.length} meal${list.length === 1 ? '' : 's'} planned, ${kc} kcal` : 'nothing planned'}">
+      <span class="mp-date">${+k.slice(8)}</span><span class="mp-dots" aria-hidden="true">${dots}</span>${list.length ? `<span class="mp-kc num" aria-hidden="true">${kc} kcal</span>` : ''}</button>`;
+  }).join('');
+  return `<section class="panel mp-cal-wrap" aria-label="${fmtDay(m, { month: 'long', year: 'numeric' })}"><div class="mp-cal">${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => `<div class="mp-dow" aria-hidden="true">${d}</div>`).join('')}${html}</div>
+    ${seen.size ? `<div class="mp-key" aria-label="Dot colors">${[...seen].map((pr) => `<span>${protDot(pr)}${esc(protName(pr))}</span>`).join('')}</div>` : '<p class="muted mp-key">Tap a day to plan its meals.</p>'}</section>`;
+}
+function mpToolsPanel() {
+  const days = mpDays(), st = mpStats(days), rn = mpRangeName();
+  const inUse = Object.entries(st.prot).sort((x, y) => y[1] - x[1]);
+  const avail = [...PROTEINS, ...PLANT_PROTEINS].map((x) => x[0]).filter((pr) => RECIPES.some((r) => (r.meal === 'Lunch' || r.meal === 'Dinner') && proteinOf(r) === pr))
+    .sort((x, y) => (st.prot[y] || 0) - (st.prot[x] || 0));
+  const mealsTxt = mpProtMeals.length === 2 ? 'lunches and dinners' : mpProtMeals[0] === 'Lunch' ? 'lunches' : 'dinners';
+  const fill = MP_FILL.find((x) => x[0] === mpFillStyle) || MP_FILL[0];
+  return `<div class="mp-tools">
+    <section class="panel stack" aria-labelledby="h-mp-fill"><h2 id="h-mp-fill" style="margin:0">Fill empty meals</h2>
+      <div class="seg" role="group" aria-label="Fill style">${MP_FILL.map(([k, l]) => `<button type="button" class="chip" data-act="mp-fstyle" data-s="${k}" aria-pressed="${k === mpFillStyle}">${l}</button>`).join('')}</div>
+      <p class="muted" style="font-size:.85rem;margin:0">${fill[2]} Days before today are left alone.</p>
+      <div><button class="btn btn-primary btn-sm" data-act="mp-fill">Fill ${esc(rn)}</button></div></section>
+    <section class="panel stack" aria-labelledby="h-mp-serv"><h2 id="h-mp-serv" style="margin:0">Servings for all</h2>
+      <p class="muted" style="font-size:.85rem;margin:0">Set how many servings to cook for every planned meal in ${esc(rn)}.</p>
+      <div class="row" style="align-items:center"><label class="sr-only" for="mp-serv-n">Servings</label><select class="input" id="mp-serv-n" style="width:auto">${[1, 2, 3, 4, 5, 6, 8].map((n) => `<option value="${n}" ${(mpServN || S.servings) === n ? 'selected' : ''}>×${n}</option>`).join('')}</select>
+        <label class="sr-only" for="mp-serv-m">Which meals</label><select class="input" id="mp-serv-m" style="width:auto"><option value="All">All meals</option>${MEALS.map((m) => `<option value="${m}" ${mpServMeal === m ? 'selected' : ''}>${m}s only</option>`).join('')}</select>
+        <button class="btn btn-sm" data-act="mp-serv-all" ${st.meals ? '' : 'disabled'}>Apply</button></div></section>
+    <section class="panel stack mp-prot-panel" aria-labelledby="h-mp-prot"><h2 id="h-mp-prot" style="margin:0">Same protein, less work</h2>
+      <p class="muted" style="font-size:.85rem;margin:0">Using one protein across ${esc(rn)} means one bulk pack, one shop and one prep session. Bigger packs usually cost less per pound.</p>
+      ${inUse.length ? `<p style="margin:0;font-size:.88rem">Lunches and dinners now use: ${inUse.map(([pr, n]) => `<span class="mp-prot">${protDot(pr)}${esc(protName(pr))} ×${n}</span>`).join(' ')}</p>` : `<p class="muted" style="margin:0;font-size:.85rem">Plan some lunches or dinners first, then switch them to one protein here.</p>`}
+      <div class="row" style="align-items:center"><span class="muted" style="font-size:.82rem">Change</span><div class="seg" role="group" aria-label="Meals to change">${['Lunch', 'Dinner'].map((m) => `<button type="button" class="chip chip-sm" data-act="mp-pmeal" data-m="${m}" aria-pressed="${mpProtMeals.includes(m)}">${m === 'Lunch' ? 'Lunches' : 'Dinners'}</button>`).join('')}</div>
+        <div class="seg" role="group" aria-label="How">${[['rotate', 'Rotate recipes'], ['same', 'Same recipe']].map(([k, l]) => `<button type="button" class="chip chip-sm" data-act="mp-pstyle" data-s="${k}" aria-pressed="${mpProtStyle === k}">${l}</button>`).join('')}</div></div>
+      ${inUse.length && mpProtMeals.length ? `<div><span class="muted" style="font-size:.82rem">Make all planned ${mealsTxt}:</span><div class="row" style="margin-top:6px">${avail.map((pr) => `<button class="btn btn-sm" data-act="mp-prot" data-p="${pr}">${protDot(pr)} ${esc(protName(pr))}</button>`).join('')}</div></div>` : ''}
+      <p class="muted" style="font-size:.78rem;margin:0">"Same recipe" cooks one dish in bulk; "Rotate recipes" keeps some variety with the same protein. Only planned meals change, and Undo puts them back.</p></section>
+  </div>`;
+}
 function viewMealPlan() {
-  if (!mpWeek) mpWeek = mondayOf(dayKey());
-  const days = [...Array(7)].map((_, i) => addDays(mpWeek, i)), t = dayKey(), T = S.targets;
-  const sorted = [...RECIPES].sort((a, b) => a.title.localeCompare(b.title));
-  const filled = days.reduce((n, k) => n + Object.keys(planDay(k)).length, 0);
-  const card = (k) => {
-    const dp = planDay(k), list = MEALS.map((m) => dp[m] && recipeById(dp[m].id)).filter(Boolean);
-    const tot = totals(list.map((r) => r.per)), pct = Math.min(100, (tot.kcal / T.kcal) * 100);
-    return `<section class="panel mp-day ${k === t ? 'is-today' : ''}" aria-label="${fmtDay(k, { weekday: 'long', month: 'long', day: 'numeric' })}">
-      <div class="panel-head" style="margin-bottom:8px"><h3>${fmtDay(k, { weekday: 'short', month: 'short', day: 'numeric' })}${k === t ? ' <span class="tag tag-accent">Today</span>' : ''}</h3>
-        <span class="num muted" style="font-size:.85rem">${Math.round(tot.kcal)} / ${T.kcal}</span></div>
-      <div class="bar" style="height:6px;margin-bottom:10px"><i style="width:${pct}%;background:${tot.kcal > T.kcal * 1.05 ? 'var(--warn)' : 'var(--accent)'}"></i></div>
-      ${MEALS.map((m) => { const slot = dp[m], r = slot && recipeById(slot.id);
-        return `<div class="mp-slot">${r ? `<a href="#recipe-${r.id}" class="mp-thumb" aria-hidden="true" tabindex="-1">${recipeImg(r, 'rimg')}</a>` : '<span class="mp-thumb mp-empty" aria-hidden="true"></span>'}
-          <div class="mp-pick"><div class="mp-label"><span class="eyebrow">${m}</span>${r ? `<label class="mp-serv" title="Servings to cook"><span class="sr-only">Servings of ${esc(r.title)} to cook</span><select class="input" data-mps="${k}|${m}">${[...new Set([1, 2, 3, 4, 5, 6, 8, slot.s])].sort((a, b) => a - b).map((n) => `<option value="${n}" ${slot.s === n ? 'selected' : ''}>×${n}</option>`).join('')}</select></label>` : ''}</div>
-            <select class="input" data-mp="${k}|${m}" aria-label="${m} on ${fmtDay(k)}"><option value="">—</option>
-              ${sorted.some((x) => isFav('recipes', x.id)) ? `<optgroup label="Favorites">${sorted.filter((x) => isFav('recipes', x.id)).map((x) => `<option value="${x.id}" ${slot && slot.id === x.id ? 'selected' : ''}>${esc(x.title)}</option>`).join('')}</optgroup>` : ''}
-              <optgroup label="${m}">${sorted.filter((x) => x.meal === m && !isFav('recipes', x.id)).map((x) => `<option value="${x.id}" ${slot && slot.id === x.id ? 'selected' : ''}>${esc(x.title)}</option>`).join('')}</optgroup>
-              <optgroup label="Other recipes">${sorted.filter((x) => x.meal !== m && !isFav('recipes', x.id)).map((x) => `<option value="${x.id}" ${slot && slot.id === x.id ? 'selected' : ''}>${esc(x.title)}</option>`).join('')}</optgroup></select></div></div>`; }).join('')}
-      <p class="muted num" style="font-size:.8rem;margin-top:6px">P ${Math.round(tot.p)}g · C ${Math.round(tot.c)}g · F ${Math.round(tot.f)}g</p>
-    </section>`;
-  };
-  return `<div class="page-head"><div><div class="eyebrow">Week of ${fmtDay(mpWeek, { month: 'long', day: 'numeric' })}</div><h1>Meal plan</h1>
-    <p class="muted">Pick a recipe for each meal. Totals show one serving each against your ${T.kcal} kcal target; "×" is how many servings to cook for the shopping list.</p></div>
-    <div class="row"><button class="btn btn-sm" data-act="mp-week" data-d="-7" aria-label="Previous week">←</button><button class="btn btn-sm" data-act="mp-week" data-d="0">This week</button><button class="btn btn-sm" data-act="mp-week" data-d="7" aria-label="Next week">→</button></div></div>
-  <div class="row" style="margin-bottom:18px">
-    <button class="btn btn-primary" data-act="mp-shop" ${filled ? '' : 'disabled'}>Add week to shopping list</button>
-    <button class="btn" data-act="mp-log" ${Object.keys(planDay(t)).length && days.includes(t) ? '' : 'disabled'}>Log today's plan</button>
-    <button class="btn" data-act="mp-fill">Fill empty slots</button>
-    <span class="confirm">${mpClearArmed ? `<span>Clear this week?</span><button class="btn btn-sm btn-berry" data-act="mp-clear">Yes, clear</button><button class="btn btn-sm" data-act="mp-clear-cancel">Keep</button>` : `<button class="btn btn-ghost" data-act="mp-clear-arm" ${filled ? '' : 'disabled'}>Clear week</button>`}</span>
+  if (!mpSel) mpSel = dayKey();
+  const t = dayKey(), T = S.targets, range = mpEffRange(), days = mpDays(), st = mpStats(days), rn = mpRangeName();
+  const nProt = Object.keys(st.prot).length;
+  const head = mpView === 'week' ? 'Week of ' + fmtDay(mondayOf(mpSel), { month: 'long', day: 'numeric' }) : fmtDay(mpSel, { month: 'long', year: 'numeric' });
+  return `<div class="page-head"><div><div class="eyebrow">${head}</div><h1>Meal plan</h1>
+    <p class="muted">Tap a day to pick its meals. Totals show one serving each against your ${T.kcal} kcal target; "×" is how many servings to cook for the shopping list.</p></div>
+    <div class="row"><button class="btn btn-sm" data-act="mp-nav" data-d="-1" aria-label="Previous ${mpView}">←</button><button class="btn btn-sm" data-act="mp-nav" data-d="0">Today</button><button class="btn btn-sm" data-act="mp-nav" data-d="1" aria-label="Next ${mpView}">→</button></div></div>
+  <div class="mp-bar">
+    <div class="seg" role="group" aria-label="View">${[['month', 'Month'], ['week', 'Week']].map(([k, l]) => `<button type="button" class="chip" data-act="mp-view" data-v="${k}" aria-pressed="${mpView === k}">${l}</button>`).join('')}</div>
+    ${mpView === 'month' ? `<div class="row" style="align-items:center;gap:6px"><span class="muted" style="font-size:.85rem">Plan for</span><div class="seg" role="group" aria-label="Range for the tools below">${[['week', 'Week of ' + fmtDay(mondayOf(mpSel), { month: 'short', day: 'numeric' })], ['month', 'All of ' + fmtDay(mpSel, { month: 'long' })]].map(([k, l]) => `<button type="button" class="chip" data-act="mp-range" data-r="${k}" aria-pressed="${range === k}">${l}</button>`).join('')}</div></div>` : ''}
   </div>
-  <div class="mp-grid">${days.map(card).join('')}</div>`;
+  <p class="muted mp-sum">${st.meals ? `<b>${st.meals}</b> meal${st.meals === 1 ? '' : 's'} planned in ${esc(rn)} · about <b>${money(st.cost)}</b> to cook (estimate) · ${nProt} main protein${nProt === 1 ? '' : 's'} · ${st.ings} ingredients` : `Nothing planned in ${esc(rn)} yet.`}</p>
+  <div class="row" style="margin-bottom:18px">
+    <button class="btn btn-primary" data-act="mp-shop" ${st.meals ? '' : 'disabled'}>Add ${range === 'month' ? 'month' : 'week'} to shopping list</button>
+    <button class="btn" data-act="mp-log" ${Object.keys(planDay(t)).length ? '' : 'disabled'}>Log today's plan</button>
+    <span class="confirm">${mpClearArmed ? `<span>Clear ${esc(rn)}?</span><button class="btn btn-sm btn-berry" data-act="mp-clear">Yes, clear</button><button class="btn btn-sm" data-act="mp-clear-cancel">Keep</button>` : `<button class="btn btn-ghost" data-act="mp-clear-arm" ${st.meals ? '' : 'disabled'}>Clear ${range === 'month' ? 'month' : 'week'}</button>`}</span>
+    ${mpUndo ? `<button class="btn btn-ghost" data-act="mp-undo">Undo ${esc(mpUndo.label)}</button>` : ''}
+  </div>
+  ${mpView === 'week' ? `<div class="mp-grid">${days.map(mpCard).join('')}</div>`
+    : `<div class="mp-month">${mpCalendar()}<div class="stack">${mpCard(mpSel)}
+      <div class="row mp-copy" style="align-items:center"><span class="muted" style="font-size:.82rem">Copy this day to</span><button class="btn btn-sm" data-act="mp-copy" data-to="tomorrow" ${Object.keys(planDay(mpSel)).length ? '' : 'disabled'}>Tomorrow</button><button class="btn btn-sm" data-act="mp-copy" data-to="week" ${Object.keys(planDay(mpSel)).length ? '' : 'disabled'}>Rest of the week</button><button class="btn btn-sm" data-act="mp-copy" data-to="dow" ${Object.keys(planDay(mpSel)).length ? '' : 'disabled'}>Every ${fmtDay(mpSel, { weekday: 'long' })} this month</button></div></div></div>`}
+  ${mpToolsPanel()}`;
 }
 function mpShop() {
-  const days = [...Array(7)].map((_, i) => addDays(mpWeek, i)), sum = {};
+  const days = mpDays(), sum = {};
   days.forEach((k) => Object.values(planDay(k)).forEach((x) => { if (recipeById(x.id)) sum[x.id] = (sum[x.id] || 0) + (x.s || 1); }));
   Object.entries(sum).forEach(([id, n]) => { const cur = S.shopping.recipes.find((x) => x.id === id); if (cur) cur.servings = Math.min(48, cur.servings + n); else S.shopping.recipes.push({ id, servings: Math.min(48, n) }); });
   save(); toast(`Added ${Object.keys(sum).length} recipe${Object.keys(sum).length === 1 ? '' : 's'} to your shopping list`);
@@ -3757,7 +3911,7 @@ function viewRecipe(id) {
   const r = recipeById(id);
   if (!r) return notFound('That recipe');
   const n = servingsState[r.id] || S.servings, m = methodFor(r, S.appliance);
-  return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><a class="btn btn-ghost" href="#recipes">← All recipes</a>
+  return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><div class="row">${backBtn('recipe', 'recipes', 'All recipes')}</div>
     <div class="row">${favToggle('recipes', r.id)}${!r.custom ? `<button class="btn btn-sm" data-act="share-recipe" data-id="${r.id}">Share</button>` : ''}${r.custom ? `<a class="btn btn-sm" href="#recipe-edit-${r.id}">Edit recipe</a><span class="confirm">${delArmed ? `<span>Delete this recipe?</span><button class="btn btn-sm btn-berry" data-act="del-recipe" data-id="${r.id}">Yes, delete</button><button class="btn btn-sm" data-act="del-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="del-recipe-arm">Delete</button>`}</span>` : ''}</div></div>
   <div class="recipe-photo">${recipeImg(r, 'rimg rimg-hero')}
     <div class="photo-actions"><label class="btn btn-sm" style="position:relative">${recipePhotos[r.id] ? 'Change photo' : 'Add your photo'}<input type="file" id="rp-file" data-id="${r.id}" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%"></label>
@@ -3875,7 +4029,7 @@ function viewPlan(id) {
   if (!p) return notFound('That plan');
   if (planDayTab >= p.days.length) planDayTab = 0;
   const d = p.days[planDayTab];
-  return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><a class="btn btn-ghost" href="#workouts">← All plans</a>
+  return `<div class="row" style="justify-content:space-between;margin-bottom:10px"><div class="row">${backBtn('plan', 'workouts', 'All plans')}</div>
     <div class="row"><button class="btn btn-sm btn-ghost" data-act="plan-share" data-id="${p.id}">Share</button>${favToggle('plans', p.id)}${p.custom ? `<a class="btn btn-sm" href="#plan-edit-${p.id}">Edit plan</a><span class="confirm">${delArmed ? `<span>Delete this plan?</span><button class="btn btn-sm btn-berry" data-act="del-plan" data-id="${p.id}">Yes, delete</button><button class="btn btn-sm" data-act="del-cancel">Keep</button>` : `<button class="btn btn-sm btn-ghost" data-act="del-plan-arm">Delete</button>`}</span>` : ''}</div></div>
   <div class="page-head"><div><div class="row" style="margin-bottom:8px">${p.custom ? '<span class="tag tag-berry">Custom</span>' : ''}${diffMeter(p.diff)}${gearTag(p.gear)}${p.muscles.map((m) => `<span class="tag">${esc(m)}</span>`).join('')}<span class="tag">${p.perWeek}× / week</span><span class="tag">${p.minutes} min</span></div>
     <h1>${esc(p.title)}</h1><p class="muted">${esc(p.goal)}</p>
@@ -6068,7 +6222,7 @@ function viewBreath(id) {
   const b = BREATHS.find((x) => x.id === id);
   if (!b) return notFound('That exercise');
   const o = optsFor(b), segs = breathSegs(b, o.n, o.pace);
-  return `<a class="btn btn-ghost" href="#breathe" style="margin-bottom:10px">← All breathing</a>
+  return `<div class="row" style="margin-bottom:10px">${backBtn('breath', 'breathe', 'All breathing')}</div>
   <div class="grid">
     <section class="panel span-7 stack calm-detail">
       <div class="eyebrow">${b.goals.join(' · ')} · ${LEVELS[b.level]}</div><h1>${esc(b.title)}</h1><p class="muted">${esc(b.from)}</p><p>${esc(b.blurb)}</p><button class="btn btn-primary calm-quick" data-act="calm-start" data-type="breathe" data-id="${b.id}">Start · ${fmtClock(segTotal(segs))}</button>
@@ -6112,7 +6266,7 @@ function viewMindSession(id) {
   const m = MIND.find((x) => x.id === id);
   if (!m) return notFound('That session');
   const o = optsFor(m), segs = mindSegs(m, o.n);
-  return `<a class="btn btn-ghost" href="#mind" style="margin-bottom:10px">← Mind</a>
+  return `<div class="row" style="margin-bottom:10px">${backBtn('mindx', 'mind', 'Mind')}</div>
   <div class="grid">
     <section class="panel span-7 stack calm-detail">
       <div class="eyebrow">${MIND_CATS.find((c) => c[0] === m.cat)[1]} · ${LEVELS[m.level]}</div><h1>${esc(m.title)}</h1><p class="muted">${esc(m.from)}</p><p>${esc(m.blurb)}</p><button class="btn btn-primary calm-quick" data-act="calm-start" data-type="mind" data-id="${m.id}">Start · ${fmtClock(segTotal(segs))}</button>
@@ -6279,9 +6433,10 @@ const GUIDE = [
   ['today', 'Today', 'Your day at a glance: calories and protein left, water, today\'s workout and quick buttons for logging.', ['Tap a meal card or + to log food; tap the water glasses to add a glass.', 'The weekly ring shows workouts and active minutes toward your weekly goal.', 'Banners appear when there\'s something useful: a backup reminder, a suggested calorie target, or a plan session that\'s due.']],
   ['log', 'Daily log', 'Everything you ate, drank, lifted and weighed, day by day.', ['Search foods, recipes or your usual, or scan a barcode. Use “Everyday meals & drinks” for takeout, snacks, soda and alcohol.', 'Use − and + on an item to change portions, Edit to fix the numbers, and the heart to make it a favorite. Every change can be undone from the message at the bottom.', '“Same as yesterday” copies a whole meal in one tap. The arrows at the top move between days.', 'Log your weight here too; the trend powers the adaptive calorie target.']],
   ['recipes', 'Recipes', 'Over 50 recipes with macros, allergens, cost per serving and swaps.', ['Filter by meal, diet (carnivore, gluten free, soy free, dairy free, nut free, budget) or favorites.', 'Open a recipe to scale servings, see micronutrients, add it to your log or meal plan, rate it and keep notes.', 'Add your own with “New recipe”; calories are worked out from protein, carbs and fat if you leave them blank.']],
-  ['mealplan', 'Meal plan', 'Plan the week by dragging recipes onto days.', ['Tap a day slot to choose a recipe. The week\'s totals show against your targets.', 'Turn on “Build from my meal plan” in the shopping list to fill it automatically.']],
-  ['shopping', 'Shopping list', 'One combined list from the recipes you choose, with store prices and package sizes.', ['Add recipes, then tick items off as you shop. “Have it” hides things already in your pantry.', 'Enter a zip code to find nearby stores, open them in maps, or order online.', 'Share, email, text or print the list.']],
-  ['workouts', 'Workouts', '33 plans for gyms, homes and no equipment, plus a builder for your own.', ['Set your equipment once and plans you can\'t do are marked.', 'Start a session to get a timer, rest countdowns, a plate calculator, effort ratings and a “next step” suggestion based on last time.', 'The Exercise library explains every movement with cues and easier or harder versions.', 'Share any plan as a link.']],
+  ['mealplan', 'Meal plan', 'Plan a week or a whole month on a calendar.', ['Tap a day on the calendar to choose its recipes; colored dots show each meal\'s main protein. Switch to Week to see seven days at once.', '“Plan for” picks a week or the whole month for the tools: add to the shopping list, fill empty meals (Variety, Budget, Quick or Batch cook), set servings for all, or clear.', '“Same protein, less work” swaps planned lunches or dinners to one protein, rotating recipes or repeating one, so you buy in bulk and prep once. Undo puts things back.', 'Copy a day to tomorrow, the rest of the week or every same weekday. The summary line shows the estimated cost, proteins and ingredients for the range.', 'Turn on “Build from my meal plan” in the shopping list to fill it automatically.']],
+  ['shopping', 'Shopping list', 'One combined list from the recipes you choose, with store prices and package sizes.', ['Add recipes, then tick items off as you shop. “Have it” hides things already in your pantry.', 'From Meal plan, “Add week (or month) to shopping list” adds a whole range at once.', 'Enter a zip code to find nearby supermarkets, sorted by estimated full-list price, lowest first. If the store directory is busy, use the Google or Apple Maps links instead.', 'Open stores in maps, order online, or share, email, text or print the list.']],
+  ['workouts', 'Workouts', '33 plans for gyms, homes and no equipment, plus a builder for your own.', ['Set your equipment once and plans you can\'t do are marked.', 'Start a session to get a timer, rest countdowns, a plate calculator, effort ratings and a “next step” suggestion based on last time.', 'While a workout is running, a “Workout in progress” bar with a timer shows on every page; tap Return to go back to it.', 'Share any plan as a link.']],
+  ['exercises', 'Exercise library', 'Every movement in the plans, with how-to cues and easier or harder versions.', ['Search by name, muscle or equipment.', 'Each exercise lists the plans that use it and charts your best lifts over time.', 'Opened from “How to” during a workout, it has a “← Back to your workout” button.']],
   ['breathe', 'Breathe', 'Guided breathing from many traditions with a calm timer, tones and optional music.', ['Pick by goal: calm, focus, energy or sleep. Each exercise says where it comes from and how to do it.', 'New to it? The 7-day “Learn to breathe” course gives one short session a day.', 'Wim Hof-style and power breathing carry safety warnings: never do them in or near water, driving or standing.']],
   ['mind', 'Mind', 'Meditation, long-hold yoga and calisthenics holds, sleep sounds and daily brain habits.', ['Sessions run on the same calm timer as Breathe.', 'Tick off daily habits to build a streak; sleep sounds fade out on a timer.']],
   ['progress', 'Body & weight', 'Weight, body measurements, body-fat estimate and progress photos.', ['Photos stay on this device only.', 'Body fat uses the US Navy tape method (neck, waist and, for women, hips).']],
@@ -6294,13 +6449,17 @@ function viewGuide() {
   return `<div class="page-head"><div><div class="eyebrow">Help</div><h1>Guide</h1></div><a class="btn btn-sm" href="#sources">Links &amp; facts</a></div>
   <section class="panel stack"><h2>Getting started</h2>
     <ol class="guide-steps"><li>Set up your profile in <a href="#goals">Profile &amp; goals</a> so your calorie, protein and water targets fit you.</li>
-      <li>Log what you eat in <a href="#log">Log</a>: search, tap your usual foods, scan a barcode, or pick an everyday meal or drink.</li>
+      <li>Log what you eat in the <a href="#log">Daily log</a>: search, tap your usual foods, scan a barcode, or pick an everyday meal or drink.</li>
       <li>Pick a plan in <a href="#workouts">Workouts</a> and start a session; it's saved to your log when you finish.</li>
       <li>Check <a href="#today">Today</a> each day and download a backup from <a href="#settings">Settings</a> every week or two.</li></ol>
-    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the Rep &amp; Ration name) to move between sections. It's grouped into Food, Training, Mind &amp; breath, Progress and You, with help links at the bottom. Rep &amp; Ration works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
+    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the Rep &amp; Ration name) to move between sections. It's grouped into Food, Training, Mind &amp; breath, Progress and You, with help links at the bottom. When a link takes you to another page, a <b>← Back to…</b> button returns you to where you were. Rep &amp; Ration works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
   <div class="grid" style="margin-top:16px">${GUIDE.map(([id, t, what, how]) => `<section class="panel span-6 guide-card"><div class="panel-head"><h2>${t}</h2><a class="btn btn-sm btn-ghost" href="#${id}">Open</a></div>
     <p>${esc(what)}</p><ul>${how.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}</div>
-  <section class="panel stack" style="margin-top:16px"><h2>Something not working?</h2><p>Tell us on the <a href="#report">Report an issue</a> page. It takes a minute and helps fix it for everyone.</p></section>`;
+  <section class="panel stack" style="margin-top:16px"><h2>Help</h2><ul>
+    <li><b>Guide</b> (this page): what each section does and how to use it.</li>
+    <li><a href="#sources">Links &amp; facts</a>: the sources behind the numbers, how calories and macros are worked out, and what couldn't be fully verified.</li>
+    <li><a href="#report">Report an issue</a>: something not working? It takes a minute and helps fix it for everyone.</li>
+    <li>Lost? Tap <b>← Back to…</b> at the top of a page to return to where you were, or open the menu from the Rep &amp; Ration name.</li></ul></section>`;
 }
 
 /* Sources: what the app's numbers and methods are based on. Each link was checked when it was added (October 2026). */
@@ -6342,7 +6501,8 @@ const UNVERIFIED = [
   ['Ingredient and recipe nutrition', 'Recipe numbers were recalculated from USDA-based values for each ingredient, but the USDA database couldn\'t be reached while building this, so the values came from reference figures rather than a live lookup. Expect them to be within about 10%, and treat them as estimates.'],
   ['Everyday meals and drinks', 'Takeout, snacks and drinks use typical averages. Real items vary a lot: one restaurant\'s burger can have twice the calories of another\'s. Check the restaurant\'s own nutrition page when you can.'],
   ['Barcode results', 'Open Food Facts is filled in by volunteers. Most entries match the label, but some are wrong or out of date.'],
-  ['Cost per serving', 'Rough estimates from typical US grocery prices, not your local store.'],
+  ['Cost per serving', 'Rough estimates from typical US grocery prices, not your local store. The meal plan\'s cost for a week or month, the “about $X less/more” from Same protein, the Budget fill and store totals all use these same estimates (store totals are scaled by each chain\'s typical price level). Type real shelf prices on the shopping list to replace them.'],
+  ['Main protein grouping', 'The meal plan guesses each recipe\'s main protein from its first meat or fish ingredient (or eggs, tofu or beans if there\'s none). A recipe with two proteins is grouped under the first. “Bigger packs cost less per pound” is a general rule of thumb, not a price check.'],
   ['Allergens', 'Worked out automatically from ingredient names. Always read labels: packaged ingredients can contain allergens their names don\'t show, and “Nut free” can include coconut.'],
   ['Workout calories', 'Use MET values scaled to your own resting burn. That\'s a recognized method, but it reads about 20% lower than the textbook formula for some people, and any estimate can be off by a lot for one person.'],
   ['Adaptive calorie target', 'Assumes about 7,700 kcal per kilogram of weight change. That\'s a rule of thumb; research (Hall 2011) shows the real figure changes as you lose or gain. It also needs complete logs: days you only partly log make your burn look lower than it is.'],
@@ -6506,10 +6666,49 @@ function sessBar() {
   const t = () => { const x = $('#sess-bar-t'); if (!x || !S.session) return; const sec = Math.floor((Date.now() - S.session.started) / 1000); x.textContent = Math.floor(sec / 60) + ':' + z(sec % 60); };
   t(); sessBarTimer = setInterval(t, 1000);
 }
+/* "Back to where you were": when a link inside a page takes you somewhere, remember where you came from.
+   Menu, header and footer links start fresh. Pages are grouped so moving inside a group (recipe -> edit -> recipe)
+   or coming back from a page opened here (plan -> exercise -> plan) keeps the original origin. */
+const backFrom = {};
+let viaMenu = false;
+document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (a) viaMenu = !!a.closest('header, .foot-links'); }, true);
+const routeGroup = (h) => { const m = /^(recipe|plan|ex|breath|mind)-/.exec(h); return m ? (m[1] === 'mind' ? 'mindx' : m[1]) : h.startsWith('import-plan=') ? 'plan' : h.startsWith('cheer=') ? 'cheer' : h || 'today'; };
+const DETAIL_GROUPS = ['recipe', 'plan', 'ex', 'breath', 'mindx'];
+const NO_BACK = ['session', 'report', 'cheer', 'today'];
+function trackBack(h) {
+  if (h === current) return;
+  const g = routeGroup(h), cg = routeGroup(current);
+  if (viaMenu || !current) delete backFrom[g];
+  else if (cg !== g && backFrom[cg] !== h) backFrom[g] = current;
+  viaMenu = false;
+}
+function pageLabel(r) {
+  if (!r) return null;
+  if (r === 'session') return S.session ? 'your workout' : null;
+  const g = routeGroup(r);
+  if (r === 'recipe-new' || r === 'plan-new' || /-edit-/.test(r)) return null;
+  const detail = { recipe: 'recipe', plan: 'plan', ex: 'exercise', breath: 'breathing', mindx: 'session details', cheer: 'message' }[g];
+  if (detail) return detail;
+  const tab = document.querySelector(`#site-menu .tab[data-tab="${r === '' ? 'today' : r}"] .tab-l`);
+  return tab ? tab.textContent : null;
+}
+// Detail pages: "← Back to X" plus the usual list link, or just the list link.
+function backBtn(g, def, defLabel) {
+  const f = backFrom[g], l = f && f !== def ? pageLabel(f) : null;
+  return l ? `<a class="btn btn-primary" href="#${esc(f)}">← Back to ${esc(l)}</a><a class="btn btn-ghost" href="#${def}">${esc(defLabel)}</a>`
+    : `<a class="btn btn-ghost" href="#${def}">← ${esc(defLabel)}</a>`;
+}
+// Top-level pages reached by a link inside another page.
+function backTop(h) {
+  const g = routeGroup(h); if (DETAIL_GROUPS.includes(g) || NO_BACK.includes(g) || /^(recipe|plan)-new$/.test(h)) return '';
+  const f = backFrom[g], l = f && f !== h ? pageLabel(f) : null;
+  return l ? `<div class="row back-top"><a class="btn btn-sm btn-ghost" href="#${esc(f)}">← Back to ${esc(l)}</a></div>` : '';
+}
 function renderView(keepScroll) {
   const h = (location.hash || '#today').slice(1);
   let html, tab;
   if (S.setup === false) { app.innerHTML = viewSetup(); app.dataset.view = 'setup'; document.querySelectorAll('.tab').forEach((a) => a.removeAttribute('aria-current')); const cp = $('#cur-page'); if (cp) cp.textContent = 'Setup'; current = h; return; }
+  trackBack(h);
   if (h === 'today' || h === '') { html = viewToday(); tab = 'today'; }
   else if (h === 'recipes') { html = viewRecipes(); tab = 'recipes'; }
   else if (h === 'recipe-new') { html = viewRecipeForm(null); tab = 'recipes'; }
@@ -6522,7 +6721,7 @@ function renderView(keepScroll) {
   else if (h.startsWith('plan-')) { html = viewPlan(h.slice(5)); tab = 'workouts'; }
   else if (h === 'session') { html = viewSession(); tab = 'workouts'; }
   else if (h === 'exercises') { html = viewExercises(); tab = 'exercises'; }
-  else if (h.startsWith('ex-')) { if (!current.startsWith('ex-')) exFrom = current; html = viewExercise(h.slice(3)); tab = 'exercises'; }
+  else if (h.startsWith('ex-')) { html = viewExercise(h.slice(3)); tab = 'exercises'; }
   else if (h.startsWith('import-plan=')) { html = viewImportPlan(h.slice(12)); tab = 'workouts'; }
   else if (h === 'shopping') { html = viewShopping(); tab = 'shopping'; }
   else if (h === 'breathe') { html = viewBreathe(); tab = 'breathe'; }
@@ -6541,7 +6740,7 @@ function renderView(keepScroll) {
   else if (h === 'report') { if (current !== 'report') report.from = current; html = viewReport(); tab = 'report'; }
   else { html = notFound('That page'); tab = ''; }
   const y = window.scrollY;
-  app.innerHTML = html;
+  app.innerHTML = backTop(h) + html;
   app.dataset.view = tab || 'none';
   if (h !== current && !keepScroll) { app.classList.remove('enter'); void app.offsetWidth; app.classList.add('enter'); }
   document.querySelectorAll('.tab').forEach((a) => { if (a.dataset.tab === tab) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
@@ -6837,7 +7036,7 @@ document.addEventListener('click', (e) => {
   else if (a === 'goal') { S.profile.goal = b.dataset.g; readProfile(); render(true); }
   else if (a === 'clear-arm') { clearArmed = true; render(true); }
   else if (a === 'clear-cancel') { clearArmed = false; render(true); }
-  else if (a === 'clear-all') { const units = S.units; S = { ...fresh(), units }; migrate(); clearArmed = false; mpWeek = null; save(); clearPhotos(); toast('All data cleared'); render(true); }
+  else if (a === 'clear-all') { const units = S.units; S = { ...fresh(), units }; migrate(); clearArmed = false; mpSel = null; mpUndo = null; save(); clearPhotos(); toast('All data cleared'); render(true); }
   else if (a === 'meas-day') { const n = addDays(measDate, +b.dataset.d); if (n <= dayKey()) { measDate = n; render(true); } }
   else if (a === 'meas-open') { measDate = b.dataset.date; render(false); }
   else if (a === 'del-meas') { S.measures = S.measures.filter((m) => m.id !== b.dataset.id); save(); toast('Measurements removed'); render(true); }
@@ -6863,25 +7062,50 @@ document.addEventListener('click', (e) => {
   else if (a === 'del-recipe') { delArmed = false; deleteRecipe(b.dataset.id); }
   else if (a === 'del-plan') { delArmed = false; deletePlan(b.dataset.id); }
   else if (a === 'rp-remove') { removeRecipePhoto(b.dataset.id).then(() => toast('Photo removed'), () => toast('Could not remove that photo')); }
-  else if (a === 'mp-week') { mpWeek = +b.dataset.d ? addDays(mpWeek, +b.dataset.d) : mondayOf(dayKey()); mpClearArmed = false; render(true); }
+  else if (a === 'mp-nav') {
+    const d = +b.dataset.d;
+    if (!d) mpSel = dayKey();
+    else if (mpView === 'week') mpSel = addDays(mpSel, d * 7);
+    else { const x = parseKey(monthOf(mpSel)); x.setMonth(x.getMonth() + d); const k = dayKey(x); mpSel = k.slice(0, 7) === dayKey().slice(0, 7) ? dayKey() : k; }
+    mpClearArmed = false; render(true);
+  }
+  else if (a === 'mp-day') { mpSel = b.dataset.k; mpClearArmed = false; render(true); }
+  else if (a === 'mp-view') { mpView = b.dataset.v; mpClearArmed = false; render(true); }
+  else if (a === 'mp-range') { mpRange = b.dataset.r; mpClearArmed = false; render(true); }
   else if (a === 'mp-shop') { mpShop(); render(true); }
   else if (a === 'mp-log') {
     const dp = planDay(dayKey()), list = MEALS.filter((m) => dp[m] && recipeById(dp[m].id)), before = foodHit(dayKey());
     list.forEach((m) => { const r = recipeById(dp[m].id); S.meals.push({ id: uid(), date: dayKey(), meal: m, name: r.title, kcal: r.per.kcal, p: r.per.p, c: r.per.c, f: r.per.f }); });
     save(); if (!foodCheck(dayKey(), before)) toast(`Logged ${list.length} planned meal${list.length === 1 ? '' : 's'} to today`);
   }
-  else if (a === 'mp-fill') {
-    let n = 0;
-    [...Array(7)].map((_, i) => addDays(mpWeek, i)).forEach((k) => MEALS.forEach((m) => {
-      if (planDay(k)[m]) return;
-      const opts = RECIPES.filter((r) => r.meal === m); if (!opts.length) return;
-      S.mealPlan[k] = { ...planDay(k), [m]: { id: opts[Math.floor(Math.random() * opts.length)].id, s: S.servings } }; n += 1;
-    }));
-    save(); toast(n ? `Filled ${n} slot${n === 1 ? '' : 's'}. Swap any you don't fancy.` : 'Every slot already has a recipe'); render(true);
+  else if (a === 'mp-fstyle') { mpFillStyle = b.dataset.s; render(true); }
+  else if (a === 'mp-fill') { const n = mpFill(); if (!n) mpUndo = null; toast(n ? `Filled ${n} meal${n === 1 ? '' : 's'}. Swap any you don't fancy.` : 'Every meal from today on already has a recipe'); render(true); }
+  else if (a === 'mp-serv-all') {
+    const n = +$('#mp-serv-n').value || S.servings, which = $('#mp-serv-m').value, days = mpDays(); let c = 0;
+    mpSnap(days, 'servings');
+    days.forEach((k) => Object.entries(planDay(k)).forEach(([m, x]) => { if (which === 'All' || which === m) { x.s = n; c += 1; } }));
+    mpServN = n; mpServMeal = which; if (!c) mpUndo = null; save();
+    toast(c ? `Set ${c} meal${c === 1 ? '' : 's'} to ×${n}` : 'No planned meals to change'); render(true);
+  }
+  else if (a === 'mp-pmeal') { const m = b.dataset.m; mpProtMeals = mpProtMeals.includes(m) ? mpProtMeals.filter((x) => x !== m) : [...mpProtMeals, m].sort(); render(true); }
+  else if (a === 'mp-pstyle') { mpProtStyle = b.dataset.s; render(true); }
+  else if (a === 'mp-prot') { mpSameProtein(b.dataset.p); render(true); }
+  else if (a === 'mp-copy') {
+    const src = planDay(mpSel), to = b.dataset.to, w = mondayOf(mpSel), m = monthOf(mpSel);
+    const targets = to === 'tomorrow' ? [addDays(mpSel, 1)] : to === 'week' ? [...Array(7)].map((_, i) => addDays(w, i)).filter((k) => k > mpSel)
+      : [...Array(daysInMonth(m))].map((_, i) => addDays(m, i)).filter((k) => k > mpSel && dowIdx(k) === dowIdx(mpSel));
+    if (!targets.length) { toast('No later days to copy to'); return; }
+    mpSnap(targets, 'copy');
+    targets.forEach((k) => { S.mealPlan[k] = JSON.parse(JSON.stringify(src)); });
+    save(); toast(`Copied to ${targets.length} day${targets.length === 1 ? '' : 's'}`); render(true);
+  }
+  else if (a === 'mp-undo') {
+    if (mpUndo) { mpUndo.days.forEach((k) => { if (mpUndo.snap[k]) S.mealPlan[k] = mpUndo.snap[k]; else delete S.mealPlan[k]; }); mpUndo = null; save(); toast('Undone'); }
+    render(true);
   }
   else if (a === 'mp-clear-arm') { mpClearArmed = true; render(true); }
   else if (a === 'mp-clear-cancel') { mpClearArmed = false; render(true); }
-  else if (a === 'mp-clear') { [...Array(7)].forEach((_, i) => delete S.mealPlan[addDays(mpWeek, i)]); mpClearArmed = false; save(); toast('Week cleared'); render(true); }
+  else if (a === 'mp-clear') { const days = mpDays(); mpSnap(days, 'clear'); days.forEach((k) => delete S.mealPlan[k]); mpClearArmed = false; save(); toast(mpEffRange() === 'month' ? 'Month cleared' : 'Week cleared'); render(true); }
   else if (a === 'rem-edit') { remDraft = S.reminders ? { ...S.reminders, days: [...S.reminders.days] } : { days: [0, 2, 4], time: '07:00', alert: 15 }; render(true); }
   else if (a === 'rem-day') { const i = +b.dataset.i, d = remDraft; d.days = d.days.includes(i) ? d.days.filter((x) => x !== i) : [...d.days, i].sort(); render(true); }
   else if (a === 'rem-save') {
