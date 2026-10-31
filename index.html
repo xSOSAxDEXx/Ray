@@ -130,7 +130,27 @@ button, input, select { font: inherit; color: inherit; }
 .cur-page { font-weight: 700; font-size: .88rem; color: var(--accent); background: var(--accent-soft); padding: 6px 12px; border-radius: 999px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .menu { position: absolute; left: 0; right: 0; top: 100%; background: var(--surface); border-bottom: 1px solid var(--line); box-shadow: 0 18px 40px rgba(0, 0, 0, .18); max-height: calc(100vh - 64px); overflow-y: auto; animation: menu-in .18s ease; }
 .menu[hidden] { display: none; }
-.top .wrap.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 6px; padding-block: 12px 16px; }
+.sess-bar { background: var(--accent-soft); border-top: 1px solid var(--line); }
+.sess-bar[hidden] { display: none; }
+.sess-bar-in { display: flex; align-items: center; gap: 10px; padding-block: 8px; font-size: .9rem; }
+.sess-bar-in .grow { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sess-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; animation: sess-pulse 1.6s ease-in-out infinite; }
+@keyframes sess-pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .sess-dot { animation: none; } }
+.top .wrap.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px 18px; padding-block: 12px 16px; align-items: start; }
+.menu-group { display: grid; gap: 4px; min-width: 0; }
+.menu-today, .menu-help { grid-column: 1 / -1; }
+.menu-h { font-family: var(--f-mono); font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 2px 14px; }
+.menu-tabs { display: grid; gap: 2px; }
+.menu-help { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 4px; border-top: 1px solid var(--line); padding-top: 10px; }
+.menu-help .menu-h { margin: 0 8px 0 14px; }
+.tab.tab-help { font-weight: 600; font-size: .88rem; padding: 8px 10px; color: var(--muted); }
+@media (max-width: 640px) {
+  .top .wrap.menu-grid { grid-template-columns: 1fr; gap: 10px; }
+  .menu-tabs { grid-template-columns: 1fr 1fr; }
+  .menu-today .menu-tabs { grid-template-columns: 1fr; }
+  .tab { padding: 10px 12px; font-size: .95rem; }
+}
 .tab { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 12px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: .98rem; }
 .tab:hover { background: var(--sunk); }
 .tab[aria-current="page"] { background: var(--accent-soft); color: var(--accent); }
@@ -759,24 +779,16 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
   </div>
   <nav class="menu" id="site-menu" aria-label="Sections" hidden>
     <div class="wrap menu-grid">
-      <a class="tab" href="#today" data-tab="today"><span class="tab-l">Today</span></a>
-      <a class="tab" href="#recipes" data-tab="recipes"><span class="tab-l">Recipes</span></a>
-      <a class="tab" href="#mealplan" data-tab="mealplan"><span class="tab-l">Meal plan</span></a>
-      <a class="tab" href="#shopping" data-tab="shopping"><span class="tab-l">Shopping list</span></a>
-      <a class="tab" href="#workouts" data-tab="workouts"><span class="tab-l">Workouts</span></a>
-      <a class="tab" href="#breathe" data-tab="breathe"><span class="tab-l">Breathe</span></a>
-      <a class="tab" href="#mind" data-tab="mind"><span class="tab-l">Mind</span></a>
-      <a class="tab" href="#friends" data-tab="friends"><span class="tab-l">Friends</span></a>
-      <a class="tab" href="#log" data-tab="log"><span class="tab-l">Log</span></a>
-      <a class="tab" href="#progress" data-tab="progress"><span class="tab-l">Progress</span></a>
-      <a class="tab" href="#analytics" data-tab="analytics"><span class="tab-l">Analytics</span></a>
-      <a class="tab" href="#goals" data-tab="goals"><span class="tab-l">Profile &amp; goals</span></a>
-      <a class="tab" href="#settings" data-tab="settings"><span class="tab-l">Settings</span></a>
-      <a class="tab" href="#guide" data-tab="guide"><span class="tab-l">Guide</span></a>
-      <a class="tab" href="#sources" data-tab="sources"><span class="tab-l">Links &amp; facts</span></a>
-      <a class="tab" href="#report" data-tab="report"><span class="tab-l">Report an issue</span></a>
+      <div class="menu-group menu-today"><div class="menu-tabs"><a class="tab" href="#today" data-tab="today"><span class="tab-l">Today</span></a></div></div>
+      <div class="menu-group"><h2 class="menu-h">Food</h2><div class="menu-tabs"><a class="tab" href="#log" data-tab="log"><span class="tab-l">Daily log</span></a><a class="tab" href="#recipes" data-tab="recipes"><span class="tab-l">Recipes</span></a><a class="tab" href="#mealplan" data-tab="mealplan"><span class="tab-l">Meal plan</span></a><a class="tab" href="#shopping" data-tab="shopping"><span class="tab-l">Shopping list</span></a></div></div>
+      <div class="menu-group"><h2 class="menu-h">Training</h2><div class="menu-tabs"><a class="tab" href="#workouts" data-tab="workouts"><span class="tab-l">Workouts</span></a><a class="tab" href="#exercises" data-tab="exercises"><span class="tab-l">Exercise library</span></a></div></div>
+      <div class="menu-group"><h2 class="menu-h">Mind &amp; breath</h2><div class="menu-tabs"><a class="tab" href="#breathe" data-tab="breathe"><span class="tab-l">Breathe</span></a><a class="tab" href="#mind" data-tab="mind"><span class="tab-l">Mind</span></a></div></div>
+      <div class="menu-group"><h2 class="menu-h">Progress</h2><div class="menu-tabs"><a class="tab" href="#progress" data-tab="progress"><span class="tab-l">Body &amp; weight</span></a><a class="tab" href="#analytics" data-tab="analytics"><span class="tab-l">Charts &amp; records</span></a><a class="tab" href="#friends" data-tab="friends"><span class="tab-l">Friends</span></a></div></div>
+      <div class="menu-group"><h2 class="menu-h">You</h2><div class="menu-tabs"><a class="tab" href="#goals" data-tab="goals"><span class="tab-l">Profile &amp; goals</span></a><a class="tab" href="#settings" data-tab="settings"><span class="tab-l">Settings</span></a></div></div>
+      <div class="menu-help"><span class="menu-h">Help</span><a class="tab tab-help" href="#guide" data-tab="guide"><span class="tab-l">Guide</span></a><a class="tab tab-help" href="#sources" data-tab="sources"><span class="tab-l">Links &amp; facts</span></a><a class="tab tab-help" href="#report" data-tab="report"><span class="tab-l">Report an issue</span></a></div>
     </div>
   </nav>
+  <div class="sess-bar" id="sess-bar" hidden></div>
 </header>
 
 <main class="wrap" id="app" tabindex="-1"></main>
@@ -2699,6 +2711,7 @@ function viewExercises() {
   <div class="row" role="group" aria-label="Filter by area" style="margin-bottom:14px">${EX_GROUPS.map(([n]) => `<button class="chip" data-act="ex-group" data-g="${n}" aria-pressed="${n === exMuscle}">${n}</button>`).join('')}</div>
   <div class="calm-cards" id="ex-cards">${list.map((x) => `<a class="panel calm-card ex-card" href="#ex-${x.id}"><h3>${esc(x.name)}</h3><p class="muted" style="font-size:.85rem">${esc(x.muscles)}</p><p class="calm-meta"><span>${esc(x.eq)}</span></p></a>`).join('') || emptyState('clock', 'No exercises match that search.')}</div>`;
 }
+let exFrom = ''; // the page you came from, for the right back button
 function viewExercise(id) {
   const x = EX_LIB.find((y) => y.id === id);
   if (!x) return notFound('That exercise');
@@ -2706,7 +2719,10 @@ function viewExercise(id) {
   const uses = PLANS.filter((p) => p.days.some((d) => d.ex.some((e) => libFor(e[0]) === x)));
   const best = names.map((n) => { const l = hist.get(n), b = l.reduce((a, e) => (exScore(e) > exScore(a) ? e : a)); return { n, b, l }; });
   const series = best.filter((r) => r.l.some((e) => e.e1)).slice(0, 1).map((r) => ({ name: `Est. 1-rep max (${wUnit()})`, color: 'var(--accent)', pts: r.l.filter((e) => e.e1).map((e) => ({ d: e.date, v: showW(e.e1) })) }))[0];
-  return `<a class="btn btn-ghost" href="#exercises" style="margin-bottom:10px">← Exercise library</a>
+  const back = exFrom === 'session' && S.session ? `<a class="btn btn-primary" href="#session">← Back to your workout</a><a class="btn btn-ghost" href="#exercises">Exercise library</a>`
+    : exFrom.startsWith('plan-') ? `<a class="btn btn-ghost" href="#${esc(exFrom)}">← Back to plan</a><a class="btn btn-ghost" href="#exercises">Exercise library</a>`
+    : `<a class="btn btn-ghost" href="#exercises">← Exercise library</a>`;
+  return `<div class="row" style="margin-bottom:10px">${back}</div>
   <div class="grid">
     <section class="panel span-7 stack"><div class="eyebrow">${esc(x.muscles)}</div><h1>${esc(x.name)}</h1><p class="muted">Equipment: ${esc(x.eq)}</p>
       <div class="demo-ph" role="img" aria-label="Demonstration coming soon">${icon('clock')}<span>Demo video or illustration coming soon</span></div>
@@ -4369,7 +4385,7 @@ function viewLog() {
   const meals = dayMeals(logDate), tot = totals(meals);
   const wToday = S.weights.find((w) => w.date === logDate);
   return `${exampleBanner()}
-  <div class="page-head"><div><div class="eyebrow">Tracker</div><h1>Log</h1></div>
+  <div class="page-head"><div><div class="eyebrow">Tracker</div><h1>Daily log</h1></div>
     <div class="row"><button class="btn btn-sm" data-act="log-day" data-d="-1" aria-label="Previous day">←</button>
       <input class="input" type="date" id="log-date" value="${logDate}" max="${t}" style="width:auto" aria-label="Day to show">
       <button class="btn btn-sm" data-act="log-day" data-d="1" aria-label="Next day" ${logDate >= t ? 'disabled' : ''}>→</button></div></div>
@@ -4468,7 +4484,7 @@ function viewProgress() {
     ${bfThen != null ? `<span class="num ${bfNow < bfThen ? 'delta-down' : bfNow > bfThen ? 'delta-up' : 'muted'}" style="font-size:.82rem">${bfNow >= bfThen ? '+' : '−'}${Math.abs(round(bfNow - bfThen, 1))} pts</span>` : ''}
     <span class="muted" style="font-size:.75rem">US Navy tape method, ±3–4%</span></div>` : '';
   return `${exampleBanner()}
-  <div class="page-head"><div><div class="eyebrow">Beyond the scale</div><h1>Progress</h1>
+  <div class="page-head"><div><div class="eyebrow">Beyond the scale</div><h1>Body &amp; weight</h1>
     <p class="muted">Measure every 1–2 weeks, first thing in the morning. A shrinking waist with a steady weight usually means you're losing fat and building muscle.</p></div>
     <div class="row"><button class="btn btn-sm" data-act="meas-day" data-d="-1" aria-label="Previous day">←</button>
       <input class="input" type="date" id="meas-date" value="${measDate}" max="${t}" style="width:auto" aria-label="Measurement date">
@@ -5313,7 +5329,7 @@ function viewAnalytics() {
   const measAll = [...S.measures].sort((a, b) => a.date.localeCompare(b.date));
   const comp = measAll.map((m) => { const bf = bodyFat(m); if (bf == null) return null; const kg = nearestWeightKg(m.date); return { d: m.date, bf, lean: kg * (1 - bf / 100), fat: (kg * bf) / 100 }; }).filter(Boolean);
   const inC = comp.filter((c) => c.d >= start && c.d <= t), compR = inC.length >= 2 ? inC : comp;
-  let body = `<p class="muted">Add waist and neck${S.profile.sex === 'male' ? '' : ' and hip'} measurements on <a href="#progress">Progress</a> every 1–2 weeks, plus regular weigh-ins, to estimate lean (muscle) mass.</p>`;
+  let body = `<p class="muted">Add waist and neck${S.profile.sex === 'male' ? '' : ' and hip'} measurements on <a href="#progress">Body &amp; weight</a> every 1–2 weeks, plus regular weigh-ins, to estimate lean (muscle) mass.</p>`;
   if (compR.length) {
     const series = [{ name: `Lean mass (${wUnit()})`, color: 'var(--accent)', pts: compR.map((c) => ({ d: c.d, v: showW(c.lean) })) }, { name: `Fat mass (${wUnit()})`, color: 'var(--berry)', pts: compR.map((c) => ({ d: c.d, v: showW(c.fat) })) }];
     const a = compR[0], b = compR[compR.length - 1], dl = showW(b.lean) - showW(a.lean), df = showW(b.fat) - showW(a.fat);
@@ -5333,7 +5349,7 @@ function viewAnalytics() {
   }
 
   return `${exampleBanner()}
-  <div class="page-head"><div><div class="eyebrow">From your workout log</div><h1>Analytics</h1>
+  <div class="page-head"><div><div class="eyebrow">From your workout log</div><h1>Charts &amp; records</h1>
     <p class="muted">See how your strength, endurance and body are changing. Everything here comes from the workouts you log, your weigh-ins and your measurements.</p></div>
   </div>
   <div class="an-range panel">
@@ -6261,16 +6277,16 @@ function render(keepScroll) {
 const REPO = 'xSOSAxDEXx/Ray', APP_VERSION = '2026.10.31';
 const GUIDE = [
   ['today', 'Today', 'Your day at a glance: calories and protein left, water, today\'s workout and quick buttons for logging.', ['Tap a meal card or + to log food; tap the water glasses to add a glass.', 'The weekly ring shows workouts and active minutes toward your weekly goal.', 'Banners appear when there\'s something useful: a backup reminder, a suggested calorie target, or a plan session that\'s due.']],
-  ['log', 'Log', 'Everything you ate, drank, lifted and weighed, day by day.', ['Search foods, recipes or your usual, or scan a barcode. Use “Everyday meals & drinks” for takeout, snacks, soda and alcohol.', 'Use − and + on an item to change portions, Edit to fix the numbers, and the heart to make it a favorite. Every change can be undone from the message at the bottom.', '“Same as yesterday” copies a whole meal in one tap. The arrows at the top move between days.', 'Log your weight here too; the trend powers the adaptive calorie target.']],
+  ['log', 'Daily log', 'Everything you ate, drank, lifted and weighed, day by day.', ['Search foods, recipes or your usual, or scan a barcode. Use “Everyday meals & drinks” for takeout, snacks, soda and alcohol.', 'Use − and + on an item to change portions, Edit to fix the numbers, and the heart to make it a favorite. Every change can be undone from the message at the bottom.', '“Same as yesterday” copies a whole meal in one tap. The arrows at the top move between days.', 'Log your weight here too; the trend powers the adaptive calorie target.']],
   ['recipes', 'Recipes', 'Over 50 recipes with macros, allergens, cost per serving and swaps.', ['Filter by meal, diet (carnivore, gluten free, soy free, dairy free, nut free, budget) or favorites.', 'Open a recipe to scale servings, see micronutrients, add it to your log or meal plan, rate it and keep notes.', 'Add your own with “New recipe”; calories are worked out from protein, carbs and fat if you leave them blank.']],
   ['mealplan', 'Meal plan', 'Plan the week by dragging recipes onto days.', ['Tap a day slot to choose a recipe. The week\'s totals show against your targets.', 'Turn on “Build from my meal plan” in the shopping list to fill it automatically.']],
   ['shopping', 'Shopping list', 'One combined list from the recipes you choose, with store prices and package sizes.', ['Add recipes, then tick items off as you shop. “Have it” hides things already in your pantry.', 'Enter a zip code to find nearby stores, open them in maps, or order online.', 'Share, email, text or print the list.']],
   ['workouts', 'Workouts', '33 plans for gyms, homes and no equipment, plus a builder for your own.', ['Set your equipment once and plans you can\'t do are marked.', 'Start a session to get a timer, rest countdowns, a plate calculator, effort ratings and a “next step” suggestion based on last time.', 'The Exercise library explains every movement with cues and easier or harder versions.', 'Share any plan as a link.']],
   ['breathe', 'Breathe', 'Guided breathing from many traditions with a calm timer, tones and optional music.', ['Pick by goal: calm, focus, energy or sleep. Each exercise says where it comes from and how to do it.', 'New to it? The 7-day “Learn to breathe” course gives one short session a day.', 'Wim Hof-style and power breathing carry safety warnings: never do them in or near water, driving or standing.']],
   ['mind', 'Mind', 'Meditation, long-hold yoga and calisthenics holds, sleep sounds and daily brain habits.', ['Sessions run on the same calm timer as Breathe.', 'Tick off daily habits to build a streak; sleep sounds fade out on a timer.']],
+  ['progress', 'Body & weight', 'Weight, body measurements, body-fat estimate and progress photos.', ['Photos stay on this device only.', 'Body fat uses the US Navy tape method (neck, waist and, for women, hips).']],
+  ['analytics', 'Charts & records', 'Charts of calories, macros, weight, workouts and personal bests.', ['Choose a preset range or set your own dates.', 'Personal bests use an estimated one-rep max.']],
   ['friends', 'Friends', 'Share workouts, recipes and milestones, and cheer each other on.', ['There are no accounts yet: everything travels as a link you send by text or chat.', 'When a friend sends you something, open the link to add them and send a cheer back.']],
-  ['progress', 'Progress', 'Weight, body measurements, body-fat estimate and progress photos.', ['Photos stay on this device only.', 'Body fat uses the US Navy tape method (neck, waist and, for women, hips).']],
-  ['analytics', 'Analytics', 'Charts of calories, macros, weight, workouts and personal bests.', ['Choose a preset range or set your own dates.', 'Personal bests use an estimated one-rep max.']],
   ['goals', 'Profile & goals', 'Your details, goal and daily targets.', ['Targets are worked out for you (see Links & facts for how), and you can edit any of them.', 'After about four weeks of logging, an adaptive target can suggest a better calorie number from your real results.']],
   ['settings', 'Settings', 'Look, sounds, reminders, backups, profiles and privacy.', ['Download a backup now and then: your data lives only in this browser.', 'Profiles let two people share one device.']]
 ];
@@ -6281,7 +6297,7 @@ function viewGuide() {
       <li>Log what you eat in <a href="#log">Log</a>: search, tap your usual foods, scan a barcode, or pick an everyday meal or drink.</li>
       <li>Pick a plan in <a href="#workouts">Workouts</a> and start a session; it's saved to your log when you finish.</li>
       <li>Check <a href="#today">Today</a> each day and download a backup from <a href="#settings">Settings</a> every week or two.</li></ol>
-    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the Rep &amp; Ration name) to move between sections. Rep &amp; Ration works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
+    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the Rep &amp; Ration name) to move between sections. It's grouped into Food, Training, Mind &amp; breath, Progress and You, with help links at the bottom. Rep &amp; Ration works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
   <div class="grid" style="margin-top:16px">${GUIDE.map(([id, t, what, how]) => `<section class="panel span-6 guide-card"><div class="panel-head"><h2>${t}</h2><a class="btn btn-sm btn-ghost" href="#${id}">Open</a></div>
     <p>${esc(what)}</p><ul>${how.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}</div>
   <section class="panel stack" style="margin-top:16px"><h2>Something not working?</h2><p>Tell us on the <a href="#report">Report an issue</a> page. It takes a minute and helps fix it for everyone.</p></section>`;
@@ -6478,6 +6494,18 @@ function sendCheer(target, msg) {
   shareLink({ k: 'c', m: msg, t: re, to }, `${myShareName() || 'A friend'} cheered you on: “${msg}”`);
 }
 
+let sessBarTimer = 0;
+function sessBar() {
+  const el = $('#sess-bar'); if (!el) return;
+  const on = !!(S.session && current !== 'session' && S.setup !== false);
+  clearInterval(sessBarTimer); sessBarTimer = 0;
+  if (!on) { el.hidden = true; el.innerHTML = ''; return; }
+  const p = planById(S.session.planId), name = p ? p.title : 'Workout';
+  el.hidden = false;
+  el.innerHTML = `<div class="wrap sess-bar-in"><span class="sess-dot" aria-hidden="true"></span><span class="grow"><b>Workout in progress</b> · <span class="num" id="sess-bar-t"></span> <span class="muted">· ${esc(name)}</span></span><a class="btn btn-sm btn-primary" href="#session">Return</a></div>`;
+  const t = () => { const x = $('#sess-bar-t'); if (!x || !S.session) return; const sec = Math.floor((Date.now() - S.session.started) / 1000); x.textContent = Math.floor(sec / 60) + ':' + z(sec % 60); };
+  t(); sessBarTimer = setInterval(t, 1000);
+}
 function renderView(keepScroll) {
   const h = (location.hash || '#today').slice(1);
   let html, tab;
@@ -6493,8 +6521,8 @@ function renderView(keepScroll) {
   else if (h.startsWith('plan-edit-')) { html = viewPlanForm(h.slice(10)); tab = 'workouts'; }
   else if (h.startsWith('plan-')) { html = viewPlan(h.slice(5)); tab = 'workouts'; }
   else if (h === 'session') { html = viewSession(); tab = 'workouts'; }
-  else if (h === 'exercises') { html = viewExercises(); tab = 'workouts'; }
-  else if (h.startsWith('ex-')) { html = viewExercise(h.slice(3)); tab = 'workouts'; }
+  else if (h === 'exercises') { html = viewExercises(); tab = 'exercises'; }
+  else if (h.startsWith('ex-')) { if (!current.startsWith('ex-')) exFrom = current; html = viewExercise(h.slice(3)); tab = 'exercises'; }
   else if (h.startsWith('import-plan=')) { html = viewImportPlan(h.slice(12)); tab = 'workouts'; }
   else if (h === 'shopping') { html = viewShopping(); tab = 'shopping'; }
   else if (h === 'breathe') { html = viewBreathe(); tab = 'breathe'; }
@@ -6524,6 +6552,7 @@ function renderView(keepScroll) {
   else if (h !== current) { window.scrollTo(0, 0); }
   if (!/^(recipe|plan)-(new|edit-)/.test(h)) { draft = null; draftFor = ''; }
   current = h;
+  sessBar();
   if (h === 'session' && S.session && !ticker) { ticker = setInterval(tick, 250); }
   if (h === 'session') tick();
 }

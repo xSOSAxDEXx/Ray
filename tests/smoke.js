@@ -37,6 +37,8 @@ const STATES = {
         const problem = r.text.trim().length < 40 ? 'empty' : /Something went wrong/.test(r.text) ? 'error panel' : r.sw > width ? `scrolls sideways (${r.sw}px)` : null;
         if (problem) { failures += 1; console.log(`FAIL ${name} @${width}px #${view}: ${problem}`); }
       }
+      const groups = await page.$$eval('#site-menu .menu-h', (l) => l.map((x) => x.textContent));
+      if (groups.join('|') !== 'Food|Training|Mind & breath|Progress|You|Help') { failures += 1; console.log(`FAIL ${name} @${width}px: menu groups are ${groups.join(', ')}`); }
       if (errors.length) { failures += 1; console.log(`FAIL ${name} @${width}px: ${errors[0]}`); }
       await ctx.close();
     }
