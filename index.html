@@ -278,10 +278,45 @@ label.field { display: flex; flex-direction: column; gap: 4px; font-size: .82rem
 .chip-sm { padding: 3px 10px; font-size: .78rem; }
 .home-box { background: var(--accent-soft); border-radius: var(--r); padding: 12px 14px; margin-top: 12px; }
 .subs li { flex-wrap: wrap; }
-.order { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
-.order h3 { font-size: 1rem; }
-.order-links { display: flex; flex-wrap: wrap; gap: 6px; }
-.order-links .chip { text-decoration: none; }
+.order { margin-top: 16px; border: 1px solid var(--line); border-radius: var(--r); }
+.order-head { all: unset; box-sizing: border-box; cursor: pointer; display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; font-size: .92rem; }
+.order-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: var(--r); }
+.order-head[aria-expanded="true"] .fchev { transform: rotate(-135deg) translateY(-2px); }
+.order-body { padding: 0 14px 14px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.order-list { margin-top: 10px; }
+.order-list li { padding-block: 6px; }
+.an-range { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 12px 16px; margin-bottom: 16px; }
+.an-range input[type="date"] { width: auto; padding-block: 7px; }
+.an-step { display: inline-flex; align-items: center; gap: 4px; font-size: .9rem; }
+.an-step .btn { font-size: 1.1rem; padding: 2px 10px; }
+.an-range-note { font-size: .8rem; }
+.how-set { border-top: 1px solid var(--line); padding-top: 10px; font-size: .88rem; }
+.how-set summary { cursor: pointer; font-weight: 700; }
+.how-set ul { margin: 8px 0; padding-left: 18px; display: grid; gap: 6px; }
+.fadd { display: grid; gap: 10px; margin-bottom: 4px; }
+.fadd-q { font-size: 1rem; padding-block: 11px; }
+.fres-list { display: grid; gap: 6px; }
+.fres { display: flex; align-items: center; gap: 10px; text-align: left; width: 100%; border: 1px solid var(--line); background: var(--surface); color: inherit; border-radius: var(--r); padding: 9px 12px; cursor: pointer; font: inherit; }
+.fres:hover, .fres:focus-visible { border-color: var(--accent); }
+.fres .grow { display: grid; min-width: 0; }
+.fres .grow b { font-size: .92rem; }
+.fres .grow .muted { font-size: .78rem; }
+.fres-k { font-size: .9rem; white-space: nowrap; }
+.fres-k small { color: var(--muted); font-size: .72rem; }
+.fres-plus { width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 800; flex: none; }
+.fres-own { justify-self: start; color: var(--accent); }
+.qchips { display: flex; flex-wrap: wrap; gap: 6px; }
+.repeat-btn { justify-self: start; }
+.manual { border: 1px solid var(--line); border-radius: var(--r); padding: 12px; }
+.mini-macros { display: flex; gap: 14px; font-size: .8rem; margin: -4px 0 12px; flex-wrap: wrap; }
+.mgroup { margin-top: 14px; }
+.mgroup-h { display: flex; justify-content: space-between; font-size: .85rem; border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+.mgroup .list li { gap: 6px 8px; flex-wrap: wrap; }
+.mgroup .list li .grow { flex: 1 1 170px; }
+.stepper-sm button { width: 30px; height: 30px; font-size: 1rem; }
+.stepper-sm output { min-width: 36px; font-size: .82rem; }
+.mk { min-width: 36px; text-align: right; }
 .fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
 .fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
 .fbtn { display: inline-flex; align-items: center; gap: 8px; }
@@ -1990,15 +2025,27 @@ const KG_LB = 2.20462, ML_OZ = 29.5735;
 
 /* ---------- State ---------- */
 const KEY = 'rep-ration-v1';
+/* Targets follow the mainstream consensus (see "How these are set" on Profile & goals):
+   - Calories: Mifflin-St Jeor BMR × activity, with a deficit of at most 500 kcal or 20% (fat loss) or a small 10% surplus capped at 300 (muscle).
+   - Protein: 1.6 g/kg to maintain, 1.8 to build, 2.0 while cutting (ISSN range 1.4–2.2 g/kg), on a "reference" weight capped near the top
+     of the healthy-BMI range, the same idea as eating to your goal weight rather than your current weight.
+   - Fat 30% of calories (guideline range 20–35%), carbs fill the rest.
+   - Water: about 33 ml per kg (never below the 2.2 L / 3.0 L that women / men typically need from drinks) plus extra for activity. */
+const refKg = (p) => Math.min(p.weightKg, 27.5 * (p.heightCm / 100) ** 2);
+function waterFor(p) {
+  const base = Math.max(p.sex === 'male' ? 3000 : 2200, 33 * p.weightKg);
+  const extra = p.activity >= 1.725 ? 750 : p.activity >= 1.55 ? 350 : p.activity >= 1.375 ? 200 : 0;
+  return Math.min(4500, Math.round((base + extra) / 100) * 100);
+}
 function calcTargets(p) {
   const bmr = 10 * p.weightKg + 6.25 * p.heightCm - 5 * p.age + (p.sex === 'male' ? 5 : -161);
   const tdee = bmr * p.activity;
-  const adj = { lose: -500, maintain: 0, gain: 300 }[p.goal] || 0;
+  const adj = p.goal === 'lose' ? -Math.min(500, tdee * 0.2) : p.goal === 'gain' ? Math.min(300, tdee * 0.1) : 0;
   const kcal = Math.max(p.sex === 'male' ? 1500 : 1200, Math.round((tdee + adj) / 10) * 10);
-  const protein = Math.round(p.weightKg * (p.goal === 'lose' ? 2.0 : 1.8));
-  const fat = Math.round(kcal * 0.28 / 9);
+  const protein = Math.round(refKg(p) * ({ lose: 2.0, gain: 1.8 }[p.goal] || 1.6));
+  const fat = Math.round(kcal * 0.3 / 9);
   const carbs = Math.max(0, Math.round((kcal - protein * 4 - fat * 9) / 4));
-  return { bmr: Math.round(bmr), tdee: Math.round(tdee), kcal, p: protein, c: carbs, f: fat };
+  return { bmr: Math.round(bmr), tdee: Math.round(tdee), kcal, p: protein, c: carbs, f: fat, waterSuggest: waterFor(p) };
 }
 /* Six weeks of example sessions: Foundations three times a week with slowly rising loads and reps, plus weekly HIIT with longer work intervals. */
 function exampleWorkouts(t) {
@@ -2049,7 +2096,7 @@ function seed() {
   const workouts = exampleWorkouts(t);
   const water = {}; water[t] = 1250;
   const measures = [21, 14, 7, 0].map((ago, i) => ({ id: uid(), date: addDays(t, -ago), waist: round(86.5 - i * 0.7, 1), hips: round(104 - i * 0.5, 1), chest: round(97 - i * 0.3, 1), arm: 30.5, thigh: round(60 - i * 0.4, 1), neck: 34 }));
-  return { v: 1, example: true, units: 'us', profile, targets: { ...calcTargets(profile), waterMl: 2400, workoutsWeek: 4, minutesWeek: 150 },
+  return { v: 1, example: true, units: 'us', profile, targets: { ...calcTargets(profile), waterMl: waterFor(profile), workoutsWeek: 4, minutesWeek: 150 },
     meals, weights, workouts, water, measures, activePlan: 'foundations', session: null, customRecipes: [], customPlans: [], mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2, settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
     shopping: { recipes: [{ id: 'chicken-burrito-bowls', servings: 4 }, { id: 'berry-overnight-oats', servings: 4 }], checked: {}, extras: [] } };
 }
@@ -2067,7 +2114,7 @@ const DEFAULTS = () => ({
   mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, appliance: null, servings: 2,
   shopping: { recipes: [], checked: {}, extras: [], subs: {} },
   settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
-  stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false }
+  stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {} }
 });
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 function migrate() {
@@ -2192,8 +2239,8 @@ function macroStrip(per) {
 }
 
 /* Weight line chart: one x scale by date, one y scale by weight. */
-function weightChart(days, h = 220, compact = false) {
-  const end = dayKey(), start = addDays(end, -(days - 1));
+function weightChart(days, h = 220, compact = false, end = dayKey()) {
+  const start = addDays(end, -(days - 1));
   const pts = S.weights.filter((w) => w.date >= start && w.date <= end).sort((a, b) => a.date.localeCompare(b.date));
   if (pts.length < 2) return `<p class="muted">Log your weight on at least two days to see a trend line.</p>`;
   const W = 640, padL = compact ? 8 : 44, padR = compact ? 8 : 16, padT = 16, padB = compact ? 8 : 28;
@@ -2281,9 +2328,10 @@ function bigGlass(ml, goal) {
 let waterUndo = null;
 function waterControls(ml, date) {
   const canUndo = waterUndo && waterUndo.date === (date || dayKey()) && ml > 0;
-  return `<div class="water-btns">${[12, 24, 36].map((oz) => `<button class="btn btn-sm" data-act="water" data-ml="${oz * ML_OZ}">+${oz} oz</button>`).join('')}</div>
-    <form class="water-custom" data-water-form autocomplete="off"><input class="input num" name="oz" type="number" min="1" max="128" step="1" inputmode="numeric" placeholder="Custom oz" aria-label="Custom amount in ounces" required><button class="btn btn-sm" type="submit">Add</button></form>
-    ${canUndo ? `<button class="btn btn-sm btn-ghost" data-act="water-undo" style="align-self:start">Undo last (${round(waterUndo.ml / ML_OZ)} oz)</button>` : ''}`;
+  const amts = us() ? [8, 16, 24].map((v) => [v * ML_OZ, `+${v} oz`]) : [250, 500, 750].map((v) => [v, `+${v} ml`]);
+  return `<div class="water-btns">${amts.map(([ml, l]) => `<button class="btn btn-sm" data-act="water" data-ml="${ml}">${l}</button>`).join('')}</div>
+    <form class="water-custom" data-water-form autocomplete="off"><input class="input num" name="oz" type="number" min="1" max="${us() ? 128 : 4000}" step="1" inputmode="numeric" placeholder="Other (${wUnitWater()})" aria-label="Other amount in ${wUnitWater()}" required><button class="btn btn-sm" type="submit">Add</button></form>
+    ${canUndo ? `<button class="btn btn-sm btn-ghost" data-act="water-undo" style="align-self:start">Undo last (${showWater(waterUndo.ml)} ${wUnitWater()})</button>` : ''}`;
 }
 /* Full-screen confetti card. Returns false (and shows nothing) when celebrations are turned off in Settings. */
 function celebrate({ color, badge, eyebrow, title, html, btn }) {
@@ -2698,7 +2746,7 @@ function viewToday() {
 
   return `${exampleBanner()}
   <div class="page-head"><div><div class="eyebrow">${fmtDay(t, { weekday: 'long', month: 'long', day: 'numeric' })}</div><h1>${greet}.</h1></div>
-    <div class="row"><a class="btn" href="#log">Log food</a><a class="btn btn-primary" href="#recipes">Find a recipe</a></div></div>
+    <div class="row"><a class="btn" href="#h-meals" data-act="jump-food">Log food</a><a class="btn btn-primary" href="#recipes">Find a recipe</a></div></div>
   <div class="today-grid">
     <div class="today-col">
       <section class="panel t-fuel" aria-labelledby="h-fuel">
@@ -2709,9 +2757,9 @@ function viewToday() {
         <div class="fuel-stats"><div><b>${Math.round(tot.kcal).toLocaleString()}</b><span>eaten</span></div><div><b>${T.kcal.toLocaleString()}</b><span>target</span></div><div><b style="color:var(--protein)">${Math.max(0, pLeft)} g</b><span>${pLeft > 0 ? 'protein to go' : 'protein hit'}</span></div></div>
       </section>
       <section class="panel t-meals" aria-labelledby="h-meals">
-        <div class="panel-head"><h2 id="h-meals">Today's meals</h2><a class="btn btn-sm" href="#log">Add food</a></div>
-        ${meals.length ? `<ul class="list">${meals.map((m) => `<li><div class="grow"><div><b>${esc(m.name)}</b></div><div class="muted" style="font-size:.85rem">${esc(m.meal)} · P ${m.p}g · C ${m.c}g · F ${m.f}g</div></div><span class="num">${m.kcal}<span class="muted" style="font-size:.75rem"> kcal</span></span></li>`).join('')}</ul>`
-          : `<p class="muted">Nothing logged yet today. Add a meal from the <a href="#log">Log</a> or tap “Log a serving” on any recipe.</p>`}
+        <div class="panel-head"><h2 id="h-meals">Today's meals</h2><a class="btn btn-sm btn-ghost" href="#log">Full log</a></div>
+        ${foodAdder(t)}
+        ${mealGroups(t, meals)}
       </section>
     </div>
     <div class="today-col">
@@ -3045,6 +3093,124 @@ function workoutList(limit) {
 }
 
 let logDate = null;
+/* ---------- Quick food logging ----------
+   Whole foods with a typical portion (USDA values, rounded): [name, portion, kcal, protein, carbs, fat, extra search words]. */
+const FOODS = [
+  ['Eggs', '2 large', 143, 13, 1, 10, 'egg'], ['Egg', '1 large', 72, 6, 0, 5, ''],
+  ['Chicken breast, cooked', '4 oz', 187, 35, 0, 4, 'chicken'], ['Chicken thigh, cooked', '4 oz', 236, 28, 0, 13, 'chicken'],
+  ['Ground beef 85/15, cooked', '4 oz', 284, 29, 0, 18, 'burger mince hamburger'], ['Ground beef 90/10, cooked', '4 oz', 245, 30, 0, 13, 'burger mince hamburger'],
+  ['Ribeye steak, cooked', '6 oz', 495, 41, 0, 36, 'beef'], ['Sirloin steak, cooked', '6 oz', 350, 49, 0, 15, 'beef'],
+  ['Beef liver, cooked', '3 oz', 149, 23, 4, 4, 'organ'], ['Salmon, cooked', '4 oz', 233, 25, 0, 14, 'fish'],
+  ['Cod, cooked', '4 oz', 119, 26, 0, 1, 'fish white'], ['Shrimp, cooked', '4 oz', 112, 27, 0, 0, 'prawns seafood'],
+  ['Tuna, canned in water', '1 can drained', 120, 26, 0, 1, 'fish'], ['Sardines, canned', '1 can', 191, 23, 0, 11, 'fish'],
+  ['Turkey breast, roasted', '4 oz', 153, 34, 0, 1, ''], ['Pork tenderloin, cooked', '4 oz', 162, 29, 0, 4, ''],
+  ['Bone broth', '1 cup', 45, 10, 1, 0, 'stock soup'], ['Greek yogurt, plain whole-milk', '1 cup', 215, 20, 8, 11, 'yoghurt'],
+  ['Cottage cheese, full-fat', '1 cup', 220, 25, 8, 10, ''], ['Kefir, plain', '1 cup', 160, 9, 12, 8, ''],
+  ['Whole milk', '1 cup', 149, 8, 12, 8, ''], ['Cheddar cheese', '1 oz', 114, 7, 0, 9, ''],
+  ['Feta cheese', '1 oz', 75, 4, 1, 6, ''], ['Fresh mozzarella', '1 oz', 85, 6, 1, 6, ''],
+  ['Butter', '1 tbsp', 102, 0, 0, 12, 'ghee'], ['Olive oil', '1 tbsp', 120, 0, 0, 14, 'extra virgin'],
+  ['Avocado', '½ medium', 120, 2, 6, 11, ''], ['Whey protein, unflavored', '1 scoop (30 g)', 120, 24, 2, 2, 'shake powder'],
+  ['Collagen peptides', '2 scoops (20 g)', 70, 18, 0, 0, ''], ['Tofu, firm', '½ cup', 181, 22, 4, 11, 'soy'],
+  ['Edamame, shelled', '1 cup', 188, 18, 14, 8, 'soy'], ['Black beans, cooked', '1 cup', 227, 15, 41, 1, ''],
+  ['Lentils, cooked', '1 cup', 230, 18, 40, 1, ''], ['Chickpeas, cooked', '1 cup', 269, 15, 45, 4, 'garbanzo'],
+  ['Hummus', '2 tbsp', 70, 2, 4, 5, ''], ['Rolled oats', '½ cup dry', 150, 5, 27, 3, 'oatmeal porridge'],
+  ['White rice, cooked', '1 cup', 205, 4, 45, 0, ''], ['Brown rice, cooked', '1 cup', 216, 5, 45, 2, ''],
+  ['Quinoa, cooked', '1 cup', 222, 8, 39, 4, ''], ['Pasta, cooked', '1 cup', 220, 8, 43, 1, 'spaghetti noodles'],
+  ['Sourdough bread', '1 slice', 130, 5, 25, 1, 'toast'], ['Corn tortilla', '1 small', 52, 1, 11, 1, ''],
+  ['Sweet potato, baked', '1 medium', 103, 2, 24, 0, 'yam'], ['Potato, baked', '1 medium', 161, 4, 37, 0, ''],
+  ['Banana', '1 medium', 105, 1, 27, 0, 'fruit'], ['Apple', '1 medium', 95, 0, 25, 0, 'fruit'],
+  ['Orange', '1 medium', 62, 1, 15, 0, 'fruit'], ['Blueberries', '1 cup', 84, 1, 21, 0, 'berries fruit'],
+  ['Strawberries', '1 cup', 49, 1, 12, 0, 'berries fruit'], ['Raspberries', '1 cup', 64, 1, 15, 1, 'berries fruit'],
+  ['Grapes', '1 cup', 104, 1, 27, 0, 'fruit'], ['Mango', '1 cup', 99, 1, 25, 1, 'fruit'],
+  ['Watermelon', '1 cup', 46, 1, 12, 0, 'fruit melon'], ['Medjool dates', '2 dates', 133, 1, 36, 0, 'fruit'],
+  ['Broccoli, cooked', '1 cup', 55, 4, 11, 1, 'vegetable veg'], ['Spinach, raw', '2 cups', 14, 2, 2, 0, 'greens vegetable veg'],
+  ['Mixed salad greens', '2 cups', 10, 1, 2, 0, 'lettuce salad veg'], ['Carrots', '1 cup', 52, 1, 12, 0, 'vegetable veg'],
+  ['Bell pepper', '1 medium', 31, 1, 7, 0, 'vegetable veg'], ['Cucumber', '1 cup sliced', 16, 1, 4, 0, 'vegetable veg'],
+  ['Green beans, cooked', '1 cup', 44, 2, 10, 0, 'vegetable veg'], ['Zucchini, cooked', '1 cup', 27, 2, 5, 0, 'courgette vegetable veg'],
+  ['Almonds', '1 oz (23 nuts)', 164, 6, 6, 14, 'nuts'], ['Walnuts', '1 oz', 185, 4, 4, 18, 'nuts'],
+  ['Pistachios', '1 oz', 159, 6, 8, 13, 'nuts'], ['Natural peanut butter', '2 tbsp', 190, 8, 7, 16, 'nut butter'],
+  ['Almond butter', '2 tbsp', 196, 7, 6, 18, 'nut butter'], ['Chia seeds', '2 tbsp', 116, 4, 10, 7, ''],
+  ['Pumpkin seeds', '1 oz', 158, 9, 3, 14, 'pepitas'], ['Dark chocolate 85%', '1 oz', 170, 3, 13, 15, 'cacao'],
+  ['Coffee, black', '1 cup', 2, 0, 0, 0, 'espresso'], ['Coffee with whole milk', '1 cup + splash', 20, 1, 2, 1, 'latte'],
+  ['Tea, unsweetened', '1 cup', 2, 0, 0, 0, 'green matcha'], ['Coconut water', '1 cup', 45, 2, 9, 0, '']
+].map(([name, portion, kcal, p, c, f, k]) => ({ name, portion, kcal, p, c, f, k: (name + ' ' + k).toLowerCase() }));
+
+const LOG_MEALS = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
+const mealNow = () => { const h = new Date().getHours() + new Date().getMinutes() / 60; return h < 10.5 ? 'Breakfast' : h < 14.5 ? 'Lunch' : h < 17 ? 'Snack' : h < 21 ? 'Dinner' : 'Snack'; };
+let foodQ = '', logMeal = null, manualOpen = false;
+const logTo = () => (current === 'log' ? logDate : dayKey());
+// Foods you've logged before, most frequent first (last 90 days), with their per-portion values.
+function recentFoods() {
+  const since = addDays(dayKey(), -90), map = new Map();
+  S.meals.forEach((m) => {
+    if (m.date < since || m.meal === 'Day total') return;
+    const k = m.name.toLowerCase(), q = m.qty || 1, e = map.get(k) || { n: 0, last: '', m };
+    e.n += 1; if (m.date >= e.last) { e.last = m.date; e.m = m; }
+    e.base = m.base || { kcal: Math.round(m.kcal / q), p: round(m.p / q), c: round(m.c / q), f: round(m.f / q) };
+    map.set(k, e);
+  });
+  return [...map.values()].sort((a, b) => b.n - a.n || b.last.localeCompare(a.last));
+}
+// One search over your recent foods, the whole-food list and recipes.
+function foodMatches(q) {
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean), hit = (txt) => words.every((w) => txt.includes(w));
+  const out = [];
+  recentFoods().forEach((e) => { if (hit(e.m.name.toLowerCase())) out.push({ src: 'm', id: e.m.id, name: e.m.name, note: 'You’ve had this' + (e.n > 1 ? ` ${e.n}×` : ''), ...e.base }); });
+  FOODS.forEach((f, i) => { if (hit(f.k) && !out.some((o) => o.name.toLowerCase() === f.name.toLowerCase())) out.push({ src: 'f', id: i, name: f.name, note: f.portion, kcal: f.kcal, p: f.p, c: f.c, f: f.f }); });
+  RECIPES.forEach((r) => { if (hit((r.title + ' ' + r.meal).toLowerCase()) && !out.some((o) => o.name === r.title)) out.push({ src: 'r', id: r.id, name: r.title, note: 'Recipe · 1 serving', ...r.per }); });
+  return out.slice(0, 12);
+}
+const resBtn = (o) => `<button type="button" class="fres" data-act="qadd" data-src="${o.src}" data-id="${esc(String(o.id))}">
+    <span class="grow"><b>${esc(o.name)}</b><span class="muted">${esc(o.note)} · P ${Math.round(o.p)} · C ${Math.round(o.c)} · F ${Math.round(o.f)}</span></span>
+    <span class="num fres-k">${Math.round(o.kcal)}<small> kcal</small></span><span class="fres-plus" aria-hidden="true">+</span></button>`;
+function foodResults(date) {
+  const meal = logMeal || mealNow();
+  if (foodQ.trim()) {
+    const list = foodMatches(foodQ.trim());
+    return `${list.length ? `<div class="fres-list">${list.map(resBtn).join('')}</div>` : `<p class="muted" style="font-size:.88rem">No match in your foods, the whole-food list or recipes.</p>`}
+      <button type="button" class="btn btn-sm btn-ghost fres-own" data-act="manual-open">+ Add “${esc(foodQ.trim())}” with your own numbers</button>`;
+  }
+  const rec = recentFoods().slice(0, 8), y = addDays(date, -1), same = S.meals.filter((m) => m.date === y && m.meal === meal);
+  const yk = same.reduce((a, m) => a + m.kcal, 0);
+  return `${same.length ? `<button type="button" class="btn btn-sm repeat-btn" data-act="repeat-meal" data-meal="${meal}">↻ Same ${meal.toLowerCase()} as yesterday <span class="muted">(${same.length} item${same.length === 1 ? '' : 's'}, ${yk} kcal)</span></button>` : ''}
+    ${rec.length ? `<div class="eyebrow" style="margin:10px 0 6px">Your usual</div><div class="qchips">${rec.map((e) => `<button type="button" class="chip" data-act="qadd" data-src="m" data-id="${e.m.id}" title="${e.base.kcal} kcal">+ ${esc(e.m.name)}</button>`).join('')}</div>`
+      : `<p class="muted" style="font-size:.85rem;margin-top:6px">Type to search, e.g. “eggs”, “salmon” or a recipe name. Foods you log show up here for one-tap adding next time.</p>`}`;
+}
+function foodAdder(date) {
+  const meal = logMeal || mealNow();
+  return `<div class="fadd">
+    <div class="seg" role="group" aria-label="Meal">${LOG_MEALS.map((m) => `<button type="button" class="chip" data-act="lmeal" data-m="${m}" aria-pressed="${m === meal}">${m}</button>`).join('')}</div>
+    <input class="input fadd-q" id="food-q" type="search" placeholder="Search foods, recipes or your usual…" value="${esc(foodQ)}" autocomplete="off" enterkeyhint="search" aria-label="Search foods to add to ${meal.toLowerCase()}">
+    <div id="food-results" aria-live="polite">${foodResults(date)}</div>
+    ${manualOpen ? `<form id="food-form" class="stack manual" autocomplete="off">
+      <label class="field">Food<input class="input" id="f-name" required placeholder="e.g. Turkey sandwich" value="${esc(foodQ.trim())}"></label>
+      <div class="form-grid" style="grid-template-columns:repeat(4,minmax(0,1fr))">
+        <label class="field">Calories<input class="input num" id="f-kcal" type="number" min="0" inputmode="numeric" required></label>
+        <label class="field">Protein g<input class="input num" id="f-p" type="number" min="0" inputmode="numeric"></label>
+        <label class="field">Carbs g<input class="input num" id="f-c" type="number" min="0" inputmode="numeric"></label>
+        <label class="field">Fat g<input class="input num" id="f-f" type="number" min="0" inputmode="numeric"></label></div>
+      <div class="row"><button class="btn btn-primary" type="submit">Add to ${meal.toLowerCase()}</button><button class="btn btn-ghost" type="button" data-act="manual-open">Cancel</button>
+        <span class="muted" style="font-size:.8rem">Only calories are required. It's saved to “Your usual” for next time.</span></div></form>`
+      : foodQ.trim() ? '' : `<button type="button" class="btn btn-sm btn-ghost fres-own" data-act="manual-open">+ Enter a food yourself</button>`}
+  </div>`;
+}
+// The day's food grouped by meal, with a portion stepper on each item.
+function mealGroups(date, meals) {
+  if (!meals.length) return `<p class="muted" style="margin-top:12px">No food logged for this day yet.</p>`;
+  const order = [...LOG_MEALS, 'Day total'], groups = order.map((g) => [g, meals.filter((m) => m.meal === g)]).concat([['Other', meals.filter((m) => !order.includes(m.meal))]]).filter(([, l]) => l.length);
+  return groups.map(([g, l]) => `<div class="mgroup"><div class="mgroup-h"><b>${esc(g)}</b><span class="num muted">${l.reduce((a, m) => a + m.kcal, 0)} kcal</span></div>
+    <ul class="list">${l.map((m) => `<li><div class="grow"><b>${esc(m.name)}</b><div class="muted" style="font-size:.82rem">P ${m.p}g · C ${m.c}g · F ${m.f}g${m.portion ? ' · ' + esc(m.portion) : ''}</div></div>
+      ${m.base ? `<div class="stepper stepper-sm" role="group" aria-label="Portions of ${esc(m.name)}"><button type="button" data-act="mqty" data-id="${m.id}" data-d="-0.5" aria-label="Less">−</button><output>×${m.qty || 1}</output><button type="button" data-act="mqty" data-id="${m.id}" data-d="0.5" aria-label="More">+</button></div>` : ''}
+      <span class="num mk">${m.kcal}</span><button class="btn btn-ghost btn-sm" data-act="del-meal" data-id="${m.id}" aria-label="Delete ${esc(m.name)}">✕</button></li>`).join('')}</ul></div>`).join('');
+}
+function scaleMeal(m) { const q = m.qty || 1, b = m.base; m.kcal = Math.round(b.kcal * q); m.p = Math.round(b.p * q); m.c = Math.round(b.c * q); m.f = Math.round(b.f * q); }
+function logFood(entry, date) {
+  const before = foodHit(date), m = { id: uid(), date, meal: logMeal || mealNow(), qty: 1, ...entry };
+  m.base = { kcal: entry.kcal, p: entry.p, c: entry.c, f: entry.f }; scaleMeal(m);
+  S.meals.push(m); save();
+  if (!foodCheck(date, before)) toast(`Added ${m.name} to ${m.meal.toLowerCase()}`);
+}
+
 function viewLog() {
   const t = dayKey(); if (!logDate) logDate = t;
   const meals = dayMeals(logDate), tot = totals(meals);
@@ -3057,22 +3223,9 @@ function viewLog() {
   <div class="grid">
     <section class="panel span-7" aria-labelledby="h-food">
       <div class="panel-head"><h2 id="h-food">Food · ${logDate === t ? 'today' : fmtDay(logDate)}</h2><span class="num">${Math.round(tot.kcal)} <span class="muted">/ ${S.targets.kcal} kcal</span></span></div>
-      ${meals.length ? `<ul class="list" style="margin-bottom:16px">${meals.map((m) => `<li><div class="grow"><b>${esc(m.name)}</b><div class="muted" style="font-size:.85rem">${esc(m.meal)} · P ${m.p}g · C ${m.c}g · F ${m.f}g</div></div><span class="num">${m.kcal}</span><button class="btn btn-ghost btn-sm" data-act="del-meal" data-id="${m.id}" aria-label="Delete ${esc(m.name)}">✕</button></li>`).join('')}</ul>` : `<p class="muted" style="margin-bottom:16px">No food logged for this day.</p>`}
-      <form id="food-form" class="stack" autocomplete="off">
-        <div class="form-grid" style="grid-template-columns:minmax(0,2fr) minmax(0,1fr)">
-          <label class="field">Food<input class="input" id="f-name" required placeholder="e.g. Turkey sandwich"></label>
-          <label class="field">Meal<select class="input" id="f-meal"><option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option></select></label>
-        </div>
-        <div class="form-grid">
-          <label class="field">Calories<input class="input num" id="f-kcal" type="number" min="0" inputmode="numeric" required></label>
-          <label class="field">Protein g<input class="input num" id="f-p" type="number" min="0" inputmode="numeric"></label>
-          <label class="field">Carbs g<input class="input num" id="f-c" type="number" min="0" inputmode="numeric"></label>
-          <label class="field">Fat g<input class="input num" id="f-f" type="number" min="0" inputmode="numeric"></label>
-        </div>
-        <div class="row"><button class="btn btn-primary" type="submit">Add food</button>
-          <span class="muted" style="font-size:.85rem">or</span>
-          <select class="input" id="f-recipe" style="width:auto;max-width:100%" aria-label="Add a recipe serving"><option value="">Add a recipe serving…</option>${RECIPES.map((r) => `<option value="${r.id}">${esc(r.title)} (${r.per.kcal})</option>`).join('')}</select></div>
-      </form>
+      <div class="mini-macros num"><span style="color:var(--protein)">P ${Math.round(tot.p)}/${S.targets.p}g</span><span style="color:var(--carbs)">C ${Math.round(tot.c)}/${S.targets.c}g</span><span style="color:var(--fat)">F ${Math.round(tot.f)}/${S.targets.f}g</span></div>
+      ${foodAdder(logDate)}
+      ${mealGroups(logDate, meals)}
     </section>
     <div class="span-5 stack">
       <section class="panel" aria-labelledby="h-wlog">
@@ -3343,21 +3496,35 @@ const PRICE_RULES = [
 const ruleFor = (name) => PRICE_RULES.find((r) => r[0].test(name.toLowerCase()));
 // Chain price level (1 = typical US supermarket) and store type, matched on the store's brand or name.
 const CHAINS = [
-  [/aldi/, 'Aldi', 0.78, 'discount'], [/lidl/, 'Lidl', 0.8, 'discount'], [/walmart/, 'Walmart', 0.88, 'mass'], [/costco|sam'?s club|bj'?s/, 'Warehouse club', 0.85, 'club'],
-  [/trader joe/, "Trader Joe's", 0.92, 'natural'], [/target/, 'Target', 0.98, 'mass'], [/h-?e-?b\b/, 'H-E-B', 0.93, 'conventional'], [/meijer/, 'Meijer', 0.95, 'conventional'],
-  [/food lion/, 'Food Lion', 0.97, 'conventional'], [/kroger|ralphs|fred meyer|king soopers|fry'?s|smith'?s|harris teeter|food 4 less|dillons|qfc|mariano/, 'Kroger family', 1.0, 'conventional'],
-  [/hy-?vee/, 'Hy-Vee', 1.02, 'conventional'], [/wegmans/, 'Wegmans', 1.05, 'conventional'], [/giant|stop & shop|stop and shop|food city|winn-?dixie/, 'Regional chain', 1.06, 'conventional'],
-  [/publix/, 'Publix', 1.12, 'conventional'], [/safeway|albertsons|vons|jewel|acme|shaw'?s|pavilions|randalls|tom thumb/, 'Albertsons family', 1.12, 'conventional'],
-  [/sprouts/, 'Sprouts', 1.1, 'natural'], [/whole foods/, 'Whole Foods', 1.25, 'natural'], [/natural grocers|co-?op|earth fare/, 'Natural grocer', 1.2, 'natural']
+  [/aldi/, 'Aldi', 0.78, 'discount', 'aldi.us'], [/lidl/, 'Lidl', 0.8, 'discount', 'lidl.com'], [/market basket/, 'Market Basket', 0.86, 'conventional', 'shopmarketbasket.com'],
+  [/walmart/, 'Walmart', 0.88, 'mass', 'walmart.com'], [/costco/, 'Costco', 0.85, 'club', 'costco.com'], [/sam'?s club/, "Sam's Club", 0.85, 'club', 'samsclub.com'], [/bj'?s/, "BJ's", 0.86, 'club', 'bjs.com'],
+  [/trader joe/, "Trader Joe's", 0.92, 'natural', 'traderjoes.com'], [/target/, 'Target', 0.98, 'mass', 'target.com'], [/h-?e-?b\b/, 'H-E-B', 0.93, 'conventional', 'heb.com'], [/meijer/, 'Meijer', 0.95, 'conventional', 'meijer.com'],
+  [/food lion/, 'Food Lion', 0.97, 'conventional', 'foodlion.com'], [/hannaford/, 'Hannaford', 1.02, 'conventional', 'hannaford.com'], [/price chopper|market 32/, 'Price Chopper', 1.03, 'conventional', 'pricechopper.com'], [/big y/, 'Big Y', 1.04, 'conventional', 'bigy.com'],
+  [/kroger|ralphs|fred meyer|king soopers|fry'?s|smith'?s|harris teeter|food 4 less|dillons|qfc|mariano/, 'Kroger family', 1.0, 'conventional', 'kroger.com'],
+  [/hy-?vee/, 'Hy-Vee', 1.02, 'conventional', 'hy-vee.com'], [/wegmans/, 'Wegmans', 1.05, 'conventional', 'wegmans.com'], [/giant|stop & shop|stop and shop|food city|winn-?dixie/, 'Regional chain', 1.06, 'conventional', ''],
+  [/publix/, 'Publix', 1.12, 'conventional', 'publix.com'], [/shaw'?s/, "Shaw's", 1.12, 'conventional', 'shaws.com'], [/safeway|albertsons|vons|jewel|acme|pavilions|randalls|tom thumb/, 'Albertsons family', 1.12, 'conventional', 'albertsons.com'],
+  [/sprouts/, 'Sprouts', 1.1, 'natural', 'sprouts.com'], [/whole foods/, 'Whole Foods', 1.25, 'natural', 'wholefoodsmarket.com'], [/natural grocers|co-?op|earth fare/, 'Natural grocer', 1.2, 'natural', '']
 ];
-const chainOf = (store) => { const n = `${store.brand || ''} ${store.name || ''}`.toLowerCase(); const c = CHAINS.find((x) => x[0].test(n)); return c ? { label: c[1], idx: c[2], tier: c[3] } : { label: 'Independent', idx: 1.05, tier: 'conventional' }; };
+const chainOf = (store) => { const n = `${store.brand || ''} ${store.name || ''}`.toLowerCase(); const c = CHAINS.find((x) => x[0].test(n)); return c ? { label: c[1], idx: c[2], tier: c[3], site: c[4] } : { label: 'Independent', idx: 1.05, tier: 'conventional', site: '' }; };
+// The store's own website (from OpenStreetMap, else its chain's), and a directions link that opens the phone's maps app.
+const storeSite = (s) => { const u = s.web || chainOf(s).site; return u ? (/^https?:/.test(u) ? u : 'https://' + u) : ''; };
+const isApple = () => /iPhone|iPad|Macintosh/.test(navigator.userAgent) && 'ontouchend' in document;
+function mapsUrl(s) {
+  const q = encodeURIComponent([s.name, s.addr].filter(Boolean).join(', ')), ll = s.lat != null ? `${s.lat},${s.lon}` : '';
+  return isApple() ? `https://maps.apple.com/?q=${q}${ll ? '&daddr=' + ll : ''}` : `https://www.google.com/maps/dir/?api=1&destination=${ll || q}`;
+}
 // Likely availability of specialty items by store type: 'yes', 'maybe' (worth checking) or 'no'.
 const AVAIL = { 1: { discount: 'maybe', club: 'maybe', mass: 'yes', conventional: 'yes', natural: 'yes' }, 2: { discount: 'no', club: 'no', mass: 'maybe', conventional: 'maybe', natural: 'yes' } };
-const ORDER_SITES = [['Instacart', (q) => `https://www.instacart.com/store/s?k=${q}`], ['Walmart', (q) => `https://www.walmart.com/search?q=${q}`],
-  ['Amazon Fresh', (q) => `https://www.amazon.com/s?k=${q}&i=amazonfresh`], ['Kroger', (q) => `https://www.kroger.com/search?query=${q}`], ['Target', (q) => `https://www.target.com/s?searchTerm=${q}`]];
+const ORDER_SITES = [
+  ['Instacart', (q) => `https://www.instacart.com/store/s?k=${q}`, 'https://www.instacart.com/', 'Delivery from most local supermarkets'],
+  ['Walmart', (q) => `https://www.walmart.com/search?q=${q}`, 'https://www.walmart.com/cp/food/976759', 'Pickup or delivery from Walmart'],
+  ['Amazon Fresh', (q) => `https://www.amazon.com/s?k=${q}&i=amazonfresh`, 'https://www.amazon.com/fresh', 'Amazon Fresh and Whole Foods delivery'],
+  ['Kroger', (q) => `https://www.kroger.com/search?query=${q}`, 'https://www.kroger.com/', 'Kroger-family stores'],
+  ['Target', (q) => `https://www.target.com/s?searchTerm=${q}`, 'https://www.target.com/c/grocery/-/N-5xt1a', 'Same-day delivery with Shipt']];
 const money = (n) => '$' + n.toFixed(2);
+const distTxt = (km) => (S.units === 'us' ? `${km < 1.6 ? '<1' : round(km / 1.609, 1)} mi` : `${km < 1 ? '<1' : round(km, 1)} km`);
 const shortName = (n) => n.replace(/\s*\([^)]*\)/g, '');
-let storesBusy = '', storeOpen = null, orderSite = 0;
+let storesBusy = '', storeOpen = null, orderSite = null, orderOpen = false, orderItems = false;
 
 // Every list item (recipe ingredients plus your own items) with its package count and base price.
 function priceItems() {
@@ -3395,15 +3562,17 @@ function storesPanel() {
   const home = quotes.find((q) => q.store.id === st.home);
   const full = quotes.filter((q) => q.have === q.count), best = full.length > 1 ? full.reduce((a, b) => (b.total < a.total ? b : a)) : null;
   const loc = `<form id="store-loc" class="fbar" autocomplete="off" style="margin:0">
-      <input class="input fsearch" id="store-q" placeholder="Zip code or town" value="${esc(st.loc ? st.loc.label : '')}" aria-label="Zip code or town">
+      <input class="input fsearch" id="store-q" placeholder="Zip code or town" value="${esc(st.loc ? st.loc.q || st.loc.label : '')}" aria-label="Zip code or town" inputmode="search">
       <button class="btn" type="submit">Find stores</button><button class="btn btn-ghost" type="button" data-act="store-geo">Use my location</button></form>
-    ${storesBusy ? `<p class="muted" style="margin-top:8px">${esc(storesBusy)}</p>` : ''}`;
+    ${storesBusy ? `<p class="muted store-busy" style="margin-top:8px" role="status">${esc(storesBusy)}</p>` : st.loc && st.list.length ? `<p class="muted" style="margin-top:8px;font-size:.85rem">Showing stores near <b>${esc(st.loc.label)}</b>.</p>` : ''}`;
   const storeCard = (q) => {
     const s = q.store, isHome = s.id === st.home, fav = st.favs.includes(s.id), open = storeOpen === s.id;
     return `<div class="store ${isHome ? 'home' : ''}"><div class="store-top">
-        <div class="grow"><b>${esc(s.name)}</b>${isHome ? ' <span class="tag tag-accent">Home store</span>' : ''}${q === best ? ' <span class="tag tag-berry">Lowest full-list price</span>' : ''}<div class="muted" style="font-size:.82rem">${esc(q.chain.label)}${s.dist != null ? ` · ${s.dist < 1 ? '<1' : round(s.dist, 1)} km` : ''}${s.addr ? ' · ' + esc(s.addr) : ''}</div></div>
+        <div class="grow"><b>${esc(s.name)}</b>${isHome ? ' <span class="tag tag-accent">Home store</span>' : ''}${q === best ? ' <span class="tag tag-berry">Lowest full-list price</span>' : ''}<div class="muted" style="font-size:.82rem">${esc(q.chain.label)}${s.dist != null ? ` · ${distTxt(s.dist)}` : ''}${s.addr ? ' · ' + esc(s.addr) : ''}</div></div>
         <div class="store-total"><b class="num">${money(q.total)}</b><span class="muted">${q.have} of ${q.count} items</span></div></div>
       <div class="row store-acts"><button class="btn btn-sm" data-act="store-open" data-id="${s.id}" aria-expanded="${open}">${open ? 'Hide prices' : 'See prices'}</button>
+        <a class="btn btn-sm btn-ghost" href="${mapsUrl(s)}" target="_blank" rel="noopener">Directions ↗</a>
+        ${storeSite(s) ? `<a class="btn btn-sm btn-ghost" href="${esc(storeSite(s))}" target="_blank" rel="noopener">Website ↗</a>` : ''}
         ${isHome ? '' : `<button class="btn btn-sm btn-ghost" data-act="store-home" data-id="${s.id}">Make home store</button>`}
         <button class="btn btn-sm btn-ghost" data-act="store-fav" data-id="${s.id}" aria-pressed="${fav}">${fav ? 'Favorite ✓' : 'Favorite'}</button></div>
       ${open ? `<div class="table-wrap"><table class="ex-table price-table"><thead><tr><th>Item</th><th>Here?</th><th>Price</th></tr></thead><tbody>
@@ -3420,11 +3589,18 @@ function storesPanel() {
         ${l.sub ? `<button class="btn btn-sm" data-act="sub-use" data-k="${esc(l.key)}" data-v="${esc(l.sub)}">Use ${esc(l.sub)}</button>` : ''}
         <button class="btn btn-sm btn-ghost" data-act="sub-ask" data-k="${esc(l.key)}">${l.sub ? 'Other…' : 'Replace…'}</button></li>`).join('')}</ul>` : '<p class="muted" style="font-size:.85rem">Everything on your list should be available there.</p>'}
       ${Object.keys(subs).length ? `<p class="muted" style="font-size:.82rem;margin-top:8px">${Object.keys(subs).length} item${Object.keys(subs).length === 1 ? '' : 's'} replaced on your list · <button class="btn btn-ghost btn-sm" data-act="sub-reset" style="padding:2px 6px;color:var(--accent)">Undo replacements</button></p>` : ''}</div>` : '';
-  const site = ORDER_SITES[orderSite], unchecked = items.filter((it) => !S.shopping.checked[it.key] && !it.pantry);
-  const order = `<div class="order"><div class="row" style="justify-content:space-between"><h3>Order online</h3>
-      <label class="fsel"><span class="eyebrow">Service</span><select class="input" id="order-site">${ORDER_SITES.map(([n], i) => `<option value="${i}" ${i === orderSite ? 'selected' : ''}>${n}</option>`).join('')}</select></label></div>
-    <p class="muted" style="font-size:.82rem;margin:4px 0 8px">Opens each item in ${site[0]}'s search for your area (sign in there to see your local store). Use <b>Copy list</b> above to paste the whole list into any other app.</p>
-    <div class="order-links">${unchecked.map((it) => `<a class="chip" href="${site[1](encodeURIComponent(shortName(it.name)))}" target="_blank" rel="noopener">${esc(shortName(it.name))} ↗</a>`).join('') || '<span class="muted">Everything is ticked off.</span>'}</div></div>`;
+  const unchecked = items.filter((it) => !S.shopping.checked[it.key] && !it.pantry);
+  const homeChain = home ? home.chain.label : '', guess = Math.max(0, ORDER_SITES.findIndex((x) => homeChain.startsWith(x[0]) || (x[0] === 'Kroger' && homeChain === 'Kroger family')));
+  const si = orderSite == null ? guess : orderSite, site = ORDER_SITES[si];
+  const order = `<div class="order"><button type="button" class="order-head" data-act="order-open" aria-expanded="${orderOpen}">
+      <span><b>Order online</b><span class="muted"> · ${ORDER_SITES.map((x) => x[0]).join(', ')}</span></span><span class="fchev" aria-hidden="true"></span></button>
+    ${orderOpen ? `<div class="order-body">
+      <div class="seg" role="group" aria-label="Delivery service">${ORDER_SITES.map(([n], i) => `<button class="chip" data-act="order-site" data-i="${i}" aria-pressed="${i === si}">${n}</button>`).join('')}</div>
+      <p class="muted" style="font-size:.82rem;margin:8px 0 10px">${site[3]}. These services don't accept a whole list from other apps, so we copy your ${unchecked.length} remaining item${unchecked.length === 1 ? '' : 's'} for you to paste, or you can search them one at a time.</p>
+      <div class="row"><button class="btn btn-primary" data-act="order-go" data-i="${si}" ${unchecked.length ? '' : 'disabled'}>Copy list &amp; open ${site[0]}</button>
+        <button class="btn btn-ghost" data-act="order-items" aria-expanded="${orderItems}" ${unchecked.length ? '' : 'disabled'}>${orderItems ? 'Hide items' : 'Search item by item'}</button></div>
+      ${orderItems ? `<ul class="list order-list">${unchecked.map((it) => `<li><span class="grow">${esc(shortName(it.name))}</span><a class="btn btn-sm btn-ghost" href="${site[1](encodeURIComponent(shortName(it.name)))}" target="_blank" rel="noopener" aria-label="Search ${esc(shortName(it.name))} on ${site[0]}">Search ↗</a></li>`).join('')}</ul>` : ''}
+      ${unchecked.length ? '' : '<p class="muted">Everything is ticked off.</p>'}</div>` : ''}</div>`;
   return `<section class="panel span-12 stores" aria-labelledby="h-stores">
     <div class="panel-head"><h2 id="h-stores">Stores &amp; prices</h2>
       <label class="fsel"><input type="checkbox" id="store-pantry" ${st.pantry ? 'checked' : ''}> <span style="font-size:.85rem">Include pantry staples</span></label></div>
@@ -3438,33 +3614,57 @@ function storesPanel() {
 // OpenStreetMap: geocode a zip or town (Nominatim), then list supermarkets within about 8 km (Overpass).
 const kmBetween = (a, b) => { const R = 6371, r = Math.PI / 180, dLat = (b.lat - a.lat) * r, dLon = (b.lon - a.lon) * r;
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLon / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
+const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
+async function overpass(q) {
+  const ctl = OVERPASS.map(() => new AbortController()), stop = setTimeout(() => ctl.forEach((c) => c.abort()), 20000);
+  try {
+    return await Promise.any(OVERPASS.map((u, i) => fetch(u, { method: 'POST', body: 'data=' + encodeURIComponent(q), signal: ctl[i].signal, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+      .then((r) => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then((d) => { ctl.forEach((c, j) => j !== i && c.abort()); return d; })));
+  } finally { clearTimeout(stop); }
+}
 async function findStores(loc) {
   storesBusy = 'Looking for grocery stores near ' + loc.label + '…'; render(true);
   try {
-    const q = `[out:json][timeout:20];nwr["shop"~"^(supermarket|wholesale)$"](around:8000,${loc.lat},${loc.lon});out center 80;`;
-    const res = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json(), seen = new Set();
+    // 16 km reaches the nearest supermarkets from most rural towns; results are sorted by distance.
+    const q = `[out:json][timeout:15];nwr["shop"~"^(supermarket|wholesale)$"](around:16000,${loc.lat},${loc.lon});out center tags 60;`;
+    const data = await overpass(q), seen = new Set();
     S.stores.list = (data.elements || []).map((e) => {
       const t = e.tags || {}, lat = e.lat ?? (e.center && e.center.lat), lon = e.lon ?? (e.center && e.center.lon);
       return { id: e.type[0] + e.id, name: t.name || t.brand || 'Grocery store', brand: t.brand || '', addr: [t['addr:housenumber'], t['addr:street'], t['addr:city']].filter(Boolean).join(' '),
-        dist: lat != null ? round(kmBetween(loc, { lat, lon }), 1) : null };
-    }).filter((x) => x.name && !seen.has(x.name + x.addr) && seen.add(x.name + x.addr)).sort((a, b) => (a.dist ?? 99) - (b.dist ?? 99)).slice(0, 25);
+        web: t.website || t['contact:website'] || t['brand:website'] || '', lat, lon, dist: lat != null ? round(kmBetween(loc, { lat, lon }), 1) : null };
+    }).filter((x) => x.name && !seen.has(x.name + x.addr) && seen.add(x.name + x.addr)).sort((a, b) => (a.dist ?? 99) - (b.dist ?? 99)).slice(0, 20);
     // Keep the home store and favorites even if they're outside this search.
     const keep = S.stores.keep.filter((x) => !S.stores.list.some((y) => y.id === x.id));
     S.stores.list = [...S.stores.list, ...keep];
     S.stores.loc = loc;
-    storesBusy = S.stores.list.length ? '' : 'No supermarkets found within 8 km. Try a nearby town or zip code.';
+    storesBusy = S.stores.list.length ? '' : `No supermarkets found within 10 miles of ${loc.label}. Try a nearby town or zip code.`;
   } catch (e) { storesBusy = "Couldn't reach the store directory right now. Check your connection and try again."; }
   save(); render(true);
 }
+const US_ZIP = /^\d{5}(-\d{4})?$/;
+// "Deerfield, NH 03037" from a Nominatim result with address details.
+function placeLabel(hit, text) {
+  const a = hit.address || {}, town = a.city || a.town || a.village || a.hamlet || a.municipality || a.suburb || a.county || '';
+  const st = (a['ISO3166-2-lvl4'] || '').replace(/^US-/, '') || a.state || '';
+  const zip = US_ZIP.test(text) ? text.slice(0, 5) : '';
+  return [town, [st, zip].filter(Boolean).join(' ')].filter(Boolean).join(', ') || hit.display_name || text;
+}
 async function geocode(text) {
+  const key = text.toLowerCase(), cache = S.stores.geo || (S.stores.geo = {});
+  if (cache[key]) return findStores(cache[key]);
   storesBusy = 'Finding ' + text + '…'; render(true);
+  const base = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1';
+  const ask = async (qs) => { const res = await fetch(base + qs, { headers: { Accept: 'application/json' } }); if (!res.ok) throw new Error('HTTP ' + res.status); return (await res.json())[0]; };
   try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(text)}`, { headers: { Accept: 'application/json' } });
-    const [hit] = await res.json();
-    if (!hit) { storesBusy = `Couldn't find "${text}". Try a zip code or "Town, State".`; render(true); return; }
-    findStores({ lat: +hit.lat, lon: +hit.lon, label: text });
+    let hit;
+    if (US_ZIP.test(text)) hit = await ask(`&countrycodes=us&postalcode=${text.slice(0, 5)}`);
+    else hit = (await ask(`&countrycodes=us&q=${encodeURIComponent(text)}`)) || (await ask(`&q=${encodeURIComponent(text)}`));
+    if (!hit) { storesBusy = `Couldn't find "${text}". Try a 5-digit zip code or "Town, State".`; render(true); return; }
+    const loc = { lat: +hit.lat, lon: +hit.lon, label: placeLabel(hit, text), q: text };
+    cache[key] = loc;
+    const keys = Object.keys(cache); if (keys.length > 20) delete cache[keys[0]];
+    findStores(loc);
   } catch (e) { storesBusy = "Couldn't look up that location right now. Check your connection and try again."; render(true); }
 }
 // Home and favorite stores are remembered in full so they survive a new search somewhere else.
@@ -3551,8 +3751,12 @@ function viewTargets() {
         </div>
         <label class="field">Activity<select class="input" id="p-act">${acts.map((a) => `<option value="${a[0]}" ${p.activity === a[0] ? 'selected' : ''}>${a[1]}</option>`).join('')}</select></label>
         <div class="row" role="group" aria-label="Goal"><span class="eyebrow" style="margin-right:6px">Goal</span>
-          ${[['lose', 'Lose fat (−500 kcal)'], ['maintain', 'Maintain'], ['gain', 'Build muscle (+300 kcal)']].map((g) => `<button type="button" class="chip" data-act="goal" data-g="${g[0]}" aria-pressed="${p.goal === g[0]}">${g[1]}</button>`).join('')}</div>
-        <label class="field">Daily water goal (${wUnitWater()})<input class="input num" id="p-water" type="number" min="0" value="${showWater(T.waterMl)}" style="max-width:180px"></label>
+          ${[['lose', 'Lose fat'], ['maintain', 'Maintain'], ['gain', 'Build muscle']].map((g) => `<button type="button" class="chip" data-act="goal" data-g="${g[0]}" aria-pressed="${p.goal === g[0]}">${g[1]}</button>`).join('')}</div>
+        <div class="field">
+          <label for="p-water">Daily water goal (${wUnitWater()})</label>
+          <div class="row"><input class="input num" id="p-water" type="number" min="0" value="${showWater(T.waterMl)}" style="max-width:180px">
+            ${Math.abs(T.waterMl - calc.waterSuggest) > 50 ? `<button type="button" class="btn btn-sm" data-act="water-suggest" data-v="${showWater(calc.waterSuggest)}">Use suggested ${showWater(calc.waterSuggest)} ${wUnitWater()}</button>` : '<span class="muted" style="font-size:.82rem">Matches the suggestion for you</span>'}</div>
+          <span class="muted" style="font-size:.8rem">Suggested from your weight and activity. Tea and coffee count too; drink more in heat or long, sweaty sessions.</span></div>
         <fieldset class="wk-goal"><legend class="eyebrow" style="margin-bottom:8px">Weekly training goal</legend>
           <div class="form-grid" style="max-width:420px;align-items:end"><label class="field">Workouts per week<input class="input num" id="p-wk" type="number" min="1" max="14" value="${T.workoutsWeek}"></label>
             <label class="field">Active minutes per week<input class="input num" id="p-min" type="number" min="10" max="2000" step="5" value="${T.minutesWeek}"></label></div>
@@ -3571,7 +3775,15 @@ function viewTargets() {
       <div class="facts" style="grid-template-columns:repeat(3,1fr)"><div><b style="color:var(--protein)">${T.p}g</b><span>protein</span></div><div><b style="color:var(--carbs)">${T.c}g</b><span>carbs</span></div><div><b style="color:var(--fat)">${T.f}g</b><span>fat</span></div></div>
       <h2 style="margin-top:6px">Your weekly goal</h2>
       <div class="facts" style="grid-template-columns:repeat(2,1fr)"><div><b>${T.workoutsWeek}</b><span>workouts / week</span></div><div><b>${T.minutesWeek}</b><span>active min / week</span></div></div>
-      <p class="muted" style="font-size:.88rem">Resting burn (BMR) <span class="num">${calc.bmr}</span> kcal · with activity (TDEE) <span class="num">${calc.tdee}</span> kcal. Protein is set at about ${p.goal === 'lose' ? '0.9' : '0.8'} g per lb of body weight to protect muscle; fat at 28% of calories; carbs fill the rest.</p>
+      <p class="muted" style="font-size:.88rem">Resting burn (BMR) <span class="num">${calc.bmr}</span> kcal · with activity (TDEE) <span class="num">${calc.tdee}</span> kcal${p.goal === 'maintain' ? '' : ` · ${p.goal === 'lose' ? 'deficit' : 'surplus'} <span class="num">${Math.abs(Math.round(calc.kcal - calc.tdee))}</span> kcal`}.</p>
+      <details class="how-set"><summary>How these are set</summary>
+        <ul>
+          <li><b>Calories</b>: the Mifflin-St Jeor equation (the one dietitians use) times your activity. Fat loss uses a deficit of at most 500 kcal or 20%, slow enough to keep muscle; building muscle uses a small surplus of up to 300 kcal.</li>
+          <li><b>Protein</b>: ${({ lose: 2.0, gain: 1.8 }[p.goal] || 1.6)} g per kg (${round(({ lose: 2.0, gain: 1.8 }[p.goal] || 1.6) / KG_LB, 2)} g per lb) of ${refKg(p) < p.weightKg - 0.5 ? 'a goal-range body weight' : 'body weight'}. Sports-nutrition research puts the useful range for active people at 1.4–2.2 g/kg, highest while cutting. Paul Saladino favors the top of that range (about 1 g per lb of goal weight, mostly from animal foods); David Sinclair personally eats less protein, more of it from plants. We use the middle of the research range, which is where most experts agree.</li>
+          <li><b>Fat and carbs</b>: fat at 30% of calories (guidelines say 20–35%), carbs fill the rest. Both experts agree on the bigger point: get them from whole foods, not refined sugar or seed oils.</li>
+          <li><b>Water</b>: about 33 ml per kg of body weight, never below the roughly 2.2 L (women) or 3.0 L (men) most adults need from drinks, plus extra for training. Saladino's advice to drink to thirst and add a pinch of salt or electrolytes on sweaty days fits this; Sinclair spreads water, tea and coffee through the day.</li>
+        </ul>
+        <p class="muted" style="font-size:.8rem">Treat them as starting points and adjust after two weeks of tracking.</p></details>
       <hr style="border:0;border-top:1px solid var(--line);width:100%;margin:4px 0">
       <div class="eyebrow">Your data</div>
       <p class="muted" style="font-size:.88rem">Everything is stored in this browser only. Download a backup to move your log to another device or browser. Clearing removes all meals, weigh-ins, measurements, photos and workouts.</p>
@@ -3612,7 +3824,8 @@ function workoutEx(w) {
   if (!d) return [];
   return d.ex.map((e, i) => { const v = parseFloat((w.loads || {})[i]); return { n: e[0], load: v > 0 ? round(toKg(v), 2) : null, timed: / s$/.test(e[2]), reps: [] }; }).filter((x) => x.load);
 }
-const AN_RANGES = [['4w', '4 weeks', 28], ['12w', '12 weeks', 84], ['all', 'All time', 0]];
+const AN_RANGES = [['1w', '1 week', 7], ['4w', '4 weeks', 28], ['12w', '12 weeks', 84], ['6m', '6 months', 182], ['1y', '1 year', 365], ['all', 'All time', 0], ['custom', 'Custom', 0]];
+let anShift = 0; // how many windows back from today
 const e1rm = (kg, reps) => kg * (1 + reps / 30); // Epley estimate of a one-rep max
 const isCardio = (w) => { const p = planById(w.planId); return !!p && p.muscles.includes('Cardio'); };
 let anEx = null;
@@ -3691,13 +3904,28 @@ function weekBars(wk, key, target, unit) {
   return `<svg class="chart" viewBox="0 0 ${W} ${h}" role="img" aria-label="${unit} per week for the last ${wk.length} weeks, goal ${target}">${s}</svg>`;
 }
 
+// The selected window: a preset length ending today (or stepped back with ‹ ›), all time, or custom dates.
+function anWindow() {
+  const today = dayKey(), rk = AN_RANGES.find((r) => r[0] === S.anRange) || AN_RANGES[2];
+  const span = (a, b) => Math.max(1, Math.round((parseKey(b) - parseKey(a)) / 864e5) + 1);
+  if (rk[0] === 'custom') {
+    let from = S.anFrom || addDays(today, -27), to = S.anTo || today;
+    if (from > to) [from, to] = [to, from];
+    return { rk, start: from, end: to, len: span(from, to), label: 'period', cmp: true };
+  }
+  if (!rk[2]) {
+    const first = [S.workouts, S.weights, S.measures].flat().map((x) => x.date).filter(Boolean).sort()[0] || today;
+    return { rk, start: first, end: today, len: span(first, today), label: 'All time', cmp: false };
+  }
+  const end = addDays(today, -anShift * rk[2]);
+  return { rk, start: addDays(end, -(rk[2] - 1)), end, len: rk[2], label: rk[1], cmp: true };
+}
+const fmtRange = (a, b) => { const y = parseKey(a).getFullYear() !== parseKey(b).getFullYear(), o = { month: 'short', day: 'numeric', ...(y ? { year: 'numeric' } : {}) }; return `${fmtDay(a, o)} – ${fmtDay(b, o)}`; };
 function viewAnalytics() {
-  const t = dayKey(), rk = AN_RANGES.find((r) => r[0] === S.anRange) || AN_RANGES[1];
+  const W = anWindow(), rk = W.rk, t = W.end, start = W.start, len = W.len;
   const ws = [...S.workouts].sort((a, b) => a.date.localeCompare(b.date));
-  const span = (k) => Math.max(1, Math.round((parseKey(t) - parseKey(k)) / 864e5) + 1);
-  const len = rk[2] || span(ws.length ? ws[0].date : t);
-  const start = addDays(t, -(len - 1)), pStart = addDays(start, -len), pEnd = addDays(start, -1);
-  const inR = ws.filter((w) => w.date >= start), prev = rk[2] ? ws.filter((w) => w.date >= pStart && w.date <= pEnd) : null;
+  const pStart = addDays(start, -len), pEnd = addDays(start, -1);
+  const inR = ws.filter((w) => w.date >= start && w.date <= t), prev = W.cmp ? ws.filter((w) => w.date >= pStart && w.date <= pEnd) : null;
   const hist = exHistory();
   const sums = (list) => {
     let min = 0, kcal = 0, vol = 0;
@@ -3708,7 +3936,7 @@ function viewAnalytics() {
   const prs = countPRs(hist, start, t), oldPrs = prev ? countPRs(hist, pStart, pEnd) : null;
   const tile = (label, v, shown, unit, pv) => {
     let d = '';
-    if (pv) { const pc = Math.round(((v - pv) / pv) * 100); d = `<span class="${pc >= 0 ? 'an-up' : 'an-down'}">${pc >= 0 ? '▲' : '▼'} ${Math.abs(pc)}%</span> <span class="muted">vs prior ${rk[1]}</span>`; }
+    if (pv) { const pc = Math.round(((v - pv) / pv) * 100); d = `<span class="${pc >= 0 ? 'an-up' : 'an-down'}">${pc >= 0 ? '▲' : '▼'} ${Math.abs(pc)}%</span> <span class="muted">vs prior ${W.label}</span>`; }
     return `<div class="meas-card"><span class="eyebrow">${label}</span><b>${shown}<small class="muted" style="font-size:.8rem"> ${unit}</small></b><span class="num" style="font-size:.78rem">${d || '&nbsp;'}</span></div>`;
   };
 
@@ -3726,7 +3954,7 @@ function viewAnalytics() {
   if (!exNames.includes(anEx)) anEx = exNames[0] || null;
   let strength = `<p class="muted">Log a workout with weights or reps (the boxes under each set in a live session) to see strength trends here.</p>`;
   if (anEx) {
-    const ent = hist.get(anEx).filter((e) => e.date >= start);
+    const ent = hist.get(anEx).filter((e) => e.date >= start && e.date <= t);
     const loaded = hist.get(anEx).some((e) => e.load);
     const series = loaded
       ? [{ name: `Weight used (${wUnit()})`, color: 'var(--accent)', pts: ent.filter((e) => e.load).map((e) => ({ d: e.date, v: showW(e.load) })) },
@@ -3746,7 +3974,7 @@ function viewAnalytics() {
     }
     strength = `<label class="field" style="max-width:360px">Exercise<select class="input" id="an-ex">${exNames.map((n) => `<option ${n === anEx ? 'selected' : ''}>${esc(n)}</option>`).join('')}</select></label>
       ${shown.length ? `<div style="margin-top:12px">${legend(shown)}<div class="chart-wrap">${lineChart(shown, { label: `${anEx} progress`, dec: loaded ? 0 : 0 })}</div></div>${note ? `<p class="an-note">${note}</p>` : ''}`
-        : `<p class="muted" style="margin-top:12px">No sessions with this exercise in the last ${rk[1]}. Try a longer range.</p>`}`;
+        : `<p class="muted" style="margin-top:12px">No sessions with this exercise between ${fmtRange(start, t)}. Try a longer range.</p>`}`;
   }
   const prRows = exNames.slice(0, 12).map((n) => {
     const list = hist.get(n), best = list.reduce((b, e) => (exScore(e) > exScore(b) ? e : b)), first = list[0];
@@ -3773,7 +4001,7 @@ function viewAnalytics() {
   // Body composition
   const measAll = [...S.measures].sort((a, b) => a.date.localeCompare(b.date));
   const comp = measAll.map((m) => { const bf = bodyFat(m); if (bf == null) return null; const kg = nearestWeightKg(m.date); return { d: m.date, bf, lean: kg * (1 - bf / 100), fat: (kg * bf) / 100 }; }).filter(Boolean);
-  const compR = comp.filter((c) => c.d >= start).length >= 2 ? comp.filter((c) => c.d >= start) : comp;
+  const inC = comp.filter((c) => c.d >= start && c.d <= t), compR = inC.length >= 2 ? inC : comp;
   let body = `<p class="muted">Add waist and neck${S.profile.sex === 'male' ? '' : ' and hip'} measurements on <a href="#progress">Progress</a> every 1–2 weeks, plus regular weigh-ins, to estimate lean (muscle) mass.</p>`;
   if (compR.length) {
     const series = [{ name: `Lean mass (${wUnit()})`, color: 'var(--accent)', pts: compR.map((c) => ({ d: c.d, v: showW(c.lean) })) }, { name: `Fat mass (${wUnit()})`, color: 'var(--berry)', pts: compR.map((c) => ({ d: c.d, v: showW(c.fat) })) }];
@@ -3784,7 +4012,7 @@ function viewAnalytics() {
         : dl > 0.2 ? 'Lean mass is rising: your strength training is adding muscle.'
           : df < 0 ? 'Fat is coming down while lean mass holds steady, which is ideal when cutting.'
             : 'No clear change yet. Keep training and measuring every 1–2 weeks.';
-    const meas = (k) => { const l = measAll.filter((m) => m[k] && m.date >= start), u = l.length >= 2 ? l : measAll.filter((m) => m[k]); return u.length >= 2 ? showL(u[u.length - 1][k]) - showL(u[0][k]) : null; };
+    const meas = (k) => { const l = measAll.filter((m) => m[k] && m.date >= start && m.date <= t), u = l.length >= 2 ? l : measAll.filter((m) => m[k]); return u.length >= 2 ? showL(u[u.length - 1][k]) - showL(u[0][k]) : null; };
     const arm = meas('arm'), chest = meas('chest');
     body = `${legend(series)}<div class="chart-wrap">${lineChart(series, { label: 'Lean and fat mass', dec: 1, unit: wUnit() })}</div>
       ${compR.length > 1 ? `<div class="facts" style="grid-template-columns:repeat(${arm != null || chest != null ? 4 : 2},1fr);margin-top:14px"><div><b class="${dl > 0 ? 'an-up' : ''}">${sg(dl)}</b><span>lean ${wUnit()}</span></div><div><b class="${df < 0 ? 'an-up' : ''}">${sg(df)}</b><span>fat ${wUnit()}</span></div>
@@ -3792,12 +4020,21 @@ function viewAnalytics() {
       <p class="an-note"><b>${msg}</b></p>
       <p class="muted" style="font-size:.8rem">Lean mass = weight × (1 − body fat %), using the tape-measure body-fat estimate. It's a rough guide (±3–4%), so look at the trend over several weeks.</p>`;
   }
-  const wDays = rk[2] || span(S.weights.length ? [...S.weights].sort((a, b) => a.date.localeCompare(b.date))[0].date : t);
 
   return `${exampleBanner()}
   <div class="page-head"><div><div class="eyebrow">From your workout log</div><h1>Analytics</h1>
     <p class="muted">See how your strength, endurance and body are changing. Everything here comes from the workouts you log, your weigh-ins and your measurements.</p></div>
-    <div class="row" role="group" aria-label="Time range">${AN_RANGES.map((r) => `<button class="chip" data-act="an-range" data-r="${r[0]}" aria-pressed="${r === rk}">${r[1]}</button>`).join('')}</div></div>
+  </div>
+  <div class="an-range panel">
+    <label class="fsel"><span class="eyebrow">Range</span><select class="input" id="an-range-sel">${AN_RANGES.map((r) => `<option value="${r[0]}" ${r === rk ? 'selected' : ''}>${r[1]}</option>`).join('')}</select></label>
+    ${rk[0] === 'custom'
+      ? `<label class="fsel"><span class="eyebrow">From</span><input class="input" type="date" id="an-from" value="${start}" max="${dayKey()}"></label>
+         <label class="fsel"><span class="eyebrow">To</span><input class="input" type="date" id="an-to" value="${t}" max="${dayKey()}"></label>`
+      : rk[2] ? `<div class="an-step"><button class="btn btn-sm btn-ghost" data-act="an-shift" data-d="1" aria-label="Previous ${rk[1]}">‹</button>
+          <span class="num">${fmtRange(start, t)}</span>
+          <button class="btn btn-sm btn-ghost" data-act="an-shift" data-d="-1" aria-label="Next ${rk[1]}" ${anShift ? '' : 'disabled'}>›</button></div>`
+        : `<span class="num muted">${fmtRange(start, t)}</span>`}
+    <span class="muted an-range-note">${len} day${len === 1 ? '' : 's'}${W.cmp ? ' · compared with the ' + len + ' days before' : ''}</span></div>
   ${ws.length ? '' : `<div class="panel stack" style="margin-bottom:16px"><h2>No workouts yet</h2><p class="muted">Start a session from any plan and tap <b>Finish &amp; log</b>. Weights, reps and time will show up here.</p><a class="btn btn-primary" href="#workouts" style="align-self:start">Choose a workout</a></div>`}
   <div class="meas-cards" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">
     ${tile('Workouts', cur.n, cur.n, '', old && old.n)}
@@ -3821,7 +4058,7 @@ function viewAnalytics() {
   <section class="panel" aria-label="Cardio progress">${cardio}</section>
   <h2 class="an-section">Body</h2>
   <div class="grid">
-    <section class="panel span-6" aria-labelledby="h-an-w"><div class="panel-head"><h3 id="h-an-w">Weight</h3><span class="muted">${wUnit()}</span></div><div class="chart-wrap">${weightChart(Math.max(wDays, 7))}</div></section>
+    <section class="panel span-6" aria-labelledby="h-an-w"><div class="panel-head"><h3 id="h-an-w">Weight</h3><span class="muted">${wUnit()}</span></div><div class="chart-wrap">${weightChart(Math.max(len, 7), 220, false, t)}</div></section>
     <section class="panel span-6" aria-labelledby="h-an-c"><div class="panel-head"><h3 id="h-an-c">Lean vs fat mass</h3></div>${body}</section>
   </div>`;
 }
@@ -3930,7 +4167,7 @@ let errToastAt = 0;
 const onAppError = () => { if (Date.now() - errToastAt > 5000) { errToastAt = Date.now(); toast('Something went wrong there. Your data is safe; try again.'); } };
 window.addEventListener('error', onAppError);
 window.addEventListener('unhandledrejection', onAppError);
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const c = $('#celebrate'); if (c) c.remove(); else if (!$('#site-menu').hidden) { setMenu(false); $('#menu-btn').focus(); } } });
+document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.id === 'food-q') { e.preventDefault(); const f = $('#food-results .fres'); if (f) f.click(); return; } if (e.key === 'Escape') { const c = $('#celebrate'); if (c) c.remove(); else if (!$('#site-menu').hidden) { setMenu(false); $('#menu-btn').focus(); } } });
 
 /* Section menu, opened from the logo */
 function setMenu(open) {
@@ -3988,7 +4225,7 @@ document.addEventListener('click', (e) => {
   else if (a === 'shop-uncheck') { S.shopping.checked = {}; save(); render(true); }
   else if (a === 'shop-clear-arm') { shopClearArmed = true; render(true); }
   else if (a === 'shop-clear-cancel') { shopClearArmed = false; render(true); }
-  else if (a === 'shop-clear') { S.shopping = { recipes: [], checked: {}, extras: [] }; shopClearArmed = false; save(); toast('Shopping list emptied'); render(true); }
+  else if (a === 'shop-clear') { S.shopping = { recipes: [], checked: {}, extras: [], subs: {} }; shopClearArmed = false; save(); toast('Shopping list emptied'); render(true); }
   else if (a === 'shop-copy') {
     const text = shoppingText();
     const fallback = () => { const box = $('#copy-box'), ta = $('#copy-text'); ta.value = text; box.hidden = false; ta.focus(); ta.select(); };
@@ -4037,6 +4274,22 @@ document.addEventListener('click', (e) => {
     setTimeout(() => { if (!celebrateWorkout(w, weekly)) toast(`Workout logged · ${done}/${total} sets · ≈ ${kcal} kcal burned${weekly ? ' · weekly goal reached!' : ''}`); }, 300);
   }
   else if (a === 'del-workout') { S.workouts = S.workouts.filter((w) => w.id !== b.dataset.id); save(); render(true); }
+  else if (a === 'qadd') {
+    const src = b.dataset.src, id = b.dataset.id, d = logTo();
+    if (src === 'f') { const f = FOODS[+id]; logFood({ name: f.name, portion: f.portion, kcal: f.kcal, p: f.p, c: f.c, f: f.f }, d); }
+    else if (src === 'r') { const r = recipeById(id); if (r) logFood({ name: r.title, portion: '1 serving', kcal: r.per.kcal, p: r.per.p, c: r.per.c, f: r.per.f }, d); }
+    else { const e = recentFoods().find((x) => x.m.id === id); if (e) logFood({ name: e.m.name, portion: e.m.portion, ...e.base }, d); }
+    foodQ = ''; render(true);
+  }
+  else if (a === 'lmeal') { logMeal = b.dataset.m; render(true); }
+  else if (a === 'manual-open') { manualOpen = !manualOpen; render(true); if (manualOpen) { const el = $('#f-kcal'); if (el) el.focus(); } }
+  else if (a === 'repeat-meal') {
+    const d = logTo(), before = foodHit(d), src = S.meals.filter((m) => m.date === addDays(d, -1) && m.meal === b.dataset.meal);
+    src.forEach((m) => S.meals.push({ ...m, id: uid(), date: d, base: m.base && { ...m.base } }));
+    save(); if (!foodCheck(d, before)) toast(`Added yesterday's ${b.dataset.meal.toLowerCase()}`); render(true);
+  }
+  else if (a === 'mqty') { const m = S.meals.find((x) => x.id === b.dataset.id); if (m && m.base) { const before = foodHit(m.date); m.qty = Math.max(0.5, Math.min(10, (m.qty || 1) + +b.dataset.d)); scaleMeal(m); save(); foodCheck(m.date, before); render(true); } }
+  else if (a === 'jump-food') { e.preventDefault(); const q = $('#food-q'); if (q) { q.scrollIntoView({ behavior: 'smooth', block: 'center' }); q.focus({ preventScroll: true }); } }
   else if (a === 'del-meal') { S.meals = S.meals.filter((m) => m.id !== b.dataset.id); save(); render(true); }
   else if (a === 'del-weight') { S.weights = S.weights.filter((w) => w.date !== logDate); save(); render(true); }
   else if (a === 'log-day') { const n = addDays(logDate, +b.dataset.d); if (n <= dayKey()) { logDate = n; render(true); } }
@@ -4054,6 +4307,16 @@ document.addEventListener('click', (e) => {
     navigator.geolocation.getCurrentPosition((pos) => findStores({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: 'My location' }),
       () => { storesBusy = 'Location permission was denied. Enter a zip code or town instead.'; render(true); }, { timeout: 10000 });
   }
+  else if (a === 'order-open') { orderOpen = !orderOpen; render(true); }
+  else if (a === 'order-site') { orderSite = +b.dataset.i; render(true); }
+  else if (a === 'order-items') { orderItems = !orderItems; render(true); }
+  else if (a === 'order-go') {
+    // Open the tab first (pop-up blockers allow it only straight from the tap), then copy.
+    const site = ORDER_SITES[+b.dataset.i], w = window.open(site[2], '_blank', 'noopener');
+    const text = priceItems().filter((it) => !S.shopping.checked[it.key] && !it.pantry).map((it) => '- ' + shortName(it.name)).join('\n');
+    try { navigator.clipboard.writeText(text).then(() => toast(`List copied. Paste it into ${site[0]}'s search or list.`), () => toast(`Opened ${site[0]}`)); } catch (err) { toast(`Opened ${site[0]}`); }
+    if (!w) toast(`Allow pop-ups to open ${site[0]}`);
+  }
   else if (a === 'store-open') { storeOpen = storeOpen === b.dataset.id ? null : b.dataset.id; render(true); }
   else if (a === 'store-home') { S.stores.home = b.dataset.id; keepStore(b.dataset.id); pruneKept(); save(); toast('Home store set'); render(true); }
   else if (a === 'store-fav') { const st = S.stores, id = b.dataset.id; st.favs = st.favs.includes(id) ? st.favs.filter((x) => x !== id) : [...st.favs, id]; keepStore(id); pruneKept(); save(); render(true); }
@@ -4064,7 +4327,8 @@ document.addEventListener('click', (e) => {
   else if (a === 'sub-use') { S.shopping.subs[b.dataset.k] = b.dataset.v; save(); toast(`Swapped for ${b.dataset.v}`); render(true); }
   else if (a === 'sub-ask') { const v = (prompt('Replace it with:') || '').trim(); if (v) { S.shopping.subs[b.dataset.k] = v; save(); render(true); } }
   else if (a === 'sub-reset') { S.shopping.subs = {}; save(); render(true); }
-  else if (a === 'an-range') { S.anRange = b.dataset.r; save(); render(true); }
+  else if (a === 'water-suggest') { $('#p-water').value = b.dataset.v; b.replaceWith(Object.assign(document.createElement('span'), { className: 'muted', textContent: 'Save to apply' })); }
+  else if (a === 'an-shift') { anShift = Math.max(0, anShift + +b.dataset.d); render(true); }
   else if (a === 'goal') { S.profile.goal = b.dataset.g; readProfile(); render(true); }
   else if (a === 'clear-arm') { clearArmed = true; render(true); }
   else if (a === 'clear-cancel') { clearArmed = false; render(true); }
@@ -4141,7 +4405,8 @@ function readProfile() {
   if ($('#p-act')) p.activity = parseFloat($('#p-act').value);
   const water = num('p-water');
   const wk = num('p-wk'), mins = num('p-min');
-  S.targets = { ...calcTargets(p), waterMl: !isNaN(water) ? (us() ? water * ML_OZ : water) : S.targets.waterMl,
+  const tg = calcTargets(p);
+  S.targets = { ...tg, waterMl: !isNaN(water) ? (us() ? water * ML_OZ : water) : S.targets.waterMl,
     workoutsWeek: wk > 0 ? Math.min(14, Math.round(wk)) : S.targets.workoutsWeek, minutesWeek: mins > 0 ? Math.min(2000, Math.round(mins)) : S.targets.minutesWeek };
   save();
 }
@@ -4150,14 +4415,15 @@ document.addEventListener('submit', (e) => {
   e.preventDefault();
   const f = e.target;
   if (f.dataset.waterForm != null) {
-    const oz = parseFloat(f.elements.oz.value);
-    if (!(oz > 0)) return;
-    const reached = addWater(Math.min(oz, 128) * ML_OZ, current === 'log' ? logDate : null); waterAdded();
-    if (!reached) toast(`Added ${round(Math.min(oz, 128), 1)} oz of water`);
+    const v = parseFloat(f.elements.oz.value);
+    if (!(v > 0)) return;
+    const ml = us() ? Math.min(v, 128) * ML_OZ : Math.min(v, 4000);
+    const reached = addWater(ml, current === 'log' ? logDate : null); waterAdded();
+    if (!reached) toast(`Added ${showWater(ml)} ${wUnitWater()} of water`);
   } else if (f.id === 'food-form') {
-    const v = (id) => Math.max(0, Math.round(+$('#' + id).value || 0)), before = foodHit(logDate);
-    S.meals.push({ id: uid(), date: logDate, meal: $('#f-meal').value, name: $('#f-name').value.trim() || 'Food', kcal: v('f-kcal'), p: v('f-p'), c: v('f-c'), f: v('f-f') });
-    save(); const won = foodCheck(logDate, before); if (!won) toast('Food added'); render(true); if (!won && $('#f-name')) $('#f-name').focus();
+    const v = (id) => Math.max(0, Math.round(+$('#' + id).value || 0));
+    logFood({ name: $('#f-name').value.trim() || 'Food', kcal: v('f-kcal'), p: v('f-p'), c: v('f-c'), f: v('f-f') }, logTo());
+    manualOpen = false; foodQ = ''; render(true);
   } else if (f.id === 'store-loc') { const q = $('#store-q').value.trim(); if (q) geocode(q);
   } else if (f.id === 'extra-form') {
     const name = $('#extra-name').value.trim();
@@ -4201,7 +4467,8 @@ document.addEventListener('change', (e) => {
   } else if (t.id === 'log-date' && t.value) { logDate = t.value > dayKey() ? dayKey() : t.value; render(true); }
   else if (t.dataset.sv && S.session) setSessionVal(t.dataset.k, t.dataset.sv, t.value);
   else if (t.id === 'an-ex') { anEx = t.value; render(true); }
-  else if (t.id === 'order-site') { orderSite = +t.value; render(true); }
+  else if (t.id === 'an-range-sel') { const W = anWindow(); S.anRange = t.value; anShift = 0; if (t.value === 'custom' && !S.anFrom) { S.anFrom = W.start; S.anTo = W.end; } save(); render(true); }
+  else if (t.id === 'an-from' || t.id === 'an-to') { if (t.value) { const f = t.id === 'an-from'; S[f ? 'anFrom' : 'anTo'] = t.value; if (S.anFrom > S.anTo) S[f ? 'anTo' : 'anFrom'] = t.value; save(); render(true); } }
   else if (t.id === 'store-pantry') { S.stores.pantry = t.checked; save(); render(true); }
   else if (t.dataset.price) {
     const [id, k] = t.dataset.price.split('|'), v = parseFloat(t.value), pr = S.stores.prices[id] || (S.stores.prices[id] = {});
@@ -4240,6 +4507,11 @@ document.addEventListener('change', (e) => {
 document.addEventListener('input', (e) => {
   const t = e.target;
   if (t.id === 'recipe-search') { recipeSearch = t.value; $('#recipe-cards').innerHTML = recipeCards(); }
+  else if (t.id === 'food-q') {
+    const had = !!foodQ.trim(); foodQ = t.value;
+    if (had !== !!foodQ.trim() && manualOpen === false) { render(true); const q = $('#food-q'); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }
+    else $('#food-results').innerHTML = foodResults(logTo());
+  }
   else if (t.dataset.d != null && draft && t.matches('input, textarea, select')) {
     setPath(draft, t.dataset.d, t.hasAttribute('data-num') ? (t.value === '' ? null : +t.value) : t.value);
     const hint = $('#kcal-hint'), d = draft;
