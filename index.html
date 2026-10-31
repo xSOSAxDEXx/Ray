@@ -476,6 +476,14 @@ body.calm-open { overflow: hidden; }
   body.print-list .shop-list li { break-inside: avoid; }
   body.print-list .from { display: none; }
 }
+.rinfo { display: grid; gap: 14px; }
+.rinfo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 20px; }
+.rinfo p { margin: 4px 0 0; font-size: .9rem; }
+.swaps, .notes { border-top: 1px solid var(--line); padding-top: 12px; }
+.stars { display: inline-flex; gap: 2px; }
+.star { background: none; border: 0; font-size: 1.5rem; color: var(--line); cursor: pointer; min-width: 36px; min-height: 36px; }
+.star.on { color: var(--carbs); }
+.note-list { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 4px; font-size: .9rem; }
 .fbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 12px; }
 .fbar .fsearch { flex: 1 1 200px; max-width: 420px; }
 .fbtn { display: inline-flex; align-items: center; gap: 8px; }
@@ -817,7 +825,7 @@ const RECIPES = [
     tip: 'For a lighter plate, use half the potatoes and double the green beans (about 460 kcal).' },
   { id: 'turkey-black-bean-chili', title: 'Turkey & Black Bean Chili', meal: 'Dinner',
     tags: ['High protein', 'Meal prep', 'Gluten free', 'Minimally processed'], prep: 15, cook: 35, servings: 6,
-    per: { kcal: 385, p: 32, c: 36, f: 12, fiber: 12, sugar: 8 },
+    per: { kcal: 340, p: 31, c: 29, f: 13, fiber: 10, sugar: 8 },
     blurb: 'A big pot of high-fiber chili that freezes well. Six hearty bowls.',
     ingredients: [[24, 'oz', '93% lean ground turkey'], [1, 'tbsp', 'olive oil'], [1, '', 'yellow onion, diced'],
       [1, '', 'bell pepper, diced'], [3, 'clove', 'garlic, minced'], [2, 'tbsp', 'chili powder'], [1, 'tsp', 'ground cumin'],
@@ -845,7 +853,7 @@ const RECIPES = [
     tip: 'The sauce thickens as it cools. Loosen leftovers with a teaspoon of water when reheating.' },
   { id: 'tuna-white-bean-salad', title: 'Mediterranean Tuna & White Bean Salad', meal: 'Lunch',
     tags: ['High protein', 'No cook', 'Gluten free', 'Sugar free', 'Minimally processed'], prep: 10, cook: 0, servings: 2,
-    per: { kcal: 425, p: 39, c: 40, f: 11, fiber: 11, sugar: 4 },
+    per: { kcal: 364, p: 33, c: 34, f: 12, fiber: 8, sugar: 4 },
     blurb: 'Ten minutes, no stove. Pantry tuna and beans brightened with lemon, cucumber and herbs.',
     ingredients: [[2, 'can', 'tuna in water (5 oz), drained'], [1, 'can', 'cannellini beans (15 oz), rinsed'],
       [1, 'cup', 'cherry tomatoes, halved'], [0.5, '', 'cucumber, diced'], [0.25, '', 'red onion, finely diced'],
@@ -858,7 +866,7 @@ const RECIPES = [
     tip: 'Serve over greens or stuff into a whole-wheat pita for a heartier lunch.' },
   { id: 'chocolate-pb-smoothie', title: 'Chocolate PB Recovery Smoothie', meal: 'Snack',
     tags: ['Vegetarian', 'High protein', 'No cook'], prep: 5, cook: 0, servings: 1,
-    per: { kcal: 380, p: 31, c: 37, f: 13, fiber: 8, sugar: 16 },
+    per: { kcal: 371, p: 34, c: 39, f: 13, fiber: 8, sugar: 16 },
     blurb: 'A milkshake-thick post-workout shake with carbs to refuel and protein to recover.',
     ingredients: [[1, 'cup', 'unsweetened almond milk (just almonds and water) or whole milk'], [1, 'scoop', 'unflavored grass-fed whey (about 30 g; no sweeteners or gums)'],
       [1, '', 'medium banana, frozen in chunks'], [1, 'tbsp', 'natural peanut butter (just peanuts and salt)'], [2, 'tbsp', 'unsweetened cocoa powder'],
@@ -935,7 +943,7 @@ const RECIPES = [
     tip: 'Want more carbs around training? Serve the filling in corn tortillas (about 50 kcal each).' },
   { id: 'shrimp-fajita-sheet-pan', title: 'Shrimp Fajita Sheet Pan', meal: 'Dinner',
     tags: ['High protein', 'Gluten free', 'Sugar free', 'Minimally processed'], prep: 10, cook: 15, servings: 3,
-    per: { kcal: 310, p: 31, c: 34, f: 7, fiber: 6, sugar: 5 },
+    per: { kcal: 321, p: 35, c: 33, f: 7, fiber: 6, sugar: 5 },
     blurb: 'Shrimp, peppers and onions roasted hot in 15 minutes. Lean, fast and ready on a weeknight.',
     ingredients: [[16, 'oz', 'large shrimp, peeled and deveined'], [2, '', 'bell peppers, sliced'], [1, '', 'red onion, sliced'],
       [1, 'tbsp', 'olive oil'], [2, 'tsp', 'chili powder'], [1, 'tsp', 'ground cumin'], [1, 'tsp', 'smoked paprika'],
@@ -973,7 +981,7 @@ const RECIPES = [
     tip: 'Freeze half the batch on a tray, then bag them. They thaw in about 10 minutes. Using coconut sugar instead adds about 6 g sugar per serving.' },
   { id: 'cottage-cheese-parfait', title: 'Cottage Cheese Berry Parfait', meal: 'Snack',
     tags: ['Vegetarian', 'High protein', 'No cook', 'Gluten free'], prep: 3, cook: 0, servings: 1,
-    per: { kcal: 300, p: 31, c: 14, f: 13, fiber: 4, sugar: 10 },
+    per: { kcal: 318, p: 27, c: 17, f: 16, fiber: 3, sugar: 10 },
     blurb: 'Thirty grams of protein in three minutes. A good evening snack because it keeps you full.',
     ingredients: [[1, 'cup', 'full-fat cottage cheese (no added gums)'], [0.5, 'cup', 'mixed berries, fresh or frozen'], [1, 'tbsp', 'chopped walnuts or pecans'],
       [1, 'tsp', 'pumpkin or hemp seeds'], [null, '', 'pure monk fruit sweetener (optional)'], [null, '', 'pinch of salt and cinnamon']],
@@ -1036,7 +1044,7 @@ const RECIPES = [
     tip: 'Boil a batch of eggs on Sunday (7 minutes for jammy, 10 for firm) and this takes two minutes on a weekday.' },
   { id: 'black-bean-egg-tacos', title: 'Black Bean & Egg Breakfast Tacos', meal: 'Breakfast',
     tags: ['Vegetarian', 'High protein', 'Sugar free', 'Minimally processed', 'Gluten free'], prep: 10, cook: 10, servings: 2,
-    per: { kcal: 555, p: 31, c: 44, f: 29, fiber: 11, sugar: 2 },
+    per: { kcal: 518, p: 30, c: 38, f: 28, fiber: 10, sugar: 2 },
     blurb: 'Soft scrambled eggs, cumin black beans and avocado in warm corn tortillas. Canned beans and tortillas keep it quick.',
     ingredients: [[6, 'large', 'eggs'], [0.5, 'can', 'black beans (15 oz), rinsed'],
       [1, 'tsp', 'olive oil'], [0.5, 'tsp', 'ground cumin'], [0.25, 'tsp', 'salt'], [4, '', 'small corn tortillas (3-ingredient: corn lime salt)'],
@@ -1048,7 +1056,7 @@ const RECIPES = [
     tip: 'Check the tortilla label: the simplest ones list only corn, water and lime.' },
   { id: 'tuna-stuffed-avocados', title: 'Lemon-Dill Tuna Stuffed Avocados', meal: 'Lunch',
     tags: ['High protein', 'Sugar free', 'Minimally processed', 'Low carb', 'Gluten free', 'No cook'], prep: 10, cook: 0, servings: 2,
-    per: { kcal: 415, p: 35, c: 16, f: 25, fiber: 10, sugar: 3 },
+    per: { kcal: 385, p: 29, c: 16, f: 25, fiber: 11, sugar: 3 },
     blurb: 'Tuna salad made with Greek yogurt instead of mayo, piled into avocado halves. Ten minutes, no stove.',
     ingredients: [[2, 'can', 'tuna in water (5 oz), drained'], [0.33, 'cup', 'plain whole-milk Greek yogurt'], [1, '', 'celery stalk, finely diced'],
       [2, 'tbsp', 'red onion, finely diced'], [1, 'tbsp', 'lemon juice'], [1, 'tsp', 'Dijon mustard'], [1, 'tbsp', 'fresh dill, chopped'],
@@ -1229,10 +1237,68 @@ const RECIPES = [
     steps: ['Add everything except the ice to a blender and blend 20 seconds.',
       'Add the ice and blend again until thick and frothy. Drink right away.'],
     tip: 'A pinch of salt rounds out the cocoa\'s bitterness. Check the powder\'s label: the only ingredient should be whey protein.' },
+  // ---- More breakfasts and lunches (to reach at least 12 of each) ----
+  { id: 'smoked-salmon-scramble', title: 'Smoked Salmon & Chive Scramble', meal: 'Breakfast', how: 'stove',
+    tags: ['High protein', 'Sugar free', 'Minimally processed', 'Low carb'], prep: 5, cook: 6, servings: 2,
+    per: { kcal: 346, p: 31, c: 2, f: 24, fiber: 0, sugar: 1 },
+    blurb: 'Soft, slow-cooked eggs folded with smoked salmon and chives, finished with a spoon of yogurt for creaminess. Ten minutes, 30 g of protein.',
+    ingredients: [[6, '', 'eggs'], [4, 'oz', 'smoked salmon, torn into pieces'], [1, 'tbsp', 'butter'], [2, 'tbsp', 'plain whole-milk Greek yogurt'],
+      [2, 'tbsp', 'fresh chives, snipped'], [null, '', 'black pepper to taste']],
+    steps: ['Whisk the eggs well with a pinch of pepper. Skip the salt: the salmon is salty.',
+      'Melt the butter in a nonstick pan over low heat. Add the eggs and stir slowly with a spatula, pulling the curds in from the edges.',
+      'When the eggs are softly set but still glossy, take the pan off the heat.',
+      'Fold in the salmon, yogurt and most of the chives. Serve topped with the rest of the chives.'],
+    tip: 'Low heat is the whole trick: it takes 5–6 minutes and gives creamy, custardy eggs instead of dry ones. Smoked salmon is high in sodium, so balance it with low-salt meals the rest of the day.' },
+  { id: 'sweet-potato-turkey-hash', title: 'Sweet Potato & Turkey Hash with Eggs', meal: 'Breakfast', how: 'stove',
+    tags: ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Meal prep'], prep: 10, cook: 25, servings: 2,
+    per: { kcal: 520, p: 38, c: 34, f: 25, fiber: 6, sugar: 8 },
+    blurb: 'Crispy cubes of sweet potato with browned turkey, wilted spinach and two runny eggs on top. A breakfast that lasts until lunch.',
+    ingredients: [[1, '', 'large sweet potato (about 10 oz), cut into ½-inch cubes'], [8, 'oz', '93% lean ground turkey'], [1, 'tbsp', 'olive oil'], [0.5, '', 'yellow onion, diced'],
+      [1, 'tsp', 'smoked paprika'], [0.5, 'tsp', 'salt'], [2, 'cup', 'baby spinach'], [4, '', 'eggs']],
+    steps: ['Heat the oil in a large skillet over medium. Add the sweet potato with 2 tbsp water, cover and cook 8 minutes, stirring once.',
+      'Uncover, add the onion and cook 5 minutes more, until the potatoes start to brown.',
+      'Push everything to the side, add the turkey, paprika and salt, and cook, breaking it up, until no longer pink, about 6 minutes. Stir together.',
+      'Stir in the spinach until wilted. Make 4 wells, crack an egg into each, cover and cook 4–5 minutes until the whites are set.'],
+    tip: 'Make the hash (without eggs) on Sunday; reheat a portion in a pan and fry fresh eggs on top each morning.' },
+  { id: 'savory-oats-jammy-egg', title: 'Savory Oats with Greens & a Jammy Egg', meal: 'Breakfast', how: 'stove',
+    tags: ['Vegetarian', 'High protein', 'Sugar free', 'Minimally processed'], prep: 5, cook: 10, servings: 1,
+    per: { kcal: 336, p: 24, c: 29, f: 14, fiber: 5, sugar: 1 },
+    blurb: 'Oats cooked in broth like a risotto, with spinach, parmesan and a soft-boiled egg. Proof that oatmeal doesn\'t have to be sweet.',
+    ingredients: [[0.5, 'cup', 'rolled oats'], [1, 'cup', 'bone broth or water'], [1, 'cup', 'baby spinach'], [1, 'tbsp', 'grated parmesan'], [1, '', 'egg'],
+      [1, 'tsp', 'olive oil'], [null, '', 'black pepper and red pepper flakes to taste']],
+    steps: ['Lower the egg into simmering water and cook 6½ minutes, then cool it in cold water and peel.',
+      'Meanwhile simmer the oats in the broth for about 5 minutes, stirring, until creamy.',
+      'Stir in the spinach until it wilts, then the parmesan.',
+      'Spoon into a bowl, drizzle with the oil, add pepper and flakes, and top with the halved egg.'],
+    tip: 'With bone broth this is about 24 g of protein; with water it\'s about 14 g. Use certified gluten-free oats if you avoid gluten.' },
+  { id: 'lemony-chicken-lentil-salad', title: 'Lemony Chicken & Lentil Salad', meal: 'Lunch', how: 'stove',
+    tags: ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Meal prep'], prep: 15, cook: 25, servings: 4,
+    per: { kcal: 334, p: 29, c: 26, f: 13, fiber: 7, sugar: 3 },
+    blurb: 'Lentils, chicken and crunchy vegetables in a sharp lemon-Dijon dressing. It gets better after a night in the fridge.',
+    ingredients: [[0.75, 'cup', 'dry green or brown lentils, rinsed'], [12, 'oz', 'boneless skinless chicken breast'], [3, 'tbsp', 'olive oil, divided'], [1, '', 'English cucumber, diced'],
+      [1, 'cup', 'cherry tomatoes, halved'], [0.25, '', 'red onion, finely diced'], [0.5, 'cup', 'fresh parsley, chopped'], [1, '', 'lemon, zested and juiced'],
+      [1, 'tsp', 'Dijon mustard'], [0.75, 'tsp', 'salt']],
+    steps: ['Simmer the lentils in plenty of water for 18–22 minutes, until tender but not mushy. Drain well.',
+      'Meanwhile rub the chicken with 1 tsp oil and a pinch of salt and cook in a skillet over medium-high, 5–6 minutes per side, to 165°F (74°C). Rest, then dice.',
+      'Whisk the remaining oil with the lemon zest and juice, Dijon and the rest of the salt.',
+      'Toss the warm lentils with the dressing (they soak it up), then fold in the chicken, cucumber, tomatoes, onion and parsley.'],
+    tip: 'Keeps 4 days in the fridge. Add the tomatoes and parsley to each portion as you eat it if you like them fresher.' },
+  { id: 'tuna-nicoise-plate', title: 'Tuna Niçoise Plate', meal: 'Lunch', how: 'stove',
+    tags: ['High protein', 'Sugar free', 'Minimally processed', 'Meal prep'], prep: 15, cook: 15, servings: 2,
+    per: { kcal: 598, p: 45, c: 42, f: 28, fiber: 8, sugar: 5 },
+    blurb: 'A French bistro classic: tuna, eggs, potatoes, green beans and olives with a mustardy vinaigrette. Easy to batch for the week.',
+    ingredients: [[2, 'can', 'tuna in water (5 oz), drained'], [4, '', 'eggs'], [12, 'oz', 'baby potatoes, halved'], [8, 'oz', 'green beans, trimmed'],
+      [1, 'cup', 'cherry tomatoes, halved'], [0.25, 'cup', 'kalamata olives'], [2, 'tbsp', 'extra-virgin olive oil'], [1, 'tbsp', 'red wine vinegar'],
+      [1, 'tsp', 'Dijon mustard'], [null, '', 'salt and pepper to taste']],
+    steps: ['Boil the potatoes in salted water for 12 minutes, adding the green beans for the last 3 minutes. Drain and cool.',
+      'At the same time, boil the eggs for 8 minutes, then cool in cold water and peel.',
+      'Whisk the oil, vinegar, Dijon and a pinch of salt and pepper.',
+      'Arrange the potatoes, beans, tomatoes, olives, halved eggs and tuna on two plates and spoon the dressing over.'],
+    tip: 'Pack the parts separately with the dressing on the side and it keeps 3 days.' },
   // ---- Desserts: no refined sugar; sweetness from fruit, pure monk fruit or a little coconut sugar ----
   { id: 'avocado-chocolate-mousse', title: 'Dark Chocolate Avocado Mousse', meal: 'Dessert', how: 'none',
     tags: ['Vegetarian', 'Vegan', 'Whole foods', 'Minimally processed', 'Low carb', 'No cook'], prep: 10, cook: 0, extra: 'Chill 30 min', servings: 4,
-    per: { kcal: 196, p: 3, c: 11, f: 17, fiber: 7, sugar: 1 },
+    per: { kcal: 176, p: 3, c: 11, f: 16, fiber: 8, sugar: 1 },
     blurb: 'Silky and deeply chocolatey, made from avocado, cocoa and coconut milk. Monk fruit sweetens it without a gram of sugar.',
     ingredients: [[2, '', 'ripe avocados'], [0.33, 'cup', 'unsweetened cocoa powder'], [0.33, 'cup', 'full-fat coconut milk (no gums)'],
       [2, 'tbsp', 'pure monk fruit sweetener (no erythritol), or to taste'], [1, 'tsp', 'vanilla extract'], [null, '', 'pinch of salt'], [null, '', 'raspberries or cacao nibs to serve (optional)']],
@@ -1293,7 +1359,7 @@ const RECIPES = [
   // ---- Carnivore: only meat, fish, eggs, animal fats and salt ----
   { id: 'butter-basted-ribeye', title: 'Butter-Basted Ribeye', meal: 'Dinner', how: 'stove',
     tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb'], prep: 5, cook: 12, extra: 'Rest 30 min at room temp first', servings: 2,
-    per: { kcal: 597, p: 41, c: 0, f: 48, fiber: 0, sugar: 0 },
+    per: { kcal: 722, p: 42, c: 0, f: 61, fiber: 0, sugar: 0 },
     blurb: 'A thick ribeye seared hard in tallow, then basted with foaming butter. Salt is the only seasoning it needs.',
     ingredients: [[16, 'oz', 'ribeye steak, about 1¼ inches thick'], [1, 'tbsp', 'beef tallow or ghee'], [2, 'tbsp', 'butter'], [1, 'tsp', 'coarse salt']],
     steps: ['Pat the steak dry and salt it on all sides. Let it sit 30 minutes at room temperature.',
@@ -1314,7 +1380,7 @@ const RECIPES = [
     tip: 'Leftover steak from dinner works well: slice it thin and warm it in the pan for 30 seconds before the eggs.' },
   { id: 'brown-butter-salmon', title: 'Crispy-Skin Salmon in Brown Butter', meal: 'Dinner', how: 'stove',
     tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb'], prep: 5, cook: 12, servings: 4,
-    per: { kcal: 367, p: 31, c: 0, f: 27, fiber: 0, sugar: 0 },
+    per: { kcal: 430, p: 35, c: 0, f: 31, fiber: 0, sugar: 0 },
     blurb: 'Skin-on salmon cooked skin side down until it shatters, finished with nutty browned butter.',
     ingredients: [[24, 'oz', 'skin-on salmon fillets (4 pieces)'], [3, 'tbsp', 'butter'], [1, 'tsp', 'salt']],
     steps: ['Pat the salmon very dry, especially the skin, and salt both sides.',
@@ -1325,7 +1391,7 @@ const RECIPES = [
     tip: 'Wild salmon is leaner and cooks faster: pull it at 120°F (49°C) inside.' },
   { id: 'beef-liver-burgers', title: 'Beef & Liver Burgers', meal: 'Lunch', how: 'stove',
     tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb', 'Meal prep'], prep: 10, cook: 10, servings: 4,
-    per: { kcal: 268, p: 28, c: 1, f: 16, fiber: 0, sugar: 0 },
+    per: { kcal: 336, p: 25, c: 1, f: 25, fiber: 0, sugar: 0 },
     blurb: 'A little finely chopped liver hidden in juicy beef patties: you can\'t taste it, but you get its iron, B12 and vitamin A.',
     ingredients: [[16, 'oz', '80/20 ground beef'], [4, 'oz', 'beef liver, very finely chopped or blended'], [1, 'tsp', 'salt'], [1, 'tsp', 'beef tallow or butter']],
     steps: ['Mix the ground beef, liver and salt with your hands until just combined.',
@@ -1335,7 +1401,7 @@ const RECIPES = [
     tip: 'Freeze the liver for 20 minutes first; it chops much more easily. Start with less liver if you\'re new to it.' },
   { id: 'salt-roasted-chicken-thighs', title: 'Crispy Salt-Roasted Chicken Thighs', meal: 'Dinner', how: 'oven',
     tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb', 'Meal prep'], prep: 5, cook: 40, servings: 4,
-    per: { kcal: 458, p: 46, c: 0, f: 30, fiber: 0, sugar: 0 },
+    per: { kcal: 518, p: 36, c: 0, f: 39, fiber: 0, sugar: 0 },
     blurb: 'Bone-in, skin-on thighs roasted hot until the skin crackles. Save the drippings for cooking eggs.',
     ingredients: [[8, '', 'bone-in skin-on chicken thighs'], [1.5, 'tsp', 'salt'], [1, 'tsp', 'beef tallow, ghee or butter, melted']],
     steps: ['Heat the oven to 425°F (220°C). Pat the thighs very dry.',
@@ -2592,7 +2658,7 @@ let S, unreadable = false;
    field can't stop the whole app from loading. Only uses things declared above this point (it runs at startup). */
 const DEFAULTS = () => ({
   meals: [], weights: [], workouts: [], water: {}, measures: [], session: null, myGear: null, customRecipes: [], customPlans: [],
-  mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, favFoods: [], appliance: null, servings: 2, lastBackup: null, backupSnooze: null,
+  mealPlan: {}, reminders: null, favs: { recipes: [], plans: [] }, favFoods: [], recipeNotes: {}, appliance: null, servings: 2, lastBackup: null, backupSnooze: null,
   shopping: { recipes: [], checked: {}, extras: [], subs: {}, have: [], auto: false },
   settings: { theme: 'system', accent: 'green', text: 'md', celebrate: true },
   stores: { loc: null, list: [], keep: [], home: null, favs: [], prices: {}, missing: {}, pantry: false, geo: {} },
@@ -2939,7 +3005,7 @@ const recipeImg = (r, cls = 'rimg') => {
 function syncCustom() {
   for (let i = RECIPES.length - 1; i >= 0; i -= 1) if (RECIPES[i].custom) RECIPES.splice(i, 1);
   for (let i = PLANS.length - 1; i >= 0; i -= 1) if (PLANS[i].custom) PLANS.splice(i, 1);
-  (S.customRecipes || []).forEach((r) => RECIPES.push(applyDiet({ ...r, tags: [...(r.tags || [])], custom: true })));
+  (S.customRecipes || []).forEach((r) => { const x = applyDiet({ ...r, tags: [...(r.tags || [])], custom: true }); if (typeof enrichRecipe === 'function' && typeof PRICE_RULES !== 'undefined') try { enrichRecipe(x); } catch (e) { /* first run */ } RECIPES.push(x); });
   (S.customPlans || []).forEach((p) => PLANS.push({ ...p, custom: true, level: LEVELS[p.diff] }));
 }
 const RECIPE_TAGS = ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Vegetarian', 'Vegan', 'Low carb', 'Gluten free', 'Meal prep', 'No cook'];
@@ -3300,12 +3366,15 @@ function filterBar(id, { count = 0, lead = '', extra = '', panel = '', active = 
 }
 const clearChip = (label, act, attrs) => `<button class="chip" aria-pressed="true" data-act="${act}" ${attrs} aria-label="Remove filter ${esc(label)}">${esc(label)} ✕</button>`;
 const SHOW_FILTERS = ['All', 'Favorites', 'My recipes'];
-const DIET_FILTERS = ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Gluten free', 'Soy free', 'Carnivore', 'Vegetarian', 'Vegan', 'Low carb', 'Meal prep', 'Dessert'];
+const DIET_FILTERS = ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Gluten free', 'Dairy free', 'Nut free', 'Soy free', 'Carnivore', 'Vegetarian', 'Vegan', 'Low carb', 'Budget', 'Meal prep', 'Dessert'];
 const FILTER_NOTES = {
   'Sugar free': 'No sugar, honey, syrups, sweeteners or fruit. Any sugar listed comes naturally from dairy or vegetables, 8 g or less per serving.',
   'Whole foods': 'Only unprocessed, single-ingredient foods: meat, fish, eggs, plain dairy, dried legumes, vegetables, nuts, seeds, herbs and spices.',
   'Gluten free': 'Naturally gluten free: no wheat, barley, rye or regular oats, and no processed gluten-free breads, pastas or flour blends. Where an ingredient is often cross-contaminated (oats, corn tortillas, broth, protein powder, spice blends), the recipe says what to buy certified.',
   'Soy free': 'No soy sauce, tofu, tempeh, edamame, miso or tamari. Recipes flag ingredients that sometimes hide soy lecithin or soy protein, like protein powder, dark chocolate and broth.',
+  'Dairy free': 'No milk, butter, cheese, yogurt or whey. Check protein powders and any butter you cook with.',
+  'Nut free': 'No peanuts or tree nuts. Always check labels if you have an allergy: kitchens and packaged foods can carry traces.',
+  Budget: 'About $3 or less a serving at typical US supermarket prices (an estimate; prices vary by store and region).',
   Carnivore: 'Only animal foods: meat, fish, eggs, butter and animal fats, seasoned with salt. No plants, spices or sweeteners.',
   Dessert: 'No refined sugar. Sweetness comes from fruit, pure monk fruit or a little coconut sugar, at 12 g of sugar or less per serving.',
   'Minimally processed': 'Whole-food recipes plus a few clean staples: canned beans, tuna and tomatoes, bone broth or stock, full-fat coconut milk, 3-ingredient corn tortillas, Dijon and unflavored grass-fed whey or collagen.'
@@ -3377,6 +3446,92 @@ function ingList(r) {
     return `<li><label><input type="checkbox" id="ing-${r.id}-${i}"><span class="q">${fmtQty(q, ing[1])} ${unitLabel(q, ing[1])}</span><span>${esc(ing[2])}</span></label></li>`;
   }).join('');
 }
+/* ---------- Recipe template details: allergens, cost, equipment, storage, swaps ----------
+   Worked out from each recipe's ingredients and steps, so your own recipes get them too. */
+// The major US allergens (FDA's nine). Coconut is no longer treated as a tree nut by FDA (2025 guidance).
+const ALLERGENS = [
+  ['Milk', /yogurt|\bmilk\b|cheese|feta|cheddar|parmesan|mozzarella|cottage|\bbutter\b|ghee|cream|kefir|whey/, /almond milk|coconut milk|oat milk|peanut butter|almond butter|nut butter|cocoa butter|or water/],
+  ['Egg', /\beggs?\b|mayo/], ['Fish', /salmon|tuna|cod\b|sardine|anchov|\bfish\b/], ['Shellfish', /shrimp|prawn|crab|lobster|scallop|mussel|clam/],
+  ['Tree nuts', /almond|walnut|pecan|cashew|pistachio|pine nut|hazelnut|macadamia|brazil nut/], ['Peanuts', /peanut/],
+  ['Wheat', /\bwheat|\bflour\b|bread|panko|pasta|noodle|couscous|bulgur|farro|seitan|spelt|semolina|soy sauce|pita|cracker/, /(almond|coconut|chickpea|cassava|tapioca) flour/],
+  ['Soy', /\bsoy|tofu|tempeh|edamame|miso|tamari|natto/], ['Sesame', /sesame|tahini/]
+];
+function allergensOf(r) {
+  const ings = (r.ingredients || []).map((i) => String(i[2] || '').toLowerCase());
+  return ALLERGENS.filter(([, yes, not]) => ings.some((n) => yes.test(not ? n.replace(not, '') : n))).map((a) => a[0]);
+}
+// Estimated cost per serving at a typical US supermarket, counting only what the recipe uses (not whole packages).
+function costPerServing(r) {
+  let total = 0;
+  (r.ingredients || []).forEach(([q, unit, name]) => {
+    if (q == null) return;
+    const rule = ruleFor(name); if (!rule || rule[3].p) return;
+    const VOL = { cup: 48, tbsp: 3, tsp: 1 }, u = unit || 'each';
+    let per = rule[1][u] || (u === 'large' && rule[1].each) || null;
+    if (!per && VOL[u]) { const alt = Object.keys(rule[1]).find((k) => VOL[k]); if (alt) per = rule[1][alt] * VOL[alt] / VOL[u]; } // convert cups ↔ tbsp ↔ tsp
+    if (per) total += rule[2] * (q / per);
+  });
+  return total / (r.servings || 1);
+}
+const EQUIP = [[/blender|blend/, 'Blender'], [/food processor/, 'Food processor'], [/sheet pan|baking sheet|baking dish|rimmed/, 'Baking sheet or dish'], [/muffin/, 'Muffin tin'],
+  [/skillet|frying pan|\bpan\b|wok/, 'Skillet'], [/pot\b|saucepan|simmer|boil/, 'Pot'], [/thermometer/, 'Meat thermometer'], [/spiraliz/, 'Spiralizer (optional)'], [/jar/, 'Jars or containers']];
+function equipmentOf(r, m) {
+  const txt = (m.steps || r.steps || []).join(' ').toLowerCase();
+  const out = EQUIP.filter(([re]) => re.test(txt)).map((x) => x[1]);
+  if (m.app && m.app !== 'none') out.unshift(appLabel(m.app));
+  return [...new Set(out)];
+}
+function storageOf(r) {
+  const t = (r.title + ' ' + r.tags.join(' ')).toLowerCase();
+  if (/smoothie|shake/.test(t)) return 'Best made fresh. Blend just before drinking.';
+  if (/chili|soup|curry|stew/.test(t)) return 'Fridge 4 days in a sealed container, or freeze up to 3 months. Reheat until steaming.';
+  if (/bark|frozen/.test(t)) return 'Freezer, in a bag, up to 1 month.';
+  if (/cookies|bites/.test(t)) return 'Airtight container: 5 days at room temperature or a week in the fridge; freezes well.';
+  if (/salad|wraps|avocado|parfait|scramble|eggs/.test(t) && !/meal prep/.test(t)) return 'Best eaten fresh. Leftovers keep 1 day in the fridge.';
+  if (/meal prep/.test(t)) return 'Fridge 3–4 days in sealed containers. Reheat until steaming hot (165°F / 74°C) if it contains meat or eggs.';
+  return 'Fridge up to 3 days in a sealed container. Cool leftovers within 2 hours of cooking.';
+}
+// Swaps: [what the recipe has, vegetarian swap, lower-carb swap]
+const SWAPS = [[/chicken|turkey breast/, 'extra-firm tofu or chickpeas', null], [/ground turkey|ground beef/, 'cooked lentils plus chopped mushrooms', null],
+  [/shrimp|salmon|cod|tuna/, 'white beans or chickpeas', null], [/steak|pork|ribeye/, 'portobello mushrooms or tofu', null],
+  [/\brice\b(?! vinegar)/, null, 'cauliflower rice'], [/quinoa/, null, 'cauliflower rice or extra greens'], [/potato/, null, 'cauliflower or radishes, roasted'],
+  [/tortilla/, null, 'butter-lettuce cups'], [/\boats\b/, null, 'chia seeds (2 tbsp per ¼ cup oats)'], [/black beans|chickpeas|cannellini|lentils/, null, 'extra non-starchy vegetables'],
+  [/banana/, null, 'a handful of berries'], [/corn kernels/, null, 'diced zucchini']];
+function swapsOf(r) {
+  const ings = r.ingredients.map((i) => String(i[2] || '').toLowerCase()), veg = r.tags.includes('Vegetarian'), low = r.tags.includes('Low carb');
+  const out = { veg: [], low: [] };
+  SWAPS.forEach(([re, v, l]) => { const hit = ings.find((n) => re.test(n)); if (!hit) return; const name = hit.split(',')[0].replace(/\(.*?\)/g, '').trim();
+    if (v && !veg) out.veg.push([name, v]); if (l && !low) out.low.push([name, l]); });
+  return out;
+}
+// Tags that come from the ingredients: Dairy free, Nut free and Budget (about $3 or less a serving).
+function enrichRecipe(r) {
+  r.tags = r.tags.filter((t) => !['Dairy free', 'Nut free', 'Budget'].includes(t));
+  const al = allergensOf(r); r.allergens = al; r.cost = costPerServing(r);
+  if (!al.includes('Milk')) r.tags.push('Dairy free');
+  if (!al.includes('Tree nuts') && !al.includes('Peanuts')) r.tags.push('Nut free');
+  if (r.cost > 0 && r.cost <= 3) r.tags.push('Budget');
+  return r;
+}
+function recipeInfo(r, m) {
+  const eq = equipmentOf(r, m), sw = swapsOf(r), note = S.recipeNotes[r.id] || {};
+  return `<section class="panel span-12 rinfo" aria-label="Recipe details">
+    <div class="rinfo-grid">
+      <div><div class="eyebrow">Allergens</div><p>${r.allergens.length ? r.allergens.map((a) => `<span class="tag tag-warn">${a}</span>`).join(' ') : 'None of the 9 major allergens'}</p></div>
+      <div><div class="eyebrow">Cost</div><p><b class="num">~${money(r.cost)}</b> a serving <span class="muted">(estimate, typical US prices)</span></p></div>
+      <div><div class="eyebrow">Equipment</div><p>${eq.length ? eq.map(esc).join(' · ') : 'Bowl and spoon'}</p></div>
+      <div><div class="eyebrow">Storage</div><p>${storageOf(r)}</p></div>
+    </div>
+    ${sw.veg.length || sw.low.length ? `<div class="swaps"><div class="eyebrow">Swaps</div>
+      ${sw.veg.length ? `<p><b>Make it vegetarian:</b> ${sw.veg.map(([a, b]) => `${esc(a)} → ${b}`).join('; ')}.</p>` : ''}
+      ${sw.low.length ? `<p><b>Lower carb:</b> ${sw.low.map(([a, b]) => `${esc(a)} → ${b}`).join('; ')}.</p>` : ''}
+      <p class="muted" style="font-size:.8rem">Swaps change the calories and macros above.</p></div>` : ''}
+    <div class="notes"><div class="row" style="justify-content:space-between"><div class="eyebrow">Your rating &amp; notes</div>
+      <div class="stars" role="group" aria-label="Your rating">${[1, 2, 3, 4, 5].map((n) => `<button type="button" class="star ${note.stars >= n ? 'on' : ''}" data-act="r-star" data-id="${r.id}" data-v="${n}" aria-label="${n} star${n === 1 ? '' : 's'}" aria-pressed="${note.stars === n}">★</button>`).join('')}</div></div>
+      ${(note.notes || []).length ? `<ul class="note-list">${note.notes.map((x, i) => `<li><span class="muted num">${fmtDay(x.d, { month: 'short', day: 'numeric' })}</span> ${esc(x.t)} <button class="btn btn-ghost btn-sm" data-act="r-note-del" data-id="${r.id}" data-i="${i}" aria-label="Delete note">✕</button></li>`).join('')}</ul>` : ''}
+      <form class="row" data-note="${r.id}" autocomplete="off"><input class="input" name="t" placeholder="e.g. Made it, less salt next time" maxlength="200" style="flex:1;min-width:180px" aria-label="Add a note"><button class="btn btn-sm" type="submit">Add note</button></form></div>
+  </section>`;
+}
 function dietBox(r) {
   const d = r.dietNotes || {}, notes = [...new Set([...(d.gf || []), ...(d.sf || [])])];
   if (!d.gf && !d.sf) return '';
@@ -3419,6 +3574,7 @@ function viewRecipe(id) {
       <ol class="steps">${m.steps.map((s) => `<li><p>${esc(s)}</p></li>`).join('')}</ol>
       ${r.tip ? `<div class="tip" style="margin-top:20px"><b>Tip.</b> ${esc(r.tip)}</div>` : ''}
     </section>
+    ${recipeInfo(r, m)}
   </div>`;
 }
 
@@ -3729,7 +3885,7 @@ const FOOD_MICRO = {
 };
 // FDA Daily Values used on food labels.
 const MICRO_DV = [['Fiber', 28, 'g'], ['Sodium', 2300, 'mg'], ['Potassium', 4700, 'mg'], ['Iron', 18, 'mg'], ['B12', 2.4, 'µg']];
-let RECIPE_MICRO = {}; // filled from the ingredient nutrient audit (per serving, same order as FOOD_MICRO)
+let RECIPE_MICRO = {'berry-overnight-oats': [10.5,414,578,3.4,1.2], 'spinach-feta-egg-muffins': [0.9,544,361,3.3,1.7], 'chicken-burrito-bowls': [11.7,711,1326,3.7,0.4], 'lemon-herb-salmon': [7.3,683,1537,3.3,4.5], 'turkey-black-bean-chili': [10.1,868,1044,5.5,1.2], 'tofu-peanut-stir-fry': [7.4,248,779,5.1,0.0], 'tuna-white-bean-salad': [7.7,887,1102,6.2,2.8], 'chocolate-pb-smoothie': [8.5,227,1002,3.1,0.6], 'banana-protein-pancakes': [5.6,1095,614,4.0,1.4], 'greek-chicken-quinoa-bowls': [5.2,719,1146,3.5,1.1], 'lentil-vegetable-soup': [8.2,558,710,4.0,0.0], 'beef-broccoli': [4.3,366,736,3.1,2.5], 'turkey-taco-lettuce-wraps': [4.7,667,826,3.1,1.6], 'shrimp-fajita-sheet-pan': [6.3,646,782,2.0,1.7], 'chickpea-spinach-curry': [14.4,863,768,5.5,0.0], 'pb-protein-bites': [4.3,54,284,2.0,0.1], 'cottage-cheese-parfait': [2.8,1383,373,0.9,0.9], 'steak-egg-skillet': [4.6,797,1194,5.2,2.6], 'green-shakshuka': [3.3,932,835,5.6,2.4], 'sage-turkey-patties': [1.1,610,504,3.4,1.6], 'savory-cottage-bowl': [1.5,1457,642,3.3,1.4], 'black-bean-egg-tacos': [10.1,746,711,4.8,1.5], 'tuna-stuffed-avocados': [10.7,670,1068,2.8,3.1], 'herb-chicken-avocado-salad': [8.7,678,1439,3.0,0.4], 'garlic-shrimp-zoodles': [2.3,782,1042,1.5,2.0], 'warm-lentil-egg-salad': [8.8,727,939,7.9,1.2], 'turkey-burger-lettuce-wraps': [4.4,544,805,3.3,1.5], 'herb-pork-tenderloin': [6.7,714,1377,4.3,0.9], 'garlic-butter-cod': [5.1,776,1115,2.7,1.6], 'chicken-cauliflower-traybake': [5.3,856,1135,4.4,1.4], 'turkey-white-bean-kale': [8.0,1016,1047,6.0,1.3], 'pesto-salmon-broccolini': [6.6,819,1384,3.9,5.7], 'yogurt-deviled-eggs': [0.1,342,172,1.8,1.0], 'chili-lime-edamame': [8.5,199,719,3.8,0.0], 'roast-turkey-rollups': [0.9,468,552,1.4,0.9], 'herby-yogurt-dip': [2.1,377,519,0.9,0.9], 'cocoa-almond-protein-shake': [8.3,778,562,3.3,0.6], 'smoked-salmon-scramble': [0.1,646,341,3.2,3.3], 'sweet-potato-turkey-hash': [5.7,905,1085,5.0,2.1], 'savory-oats-jammy-egg': [4.8,667,584,4.0,0.5], 'lemony-chicken-lentil-salad': [5.0,512,774,3.2,0.2], 'tuna-nicoise-plate': [8.4,1055,1498,6.4,3.7], 'avocado-chocolate-mousse': [7.7,155,514,2.0,0.0], 'cinnamon-baked-apples': [3.3,212,252,0.6,0.4], 'vanilla-chia-pudding': [9.3,202,296,1.9,0.5], 'almond-butter-cookies': [3.7,132,297,1.4,0.1], 'berry-yogurt-bark': [1.2,27,188,0.3,0.6], 'butter-basted-ribeye': [0.0,892,684,4.1,5.0], 'carnivore-steak-eggs': [0.0,1046,979,6.3,4.7], 'brown-butter-salmon': [0.0,750,620,0.6,5.5], 'beef-liver-burgers': [0.0,676,395,3.6,19.2], 'salt-roasted-chicken-thighs': [0.0,1065,456,1.6,0.9]}; // per serving, from tools/nutrition_audit.py
 function microRow(list) {
   const withData = list.filter((m) => Array.isArray(m.mic));
   if (!list.length) return '';
@@ -5972,6 +6128,8 @@ document.addEventListener('click', (e) => {
     S.setup = true; S.example = false; save(); location.hash = 'goals'; render(false);
     setTimeout(() => toast('All set. Here are your daily targets.'), 200);
   }
+  else if (a === 'r-star') { const n = S.recipeNotes[b.dataset.id] || (S.recipeNotes[b.dataset.id] = {}); n.stars = n.stars === +b.dataset.v ? 0 : +b.dataset.v; save(); render(true); }
+  else if (a === 'r-note-del') { const n = S.recipeNotes[b.dataset.id]; if (n && n.notes) { n.notes.splice(+b.dataset.i, 1); save(); render(true); } }
   else if (a === 'del-meal') {
     const i = S.meals.findIndex((m) => m.id === b.dataset.id); if (i < 0) return;
     const [gone] = S.meals.splice(i, 1); save(); render(true);
@@ -6137,6 +6295,10 @@ document.addEventListener('submit', (e) => {
   } else if (f.id === 'setup-form') {
     readProfile(); const nm = $('#s-name') ? $('#s-name').value.trim() : ''; const pr = activeProfile(); if (pr) { pr.name = nm.slice(0, 30); saveProfiles(); }
     setupStep = 2; render(false);
+  } else if (f.dataset.note) {
+    const t = f.elements.t.value.trim(); if (!t) return;
+    const n = S.recipeNotes[f.dataset.note] || (S.recipeNotes[f.dataset.note] = {}); (n.notes || (n.notes = [])).push({ d: dayKey(), t: t.slice(0, 200) });
+    save(); render(true);
   } else if (f.dataset.edit) {
     const m = S.meals.find((x) => x.id === f.dataset.edit); if (!m) return;
     const before = { ...m, base: m.base && { ...m.base } }, v = (k) => Math.max(0, Math.round(+f.elements[k].value || 0)), q = m.qty || 1;
@@ -6247,6 +6409,7 @@ document.addEventListener('input', (e) => {
   }
 });
 
+RECIPES.forEach(enrichRecipe);
 render(false);
 loadPhotos();
 loadRecipePhotos();
