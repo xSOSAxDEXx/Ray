@@ -4,9 +4,10 @@ const { chromium } = require('playwright');
 const URL = process.env.URL || 'http://localhost:8765/';
 const KEY = 'rep-ration-v1';
 const VIEWS = ['today', 'recipes', 'recipe-lemon-herb-salmon', 'mealplan', 'shopping', 'workouts', 'plan-foundations', 'session',
-  'log', 'progress', 'analytics', 'goals', 'settings', 'recipe-new', 'plan-new', 'breathe', 'breath-box', 'breath-power', 'mind', 'mind-iron-holds', 'recipe-beef-liver-burgers', 'recipe-avocado-chocolate-mousse', 'plan-rower-intervals', 'plan-zone2-base'];
+  'log', 'progress', 'analytics', 'goals', 'settings', 'recipe-new', 'plan-new', 'breathe', 'breath-box', 'breath-power', 'mind', 'mind-iron-holds', 'recipe-beef-liver-burgers', 'recipe-avocado-chocolate-mousse', 'plan-rower-intervals', 'plan-zone2-base', 'breath-whm-beginner', 'mind-sleep-safe-place', 'import-plan=bad', 'exercises', 'ex-goblet-squat', 'plan-strong-steady', 'recipe-tuna-nicoise-plate', 'guide', 'sources', 'report', 'friends', 'cheer=bad'];
 const STATES = {
-  'fresh visitor': null,
+  'fresh visitor (setup screen)': null,
+  'example data': 'example',
   'saved before weekly goals and per-set reps': { v: 1, example: false, units: 'us',
     profile: { sex: 'male', age: 40, heightCm: 180, weightKg: 90, activity: 1.55, goal: 'gain' },
     targets: { bmr: 1800, tdee: 2700, kcal: 3000, p: 180, c: 300, f: 90, waterMl: 3000 },
@@ -27,7 +28,8 @@ const STATES = {
       const errors = [];
       page.on('pageerror', (e) => errors.push(e.message));
       await page.goto(URL + 'manifest.webmanifest');
-      if (state) await page.evaluate(([k, s]) => localStorage.setItem(k, JSON.stringify(s)), [KEY, state]);
+      if (state === 'example') await page.evaluate(() => localStorage.setItem('rep-ration-start', 'example'));
+      else if (state) await page.evaluate(([k, s]) => localStorage.setItem(k, JSON.stringify(s)), [KEY, state]);
       for (const view of VIEWS) {
         await page.goto(URL + '#' + view);
         await page.waitForTimeout(100);
