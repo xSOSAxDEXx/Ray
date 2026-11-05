@@ -1,29 +1,29 @@
 {
   "expo": {
-    "name": "Rep & Ration",
-    "slug": "rep-and-ration",
+    "name": "HEALTH-RAY",
+    "slug": "healthray",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.repandration.app"
+      "bundleIdentifier": "com.healthray.app"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#1d6a45",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.repandration.app"
+      "package": "com.healthray.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "repandration",
+    "scheme": "healthray",
     "plugins": [
       "expo-router"
     ]

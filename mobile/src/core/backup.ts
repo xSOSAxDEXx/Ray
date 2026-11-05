@@ -30,7 +30,7 @@ export interface BackupProfile {
   weighIns: number;
 }
 
-/** Parse a backup file's text. Returns null if it isn't a Rep & Ration backup. */
+/** Parse a backup file's text. Returns null if it isn't a HEALTH-RAY backup. */
 export function readBackup(text: string): { exportedAt?: string; profiles: BackupProfile[] } | null {
   let raw: unknown;
   try { raw = JSON.parse(text); } catch { return null; }

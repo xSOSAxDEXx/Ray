@@ -1,6 +1,6 @@
 // Offline support: pages try the network first (so new deploys show up), then fall back to the cache.
-const CACHE = 'rep-ration-v21';
-const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
+const CACHE = 'healthray-v24';
+const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon.svg', 'icons/logo-mark.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

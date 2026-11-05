@@ -8,6 +8,7 @@ import { calcTargets, waterFor } from '../core/targets';
 import type { AppData, Meal, Profile } from '../core/types';
 import { pushAll } from './sync';
 
+// Same storage name as the web app (it keeps the original app name so saved data survives the rename).
 const KEY = 'rep-ration-v1';
 const defaultProfile: Profile = { sex: 'female', age: 35, heightCm: 168, weightKg: 70, activity: 1.375, goal: 'maintain' };
 export function emptyData(): AppData {

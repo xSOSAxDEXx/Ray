@@ -1,4 +1,4 @@
-# Rep & Ration mobile: structure and data model
+# HEALTH-RAY mobile: structure and data model
 
 This is the Phase 5 proposal from the roadmap. It was approved automatically while the owner was away (see the pull request), so treat it as the starting point and change anything that doesn't fit.
 

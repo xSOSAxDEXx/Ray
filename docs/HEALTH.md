@@ -6,7 +6,7 @@ Status: **planned, not built** (roadmap Phase 5, item 5). This lists what each p
 
 - **What to read:** steps, workouts (type, start, duration, energy) and heart rate (resting and during workouts). Read only, at first.
 - **When:** read when the app opens and on pull-to-refresh. Show it on Today (steps toward a daily goal) and in Analytics (workouts recorded by a watch alongside logged sessions).
-- **Avoid double counting:** a watch workout that overlaps a logged Rep & Ration session (same day, start within 30 minutes) is shown as one session.
+- **Avoid double counting:** a watch workout that overlaps a logged HEALTH-RAY session (same day, start within 30 minutes) is shown as one session.
 - **Privacy:** health data stays on the phone and is **not** uploaded to Supabase unless the user turns on a separate, clearly explained "Sync health data" setting. Both Apple and Google forbid using health data for advertising.
 - **Build type:** both need native code, so they need development builds (EAS), not Expo Go. This is already the plan for the mobile app.
 
@@ -40,4 +40,4 @@ Status: **planned, not built** (roadmap Phase 5, item 5). This lists what each p
 2. Steps on Today. This is the simplest read and proves the setup on both platforms.
 3. Watch workouts in the workout history, with de-duplication.
 4. Heart rate in workout summaries.
-5. Optionally, write Rep & Ration workouts back to Health. This needs the "update" or "write" permissions and a new review.
+5. Optionally, write HEALTH-RAY workouts back to Health. This needs the "update" or "write" permissions and a new review.

@@ -1,6 +1,6 @@
 {
-  "name": "Rep & Ration",
-  "short_name": "Rep&Ration",
+  "name": "HEALTH-RAY",
+  "short_name": "HEALTH-RAY",
   "description": "Recipes, workout plans and a daily tracker for food, water, weight and training.",
   "start_url": "./#today",
   "scope": "./",

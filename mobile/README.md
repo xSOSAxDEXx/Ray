@@ -1,4 +1,4 @@
-# Rep & Ration mobile (Expo)
+# HEALTH-RAY mobile (Expo)
 
 The first screens of the native app: **Today**, **Log** and **Targets**, plus importing a backup from the website and optional accounts with Supabase. See `PLAN.md` for the structure and data model.
 

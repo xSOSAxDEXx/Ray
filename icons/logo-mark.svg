@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- HEALTH-RAY mark: a cartoon retro ray gun firing a heartbeat beam. Transparent background. -->
+  <defs>
+    <linearGradient id="hr-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cdeedd"/></linearGradient>
+    <linearGradient id="hr-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b8f3ff"/><stop offset="1" stop-color="#36b6e0"/></linearGradient>
+    <radialGradient id="hr-glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e9ff7a" stop-opacity=".9"/><stop offset="1" stop-color="#e9ff7a" stop-opacity="0"/></radialGradient>
+  </defs>
+  <g stroke="#0d2a1c" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    <!-- beam: a heartbeat line with a glow -->
+    <circle cx="210" cy="106" r="36" fill="url(#hr-glow)" stroke="none"/>
+    <path d="M184 106 L197 106 L205 82 L216 130 L225 92 L232 106 L246 106" fill="none" stroke="#0d2a1c" stroke-width="15"/>
+    <path d="M184 106 L197 106 L205 82 L216 130 L225 92 L232 106 L246 106" fill="none" stroke="#d9ff4a" stroke-width="7"/>
+    <g transform="translate(-6 12) scale(.9) rotate(-14 118 128)">
+      <!-- grip -->
+      <path d="M80 146 L112 146 L100 206 Q98 214 90 214 L70 214 Q62 214 64 206 Z" fill="#ff7a59"/>
+      <path d="M74 192 L98 192" fill="none" stroke-width="5"/>
+      <!-- trigger guard -->
+      <path d="M112 150 Q126 150 126 164 Q126 176 112 176 L106 176" fill="none" stroke-width="6"/>
+      <!-- rear fins -->
+      <path d="M72 106 L50 74 Q47 68 54 70 L98 98 Z" fill="#ff7a59"/>
+      <path d="M72 146 L52 174 Q49 180 56 177 L96 154 Z" fill="#ff7a59"/>
+      <!-- glass dome -->
+      <path d="M86 104 A22 22 0 0 1 130 104 Z" fill="url(#hr-glass)"/>
+      <!-- body -->
+      <ellipse cx="104" cy="126" rx="52" ry="30" fill="url(#hr-body)"/>
+      <path d="M70 118 Q104 106 138 118" fill="none" stroke="#ffffff" stroke-width="6" opacity=".9"/>
+      <circle cx="84" cy="132" r="6" fill="#ffd23f" stroke-width="5"/>
+      <!-- barrel with rings -->
+      <rect x="146" y="114" width="40" height="24" rx="10" fill="url(#hr-body)"/>
+      <ellipse cx="156" cy="126" rx="6" ry="18" fill="#ffd23f"/>
+      <ellipse cx="172" cy="126" rx="6" ry="18" fill="#ff7a59"/>
+      <!-- emitter -->
+      <path d="M186 116 L204 104 Q208 102 208 108 L208 144 Q208 150 204 148 L186 136 Z" fill="#ffd23f"/>
+    </g>
+    <!-- sparkles -->
+    <path d="M222 54 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 Z" fill="#ffffff" stroke-width="4"/>
+    <path d="M236 150 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3 Z" fill="#d9ff4a" stroke-width="4"/>
+  </g>
+  <!-- dome shine -->
+  <path d="M96 92 Q100 84 110 82" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".85" transform="translate(-6 12) scale(.9) rotate(-14 118 128)"/>
+</svg>

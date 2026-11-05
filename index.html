@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- BEGIN PAGE -->
-<title>Rep &amp; Ration</title>
+<title>HEALTH-RAY</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Recipes, workout plans and a daily tracker for food, water, weight and training.">
 <link rel="manifest" href="manifest.webmanifest">
@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Rep&amp;Ration">
+<meta name="apple-mobile-web-app-title" content="HEALTH-RAY">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -121,10 +121,10 @@ button, input, select { font: inherit; color: inherit; }
 .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--line); }
 .top .wrap { display: flex; align-items: center; gap: 20px; padding-block: 10px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); flex: none; }
-.brand-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--accent); display: grid; place-items: center; }
+.brand-mark { width: 46px; height: 36px; border-radius: 10px; background: radial-gradient(circle at 42% 40%, #2a8a5c, #155236); display: grid; place-items: center; flex: none; }
 .brand-name { font-family: var(--f-display); font-weight: 800; font-size: 1.15rem; letter-spacing: -.02em; }
 .brand-name span { color: var(--accent); }
-/* The barbell logo toggles a drop-down menu of every section; the pill on the right names the current page. */
+/* The ray gun logo toggles a drop-down menu of every section; the pill on the right names the current page. */
 .top .wrap.top-bar { justify-content: space-between; gap: 12px; padding-block: 9px; }
 .brand { border: 0; background: none; font: inherit; cursor: pointer; padding: 4px 8px 4px 4px; margin-left: -4px; border-radius: 12px; }
 .brand:hover { background: var(--sunk); }
@@ -729,6 +729,11 @@ body.calm-open { overflow: hidden; }
 .shop-list label { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; padding: 9px 0; cursor: pointer; align-items: baseline; }
 .shop-list input { accent-color: var(--accent); transform: translateY(2px); width: 20px; height: 20px; flex: none; }
 .shop-list .q { font-family: var(--f-mono); font-size: .9rem; margin-right: 6px; }
+.tip-safe { border-left: 4px solid var(--warn); }
+.safe-list { margin: 6px 0 6px; padding-left: 18px; display: grid; gap: 4px; font-size: .9rem; }
+.ex-start-l { font-size: .8rem; color: var(--accent); font-weight: 700; margin-top: 2px; }
+.ex-start .btn { margin-left: 6px; }
+.item-note { display: block; font-size: .78rem; color: var(--muted); line-height: 1.35; }
 .shop-list .from { display: block; font-size: .78rem; color: var(--muted); }
 .shop-list input:checked ~ span { color: var(--muted); text-decoration: line-through; }
 .shop-recipes li { gap: 10px; }
@@ -795,6 +800,23 @@ button.day:hover { transform: translateY(-2px); }
 footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size: .85rem; color: var(--muted); }
 .confirm { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
+
+/* Phone tab bar: the five places people go most, always one tap away. "More" opens the full section menu. */
+.bnav { display: none; }
+@media (max-width: 760px) {
+  body.has-bnav { --bnav-h: calc(62px + env(safe-area-inset-bottom, 0px)); padding-bottom: var(--bnav-h); }
+  body.has-bnav .bnav { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 25;
+    background: var(--surface); border-top: 1px solid var(--line); padding: 4px max(6px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(6px, env(safe-area-inset-left, 0px)); }
+  body.has-bnav .toast { bottom: calc(var(--bnav-h) + 12px); }
+  body.has-bnav .recipe-cta { bottom: calc(var(--bnav-h) + 8px); }
+  body.has-bnav .menu { max-height: calc(100vh - 64px - var(--bnav-h)); }
+}
+.bnav-i { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 54px; padding: 4px 2px; border: 0; background: none; border-radius: 12px;
+  color: var(--muted); font: 700 .72rem/1.1 var(--f-body); text-decoration: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.bnav-i svg { width: 24px; height: 24px; }
+.bnav-i[aria-current="page"], .bnav-i[aria-expanded="true"] { color: var(--accent); }
+.bnav-i[aria-current="page"] svg { background: var(--accent-soft); border-radius: 999px; padding: 2px 12px; box-sizing: content-box; }
+.bnav-i:active { background: var(--sunk); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 </style>
 </head>
@@ -802,10 +824,8 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
 <header class="top">
   <div class="wrap top-bar">
     <button class="brand" id="menu-btn" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu">
-      <span class="brand-mark" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--on-accent)" stroke-width="2.4" stroke-linecap="round"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg>
-      </span>
-      <span class="brand-name">Rep <span>&amp;</span> Ration</span>
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="20 40 232 176" width="45" height="34"><defs><linearGradient id="hr-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cdeedd"/></linearGradient><linearGradient id="hr-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b8f3ff"/><stop offset="1" stop-color="#36b6e0"/></linearGradient><radialGradient id="hr-glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e9ff7a" stop-opacity=".9"/><stop offset="1" stop-color="#e9ff7a" stop-opacity="0"/></radialGradient></defs><g stroke="#0d2a1c" stroke-width="7" stroke-linejoin="round" stroke-linecap="round"><circle cx="210" cy="106" r="36" fill="url(#hr-glow)" stroke="none"/><path d="M184 106 L197 106 L205 82 L216 130 L225 92 L232 106 L246 106" fill="none" stroke="#0d2a1c" stroke-width="15"/><path d="M184 106 L197 106 L205 82 L216 130 L225 92 L232 106 L246 106" fill="none" stroke="#d9ff4a" stroke-width="7"/><g transform="translate(-6 12) scale(.9) rotate(-14 118 128)"><path d="M80 146 L112 146 L100 206 Q98 214 90 214 L70 214 Q62 214 64 206 Z" fill="#ff7a59"/><path d="M74 192 L98 192" fill="none" stroke-width="5"/><path d="M112 150 Q126 150 126 164 Q126 176 112 176 L106 176" fill="none" stroke-width="6"/><path d="M72 106 L50 74 Q47 68 54 70 L98 98 Z" fill="#ff7a59"/><path d="M72 146 L52 174 Q49 180 56 177 L96 154 Z" fill="#ff7a59"/><path d="M86 104 A22 22 0 0 1 130 104 Z" fill="url(#hr-glass)"/><ellipse cx="104" cy="126" rx="52" ry="30" fill="url(#hr-body)"/><path d="M70 118 Q104 106 138 118" fill="none" stroke="#ffffff" stroke-width="6" opacity=".9"/><circle cx="84" cy="132" r="6" fill="#ffd23f" stroke-width="5"/><rect x="146" y="114" width="40" height="24" rx="10" fill="url(#hr-body)"/><ellipse cx="156" cy="126" rx="6" ry="18" fill="#ffd23f"/><ellipse cx="172" cy="126" rx="6" ry="18" fill="#ff7a59"/><path d="M186 116 L204 104 Q208 102 208 108 L208 144 Q208 150 204 148 L186 136 Z" fill="#ffd23f"/></g><path d="M222 54 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 Z" fill="#ffffff" stroke-width="4"/><path d="M236 150 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3 Z" fill="#d9ff4a" stroke-width="4"/></g><path d="M96 92 Q100 84 110 82" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".85" transform="translate(-6 12) scale(.9) rotate(-14 118 128)"/></svg></span>
+      <span class="brand-name">HEALTH<span>-</span>RAY</span>
       <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <span class="cur-page" id="cur-page"></span>
@@ -829,10 +849,17 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
 
 <footer>
   <div class="wrap">
-    Rep &amp; Ration offers general guidance, not medical advice. Check with a doctor or registered dietitian before starting a new diet or training program, especially if you are pregnant or have a health condition. Your entries are saved only in this browser.
+    HEALTH-RAY offers general guidance, not medical advice. Check with a doctor or registered dietitian before starting a new diet or training program, especially if you are pregnant or have a health condition. Your entries are saved only in this browser.
     <nav class="foot-links" aria-label="Help"><a href="#guide">Guide</a> · <a href="#sources">Links &amp; facts</a> · <a href="#report">Report an issue</a></nav>
   </div>
 </footer>
+<nav class="bnav" id="bnav" aria-label="Main">
+  <a class="bnav-i" href="#today" data-b="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Today</a>
+  <a class="bnav-i" href="#log" data-b="log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg>Log</a>
+  <a class="bnav-i" href="#recipes" data-b="recipes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-1.5 1-2 1-3.5M12 7c0-1.5 1-2 1-3.5M16 7c0-1.5 1-2 1-3.5"/></svg>Recipes</a>
+  <a class="bnav-i" href="#workouts" data-b="workouts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg>Workouts</a>
+  <button class="bnav-i" type="button" id="bnav-more" aria-expanded="false" aria-controls="site-menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>More</button>
+</nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -847,7 +874,7 @@ const RECIPES = [
     per: { kcal: 430, p: 29, c: 48, f: 13, fiber: 9, sugar: 9 },
     blurb: 'A no-cook breakfast you mix in five minutes the night before. Whole-milk Greek yogurt and a clean, unflavored whey push it to about 30 g of protein.',
     ingredients: [[1, 'cup', 'rolled oats'], [1, 'cup', 'plain whole-milk Greek yogurt'], [0.75, 'cup', 'unsweetened almond milk (just almonds and water) or whole milk'],
-      [2, 'tbsp', 'chia seeds'], [1, 'scoop', 'unflavored grass-fed whey or collagen (about 30 g; no sweeteners or gums)'], [1, 'tsp', 'vanilla extract'], [1, 'cup', 'mixed berries, fresh or frozen'],
+      [2, 'tbsp', 'chia seeds'], [1, 'scoop', 'unflavored grass-fed whey (about 30 g; no sweeteners or gums; collagen isn\'t vegetarian)'], [1, 'tsp', 'vanilla extract'], [1, 'cup', 'mixed berries, fresh or frozen'],
       [null, '', 'pure monk fruit sweetener to taste, or 1 tsp coconut sugar (optional)'], [null, '', 'pinch of salt and cinnamon']],
     steps: ['In a bowl, whisk the protein powder into the almond milk until no lumps remain.',
       'Stir in the Greek yogurt, oats, chia seeds, sweetener (if using), vanilla, salt and cinnamon. The berries add most of the sweetness.',
@@ -904,7 +931,7 @@ const RECIPES = [
       [1, '', 'bell pepper, diced'], [3, 'clove', 'garlic, minced'], [2, 'tbsp', 'chili powder'], [1, 'tsp', 'ground cumin'],
       [1, 'tsp', 'smoked paprika'], [1, 'can', 'crushed tomatoes (28 oz)'], [2, 'can', 'black beans (15 oz), rinsed'],
       [1, 'cup', 'bone broth or low-sodium chicken stock (no added sugar)'], [0.75, 'tsp', 'salt']],
-    steps: ['Heat the oil in a large pot over medium-high. Add the turkey and cook, breaking it up, until browned, about 7 minutes.',
+    steps: ['Heat the oil in a large pot over medium-high. Add the turkey and cook, breaking it up, until browned and 165°F (74°C) on a thermometer, about 7 minutes.',
       'Add the onion and bell pepper. Cook 5 minutes until softened, then stir in the garlic for 30 seconds.',
       'Add the chili powder, cumin and paprika and stir for 1 minute to toast the spices.',
       'Add the tomatoes, beans, broth and salt. Bring to a boil, then lower to a simmer.',
@@ -996,7 +1023,7 @@ const RECIPES = [
       [0.25, 'cup', 'coconut aminos'], [2, 'tsp', 'coconut sugar'], [1, 'tbsp', 'arrowroot powder'], [3, 'clove', 'garlic, minced'],
       [1, 'tbsp', 'fresh ginger, grated'], [1, 'tbsp', 'avocado oil'], [1, 'tsp', 'toasted sesame oil, to finish'], [3, 'cup', 'cooked brown rice'], [null, '', 'sliced green onion and sesame seeds to serve']],
     steps: ['Whisk the coconut aminos, coconut sugar, arrowroot, garlic, ginger and 1/3 cup water to make the sauce.',
-      'Heat half the oil in a large skillet or wok over high heat. Sear the beef in one layer for 1–2 minutes per side, then remove.',
+      'Heat half the oil in a large skillet or wok over high heat. Sear the beef in one layer for 1–2 minutes per side, until browned, then remove. Thin strips reach the safe 145°F (63°C) quickly and finish cooking in the sauce.',
       'Add the remaining oil and the broccoli with 2 tbsp water. Cover and steam-fry 3 minutes until bright green.',
       'Return the beef, pour in the sauce and toss for 1–2 minutes until it thickens and coats everything.',
       'Drizzle with the toasted sesame oil and serve over the rice with green onion and sesame seeds.'],
@@ -1008,7 +1035,7 @@ const RECIPES = [
     ingredients: [[16, 'oz', '93% lean ground turkey'], [2, 'tsp', 'chili powder'], [1, 'tsp', 'ground cumin'],
       [0.5, 'tsp', 'garlic powder'], [0.5, 'tsp', 'salt'], [2, '', 'heads butter lettuce'], [1, 'cup', 'pico de gallo'],
       [0.5, 'cup', 'shredded cheddar'], [0.5, 'cup', 'plain whole-milk Greek yogurt'], [1, '', 'avocado, diced'], [1, '', 'lime']],
-    steps: ['Brown the turkey in a nonstick skillet over medium-high, breaking it up, about 7 minutes.',
+    steps: ['Brown the turkey in a nonstick skillet over medium-high, breaking it up, until it reaches 165°F (74°C), about 7 minutes.',
       'Add the chili powder, cumin, garlic powder, salt and 1/4 cup water. Simmer 2–3 minutes until saucy.',
       'Separate the lettuce leaves and pat them dry. Use two leaves together for sturdier cups.',
       'Fill each cup with turkey, then top with pico, cheddar, avocado and a spoon of yogurt.',
@@ -1023,7 +1050,7 @@ const RECIPES = [
       [0.5, 'tsp', 'salt'], [6, '', 'small corn tortillas (3-ingredient: corn lime salt)'], [1, '', 'lime'], [0.25, 'cup', 'fresh cilantro, chopped']],
     steps: ['Heat the oven to 425°F (220°C). Mix the chili powder, cumin, paprika and salt.',
       'Toss the peppers and onion with the oil and half the spice mix. Roast 8 minutes.',
-      'Toss the shrimp with the remaining spices, add to the pan and roast 6–7 minutes until pink and opaque.',
+      'Toss the shrimp with the remaining spices, add to the pan and roast 6–7 minutes until pink and opaque all the way through.',
       'Warm the tortillas in a dry pan or wrapped in foil in the oven.',
       'Squeeze the lime over the pan, scatter the cilantro, and fill the tortillas at the table.'],
     tip: 'Thawing frozen shrimp? Put it in a colander under cold running water for 5–8 minutes, then pat it very dry.' },
@@ -1045,7 +1072,7 @@ const RECIPES = [
     per: { kcal: 253, p: 12, c: 15, f: 16, fiber: 5, sugar: 1 },
     blurb: 'Twelve no-bake bites. Two make a serving: a quick snack before training or a better dessert.',
     ingredients: [[1, 'cup', 'rolled oats'], [0.5, 'cup', 'natural peanut butter'], [3, 'tbsp', 'pure monk fruit syrup (no erythritol), or 2 tbsp coconut sugar + 1 tbsp water'],
-      [1, 'scoop', 'unflavored grass-fed whey or collagen (about 30 g; no sweeteners or gums)'], [1, 'tsp', 'vanilla extract'], [2, 'tbsp', 'ground flaxseed'], [1.5, 'oz', '85% dark chocolate, finely chopped']],
+      [1, 'scoop', 'unflavored grass-fed whey (about 30 g; no sweeteners or gums; collagen isn\'t vegetarian)'], [1, 'tsp', 'vanilla extract'], [2, 'tbsp', 'ground flaxseed'], [1.5, 'oz', '85% dark chocolate, finely chopped']],
     steps: ['Stir the peanut butter and monk fruit syrup together in a bowl until smooth. Warm 15 seconds in the microwave if stiff.',
       'Add the oats, protein powder, flaxseed and chopped chocolate. Mix until evenly combined. If the mix is too dry to roll, add 1–2 tbsp milk.',
       'If the mixture is crumbly, add water a teaspoon at a time until it holds together when squeezed.',
@@ -1073,7 +1100,7 @@ const RECIPES = [
       [2, 'tbsp', 'fresh parsley, chopped']],
     steps: ['Microwave the diced potatoes in a covered bowl with a splash of water for 4 minutes, until just tender. Drain well.',
       'Toss the steak with half the paprika, garlic powder, salt and pepper.',
-      'Heat the oil in a large cast-iron or nonstick skillet over medium-high. Sear the steak 2–3 minutes, turning once, then move it to a plate.',
+      'Heat the oil in a large cast-iron or nonstick skillet over medium-high. Sear the steak 2–3 minutes, turning once, until it reaches 145°F (63°C), then move it to a plate to rest.',
       'Add the potatoes to the pan and cook 6–8 minutes without stirring too often, until browned and crisp. Add the pepper, onion and remaining seasoning and cook 3 minutes more.',
       'Return the steak to the pan. Make four wells, crack an egg into each, cover and cook 3–4 minutes until the whites are set.',
       'Scatter with parsley and serve straight from the pan.'],
@@ -1159,7 +1186,7 @@ const RECIPES = [
       [1, 'tbsp', 'olive oil'], [1, 'tbsp', 'butter'], [4, 'clove', 'garlic, thinly sliced'], [0.25, 'tsp', 'red pepper flakes'],
       [2, 'tbsp', 'lemon juice'], [0.25, 'cup', 'grated parmesan'], [2, 'tbsp', 'fresh parsley, chopped'], [null, '', 'salt and black pepper to taste']],
     steps: ['Pat the shrimp dry and season with salt and pepper.',
-      'Heat the oil in a large skillet over medium-high. Cook the shrimp 1–2 minutes per side until pink, then move to a plate.',
+      'Heat the oil in a large skillet over medium-high. Cook the shrimp 1–2 minutes per side until pink and opaque all the way through, then move to a plate.',
       'Lower the heat to medium. Melt the butter, add the garlic and pepper flakes and cook 1 minute until fragrant.',
       'Add the zucchini and toss 1–2 minutes, just until warm. Overcooking makes it watery.',
       'Return the shrimp, add the lemon juice and toss. Top with parmesan and parsley.'],
@@ -1212,7 +1239,7 @@ const RECIPES = [
     steps: ['Steam or boil the green beans 4 minutes until bright and crisp-tender. Drain.',
       'Toast the almonds in a dry skillet over medium for 2–3 minutes, then set aside.',
       'Pat the cod dry and season with the salt, pepper and paprika. Heat the oil in the skillet over medium-high and cook the cod 3–4 minutes until golden underneath.',
-      'Flip the fish, add the butter and garlic, and spoon the foaming butter over the fish for 2–3 minutes until it flakes easily.',
+      'Flip the fish, add the butter and garlic, and spoon the foaming butter over the fish for 2–3 minutes until it flakes easily and reaches 145°F (63°C).',
       'Add the lemon juice and green beans, toss them in the pan sauce, and serve topped with almonds and parsley.'],
     tip: 'Any firm white fish works: haddock, halibut or pollock. Thinner fillets need a minute less.' },
   { id: 'chicken-cauliflower-traybake', title: 'Spiced Chicken & Cauliflower Tray Bake', meal: 'Dinner',
@@ -1236,7 +1263,7 @@ const RECIPES = [
       [1, 'tsp', 'dried rosemary'], [0.5, 'tsp', 'red pepper flakes'], [2, 'can', 'cannellini beans (15 oz), rinsed'],
       [1, 'cup', 'bone broth or low-sodium chicken stock (no added sugar)'], [6, 'cup', 'kale, stems removed and chopped'], [1, 'tbsp', 'lemon juice'],
       [0.25, 'cup', 'grated parmesan'], [0.75, 'tsp', 'salt']],
-    steps: ['Heat the oil in a large deep skillet over medium-high. Brown the turkey with the salt, breaking it up, 6–7 minutes.',
+    steps: ['Heat the oil in a large deep skillet over medium-high. Brown the turkey with the salt, breaking it up, 6–7 minutes, until it reaches 165°F (74°C).',
       'Add the onion and cook 4 minutes until soft. Stir in the garlic, rosemary and pepper flakes for 30 seconds.',
       'Add the beans and broth and simmer 5 minutes, mashing a few beans against the pan to thicken it.',
       'Stir in the kale and cook 3–4 minutes until tender. Finish with the lemon juice and parmesan.'],
@@ -1249,7 +1276,7 @@ const RECIPES = [
       [1, 'cup', 'fresh basil leaves, packed'], [2, 'tbsp', 'pine nuts'], [2, 'tbsp', 'grated parmesan'], [1, 'clove', 'garlic'],
       [1.5, 'tbsp', 'extra-virgin olive oil'], [1, 'tbsp', 'lemon juice'], [0.5, 'tsp', 'salt']],
     steps: ['Heat the oven to 425°F (220°C). Toss the broccolini with 1 teaspoon of oil and a pinch of salt on a sheet pan.',
-      'Add the salmon, skin side down, and season with salt. Roast 12–15 minutes until the salmon flakes and the broccolini tips are crisp.',
+      'Add the salmon, skin side down, and season with salt. Roast 12–15 minutes until the salmon flakes easily and reaches 145°F (63°C), and the broccolini tips are crisp.',
       'Meanwhile, blend the basil, pine nuts, parmesan, garlic, extra-virgin olive oil, lemon juice and remaining salt with 1–2 tablespoons of water until smooth.',
       'Spoon the pesto over the salmon and broccolini to serve.'],
     tip: 'Leftover pesto keeps 3 days in a jar with a thin layer of oil on top, or freeze it in an ice cube tray.' },
@@ -1282,7 +1309,7 @@ const RECIPES = [
       [1, 'tsp', 'paprika'], [1, 'tsp', 'salt'], [0.5, 'tsp', 'black pepper'], [0.75, 'cup', 'plain whole-milk Greek yogurt'],
       [2, 'tbsp', 'fresh dill or chives, chopped'], [2, '', 'English cucumbers, cut into spears']],
     steps: ['Heat the oven to 375°F (190°C). Rub the turkey with the oil, rosemary, garlic powder, paprika, salt and pepper.',
-      'Roast 35–45 minutes until it reaches 160°F (71°C) inside. It will rise to 165°F (74°C) as it rests. Rest 15 minutes, then chill completely.',
+      'Roast 35–45 minutes until the thickest part reaches 165°F (74°C). Rest 15 minutes, then chill completely.',
       'Slice the cold turkey as thinly as you can.',
       'Stir the herbs and a pinch of salt into the yogurt.',
       'Spread a little yogurt on each turkey slice, add a cucumber spear and roll up.'],
@@ -1330,20 +1357,20 @@ const RECIPES = [
       [1, 'tsp', 'smoked paprika'], [0.5, 'tsp', 'salt'], [2, 'cup', 'baby spinach'], [4, '', 'eggs']],
     steps: ['Heat the oil in a large skillet over medium. Add the sweet potato with 2 tbsp water, cover and cook 8 minutes, stirring once.',
       'Uncover, add the onion and cook 5 minutes more, until the potatoes start to brown.',
-      'Push everything to the side, add the turkey, paprika and salt, and cook, breaking it up, until no longer pink, about 6 minutes. Stir together.',
+      'Push everything to the side, add the turkey, paprika and salt, and cook, breaking it up, until it reaches 165°F (74°C), about 6 minutes. Stir together.',
       'Stir in the spinach until wilted. Make 4 wells, crack an egg into each, cover and cook 4–5 minutes until the whites are set.'],
     tip: 'Make the hash (without eggs) on Sunday; reheat a portion in a pan and fry fresh eggs on top each morning.' },
   { id: 'savory-oats-jammy-egg', title: 'Savory Oats with Greens & a Jammy Egg', meal: 'Breakfast', how: 'stove',
-    tags: ['Vegetarian', 'High protein', 'Sugar free', 'Minimally processed'], prep: 5, cook: 10, servings: 1,
-    per: { kcal: 336, p: 24, c: 29, f: 14, fiber: 5, sugar: 1 },
+    tags: ['Vegetarian', 'Sugar free', 'Minimally processed'], prep: 5, cook: 10, servings: 1,
+    per: { kcal: 305, p: 14, c: 32, f: 13, fiber: 5, sugar: 1 },
     blurb: 'Oats cooked in broth like a risotto, with spinach, parmesan and a soft-boiled egg. Proof that oatmeal doesn\'t have to be sweet.',
-    ingredients: [[0.5, 'cup', 'rolled oats'], [1, 'cup', 'bone broth or water'], [1, 'cup', 'baby spinach'], [1, 'tbsp', 'grated parmesan'], [1, '', 'egg'],
+    ingredients: [[0.5, 'cup', 'rolled oats'], [1, 'cup', 'vegetable stock or water'], [1, 'cup', 'baby spinach'], [1, 'tbsp', 'grated parmesan'], [1, '', 'egg'],
       [1, 'tsp', 'olive oil'], [null, '', 'black pepper and red pepper flakes to taste']],
     steps: ['Lower the egg into simmering water and cook 6½ minutes, then cool it in cold water and peel.',
-      'Meanwhile simmer the oats in the broth for about 5 minutes, stirring, until creamy.',
+      'Meanwhile simmer the oats in the stock for about 5 minutes, stirring, until creamy.',
       'Stir in the spinach until it wilts, then the parmesan.',
       'Spoon into a bowl, drizzle with the oil, add pepper and flakes, and top with the halved egg.'],
-    tip: 'With bone broth this is about 24 g of protein; with water it\'s about 14 g. Use certified gluten-free oats if you avoid gluten.' },
+    tip: 'If you eat meat, cooking the oats in bone broth adds about 10 g of protein. Use certified gluten-free oats if you avoid gluten.' },
   { id: 'lemony-chicken-lentil-salad', title: 'Lemony Chicken & Lentil Salad', meal: 'Lunch', how: 'stove',
     tags: ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Meal prep'], prep: 15, cook: 25, servings: 4,
     per: { kcal: 334, p: 29, c: 26, f: 13, fiber: 7, sugar: 3 },
@@ -1368,7 +1395,7 @@ const RECIPES = [
       'Whisk the oil, vinegar, Dijon and a pinch of salt and pepper.',
       'Arrange the potatoes, beans, tomatoes, olives, halved eggs and tuna on two plates and spoon the dressing over.'],
     tip: 'Pack the parts separately with the dressing on the side and it keeps 3 days.' },
-  // ---- Desserts: no refined sugar; sweetness from fruit, pure monk fruit or a little coconut sugar ----
+  // ---- Desserts: no refined sugar; sweetness from fruit, pure monk fruit, a little coconut sugar, or small amounts of raw honey or pure maple syrup ----
   { id: 'avocado-chocolate-mousse', title: 'Dark Chocolate Avocado Mousse', meal: 'Dessert', how: 'none',
     tags: ['Vegetarian', 'Vegan', 'Whole foods', 'Minimally processed', 'Low carb', 'No cook'], prep: 10, cook: 0, extra: 'Chill 30 min', servings: 4,
     per: { kcal: 176, p: 3, c: 11, f: 16, fiber: 8, sugar: 1 },
@@ -1417,7 +1444,7 @@ const RECIPES = [
       'Cool 10 minutes on the tray before moving.'],
     tip: 'Press a square of 85% dark chocolate into each cookie straight from the oven for a chocolate version (check the label for soy lecithin if you avoid soy).' },
   { id: 'berry-yogurt-bark', title: 'Frozen Berry Yogurt Bark', meal: 'Dessert', how: 'none',
-    tags: ['Vegetarian', 'High protein', 'Whole foods', 'Minimally processed', 'Low carb', 'No cook', 'Meal prep'], prep: 10, cook: 0, extra: 'Freeze 2 h', servings: 6,
+    tags: ['Vegetarian', 'Whole foods', 'Minimally processed', 'Low carb', 'No cook', 'Meal prep'], prep: 10, cook: 0, extra: 'Freeze 2 h', servings: 6,
     per: { kcal: 112, p: 8, c: 7, f: 6, fiber: 1, sugar: 4 },
     blurb: 'Thick Greek yogurt frozen in a thin sheet with berries and pistachios, then snapped into pieces. Cold, crunchy and barely sweet.',
     ingredients: [[2, 'cup', 'plain whole-milk Greek yogurt'], [1, 'tsp', 'vanilla extract'], [null, '', 'pure monk fruit sweetener, to taste (optional)'],
@@ -1459,7 +1486,7 @@ const RECIPES = [
     steps: ['Pat the salmon very dry, especially the skin, and salt both sides.',
       'Heat a dry stainless or cast-iron skillet over medium-high. Lay the fillets in skin side down and press each for 10 seconds so the skin stays flat.',
       'Cook 6–7 minutes without moving, until the flesh is opaque two-thirds of the way up.',
-      'Flip, add the butter, and cook 1–2 minutes as it foams and turns nut-brown. Spoon it over the fish.',
+      'Flip, add the butter, and cook 1–2 minutes as it foams and turns nut-brown, until the fish flakes easily and reaches 145°F (63°C). Spoon the butter over the fish.',
       'Serve skin side up with the brown butter poured over.'],
     tip: 'Wild salmon is leaner and cooks faster, so start checking early. USDA advises 145°F (63°C), or until the flesh is opaque and flakes easily.' },
   { id: 'beef-liver-burgers', title: 'Beef & Liver Burgers', meal: 'Lunch', how: 'stove',
@@ -1483,6 +1510,204 @@ const RECIPES = [
       'Roast 35–40 minutes, until the skin is deep golden and the meat reads 175°F (80°C) at the bone.',
       'Rest 5 minutes before serving.'],
     tip: 'Salt the thighs the night before and leave them uncovered in the fridge for the crispiest skin.' },
+  { id: 'black-bean-sweet-potato-tacos', title: 'Black Bean & Sweet Potato Tacos', meal: 'Dinner',
+    tags: ['Vegetarian', 'Vegan', 'Minimally processed', 'Meal prep'], prep: 10, cook: 25, servings: 4,
+    per: { kcal: 385, p: 10, c: 67, f: 11, fiber: 15, sugar: 6 },
+    blurb: 'Smoky roasted sweet potato and spiced black beans in warm corn tortillas. A budget weeknight dinner with no meat at all.',
+    ingredients: [[2, '', 'sweet potato, peeled and cut into 1/2-inch cubes'], [1, 'tbsp', 'avocado oil'], [1, 'tsp', 'chili powder'],
+      [1, 'tsp', 'ground cumin'], [0.5, 'tsp', 'salt'], [1, 'can', 'black beans (15 oz), rinsed'], [8, '', 'corn tortillas'],
+      [1, '', 'avocado, sliced'], [0.5, 'cup', 'pico de gallo'], [1, '', 'lime, cut into wedges'], [0.25, 'cup', 'fresh cilantro, chopped']],
+    steps: ['Heat the oven to 425°F (220°C). Toss the sweet potato with the oil, half the chili powder, half the cumin and half the salt on a sheet pan.',
+      'Roast 22–25 minutes, turning once, until browned at the edges and tender inside.',
+      'Meanwhile, warm the beans in a small pot with the remaining spices, salt and 2 tbsp water, mashing a few with a fork, about 5 minutes.',
+      'Warm the tortillas in a dry skillet for 30 seconds a side, or wrapped in foil in the oven for the last 5 minutes.',
+      'Fill each tortilla with beans and sweet potato, then top with avocado, pico de gallo, cilantro and a squeeze of lime.'],
+    tip: 'Roast a double batch of sweet potato. It keeps 4 days and turns into a quick lunch bowl with rice and greens.' },
+  { id: 'turmeric-tofu-scramble', title: 'Turmeric Tofu Scramble', meal: 'Breakfast',
+    tags: ['Vegetarian', 'Vegan', 'High protein', 'Low carb', 'Sugar free', 'Minimally processed'], prep: 5, cook: 10, servings: 2,
+    per: { kcal: 442, p: 37, c: 16, f: 30, fiber: 10, sugar: 4 },
+    blurb: 'A golden, eggless scramble with peppers and spinach. Plant-based protein in 15 minutes.',
+    ingredients: [[14, 'oz', 'extra-firm tofu, drained and patted dry'], [1, 'tbsp', 'olive oil'], [0.5, '', 'small yellow onion, diced'],
+      [1, '', 'red bell pepper, diced'], [2, 'cup', 'baby spinach'], [0.5, 'tsp', 'turmeric'], [0.5, 'tsp', 'garlic powder'],
+      [0.5, 'tsp', 'salt'], [0.25, 'tsp', 'black pepper'], [0.5, '', 'avocado, sliced']],
+    steps: ['Heat the oil in a nonstick skillet over medium. Cook the onion and bell pepper 4–5 minutes until soft.',
+      'Crumble the tofu into the pan with your hands, in pieces about the size of scrambled egg curds.',
+      'Sprinkle over the turmeric, garlic powder, salt and pepper. Stir and cook 4–5 minutes until the tofu is hot and evenly golden.',
+      'Add the spinach and stir for 1 minute until it wilts.',
+      'Serve topped with the avocado.'],
+    tip: 'A pinch of black salt (kala namak) gives it an eggy flavor if you have it.' },
+  { id: 'chickpea-quinoa-power-bowl', title: 'Crispy Chickpea & Quinoa Power Bowls', meal: 'Lunch',
+    tags: ['Vegetarian', 'Vegan', 'Meal prep', 'Sugar free', 'Minimally processed'], prep: 15, cook: 25, servings: 4,
+    per: { kcal: 456, p: 18, c: 64, f: 16, fiber: 16, sugar: 5 },
+    blurb: 'Roasted paprika chickpeas, quinoa, kale and crunchy vegetables with a lemon-tahini dressing. Four packed lunches.',
+    ingredients: [[2, 'can', 'chickpeas (15 oz), rinsed and patted dry'], [1, 'tbsp', 'olive oil'], [1, 'tsp', 'smoked paprika'],
+      [0.5, 'tsp', 'salt'], [3, 'cup', 'cooked quinoa'], [4, 'cup', 'kale, stems removed and chopped'], [0.5, '', 'english cucumber, diced'],
+      [1, 'cup', 'cherry tomatoes, halved'], [0.25, '', 'red onion, thinly sliced'], [3, 'tbsp', 'tahini'], [2, 'tbsp', 'lemon juice'],
+      [1, 'clove', 'garlic, grated']],
+    steps: ['Heat the oven to 425°F (220°C). Toss the chickpeas with the oil, paprika and half the salt on a sheet pan.',
+      'Roast 20–25 minutes, shaking the pan once, until crisp on the outside.',
+      'Whisk the tahini, lemon juice, garlic, remaining salt and 3 tbsp warm water until smooth and pourable.',
+      'Massage the kale with 1 tbsp of the dressing for 30 seconds so it softens.',
+      'Divide the quinoa, kale, cucumber, tomatoes and onion between four containers. Top with the chickpeas and drizzle with the rest of the dressing.'],
+    tip: 'Pack the dressing separately if you are making these more than a day ahead, so the chickpeas stay crunchy.' },
+  { id: 'red-lentil-coconut-dal', title: 'Red Lentil Coconut Dal', meal: 'Dinner',
+    tags: ['Vegetarian', 'Vegan', 'Meal prep', 'Sugar free', 'Minimally processed'], prep: 10, cook: 25, servings: 4,
+    per: { kcal: 553, p: 24, c: 82, f: 17, fiber: 12, sugar: 6 },
+    blurb: 'Creamy, gently spiced lentils that cook in one pot in 25 minutes. One of the cheapest meals in the library.',
+    ingredients: [[1.5, 'cup', 'dry red lentils, rinsed'], [1, 'tbsp', 'olive oil'], [1, '', 'yellow onion, diced'],
+      [3, 'clove', 'garlic, minced'], [1, 'tbsp', 'fresh ginger, grated'], [1, 'tbsp', 'curry powder'], [0.5, 'tsp', 'turmeric'],
+      [1, 'can', 'diced tomatoes (14.5 oz)'], [1, 'cup', 'full-fat coconut milk'], [3, 'cup', 'vegetable stock'], [3, 'cup', 'baby spinach'],
+      [0.75, 'tsp', 'salt'], [1, '', 'lemon'], [2, 'cup', 'cooked basmati rice']],
+    steps: ['Heat the oil in a large pot over medium. Cook the onion 6 minutes until soft and golden.',
+      'Add the garlic, ginger, curry powder and turmeric and stir for 1 minute until fragrant.',
+      'Add the lentils, tomatoes, coconut milk, stock and salt. Bring to a boil, then lower to a simmer.',
+      'Simmer 18–20 minutes, stirring often so it does not stick, until the lentils have broken down and the dal is thick.',
+      'Stir in the spinach until wilted, squeeze in the lemon and taste for salt. Serve over the rice.'],
+    tip: 'Dal thickens as it sits. Loosen leftovers with a splash of water or stock when you reheat them.' },
+  { id: 'crispy-roasted-chickpeas', title: 'Crispy Roasted Chickpeas', meal: 'Snack',
+    tags: ['Vegetarian', 'Vegan', 'Meal prep', 'Sugar free', 'Minimally processed'], prep: 5, cook: 30, servings: 4,
+    per: { kcal: 213, p: 9, c: 28, f: 8, fiber: 9, sugar: 1 },
+    blurb: 'A crunchy, salty snack with fiber and plant protein, ready to grab instead of chips.',
+    ingredients: [[2, 'can', 'chickpeas (15 oz), rinsed and patted very dry'], [1.5, 'tbsp', 'olive oil'], [1, 'tsp', 'smoked paprika'],
+      [0.5, 'tsp', 'garlic powder'], [0.5, 'tsp', 'salt']],
+    steps: ['Heat the oven to 425°F (220°C). Roll the chickpeas in a clean towel to dry them well and rub off any loose skins.',
+      'Toss with the oil on a sheet pan and spread out in one layer.',
+      'Roast 25–30 minutes, shaking the pan every 10 minutes, until deep golden and crunchy.',
+      'Toss with the paprika, garlic powder and salt while still hot. Cool completely on the pan so they stay crisp.'],
+    tip: 'Store loosely covered at room temperature for up to 3 days. A sealed jar makes them soft.' },
+  { id: 'apple-almond-butter-crunch', title: 'Apple Slices with Almond Butter & Hemp', meal: 'Snack',
+    tags: ['Vegetarian', 'Vegan', 'No cook', 'Whole foods', 'Minimally processed'], prep: 3, cook: 0, servings: 1,
+    per: { kcal: 297, p: 9, c: 30, f: 19, fiber: 7, sugar: 19 },
+    blurb: 'Crisp apple, a smear of almond butter and a sprinkle of hemp seeds. Three minutes, and it keeps you full until dinner.',
+    ingredients: [[1, '', 'crisp apple, cored and sliced'], [1.5, 'tbsp', 'almond butter'], [1, 'tbsp', 'hemp seeds'], [null, '', 'pinch of cinnamon']],
+    steps: ['Core the apple and slice it into rings or wedges.',
+      'Spread each slice with a little almond butter.',
+      'Sprinkle with the hemp seeds and a pinch of cinnamon.'],
+    tip: 'Squeeze a little lemon over the slices if you are packing them, so they don\'t brown.' },
+  { id: 'hummus-veggie-plate', title: 'Classic Hummus & Veggie Plate', meal: 'Snack',
+    tags: ['Vegetarian', 'Vegan', 'No cook', 'Meal prep', 'Sugar free', 'Minimally processed'], prep: 10, cook: 0, servings: 4,
+    per: { kcal: 240, p: 7, c: 23, f: 15, fiber: 7, sugar: 5 },
+    blurb: 'Smooth homemade hummus in five minutes, with crunchy vegetables for dipping. Cheaper and fresher than store-bought.',
+    ingredients: [[1, 'can', 'chickpeas (15 oz), rinsed'], [3, 'tbsp', 'tahini'], [2, 'tbsp', 'lemon juice'], [1, 'clove', 'garlic'],
+      [2, 'tbsp', 'extra-virgin olive oil'], [0.25, 'tsp', 'ground cumin'], [0.5, 'tsp', 'salt'], [2, '', 'carrots, cut into sticks'],
+      [1, '', 'red bell pepper, sliced'], [0.5, '', 'english cucumber, sliced']],
+    steps: ['Blend the tahini and lemon juice in a food processor for 1 minute until thick and creamy.',
+      'Add the chickpeas, garlic, cumin, salt and 2 tbsp cold water. Blend 2–3 minutes, scraping down the sides, until very smooth.',
+      'With the motor running, drizzle in 1 tbsp of the oil. Add more water a spoonful at a time if it is too thick.',
+      'Spoon into a bowl, swirl the top and drizzle with the remaining oil.',
+      'Serve with the carrot, pepper and cucumber for dipping.'],
+    tip: 'For the smoothest hummus, pinch the skins off the chickpeas first. It takes 5 minutes and is worth it.' },
+  { id: 'chocolate-banana-nice-cream', title: 'Chocolate Banana Nice Cream', meal: 'Dessert',
+    tags: ['Vegetarian', 'Vegan', 'No cook', 'Minimally processed'], prep: 5, cook: 0, extra: 'Freeze bananas 4 h or overnight', servings: 2,
+    per: { kcal: 165, p: 4, c: 30, f: 6, fiber: 5, sugar: 12 },
+    blurb: 'Frozen bananas blend into soft-serve. Cocoa and almond butter make it taste like a chocolate shake, with no added sugar.',
+    ingredients: [[2, '', 'ripe bananas, sliced and frozen'], [1, 'tbsp', 'cocoa powder, unsweetened'], [1, 'tbsp', 'almond butter'],
+      [0.25, 'cup', 'unsweetened almond milk'], [null, '', 'pinch of salt']],
+    steps: ['Peel and slice the bananas, then freeze them in a bag for at least 4 hours.',
+      'Add the frozen banana, cocoa, almond butter, salt and half the almond milk to a food processor or strong blender.',
+      'Blend, stopping to scrape down the sides, until it turns smooth and creamy like soft-serve. Add the rest of the milk only if it won\'t move.',
+      'Eat right away, or freeze 30 minutes in a container for a firmer scoop.'],
+    tip: 'Spotty, very ripe bananas make the sweetest nice cream.' },
+  { id: 'cinnamon-walnut-baked-pears', title: 'Cinnamon Walnut Baked Pears', meal: 'Dessert',
+    tags: ['Vegetarian', 'Minimally processed'], prep: 10, cook: 25, servings: 4,
+    per: { kcal: 209, p: 4, c: 30, f: 10, fiber: 6, sugar: 11 },
+    blurb: 'Soft, warm pear halves filled with buttery cinnamon walnuts and topped with a spoon of yogurt.',
+    ingredients: [[4, '', 'ripe pears, halved and cored'], [0.33, 'cup', 'walnuts, chopped'], [1, 'tbsp', 'butter, melted'],
+      [1, 'tsp', 'cinnamon'], [1, 'tsp', 'coconut sugar'], [4, 'tbsp', 'plain whole-milk Greek yogurt']],
+    steps: ['Heat the oven to 375°F (190°C). Set the pear halves cut-side up in a baking dish.',
+      'Mix the walnuts, melted butter, cinnamon and coconut sugar.',
+      'Spoon the walnut mixture into the hollow of each pear.',
+      'Add 3 tbsp water to the dish and bake 22–25 minutes, until the pears are tender when poked with a knife.',
+      'Serve warm, each half with a spoon of Greek yogurt and the juices from the dish.'],
+    tip: 'Firm-ripe pears such as Bosc or Anjou hold their shape best.' },
+  { id: 'butter-seared-pork-chops', title: 'Butter-Seared Pork Chops', meal: 'Dinner',
+    tags: ['Carnivore', 'High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Low carb'], prep: 5, cook: 15, extra: 'Rest 5 min', servings: 2,
+    per: { kcal: 452, p: 35, c: 0, f: 34, fiber: 0, sugar: 0 },
+    blurb: 'Thick boneless chops seared hard, then basted in foaming butter. Juicy every time if you use a thermometer.',
+    ingredients: [[2, '', 'boneless pork chops (6 oz each, about 1 inch thick)'], [1, 'tbsp', 'tallow or ghee'], [2, 'tbsp', 'butter'],
+      [0.5, 'tsp', 'flaky sea salt']],
+    steps: ['Pat the chops very dry and salt both sides. Leave them at room temperature for 15 minutes if you have time.',
+      'Heat the tallow in a heavy skillet over medium-high until it shimmers.',
+      'Sear the chops 4 minutes without moving them, until deep golden. Flip.',
+      'Add the butter. When it foams, tilt the pan and spoon the butter over the chops for 3–4 minutes, until they reach 145°F (63°C) in the center.',
+      'Rest 5 minutes, then slice and pour the pan butter over the top.'],
+    tip: 'Thin chops (under 3/4 inch) dry out fast. Buy them thick or cook them 2 minutes less per side.' },
+  { id: 'bone-broth-egg-drop-soup', title: 'Bone Broth Egg Drop Soup', meal: 'Breakfast',
+    tags: ['Carnivore', 'High protein', 'Sugar free', 'Minimally processed', 'Low carb'], prep: 2, cook: 8, servings: 2,
+    per: { kcal: 336, p: 33, c: 3, f: 21, fiber: 0, sugar: 1 },
+    blurb: 'Silky ribbons of egg in hot bone broth with a pat of butter. A warm, gentle breakfast or a light lunch in 10 minutes.',
+    ingredients: [[4, 'cup', 'bone broth'], [4, 'large', 'eggs'], [2, 'tbsp', 'butter'], [0.5, 'tsp', 'salt']],
+    steps: ['Bring the broth and salt to a gentle simmer in a saucepan.',
+      'Beat the eggs well in a jug.',
+      'Stir the broth in a slow circle, then pour in the eggs in a thin stream while you keep stirring, so they set in long ribbons.',
+      'Turn off the heat after 30 seconds. Stir in the butter and taste for salt.'],
+    tip: 'Not strict carnivore? Finish with sliced green onions and a few drops of toasted sesame oil.' },
+  { id: 'korean-beef-rice-bowls', title: 'Korean-Style Beef Rice Bowls', meal: 'Dinner',
+    tags: ['High protein', 'Meal prep', 'Minimally processed'], prep: 15, cook: 10, servings: 4,
+    per: { kcal: 435, p: 27, c: 44, f: 16, fiber: 2, sugar: 6 },
+    blurb: 'Garlicky, gingery ground beef over rice with crunchy carrot and cucumber. Takeout flavor in 25 minutes.',
+    ingredients: [[16, 'oz', '90% lean ground beef'], [3, 'tbsp', 'coconut aminos'], [1, 'tbsp', 'toasted sesame oil'],
+      [3, 'clove', 'garlic, minced'], [1, 'tbsp', 'fresh ginger, grated'], [0.25, 'tsp', 'red pepper flakes'], [1, 'tbsp', 'rice vinegar'],
+      [3, 'cup', 'cooked jasmine rice'], [2, '', 'carrots, shredded'], [1, '', 'english cucumber, thinly sliced'], [4, '', 'green onions, sliced'],
+      [2, 'tsp', 'sesame seeds']],
+    steps: ['Toss the cucumber with the rice vinegar and a pinch of salt and set aside while you cook.',
+      'Brown the beef in a large skillet over medium-high, breaking it up, 6–7 minutes, until no pink remains and it reaches 160°F (71°C). Spoon off any extra fat.',
+      'Push the beef to one side, add the sesame oil, garlic, ginger and pepper flakes to the empty side and stir 30 seconds until fragrant.',
+      'Add the coconut aminos and stir everything together for 1–2 minutes until glossy.',
+      'Divide the rice between bowls. Top with the beef, carrot, cucumber, green onions and sesame seeds.'],
+    tip: 'A fried egg on top makes it more like bibimbap and adds 6 g of protein.' },
+  { id: 'thai-basil-chicken', title: 'Thai Basil Chicken', meal: 'Dinner',
+    tags: ['High protein', 'Minimally processed'], prep: 10, cook: 10, servings: 3,
+    per: { kcal: 454, p: 42, c: 40, f: 13, fiber: 2, sugar: 5 },
+    blurb: 'A fast, fiery stir-fry inspired by pad kra pao: chopped chicken thighs, garlic, peppers and a big handful of basil.',
+    ingredients: [[20, 'oz', 'boneless skinless chicken thighs, chopped small'], [1, 'tbsp', 'avocado oil'], [4, 'clove', 'garlic, minced'],
+      [1, '', 'red bell pepper, sliced'], [1, '', 'small yellow onion, sliced'], [3, 'tbsp', 'coconut aminos'], [0.25, 'tsp', 'red pepper flakes'],
+      [1, 'cup', 'fresh basil leaves'], [1, '', 'lime, cut into wedges'], [2, 'cup', 'cooked jasmine rice']],
+    steps: ['Heat the oil in a wok or large skillet over high heat until it shimmers.',
+      'Add the chicken in one layer and leave it 2 minutes to brown, then stir-fry 3–4 minutes more until cooked through (165°F / 74°C).',
+      'Add the garlic, pepper flakes, bell pepper and onion. Stir-fry 2 minutes until the vegetables are crisp-tender.',
+      'Pour in the coconut aminos and toss 1 minute until the chicken is glazed.',
+      'Turn off the heat and stir in the basil until it just wilts. Serve over the rice with lime wedges.'],
+    tip: 'Thai holy basil is traditional, but regular sweet basil works well. Add it right at the end so it stays fragrant.' },
+  { id: 'banana-oat-breakfast-cookies', title: 'Banana Oat Breakfast Cookies', meal: 'Breakfast',
+    tags: ['Vegetarian', 'Vegan', 'Meal prep', 'Minimally processed'], prep: 10, cook: 15, servings: 6,
+    per: { kcal: 270, p: 9, c: 29, f: 15, fiber: 6, sugar: 6 },
+    blurb: 'Twelve soft, chewy cookies sweetened only with banana. Two make a grab-and-go breakfast.',
+    ingredients: [[2, '', 'ripe bananas, mashed'], [1.5, 'cup', 'rolled oats'], [0.33, 'cup', 'peanut butter'], [2, 'tbsp', 'ground flaxseed'],
+      [2, 'tbsp', 'chia seeds'], [1, 'tsp', 'cinnamon'], [0.5, 'tsp', 'baking powder'], [null, '', 'pinch of salt'], [0.33, 'cup', 'walnuts, chopped']],
+    steps: ['Heat the oven to 350°F (175°C) and line a baking sheet with parchment.',
+      'Mash the bananas in a bowl, then stir in the peanut butter until smooth.',
+      'Add the oats, flaxseed, chia, cinnamon, baking powder, salt and walnuts. Mix well and rest 5 minutes so the oats soften.',
+      'Scoop 12 mounds onto the sheet and flatten each to about 1/2 inch thick. They won\'t spread.',
+      'Bake 14–16 minutes until golden at the edges. Cool on the sheet for 10 minutes so they firm up.'],
+    tip: 'Keep them in the fridge for 5 days or freeze for 2 months. They thaw in about 20 minutes.' },
+  { id: 'chicken-shawarma-plates', title: 'Sheet-Pan Chicken Shawarma Plates', meal: 'Lunch',
+    tags: ['High protein', 'Meal prep', 'Sugar free', 'Minimally processed'], prep: 15, cook: 25, servings: 4,
+    per: { kcal: 457, p: 41, c: 31, f: 18, fiber: 2, sugar: 4 },
+    blurb: 'Warm-spiced chicken roasted on one pan, with rice, a crunchy salad and a tahini-yogurt sauce.',
+    ingredients: [[24, 'oz', 'boneless skinless chicken thighs'], [2, 'tbsp', 'olive oil'], [1, 'tsp', 'ground cumin'], [1, 'tsp', 'smoked paprika'],
+      [0.5, 'tsp', 'turmeric'], [0.5, 'tsp', 'cinnamon'], [3, 'clove', 'garlic, minced'], [1, '', 'lemon, juiced'], [0.75, 'tsp', 'salt'],
+      [2, 'cup', 'cooked basmati rice'], [1, 'cup', 'cherry tomatoes, halved'], [0.5, '', 'english cucumber, diced'], [0.25, '', 'red onion, thinly sliced'],
+      [0.75, 'cup', 'plain whole-milk Greek yogurt'], [1, 'tbsp', 'tahini']],
+    steps: ['Mix the oil, cumin, paprika, turmeric, cinnamon, two-thirds of the garlic, half the lemon juice and the salt. Coat the chicken and marinate 15 minutes, or up to a day in the fridge.',
+      'Heat the oven to 425°F (220°C). Spread the chicken on a sheet pan.',
+      'Roast 20–25 minutes until browned at the edges and 165°F (74°C) inside. Rest 5 minutes, then slice.',
+      'Stir the yogurt with the tahini, remaining garlic, remaining lemon juice and a pinch of salt.',
+      'Divide the rice between four plates or containers. Add the chicken, tomatoes, cucumber and onion, and spoon over the sauce.'],
+    tip: 'Turn on the broiler for the last 2 minutes to char the edges like a real shawarma spit.' },
+  { id: 'salmon-avocado-rice-bowls', title: 'Glazed Salmon & Avocado Rice Bowls', meal: 'Lunch',
+    tags: ['High protein', 'Minimally processed'], prep: 10, cook: 12, servings: 2,
+    per: { kcal: 722, p: 44, c: 54, f: 38, fiber: 10, sugar: 6 },
+    blurb: 'Sushi-bowl flavors at home: glazed salmon over rice with avocado, cucumber and edamame.',
+    ingredients: [[2, '', 'salmon fillets (5 oz each)'], [1, 'tsp', 'avocado oil'], [2, 'tbsp', 'coconut aminos'], [1.5, 'cup', 'cooked jasmine rice'],
+      [1, '', 'avocado, sliced'], [0.5, '', 'english cucumber, sliced'], [1, 'cup', 'shelled edamame'], [1, 'tbsp', 'rice vinegar'],
+      [2, '', 'green onions, sliced'], [1, 'tsp', 'sesame seeds']],
+    steps: ['Heat the oven to 400°F (200°C). Line a small baking dish with parchment and add the salmon, skin-side down.',
+      'Brush the salmon with the oil and half the coconut aminos. Bake 10–12 minutes until it flakes easily and reaches 145°F (63°C).',
+      'Cook the edamame in boiling water or the microwave for 3 minutes, then drain.',
+      'Stir the rice vinegar into the warm rice.',
+      'Divide the rice between two bowls. Add the salmon, avocado, cucumber and edamame, then drizzle with the remaining coconut aminos and scatter with green onions and sesame seeds.'],
+    tip: 'Leftover salmon works cold here too. Flake it over the rice and skip the oven.' }
 ];
 
 /* ---------- Content: workout plans ---------- */
@@ -1492,7 +1717,7 @@ const PLANS = [
     goal: 'Learn the main movement patterns and build a strength base.',
     schedule: 'Mon, Wed, Fri. Alternate days A and B (week 1: A-B-A, week 2: B-A-B).',
     warmup: '5 minutes of brisk walking or cycling, then one light set of the first exercise.',
-    progression: 'When you finish every set at the top of the rep range with 2 reps still in the tank, add 5 lb next session.',
+    progression: 'When you finish every set at the top of the rep range with 2 reps still in the tank, go up by the smallest step next session: 5 lb (2.5 kg) on squats and deadlifts, and the next dumbbell size on everything else. Go up at most once a week per exercise. If the next dumbbell is a big jump, add 2 reps to each set first.',
     days: [
       { name: 'Day A', focus: 'Squat · Push · Pull', ex: [
         ['Goblet squat', 3, '8–12', 90, 'Hold the dumbbell at your chest, sit between your heels, keep your chest tall.'],
@@ -1511,7 +1736,7 @@ const PLANS = [
     goal: 'Build strength and muscle with heavy compound lifts and targeted accessories.',
     schedule: 'Mon Upper 1, Tue Lower 1, Thu Upper 2, Fri Lower 2.',
     warmup: '5 minutes easy cardio, then 2–3 ramp-up sets on the first lift (empty bar, 50%, 75%).',
-    progression: 'Double progression: hit the top of the rep range on all sets, then add 5 lb (upper) or 10 lb (lower). Deload every 6th week at 60% volume.',
+    progression: 'Double progression: when you hit the top of the rep range on all sets with 1–2 reps left, add 2.5–5 lb (1–2.5 kg) to upper-body lifts or 5–10 lb (2.5–5 kg) to lower-body lifts. Deload every 6th week at 60% volume.',
     days: [
       { name: 'Upper 1', focus: 'Strength', ex: [
         ['Barbell bench press', 4, '6–8', 150, 'Feet planted, slight arch, touch the lower chest, press in a slight arc.'],
@@ -1712,7 +1937,7 @@ const PLANS = [
     goal: 'A complete strength program with nothing but a set of dumbbells: squat, hinge, push, pull and carry, three days a week.',
     schedule: '3 non-consecutive days a week, rotating A, B, C.',
     warmup: '5 minutes: 10 bodyweight squats, 10 hip hinges, 10 arm circles each way, then one light set of the first exercise.',
-    progression: 'Use a weight you could lift 2 more times at the end of each set. When you hit the top of the rep range on every set, go up one dumbbell size next time.',
+    progression: 'Use a weight you could lift 2 more times at the end of each set. When you hit the top of the rep range on every set, go up one dumbbell size next time. If that\'s more than about 10% heavier, add 2 reps to each set first.',
     days: [
       { name: 'Day A', focus: 'Squat & push', ex: [['Goblet squat', 3, '8–12', 90, ''], ['Dumbbell bench press', 3, '8–12', 90, 'Use a bench, or press from the floor.'], ['One-arm dumbbell row', 3, '10–12', 60, 'Each side.'], ['Dumbbell lateral raise', 2, '12–15', 45, ''], ['Front plank', 3, '30–45 s', 45, '']] },
       { name: 'Day B', focus: 'Hinge & pull', ex: [['Dumbbell Romanian deadlift', 3, '8–12', 90, ''], ['Bulgarian split squat (back foot on a chair)', 3, '8–10', 60, 'Each leg.'], ['Seated dumbbell shoulder press', 3, '8–12', 75, ''], ['Dumbbell curl', 2, '10–12', 45, ''], ['Suitcase carry', 3, '30–40 s', 45, 'Each side.']] },
@@ -1741,7 +1966,7 @@ const PLANS = [
     goal: 'Lift progressively heavier with a lower, upper and full-body day. Heavy-ish strength training builds muscle and supports bone density, which matters more with age.',
     schedule: '3 days a week. Pair with 1–2 walks or easy cardio days.',
     warmup: '5 minutes: glute bridges, bodyweight squats and band pull-aparts, then a light set of the first lift.',
-    progression: 'Most sets should end with 1–2 reps left. When every set reaches the top of the range, go up to the next dumbbell. Strength, not exhaustion, is the goal.',
+    progression: 'Most sets should end with 1–2 reps left. When every set reaches the top of the range, go up to the next dumbbell; if that\'s more than about 10% heavier, add 2 reps to each set first. Strength, not exhaustion, is the goal.',
     days: [
       { name: 'Lower', focus: 'Glutes & legs', ex: [['Goblet squat', 4, '6–10', 90, ''], ['Barbell hip thrust', 3, '8–12', 90, 'Use a dumbbell across your hips if you don\'t have a barbell.'], ['Dumbbell Romanian deadlift', 3, '8–10', 90, ''], ['Step-up onto a stair or step', 3, '8–10', 60, 'Each leg.'], ['Side plank', 2, '20–30 s', 45, 'Each side.']] },
       { name: 'Upper', focus: 'Back, shoulders & arms', ex: [['One-arm dumbbell row', 4, '8–12', 75, 'Each side.'], ['Dumbbell bench press', 3, '8–12', 75, ''], ['Seated dumbbell shoulder press', 3, '8–10', 75, ''], ['Band face pull', 3, '12–15', 45, 'Or rear-delt raises.'], ['Dumbbell curl', 2, '10–12', 45, '']] },
@@ -1835,7 +2060,7 @@ const PLANS = [
         ['Frog pump', 3, '20', 30, 'Soles together, knees out, squeeze your glutes hard at the top.'],
         ['Side-lying clamshell', 2, '15 / side', 30, 'Heels together; rotate the top knee up without rolling back.']] }
     ] },
-  { id: 'one-dumbbell', title: 'One-Dumbbell Full Body', diff: 2, muscles: ['Full body'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 3, minutes: 35, equipment: 'One dumbbell or kettlebell (15–35 lb)',
+  { id: 'one-dumbbell', title: 'One-Dumbbell Full Body', diff: 2, muscles: ['Full body'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 3, minutes: 35, equipment: 'One dumbbell or kettlebell. Start light: your suggested weight shows on each exercise.',
     goal: 'A complete strength routine that needs only a single weight, ideal for a small home gym or a hotel room.',
     schedule: '3 days a week (e.g. Mon, Wed, Fri). Alternate days A and B.',
     warmup: '3 minutes of light cardio, then 10 bodyweight squats, 10 push-ups (incline if needed) and 10 good mornings.',
@@ -1910,7 +2135,7 @@ const PLANS = [
         ['L-sit or tuck hold on chairs', 3, '15–20 s', 60, 'Press down hard, lift your knees or legs off the floor.']] }
     ] },
   /* Kettlebell-only HIIT, about 30 minutes including the warm-up. */
-  { id: 'kb-hiit-starter', title: 'Kettlebell HIIT Starter', diff: 2, muscles: ['Cardio', 'Full body'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 reps (about 8–24 kg / 18–53 lb)', noLoad: true,
+  { id: 'kb-hiit-starter', title: 'Kettlebell HIIT Starter', diff: 2, muscles: ['Cardio', 'Full body'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 smooth reps. Most beginners start around 6–12 kg (15–25 lb).', noLoad: true,
     goal: 'Learn the key kettlebell moves while getting your heart rate up. Short intervals with plenty of rest so form stays sharp.',
     schedule: '2–3 sessions a week on non-consecutive days, alternating sessions A and B.',
     warmup: '5 minutes: 10 halos each way, 10 prying goblet squats, 10 hip hinges with the bell, then 10 light swings.',
@@ -1929,7 +2154,7 @@ const PLANS = [
         ['Single-arm floor press (switch arms halfway)', 4, '30 s', 30, 'Lie on the floor; lower until your elbow touches, then press straight up.'],
         ['Dead bug holding the bell overhead', 4, '30 s', 60, 'Lower back pressed down; lower opposite leg slowly while the bell stays still.']] }
     ] },
-  { id: 'kb-hiit-burn', title: 'Kettlebell HIIT Burn', diff: 3, muscles: ['Cardio', 'Full body', 'Lower body & glutes'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 reps (about 8–24 kg / 18–53 lb)', noLoad: true,
+  { id: 'kb-hiit-burn', title: 'Kettlebell HIIT Burn', diff: 3, muscles: ['Cardio', 'Full body', 'Lower body & glutes'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 smooth reps (often 8–16 kg / 18–35 lb).', noLoad: true,
     goal: 'A sweaty, swing-heavy session that builds power, conditioning and strong glutes and hamstrings.',
     schedule: '2–3 sessions a week on non-consecutive days, alternating sessions A and B.',
     warmup: '5 minutes: halos, prying goblet squats, 10 hip hinges, 2 sets of 10 swings building up the pace.',
@@ -1974,7 +2199,7 @@ const PLANS = [
     goal: 'Six-time Mr. Olympia Dorian Yates built his physique on brief, brutally hard sessions: a couple of warm-up sets, then one all-out working set per exercise taken to failure. Low volume, maximum effort and plenty of recovery. For experienced lifters only.',
     schedule: 'Four sessions spread over a 6-day cycle so each body part is trained once every 6 days, e.g. Day 1, Day 2, rest, Day 3, Day 4, rest. Never train the same muscle while it is still sore.',
     warmup: '5 minutes on a bike or rower. Then before each exercise’s working set, do 2–3 progressively heavier warm-up sets (about 15 reps at 50%, 10 at 70%, 4 at 85%), none close to failure. Only the working set is logged here.',
-    progression: 'Beat your logbook every session: one more rep or a little more weight on the working set. When you reach the top of the rep range, add 5 lb (2.5 kg). With a spotter, finish the hardest sets with 1–2 forced reps or a slow 4-second negative. If strength stalls two sessions in a row, add an extra rest day.',
+    progression: 'Beat your logbook every session: one more rep, or a little more weight on the working set. When you reach the top of the rep range, add the smallest step, 2.5–5 lb (1–2.5 kg). With a spotter, finish the hardest sets with 1–2 forced reps or a slow 4-second negative. If strength stalls two sessions in a row, add an extra rest day.',
     days: [
       { name: 'Day 1', focus: 'Shoulders · Traps · Triceps', ex: [
         ['Seated dumbbell or Smith-machine press', 1, '6–8', 180, 'Lower under control to ear level, press without locking out hard. Go to true failure.'],
@@ -2049,11 +2274,11 @@ const PLANS = [
         ['Seated calf raise', 2, '12–15', 60, 'Full range, no bouncing.']] }
     ] },
   { id: 'kb-swing-getup', title: 'Kettlebell Swing & Get-Up Daily', diff: 2, muscles: ['Full body', 'Core', 'Cardio'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 5, minutes: 25,
-    equipment: 'One kettlebell. Many start around 16 kg (35 lb) for men and 8–12 kg (18–26 lb) for women.',
+    equipment: 'One kettlebell you can swing for 10 crisp reps and hold overhead safely. Your suggested start shows on each exercise.',
     goal: 'Inspired by Pavel Tsatsouline’s minimalist "Simple & Sinister" approach: two movements, the one-arm swing and the Turkish get-up, practised almost every day. Builds hip power, grip, shoulder stability and conditioning in under half an hour.',
     schedule: '5–6 days a week. Train fresh and never to exhaustion: it is practice, not a workout to survive. On low-energy days do the Easy day.',
     warmup: 'About 5 minutes, 3 rounds of: 5 prying goblet squats (sit deep and gently push your knees out), 5 hip bridges, and 5 halos each direction with a light bell.',
-    progression: 'Use the same bell until the work feels easy and smooth, then test yourself: 100 one-arm swings (10 sets of 10, alternating hands) inside 5 minutes and 10 get-ups (5 per side) inside 10 minutes. When you pass both tests, move up a bell size. Long-term targets often quoted: 32 kg for men and 24 kg for women ("Simple"), 48 kg and 32 kg ("Sinister").',
+    progression: 'Use the same bell until the work feels easy and smooth, then test yourself: 100 one-arm swings (10 sets of 10, alternating hands) inside 5 minutes and 10 get-ups (5 per side) inside 10 minutes. When you pass both tests, move up a bell size. The goals often quoted for this style of training (32 kg for men and 24 kg for women, then 48 and 32 kg) take most people years. Move up only when both tests feel smooth, never just to hit a number.',
     days: [
       { name: 'Standard day', focus: 'Swings · Get-ups', ex: [
         ['One-arm swing (alternate hands each set)', 10, '10', 30, 'Hike the bell back high between your legs, snap the hips so it floats to chest height. Arm is a rope; plank at the top.'],
@@ -2087,7 +2312,7 @@ const PLANS = [
     goal: 'Built around the habits longevity researcher David Sinclair describes: short, hard sessions that leave you out of breath, lifting to hold on to muscle as you age, and moving all day instead of sitting. Two brief strength days and one high-intensity interval day.',
     schedule: '3 sessions a week (e.g. Mon strength, Wed intervals, Fri strength). On every other day aim for 7,000–10,000 steps and break up long sitting with a standing desk or short walks.',
     warmup: '5 minutes: brisk walk or easy bike, then 10 bodyweight squats, 10 hip hinges and 10 arm circles each way.',
-    progression: 'Strength days: when you finish all sets at the top of the rep range, go heavier. Interval day: start with 6 rounds of 30 s hard / 90 s easy and work up to 8 rounds of 30 s hard / 60 s easy. Hard means you can’t talk.',
+    progression: 'Strength days: when you finish all sets at the top of the rep range, go up by the smallest weight step. Interval day: start with 6 rounds of 30 s hard / 90 s easy and work up to 8 rounds of 30 s hard / 60 s easy over several weeks. Hard means you can’t talk.',
     days: [
       { name: 'Strength A', focus: 'Squat · Push · Pull · Carry', ex: [
         ['Goblet squat', 3, '8–10', 90, 'Bell at your chest, sit between your heels, stand tall.'],
@@ -2109,7 +2334,7 @@ const PLANS = [
     goal: 'Inspired by how Paul Saladino describes staying fit: moving outdoors almost every day, with sprints, hikes and simple strength work, and starting each session with a mobility and activation routine. Pairs naturally with his "get morning sun, get your feet on the grass" habits.',
     schedule: '4 sessions a week: Strength, Sprints, Strength, Hike/Ruck. Get outside in the morning light for 10 minutes most days, barefoot on grass if you can.',
     warmup: 'Activation flow, 5–6 minutes: cat-cow ×8, world’s greatest stretch ×3 per side, glute bridges ×10, deep squat hold 30 s, band or arm pull-aparts ×15.',
-    progression: 'Strength: add a rep each week, then go heavier. Sprints: start at 6 × 60–70% effort and build to 8–10 near-max efforts over a month, always with full recovery. Ruck: add 5 lb (2 kg) or 10 minutes every other week.',
+    progression: 'Strength: add a rep each week, then go up by the smallest weight step. Sprints: start at 6 × 60–70% effort and build to 8–10 near-max efforts over 6–8 weeks, always with full recovery (sprinting too hard too soon is a common cause of hamstring strains). Ruck: add 5 lb (2 kg) or 10 minutes every other week, up to about 20% of your body weight.',
     days: [
       { name: 'Day 1', focus: 'Full-body strength', ex: [
         ['Kettlebell or dumbbell front squat', 4, '6–8', 90, 'Weight in the rack, elbows up, sit deep.'],
@@ -2131,6 +2356,103 @@ const PLANS = [
         ['Hike or ruck (weighted backpack)', 1, '2700 s', 0, '45 minutes or more at a pace where you can still talk. Hills are a bonus.'],
         ['Hip flexor stretch', 2, '45 s', 15, 'Each side, squeeze the back glute.'],
         ['Dead hang', 3, '30 s', 45, 'Relax the shoulders and decompress the spine.']] }
+    ] },
+  { id: 'barbell-5x5', title: 'Barbell Basics 5×5', diff: 2, muscles: ['Full body'], gear: 'Gym', needs: [['barbell'], ['bench']], perWeek: 3, minutes: 50,
+    equipment: 'Barbell, squat rack, bench and plates',
+    goal: 'Get strong on the big three barbell lifts with a simple, proven beginner program: five sets of five, a little heavier every session.',
+    schedule: 'Mon, Wed, Fri. Alternate A and B (week 1: A-B-A, week 2: B-A-B). Squat every session.',
+    warmup: '5 minutes easy cardio, then ramp up on each lift: 2 sets of 5 with the empty bar, then 3, 2 and 1 reps at roughly 40%, 60% and 80% of your work weight.',
+    progression: 'Start light: about half of what you think you could lift for 5, or the suggested start on each lift. Add 5 lb (2.5 kg) a session to the squat and deadlift, and 5 lb (2.5 kg) every other session to the bench, row and press (with 1.25 lb or 0.5 kg fractional plates you can go up a little every session). If you\'re over 40 or recovering slowly, add weight once a week instead. If you miss 5×5 at a weight twice in a row, drop it by 10% and build back up.',
+    days: [
+      { name: 'Workout A', focus: 'Squat · Bench · Row', ex: [
+        ['Barbell back squat', 5, '5', 180, 'Brace hard, sit down between your heels, hips to at least knee height, drive up through the whole foot.'],
+        ['Barbell bench press', 5, '5', 180, 'Shoulder blades squeezed and down, bar to the lower chest, feet pushing into the floor.'],
+        ['Barbell bent-over row', 5, '5', 120, 'Hinge to about 45°, flat back, pull the bar to your belly button and lower it under control.']] },
+      { name: 'Workout B', focus: 'Squat · Press · Deadlift', ex: [
+        ['Barbell back squat', 5, '5', 180, 'Same depth every rep. Leave the weight the same if a rep goes ugly.'],
+        ['Standing overhead press', 5, '5', 180, 'Glutes tight, ribs down, press the bar in a straight line and push your head through at the top.'],
+        ['Conventional deadlift', 1, '5', 180, 'Bar over mid-foot, take the slack out before you pull, push the floor away, stand tall without leaning back.']] }
+    ] },
+  { id: 'machine-starter', title: 'Gym Machine Starter', diff: 1, muscles: ['Full body'], gear: 'Gym', needs: [['machines'], ['cables'], ['dumbbells'], ['bench']], perWeek: 2, minutes: 40,
+    equipment: 'Leg machines, cable station, dumbbells and a bench',
+    goal: 'A first gym program for anyone nervous about free weights: guided machines and cables that are easy to set up and safe to push.',
+    schedule: '2–3 times a week with a rest day between. Alternate A and B.',
+    warmup: '5 minutes on a bike or elliptical, then one light set of the first exercise.',
+    progression: 'Pick a weight you can lift 12 times with 2–3 reps left. When every set reaches 12, go up one pin on the stack (or the next dumbbell size) next time.',
+    days: [
+      { name: 'Day A', focus: 'Legs · Push · Pull', ex: [
+        ['Leg press', 3, '10–12', 90, 'Feet shoulder-width on the plate, lower until your hips start to tuck, press without locking your knees.'],
+        ['Dumbbell bench press', 3, '10–12', 90, 'Lower the dumbbells to the sides of your chest, then press up and slightly together.'],
+        ['Lat pulldown', 3, '10–12', 75, 'Sit tall, pull the bar to your upper chest, lead with your elbows.'],
+        ['Lying leg curl', 2, '12', 60, 'Hips pressed into the pad, curl all the way, lower slowly.'],
+        ['Pallof press', 2, '10 / side', 45, 'Stand side-on to the cable, press it straight out and don\'t let it turn you.']] },
+      { name: 'Day B', focus: 'Legs · Shoulders · Back', ex: [
+        ['Leg extension', 3, '12', 60, 'Line your knee up with the machine\'s pivot, straighten fully, pause, lower slowly.'],
+        ['Seated dumbbell shoulder press', 3, '10–12', 90, 'Back against the bench, press straight up without arching.'],
+        ['Seated cable row', 3, '10–12', 75, 'Chest tall, pull the handle to your stomach and squeeze your shoulder blades.'],
+        ['Machine chest fly', 2, '12', 60, 'Soft elbows, bring the handles together in a hugging arc.'],
+        ['Standing calf raise', 2, '15', 45, 'Full stretch at the bottom, pause at the top.'],
+        ['Front plank', 2, '30 s', 45, 'Straight line from head to heels, squeeze your glutes.']] }
+    ] },
+  { id: 'first-pullup', title: 'First Pull-Up Program', diff: 2, muscles: ['Upper body', 'Core'], gear: 'Minimal', needs: [['pullup']], perWeek: 3, minutes: 25,
+    equipment: 'Pull-up bar; a resistance band helps',
+    goal: 'Go from zero to your first full pull-up, then to sets of five, with hangs, negatives and assisted reps.',
+    schedule: 'Mon, Wed, Fri. Alternate A and B. Most people get their first rep in 6–10 weeks.',
+    warmup: 'Arm circles, 10 band pull-aparts or wall slides, and a 15-second dead hang.',
+    progression: 'Negatives: work up to 3 sets of 3 that each take 5 seconds to lower. Then test one full pull-up at the start of Workout A every week. Once you get one, do singles with a minute rest (aim for 5), then build to sets of 2–3.',
+    days: [
+      { name: 'Workout A', focus: 'Hang · Assisted · Negatives', ex: [
+        ['Dead hang', 3, '20–30 s', 60, 'Full grip, shoulders slightly pulled down, breathe.'],
+        ['Band-assisted pull-up', 4, '5', 90, 'Loop a band over the bar under one knee or foot. Use a lighter band as you get stronger.'],
+        ['Negative pull-up (5-second lower)', 3, '3', 120, 'Jump or step to the top with your chin over the bar, then lower as slowly as you can.'],
+        ['Hollow body hold', 3, '20 s', 45, 'Lower back pressed down, arms and legs long. Tuck your knees to make it easier.']] },
+      { name: 'Workout B', focus: 'Shoulders · Rows · Holds', ex: [
+        ['Scapular pull-up', 3, '8', 60, 'From a dead hang, pull your shoulders down without bending your elbows, then relax.'],
+        ['Chin-up hold at the top', 3, '10–20 s', 90, 'Step up so your chin is over the bar, then hold. Palms facing you.'],
+        ['Inverted row under a sturdy table or bar', 3, '8–10', 60, 'Body straight, pull your chest up to the edge. Bend your knees to make it easier.'],
+        ['Superman', 3, '10', 45, 'Lift your chest and legs together, pause for a breath at the top.'],
+        ['Dead bug', 3, '8 / side', 45, 'Lower back stays pressed to the floor.']] }
+    ] },
+  { id: 'runner-strength', title: 'Strength for Runners', diff: 2, muscles: ['Lower body & glutes', 'Core'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 2, minutes: 30,
+    equipment: 'A pair of dumbbells or one kettlebell, a bench or step',
+    goal: 'Single-leg strength, stronger calves and a steady core: the strength work that helps runners hold their form and stay injury-free.',
+    schedule: '2 times a week, on easy-run days or rest days. Leave a day between this and your long run or hard intervals.',
+    warmup: '5 minutes of easy jogging or brisk walking, then leg swings and 10 bodyweight squats.',
+    progression: 'Use a weight you could lift 3 more times. When every set feels easy, go up to the next dumbbell if it\'s about 10% heavier or less; if it\'s a bigger jump, add 2 reps or slow the lowering to 3 seconds first. Cut to one set of each during race week.',
+    days: [
+      { name: 'Day A', focus: 'Single leg · Calves', ex: [
+        ['Bulgarian split squat', 3, '8 / side', 75, 'Back foot on a bench, most of your weight on the front leg, knee tracking over the toes.'],
+        ['Single-leg Romanian deadlift', 3, '8 / side', 60, 'Hinge on one leg with a long back, hips square to the floor.'],
+        ['Step-up', 3, '10 / side', 60, 'Drive through the top foot; don\'t push off the bottom one.'],
+        ['Standing calf raise', 3, '15 / side', 45, 'One leg at a time on a step: full stretch, rise high, lower over 2 seconds.'],
+        ['Side plank', 3, '30 s / side', 30, 'Hips high, straight line from head to feet.']] },
+      { name: 'Day B', focus: 'Hips · Hamstrings · Core', ex: [
+        ['Goblet squat', 3, '10', 75, 'Sit between your heels, chest tall.'],
+        ['Single-leg glute bridge', 3, '12 / side', 45, 'Push through the heel, keep your hips level.'],
+        ['Lateral lunge', 3, '8 / side', 60, 'Step wide, sit back into one hip, keep the other leg straight.'],
+        ['Nordic curl (assisted)', 3, '4–6', 90, 'Anchor your feet, lower your body forward as slowly as you can, catch yourself with your hands.'],
+        ['Pallof press', 2, '10 / side', 45, 'Resist the band or cable trying to twist you.']] }
+    ] },
+  { id: 'desk-reset', title: 'Desk Worker Reset', diff: 1, muscles: ['Mobility', 'Core'], gear: 'None', needs: [], perWeek: 5, minutes: 12, noLoad: true,
+    equipment: 'None (a wall and a chair)',
+    goal: 'Undo hours of sitting: open the hips, chest and upper back, wake up the glutes and core, in 12 minutes you can do next to your desk.',
+    schedule: 'Most workdays. Do the morning routine before work and the afternoon one as a break, or pick one.',
+    warmup: 'Stand up, roll your shoulders 10 times each way and take 5 slow, deep breaths.',
+    progression: 'Move slowly and stay pain-free. When it feels easy, hold each stretch 10 seconds longer or add a round.',
+    days: [
+      { name: 'Morning', focus: 'Spine · Hips · Glutes', ex: [
+        ['Cat-cow', 2, '8 slow reps', 15, 'Round your back as you breathe out, arch gently as you breathe in.'],
+        ['Open book stretch', 2, '6 / side', 15, 'Lie on your side, knees bent, and rotate your top arm open to the floor behind you.'],
+        ['Glute bridge', 2, '12', 30, 'Squeeze your glutes at the top for a second.'],
+        ['Bird dog', 2, '6 / side', 30, 'Reach long through the opposite hand and foot without twisting your hips.'],
+        ['Deep squat hold', 2, '30 s', 30, 'Hold onto a desk or doorframe if you need to. Heels down, chest up.']] },
+      { name: 'Afternoon', focus: 'Chest · Shoulders · Legs', ex: [
+        ['Wall slides', 2, '10', 15, 'Back and arms against the wall, slide your arms up without letting them come away.'],
+        ["World's greatest stretch", 2, '4 / side', 15, 'Lunge forward, put the same-side elbow toward the floor, then rotate that arm to the ceiling.'],
+        ['Hip flexor stretch', 2, '30 s / side', 15, 'Half kneel, squeeze the back glute and shift your hips forward gently.'],
+        ['Wall push-up', 2, '12', 30, 'Body in one straight line, chest to the wall.'],
+        ['Sit-to-stand', 2, '10', 30, 'Stand up from your chair without using your hands, then sit down slowly.'],
+        ["Child's pose", 1, '45 s', 0, 'Knees wide, arms long, breathe into your back.']] }
     ] }
 ];
 
@@ -2192,7 +2514,7 @@ const COOK = {
   'turkey-black-bean-chili': { how: 'stove', alt: {
     oven: { cook: 50, note: 'Needs a lidded, oven-safe pot such as a Dutch oven.', steps: [
       'Heat the oven to 325°F (165°C).',
-      'In a Dutch oven over medium-high on the stove, brown the turkey in the oil, about 7 minutes. Add the onion and pepper for 5 minutes, then the garlic and spices for 1 minute.',
+      'In a Dutch oven over medium-high on the stove, brown the turkey in the oil until it reaches 165°F (74°C), about 7 minutes. Add the onion and pepper for 5 minutes, then the garlic and spices for 1 minute.',
       'Add the tomatoes, beans, broth and salt and bring to a simmer.',
       'Cover and bake 30 minutes, then uncover and bake 10–15 minutes more until thick.',
       'Taste and adjust the salt.'] },
@@ -2273,13 +2595,13 @@ const COOK = {
     oven: { cook: 15, note: 'Uses the broiler for a quick high-heat sear.', steps: [
       'Whisk the coconut aminos, coconut sugar, arrowroot, garlic, ginger and 1/3 cup water to make the sauce.',
       'Heat the broiler with a rack 4 inches from the heat. Toss the beef and broccoli with the oil on a foil-lined sheet pan in one layer.',
-      'Broil 4 minutes, toss, then broil 3–4 minutes more until the beef is browned and the broccoli is charred at the tips.',
+      'Broil 4 minutes, toss, then broil 3–4 minutes more until the beef is browned and cooked through (145°F / 63°C) and the broccoli is charred at the tips.',
       'Microwave the sauce 60–90 seconds, stirring once, until thick and glossy.',
       'Toss everything with the sauce and serve over the rice with green onion and sesame seeds.'] },
     air: { cook: 14, steps: [
       'Whisk the coconut aminos, coconut sugar, arrowroot, garlic, ginger and 1/3 cup water to make the sauce.',
       'Toss the broccoli with half the oil and air fry at 390°F (200°C) 6 minutes, shaking once. Remove.',
-      'Toss the beef with the remaining oil and air fry 5–6 minutes in a single layer, shaking halfway.',
+      'Toss the beef with the remaining oil and air fry 5–6 minutes in a single layer, shaking halfway, until browned and cooked through (145°F / 63°C).',
       'Microwave the sauce 60–90 seconds, stirring once, until thick and glossy.',
       'Toss the beef and broccoli with the sauce and serve over the rice with green onion and sesame seeds.'] },
     micro: { no: 'Thin steak turns gray and tough in a microwave because it can\'t sear. Use the stovetop or air fryer.' } } },
@@ -2306,14 +2628,14 @@ const COOK = {
     air: { cook: 14, note: 'Shrimp go from done to rubbery fast; check at 5 minutes.', steps: [
       'Heat the air fryer to 400°F (200°C). Mix the chili powder, cumin, paprika and salt.',
       'Toss the peppers and onion with the oil and half the spice mix. Air fry 7 minutes, shaking once.',
-      'Toss the shrimp with the remaining spices, add to the basket and air fry 5–6 minutes until pink and opaque.',
+      'Toss the shrimp with the remaining spices, add to the basket and air fry 5–6 minutes until pink and opaque all the way through.',
       'Warm the tortillas in a dry pan or the microwave wrapped in a damp paper towel.',
       'Squeeze the lime over, scatter the cilantro, and fill the tortillas at the table.'] },
     micro: { no: 'Peppers steam instead of charring and shrimp turn rubbery in the microwave. Use the oven, air fryer or stovetop.' },
     stove: { cook: 12, steps: [
       'Mix the chili powder, cumin, paprika and salt.',
       'Heat the oil in a large skillet over high. Cook the peppers and onion with half the spice mix 5–6 minutes until charred at the edges.',
-      'Push the veg aside, add the shrimp with the remaining spices and cook 2 minutes per side until pink.',
+      'Push the veg aside, add the shrimp with the remaining spices and cook 2 minutes per side until pink and opaque all the way through.',
       'Warm the tortillas in a dry pan for 20–30 seconds per side.',
       'Squeeze the lime over, scatter the cilantro, and fill the tortillas at the table.'] } } },
   'chickpea-spinach-curry': { how: 'stove', alt: {
@@ -2334,13 +2656,13 @@ const COOK = {
     oven: { cook: 30, steps: [
       'Heat the oven to 425°F (220°C). Microwave the diced potatoes in a covered bowl with a splash of water for 4 minutes. Drain well.',
       'Toss the potatoes, pepper and onion with the oil and half the seasoning on a sheet pan. Roast 15 minutes.',
-      'Toss the steak with the remaining seasoning and add to the pan. Roast 5 minutes.',
+      'Toss the steak with the remaining seasoning and add to the pan. Roast 5 minutes, until it reaches 145°F (63°C).',
       'Make four gaps and crack an egg into each. Bake 6–8 minutes until the whites are set.',
       'Scatter with parsley and serve.'] },
     air: { cook: 22, note: 'Cook the eggs in a small greased pan or ramekins in the basket.', steps: [
       'Microwave the diced potatoes in a covered bowl with a splash of water for 4 minutes. Drain well.',
       'Toss the potatoes, pepper and onion with the oil and half the seasoning. Air fry at 400°F (200°C) 10 minutes, shaking once.',
-      'Toss the steak with the remaining seasoning, add to the basket and air fry 5–6 minutes, shaking once.',
+      'Toss the steak with the remaining seasoning, add to the basket and air fry 5–6 minutes, shaking once, until it reaches 145°F (63°C).',
       'Crack the eggs into greased ramekins and air fry at 330°F (165°C) 5–6 minutes until the whites are set.',
       'Serve the hash topped with the eggs and parsley.'] },
     micro: { no: 'Steak can\'t sear and potatoes won\'t crisp in a microwave. Use the stovetop, oven or air fryer.' } } },
@@ -2412,12 +2734,12 @@ const COOK = {
     oven: { cook: 12, steps: [
       'Heat the oven to 425°F (220°C). Pat the shrimp dry and season with salt and pepper.',
       'Melt the butter with the oil, garlic and pepper flakes in the microwave (30 seconds). Toss the shrimp in half of it on a sheet pan.',
-      'Roast 6–8 minutes until pink and opaque.',
+      'Roast 6–8 minutes until pink and opaque all the way through.',
       'Toss the zucchini with the rest of the garlic butter and add to the hot pan for 2 minutes, just to warm.',
       'Add the lemon juice, toss, and top with parmesan and parsley.'] },
     air: { cook: 8, note: 'Shrimp go from done to rubbery fast; check at 5 minutes.', steps: [
       'Pat the shrimp dry and season with salt and pepper. Melt the butter with the oil, garlic and pepper flakes in the microwave (30 seconds).',
-      'Toss the shrimp in half the garlic butter and air fry at 400°F (200°C) 5–6 minutes, shaking once, until pink.',
+      'Toss the shrimp in half the garlic butter and air fry at 400°F (200°C) 5–6 minutes, shaking once, until pink and opaque all the way through.',
       'Toss the zucchini with the remaining garlic butter and microwave 1 minute, just to warm. Overcooking makes it watery.',
       'Add the shrimp and lemon juice and toss.',
       'Top with parmesan and parsley.'] },
@@ -2498,7 +2820,7 @@ const COOK = {
   'turkey-white-bean-kale': { how: 'stove', alt: {
     oven: { cook: 30, steps: [
       'Heat the oven to 400°F (200°C). Crumble the turkey into a large baking dish with the onion, oil and salt.',
-      'Bake 15 minutes, breaking it up halfway.',
+      'Bake 15 minutes, breaking it up halfway, until no pink remains and it reads 165°F (74°C).',
       'Stir in the garlic, rosemary, pepper flakes, beans, broth and kale. Cover with foil and bake 12–15 minutes until the kale is tender.',
       'Mash a few beans against the dish to thicken it.',
       'Finish with the lemon juice and parmesan.'] },
@@ -2554,17 +2876,168 @@ const COOK = {
   'roast-turkey-rollups': { how: 'oven', alt: {
     air: { cook: 35, note: 'Cut the breast in half if needed so it fits; air fryers vary, so check the temperature early.', steps: [
       'Rub the turkey with the oil, rosemary, garlic powder, paprika, salt and pepper.',
-      'Air fry at 350°F (175°C) 30–35 minutes, turning halfway, until 160°F (71°C) inside. It will rise to 165°F (74°C) as it rests. Rest 15 minutes, then chill completely.',
+      'Air fry at 350°F (175°C) 30–35 minutes, turning halfway, until the thickest part reaches 165°F (74°C). Rest 15 minutes, then chill completely.',
       'Slice the cold turkey as thinly as you can.',
       'Stir the herbs and a pinch of salt into the yogurt.',
       'Spread a little yogurt on each turkey slice, add a cucumber spear and roll up.'] },
     micro: { no: 'A whole turkey breast cooks unevenly in a microwave. Use the oven, air fryer or stovetop, or buy sliced roast turkey.' },
     stove: { cook: 30, note: 'Gently poached turkey stays very moist and slices thinly.', steps: [
       'Rub the turkey with the oil, rosemary, garlic powder, paprika, salt and pepper. Sear in a deep lidded skillet over medium-high, 2 minutes per side.',
-      'Add 1 cup water, cover and simmer on low 20–25 minutes, turning once, until 160°F (71°C) inside. Rest 15 minutes, then chill completely.',
+      'Add 1 cup water, cover and simmer on low 20–25 minutes, turning once, until the thickest part reaches 165°F (74°C). Rest 15 minutes, then chill completely.',
       'Slice the cold turkey as thinly as you can.',
       'Stir the herbs and a pinch of salt into the yogurt.',
-      'Spread a little yogurt on each turkey slice, add a cucumber spear and roll up.'] } } }
+      'Spread a little yogurt on each turkey slice, add a cucumber spear and roll up.'] } } },
+  'black-bean-sweet-potato-tacos': { how: 'oven', alt: {
+    air: { cook: 18, note: 'Work in two batches if your basket is small.', steps: [
+      'Heat the air fryer to 400°F (200°C). Toss the sweet potato with the oil, half the chili powder, half the cumin and half the salt.',
+      'Air fry 15–18 minutes, shaking twice, until browned and tender.',
+      'Meanwhile, warm the beans in a small pot with the remaining spices, salt and 2 tbsp water, mashing a few with a fork.',
+      'Warm the tortillas in a dry skillet for 30 seconds a side.',
+      'Fill the tortillas with beans and sweet potato and top with avocado, pico de gallo, cilantro and lime.'] },
+    stove: { cook: 20, steps: [
+      'Heat the oil in a large nonstick skillet over medium. Add the sweet potato, half the spices and half the salt and 3 tbsp water. Cover and cook 8 minutes.',
+      'Uncover and cook 8–10 minutes more, stirring now and then, until tender and browned. Move to a bowl.',
+      'In the same pan, warm the beans with the remaining spices, salt and 2 tbsp water, mashing a few with a fork, about 4 minutes.',
+      'Wipe the pan and warm the tortillas for 30 seconds a side.',
+      'Fill the tortillas with beans and sweet potato and top with avocado, pico de gallo, cilantro and lime.'] },
+    micro: { cook: 12, note: 'The sweet potato steams rather than browns, but it is a fast weeknight version.', steps: [
+      'Put the sweet potato in a covered microwave-safe bowl with 2 tbsp water. Microwave 6–8 minutes, stirring halfway, until tender. Drain and toss with the oil, half the spices and half the salt.',
+      'Microwave the beans with the remaining spices, salt and 1 tbsp water, covered, for 2 minutes. Mash a few with a fork.',
+      'Wrap the tortillas in a damp paper towel and microwave 30–45 seconds.',
+      'Fill the tortillas with beans and sweet potato and top with avocado, pico de gallo, cilantro and lime.'] } } },
+  'turmeric-tofu-scramble': { how: 'stove', alt: {
+    micro: { cook: 6, steps: [
+      'Put the onion and bell pepper in a microwave-safe bowl with the oil. Cover and microwave 2 minutes.',
+      'Crumble in the tofu and add the turmeric, garlic powder, salt and pepper. Stir well.',
+      'Cover and microwave 2 minutes, stir, then add the spinach and microwave 1 minute more.',
+      'Stir and serve topped with the avocado.'] },
+    oven: { no: 'A scramble needs stirring over direct heat. Use the stovetop or microwave.' },
+    air: { no: 'An air fryer can\'t scramble. Use the stovetop or microwave.' } } },
+  'chickpea-quinoa-power-bowl': { how: 'oven', alt: {
+    air: { cook: 15, steps: [
+      'Heat the air fryer to 390°F (200°C). Toss the chickpeas with the oil, paprika and half the salt.',
+      'Air fry 13–15 minutes, shaking every 5 minutes, until crisp.',
+      'Whisk the tahini, lemon juice, garlic, remaining salt and 3 tbsp warm water until smooth.',
+      'Massage the kale with 1 tbsp of the dressing for 30 seconds.',
+      'Divide the quinoa, kale, cucumber, tomatoes and onion between four containers. Top with the chickpeas and drizzle with the dressing.'] },
+    stove: { cook: 12, note: 'Pan-fried chickpeas are crisp outside and softer inside.', steps: [
+      'Heat the oil in a large skillet over medium-high. Add the chickpeas in one layer and cook 10–12 minutes, shaking the pan often, until golden. Toss with the paprika and half the salt.',
+      'Whisk the tahini, lemon juice, garlic, remaining salt and 3 tbsp warm water until smooth.',
+      'Massage the kale with 1 tbsp of the dressing for 30 seconds.',
+      'Divide the quinoa, kale, cucumber, tomatoes and onion between four containers. Top with the chickpeas and drizzle with the dressing.'] },
+    micro: { no: 'Chickpeas won\'t crisp in a microwave. Use the oven, air fryer or stovetop.' } } },
+  'red-lentil-coconut-dal': { how: 'stove', alt: {
+    micro: { cook: 22, note: 'Use a large (3-quart) microwave-safe bowl; lentils foam as they cook.', steps: [
+      'Microwave the oil, onion, garlic, ginger, curry powder and turmeric in a large covered bowl for 3 minutes, stirring once.',
+      'Add the lentils, tomatoes, coconut milk, stock and salt. Cover with a vented lid.',
+      'Microwave 15–18 minutes on high, stirring every 5 minutes, until the lentils have broken down.',
+      'Stir in the spinach, cover and rest 2 minutes, then add the lemon juice. Serve over the rice.'] },
+    oven: { cook: 40, note: 'Needs a lidded, oven-safe pot such as a Dutch oven.', steps: [
+      'Heat the oven to 350°F (175°C). Soften the onion in the oil in a Dutch oven on the stove, 6 minutes, then add the garlic, ginger and spices for 1 minute.',
+      'Add the lentils, tomatoes, coconut milk, stock and salt and bring to a simmer.',
+      'Cover and bake 30–35 minutes, stirring once, until thick.',
+      'Stir in the spinach and lemon juice. Serve over the rice.'] },
+    air: { no: 'An air fryer can\'t simmer a pot of dal. Use the stovetop, microwave or oven.' } } },
+  'crispy-roasted-chickpeas': { how: 'oven', alt: {
+    air: { cook: 15, steps: [
+      'Dry the chickpeas very well in a towel and rub off loose skins.',
+      'Toss with the oil and air fry at 390°F (200°C) for 13–15 minutes, shaking every 5 minutes, until crunchy.',
+      'Toss with the paprika, garlic powder and salt while hot, then cool completely.'] },
+    stove: { cook: 15, note: 'Crisp outside and a little softer inside than oven-roasted.', steps: [
+      'Dry the chickpeas very well in a towel.',
+      'Heat the oil in a large skillet over medium-high and add the chickpeas in one layer.',
+      'Cook 12–15 minutes, shaking the pan often, until golden and crisp.',
+      'Toss with the paprika, garlic powder and salt and cool on a plate.'] },
+    micro: { no: 'Microwaved chickpeas turn hard and chewy rather than crisp. Use the oven, air fryer or stovetop.' } } },
+  'cinnamon-walnut-baked-pears': { how: 'oven', alt: {
+    air: { cook: 14, steps: [
+      'Heat the air fryer to 350°F (175°C). Mix the walnuts, melted butter, cinnamon and coconut sugar.',
+      'Fill the hollow of each pear half with the walnut mixture.',
+      'Set the pears in the basket (or a small pan that fits) and air fry 12–14 minutes until tender.',
+      'Serve warm with the Greek yogurt.'] },
+    micro: { cook: 6, note: 'Softer and less caramelized than baked, but ready in minutes.', steps: [
+      'Set the pear halves cut-side up in a microwave-safe dish with 2 tbsp water.',
+      'Fill each with the walnut, butter, cinnamon and coconut sugar mixture.',
+      'Cover and microwave 4–6 minutes until tender.',
+      'Serve warm with the Greek yogurt.'] },
+    stove: { cook: 15, steps: [
+      'Melt the butter in a skillet over medium. Add the pears cut-side down and cook 4 minutes until golden.',
+      'Flip, add 1/4 cup water, sprinkle with the cinnamon and coconut sugar, cover and simmer 8–10 minutes until tender.',
+      'Toast the walnuts in the pan for the last 2 minutes.',
+      'Serve the pears with the walnuts, pan juices and Greek yogurt.'] } } },
+  'butter-seared-pork-chops': { how: 'stove', alt: {
+    oven: { cook: 18, note: 'Uses an oven-safe skillet for a quick sear first.', steps: [
+      'Heat the oven to 400°F (200°C). Pat the chops dry and salt both sides.',
+      'Sear in the tallow in an oven-safe skillet over medium-high for 3 minutes, flip.',
+      'Add the butter and move the pan to the oven for 6–8 minutes, until the chops reach 145°F (63°C).',
+      'Rest 5 minutes and spoon the pan butter over the top.'] },
+    air: { cook: 12, steps: [
+      'Pat the chops dry, rub with the melted tallow and salt both sides.',
+      'Air fry at 400°F (200°C) for 10–12 minutes, flipping halfway, until 145°F (63°C) in the center.',
+      'Rest 5 minutes and top each chop with a tablespoon of butter as it rests.'] },
+    micro: { no: 'Microwaved pork turns grey and tough. Use the stovetop, oven or air fryer.' } } },
+  'bone-broth-egg-drop-soup': { how: 'stove', alt: {
+    micro: { cook: 6, steps: [
+      'Heat the broth and salt in a large microwave-safe bowl, covered, for 4 minutes until steaming.',
+      'Beat the eggs. Stir the broth in a circle and pour in the eggs in a thin stream while stirring.',
+      'Microwave 60–90 seconds more until the egg ribbons are set.',
+      'Stir in the butter and taste for salt.'] },
+    oven: { no: 'Egg drop soup needs a simmering pot. Use the stovetop or microwave.' },
+    air: { no: 'An air fryer can\'t heat broth. Use the stovetop or microwave.' } } },
+  'korean-beef-rice-bowls': { how: 'stove', alt: {
+    micro: { cook: 10, steps: [
+      'Toss the cucumber with the rice vinegar and a pinch of salt.',
+      'Crumble the beef into a microwave-safe bowl, cover loosely and microwave 5–6 minutes, stirring and breaking it up every 2 minutes, until no pink remains (160°F / 71°C). Drain any fat.',
+      'Stir in the sesame oil, garlic, ginger, pepper flakes and coconut aminos. Microwave 1 minute more.',
+      'Serve over the rice with the carrot, cucumber, green onions and sesame seeds.'] },
+    oven: { no: 'Ground beef needs breaking up as it browns. Use the stovetop or microwave.' },
+    air: { no: 'Loose ground beef doesn\'t suit an air fryer basket. Use the stovetop or microwave.' } } },
+  'thai-basil-chicken': { how: 'stove', alt: {
+    air: { cook: 14, note: 'Cut the chicken into bite-size pieces rather than chopping it fine.', steps: [
+      'Toss the chicken with the oil, garlic and pepper flakes. Air fry at 400°F (200°C) for 8 minutes, shaking once.',
+      'Add the bell pepper and onion and air fry 5–6 minutes more until the chicken reaches 165°F (74°C).',
+      'Toss with the coconut aminos and basil in a bowl. Serve over the rice with lime.'] },
+    oven: { cook: 22, steps: [
+      'Heat the oven to 450°F (230°C). Toss the chicken, pepper and onion with the oil, garlic and pepper flakes on a sheet pan.',
+      'Roast 18–20 minutes, stirring once, until the chicken is browned and 165°F (74°C).',
+      'Toss with the coconut aminos and basil straight on the pan. Serve over the rice with lime.'] },
+    micro: { no: 'Raw chicken cooks unevenly in a microwave and won\'t brown. Use the stovetop, air fryer or oven.' } } },
+  'banana-oat-breakfast-cookies': { how: 'oven', alt: {
+    air: { cook: 10, note: 'Line the basket with parchment and bake in batches.', steps: [
+      'Mix the cookie dough as written and rest 5 minutes.',
+      'Heat the air fryer to 320°F (160°C). Line the basket with parchment.',
+      'Add as many flattened mounds as fit with a little space and air fry 9–10 minutes until golden.',
+      'Cool 10 minutes before moving. Repeat with the rest.'] },
+    micro: { no: 'These need dry oven heat to set. Use the oven or air fryer.' },
+    stove: { no: 'Cookies need an oven or air fryer.' } } },
+  'chicken-shawarma-plates': { how: 'oven', alt: {
+    air: { cook: 16, note: 'Cook the chicken in two batches so it browns.', steps: [
+      'Marinate the chicken as written.',
+      'Air fry at 400°F (200°C) for 14–16 minutes, turning once, until 165°F (74°C). Rest 5 minutes, then slice.',
+      'Stir the yogurt with the tahini, remaining garlic, lemon juice and a pinch of salt.',
+      'Plate the rice, chicken, tomatoes, cucumber and onion, and spoon over the sauce.'] },
+    stove: { cook: 14, steps: [
+      'Marinate the chicken as written.',
+      'Heat a large skillet over medium-high. Cook the chicken 6–7 minutes per side until well browned and 165°F (74°C). Rest, then slice.',
+      'Stir the yogurt with the tahini, remaining garlic, lemon juice and a pinch of salt.',
+      'Plate the rice, chicken, tomatoes, cucumber and onion, and spoon over the sauce.'] },
+    micro: { no: 'Raw chicken thighs cook unevenly in a microwave and won\'t brown. Use the oven, air fryer or stovetop.' } } },
+  'salmon-avocado-rice-bowls': { how: 'oven', alt: {
+    air: { cook: 9, steps: [
+      'Brush the salmon with the oil and half the coconut aminos.',
+      'Air fry at 400°F (200°C) for 8–9 minutes until it flakes and reaches 145°F (63°C).',
+      'Cook the edamame for 3 minutes and stir the rice vinegar into the rice.',
+      'Build the bowls with rice, salmon, avocado, cucumber and edamame, then drizzle with the remaining coconut aminos and add green onions and sesame seeds.'] },
+    stove: { cook: 10, steps: [
+      'Heat the oil in a nonstick skillet over medium-high. Cook the salmon skin-side down 4 minutes.',
+      'Flip, add half the coconut aminos and cook 3–4 minutes more, spooning the glaze over, until 145°F (63°C).',
+      'Cook the edamame for 3 minutes and stir the rice vinegar into the rice.',
+      'Build the bowls with rice, salmon, avocado, cucumber and edamame, then drizzle with the remaining coconut aminos and add green onions and sesame seeds.'] },
+    micro: { cook: 6, note: 'Cook the fillets covered on medium power so the edges don\'t dry out.', steps: [
+      'Brush the salmon with half the coconut aminos and put it in a covered microwave-safe dish.',
+      'Microwave on 70% power for 3–4 minutes, until it flakes and reaches 145°F (63°C). Rest 1 minute.',
+      'Microwave the edamame with a splash of water for 2 minutes and stir the rice vinegar into the rice.',
+      'Build the bowls and finish with the remaining coconut aminos, green onions and sesame seeds.'] } } }
 };
 /* Gluten-free and soy-free labels are worked out from each recipe's ingredients rather than typed by hand, so they stay
    right when a recipe (or your own) changes. A recipe qualifies only if it's naturally free of them: no processed
@@ -2611,7 +3084,8 @@ const PLAN_MET = { foundations: 3.5, 'upper-lower': 5, 'home-circuit': 6, 'push-
   'legs-glutes-home': 4.5, 'one-dumbbell': 4.5, 'band-upper': 4, 'hiit-conditioning': 8, 'bodyweight-advanced': 6, 'kb-hiit-starter': 7, 'kb-hiit-burn': 8.5, 'kb-hiit-inferno': 9.5,
   'yates-hit': 6, 'yates-classic': 6, 'kb-swing-getup': 8, 'kb-press-ladders': 6, 'longevity-strength-hiit': 5.5, 'animal-based-athlete': 6.5,
   'zone2-base': 5, 'rower-intervals': 7, 'bike-sprints': 8.5, 'treadmill-incline': 6, 'jump-rope': 9, 'low-impact-cardio': 5.5,
-  'dumbbell-home-strength': 5, '5k-to-10k': 8, 'express-20': 6, 'womens-strength': 5, 'strong-steady': 3 };
+  'dumbbell-home-strength': 5, '5k-to-10k': 8, 'express-20': 6, 'womens-strength': 5, 'strong-steady': 3,
+  'barbell-5x5': 5, 'machine-starter': 3.5, 'first-pullup': 3.8, 'runner-strength': 4.5, 'desk-reset': 2.5 };
 PLANS.forEach((p) => { p.met = PLAN_MET[p.id]; });
 // [id, label, group]
 const EQUIPMENT = [['dumbbells', 'Dumbbells', 's'], ['kettlebell', 'Kettlebell', 's'], ['bench', 'Weight bench', 's'], ['bands', 'Resistance bands', 's'],
@@ -3233,6 +3707,7 @@ const KG_LB = 2.20462, ML_OZ = 29.5735;
 /* ---------- State ---------- */
 /* Profiles: each person on this device has their own saved data. The first profile keeps the original key, so
    data saved before profiles existed is simply profile 1. */
+// Storage names keep the app's original name on purpose: renaming them would hide everyone's saved data.
 const BASE_KEY = 'rep-ration-v1', PKEY = 'rep-ration-profiles';
 const keyFor = (id) => (id === 'p1' ? BASE_KEY : `${BASE_KEY}:${id}`);
 function loadProfiles() {
@@ -4062,10 +4537,10 @@ function reminderIcs() {
   const [hh, mm] = r.time.split(':'), stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
   const txt = (s) => String(s).replace(/[\;,]/g, (c) => '\\' + c).replace(/\n/g, '\\n');
   const url = location.href.split('#')[0] + '#workouts';
-  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Rep & Ration//Workout reminders//EN', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
-    `UID:rep-ration-${uid()}@rep-ration`, `DTSTAMP:${stamp}`, `DTSTART:${k.replace(/-/g, '')}T${hh}${mm}00`, `DURATION:PT${plan.minutes}M`,
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//HEALTH-RAY//Workout reminders//EN', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
+    `UID:healthray-${uid()}@healthray`, `DTSTAMP:${stamp}`, `DTSTART:${k.replace(/-/g, '')}T${hh}${mm}00`, `DURATION:PT${plan.minutes}M`,
     `RRULE:FREQ=WEEKLY;BYDAY=${r.days.map((i) => DOW[i][0]).join(',')}`, `SUMMARY:${txt('Workout: ' + plan.title)}`,
-    `DESCRIPTION:${txt('Time to train! Open Rep & Ration to start your session: ' + url)}`, `URL:${url}`,
+    `DESCRIPTION:${txt('Time to train! Open HEALTH-RAY to start your session: ' + url)}`, `URL:${url}`,
     'BEGIN:VALARM', 'ACTION:DISPLAY', `TRIGGER:-PT${r.alert || 0}M`, `DESCRIPTION:${txt('Workout reminder: ' + plan.title)}`, 'END:VALARM',
     'END:VEVENT', 'END:VCALENDAR'].join('\r\n') + '\r\n';
 }
@@ -4207,7 +4682,7 @@ const FILTER_NOTES = {
   'Nut free': 'No peanuts or tree nuts. Always check labels if you have an allergy: kitchens and packaged foods can carry traces.',
   Budget: 'About $3 or less a serving at typical US supermarket prices (an estimate; prices vary by store and region).',
   Carnivore: 'Only animal foods: meat, fish, eggs, butter and animal fats, seasoned with salt. No plants, spices or sweeteners.',
-  Dessert: 'No refined sugar. Sweetness comes from fruit, pure monk fruit or a little coconut sugar, at 12 g of sugar or less per serving.',
+  Dessert: 'No refined sugar. Sweetness comes from fruit, pure monk fruit, a little coconut sugar or a small amount of raw honey or pure maple syrup, at 12 g of sugar or less per serving.',
   'Minimally processed': 'Whole-food recipes plus a few clean staples: canned beans, tuna and tomatoes, bone broth or stock, full-fat coconut milk, 3-ingredient corn tortillas, Dijon and unflavored grass-fed whey or collagen.'
 };
 function recipeCards() {
@@ -4281,12 +4756,23 @@ function ingList(r) {
    Worked out from each recipe's ingredients and steps, so your own recipes get them too. */
 // The major US allergens (FDA's nine). Coconut is no longer treated as a tree nut by FDA (2025 guidance).
 const ALLERGENS = [
-  ['Milk', /yogurt|\bmilk\b|cheese|feta|cheddar|parmesan|mozzarella|cottage|\bbutter\b|ghee|cream|kefir|whey/, /almond milk|coconut milk|oat milk|peanut butter|almond butter|nut butter|cocoa butter|or water/],
+  ['Milk', /yogurt|\bmilk\b|cheese|feta|cheddar|parmesan|mozzarella|cottage|\bbutter\b|ghee|cream|kefir|whey/, /almond milk|coconut milk|oat milk|peanut butter|almond butter|nut butter|cocoa butter|butter lettuce|butternut|butter beans|or water/],
   ['Egg', /\beggs?\b|mayo/], ['Fish', /salmon|tuna|cod\b|sardine|anchov|\bfish\b/], ['Shellfish', /shrimp|prawn|crab|lobster|scallop|mussel|clam/],
   ['Tree nuts', /almond|walnut|pecan|cashew|pistachio|pine nut|hazelnut|macadamia|brazil nut/], ['Peanuts', /peanut/],
   ['Wheat', /\bwheat|\bflour\b|bread|panko|pasta|noodle|couscous|bulgur|farro|seitan|spelt|semolina|soy sauce|pita|cracker/, /(almond|coconut|chickpea|cassava|tapioca) flour/],
   ['Soy', /\bsoy|tofu|tempeh|edamame|miso|tamari|natto/], ['Sesame', /sesame|tahini/]
 ];
+// Ingredients that often contain an allergen their name doesn't show. Listed as "check the label", not as definite allergens.
+const ALLERGEN_CHECKS = [[/dark chocolate|chocolate chips/, 'dark chocolate (often contains milk and soy)'],
+  [/protein powder|whey|collagen/, 'protein powder (some contain soy, milk or are made in a facility with nuts)'],
+  [/broth|stock/, 'broth or stock (some contain wheat, soy or milk)'], [/\boats?\b/, 'oats (often processed alongside wheat)'],
+  [/corn tortilla/, 'corn tortillas (some are made with wheat)'], [/pesto/, 'store-bought pesto (usually contains milk and tree nuts)'],
+  [/granola/, 'granola (often contains nuts, wheat or soy)'], [/parmesan/, 'parmesan (traditional Parmigiano-Reggiano is made with animal rennet; look for a vegetarian one)'], [/coconut/, 'coconut (no longer a tree nut under FDA rules, but some people with tree-nut allergies react to it)']];
+function allergenChecks(r) {
+  const ings = (r.ingredients || []).map((i) => String(i[2] || '').toLowerCase());
+  const veg = (r.tags || []).includes('Vegetarian');
+  return [...new Set(ALLERGEN_CHECKS.filter(([re, note]) => ings.some((n) => re.test(n)) && (veg || !/rennet/.test(note))).map((x) => x[1]))];
+}
 function allergensOf(r) {
   const ings = (r.ingredients || []).map((i) => String(i[2] || '').toLowerCase());
   return ALLERGENS.filter(([, yes, not]) => ings.some((n) => yes.test(not ? n.replace(not, '') : n))).map((a) => a[0]);
@@ -4311,6 +4797,33 @@ function equipmentOf(r, m) {
   const out = EQUIP.filter(([re]) => re.test(txt)).map((x) => x[1]);
   if (m.app && m.app !== 'none') out.unshift(appLabel(m.app));
   return [...new Set(out)];
+}
+/* Food safety: USDA/FoodSafety.gov safe minimum internal temperatures, worked out from the ingredients and the method shown,
+   so your own recipes get them too. Shown under the method on every recipe that cooks meat, fish or eggs. */
+const SAFE_RULES = [
+  ['poultry', /chicken|turkey/, 'Chicken and turkey (including ground): 165°F (74°C) in the thickest part.', /deli|rotisserie|cooked chicken|leftover|stock|broth/],
+  ['ground', /ground (beef|pork|lamb|bison)|beef burger|pork sausage|\bliver\b/, 'Ground beef, pork or lamb, burgers and liver: 160°F (71°C).'],
+  ['whole', /steak|ribeye|sirloin|flank|tenderloin|pork chop|chops|\blamb\b/, 'Steaks, chops and roasts: 145°F (63°C), then rest 3 minutes.'],
+  ['fish', /salmon|\bcod\b|halibut|haddock|pollock|tilapia|trout|white fish/, 'Fish: 145°F (63°C), or until it is no longer see-through and flakes easily with a fork.', /smoked salmon|canned|in water|in olive oil/],
+  ['shellfish', /shrimp|prawn|scallop|lobster|crab/, 'Shrimp, scallops and crab: cook until the flesh is pearly or white and opaque.'],
+  ['egg', /\beggs?\b/, 'Egg dishes like frittatas and egg muffins: 160°F (71°C). Fried, poached or boiled eggs: until the white and yolk are firm.']
+];
+function safetyOf(r, m) {
+  const ings = (r.ingredients || []).map((i) => String(i[2] || '').toLowerCase());
+  const steps = (m.steps || r.steps || []).join(' ').toLowerCase();
+  const kinds = SAFE_RULES.filter(([, re, , not]) => ings.some((n) => re.test(n) && !(not && not.test(n))));
+  const out = kinds.map((k) => k[2]);
+  if (!out.length && !ings.some((n) => /smoked salmon|\bhoney\b/.test(n))) return '';
+  const soft = /runny|jammy|softly set|soft-boil|to your liking|6½ minutes|(boiling|simmering) water and cook [5-7] minutes/.test(steps) || /runny|jammy/.test((r.blurb || '').toLowerCase());
+  const risk = 'If you are pregnant, older, cooking for young children or have a weakened immune system';
+  if (kinds.some((k) => k[0] === 'egg') && soft) out.push(`This recipe cooks the yolks soft. ${risk}, use pasteurized eggs or cook the eggs until the yolks are firm.`);
+  if (ings.some((n) => /smoked salmon/.test(n))) out.push(`Cold-smoked salmon is eaten without cooking and can carry Listeria. ${risk}, leave it out or heat it until steaming (165°F / 74°C).`);
+  if (ings.some((n) => /\bhoney\b/.test(n))) out.push('Never give honey to babies under 1 year old.');
+  if (kinds.length && m.app === 'micro') out.push('Microwaves heat unevenly: cover, stir or turn the food halfway, let it stand 2–3 minutes, then check the temperature in a few places.');
+  if (kinds.some((k) => k[0] !== 'egg')) out.push('Use a food thermometer in the thickest part: color isn\'t a reliable sign. Keep raw meat and fish away from foods you won\'t cook, and wash your hands, boards and knives after handling them.');
+  if (kinds.some((k) => k[0] !== 'egg')) out.push('Reheat leftovers to 165°F (74°C), steaming hot all the way through.');
+  return `<div class="tip tip-safe" style="margin-top:16px"><b>Food safety.</b><ul class="safe-list">${out.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+    <a href="#sources" style="font-size:.8rem">Source: FoodSafety.gov safe minimum temperatures</a></div>`;
 }
 function storageOf(r) {
   const t = (r.title + ' ' + r.tags.join(' ')).toLowerCase();
@@ -4348,7 +4861,7 @@ function recipeInfo(r, m) {
   const eq = equipmentOf(r, m), sw = swapsOf(r), note = S.recipeNotes[r.id] || {};
   return `<section class="panel span-12 rinfo" aria-label="Recipe details">
     <div class="rinfo-grid">
-      <div><div class="eyebrow">Allergens</div><p>${r.allergens.length ? r.allergens.map((a) => `<span class="tag tag-allergen">${a}</span>`).join(' ') : 'None of the 9 major allergens'}</p></div>
+      <div><div class="eyebrow">Allergens</div><p>${r.allergens.length ? r.allergens.map((a) => `<span class="tag tag-allergen">${a}</span>`).join(' ') : 'None of the 9 major allergens'}</p>${allergenChecks(r).length ? `<p class="muted" style="font-size:.82rem;margin-top:6px"><b>Check the label:</b> ${allergenChecks(r).map(esc).join('; ')}.</p>` : ''}<p class="muted" style="font-size:.76rem;margin-top:4px">Worked out from the ingredient names. With a severe allergy, always read the labels of what you buy.</p></div>
       <div><div class="eyebrow">Cost</div><p><b class="num">~${money(r.cost)}</b> a serving <span class="muted">(estimate, typical US prices)</span></p></div>
       <div><div class="eyebrow">Equipment</div><p>${eq.length ? eq.map(esc).join(' · ') : 'Bowl and spoon'}</p></div>
       <div><div class="eyebrow">Storage</div><p>${storageOf(r)}</p></div>
@@ -4404,6 +4917,7 @@ function viewRecipe(id) {
       ${m.note ? `<p class="tip" style="margin-bottom:16px"><b>${appLabel(m.app)} tip.</b> ${esc(m.note)}</p>` : ''}
       <ol class="steps">${m.steps.map((s) => `<li><p>${esc(s)}</p></li>`).join('')}</ol>
       ${r.tip ? `<div class="tip" style="margin-top:20px"><b>Tip.</b> ${esc(r.tip)}</div>` : ''}
+      ${safetyOf(r, m)}
     </section>
     ${recipeInfo(r, m)}
   </div>`;
@@ -4502,7 +5016,7 @@ function viewPlan(id) {
       <div class="day-tabs" role="group" aria-label="Training days">${p.days.map((x, i) => `<button class="chip" data-act="plan-day" data-i="${i}" aria-pressed="${i === planDayTab}">${esc(x.name)}</button>`).join('')}</div>
       <div class="panel-head"><h2>${esc(d.name)} <span class="muted" style="font-weight:500">· ${esc(d.focus)}</span></h2></div>
       <div class="table-wrap"><table class="ex-table plan-ex"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr></thead><tbody>
-        ${d.ex.map((e) => `<tr><td>${exLink(e[0])}${e[4] ? `<div class="ex-cue">${esc(e[4])}</div>` : libFor(e[0]) ? `<div class="ex-cue">${esc(libFor(e[0]).cues[0])}</div>` : ''}</td><td class="num" data-l="Sets">${e[1]}</td><td class="num" data-l="Reps">${esc(e[2])}</td><td class="num" data-l="Rest">${e[3] ? e[3] + 's' : '—'}</td></tr>`).join('')}
+        ${d.ex.map((e) => `<tr><td>${exLink(e[0])}${e[4] ? `<div class="ex-cue">${esc(e[4])}</div>` : libFor(e[0]) ? `<div class="ex-cue">${esc(libFor(e[0]).cues[0])}</div>` : ''}${startLine(p, e)}</td><td class="num" data-l="Sets">${e[1]}</td><td class="num" data-l="Reps">${esc(e[2])}</td><td class="num" data-l="Rest">${e[3] ? e[3] + 's' : '—'}</td></tr>`).join('')}
       </tbody></table></div>
       <div class="row" style="margin-top:16px"><button class="btn btn-berry" data-act="start" data-plan="${p.id}" data-day="${planDayTab}">Start ${esc(d.name)}</button></div>
     </section>
@@ -4522,6 +5036,62 @@ function viewPlan(id) {
 let restEnd = 0, ticker = null;
 /* Live session. Each set has its own weight and reps. A value you set carries forward to the later sets of that
    exercise until you change one of those too; untouched sets start from what you did last time (or the plan target). */
+/* Suggested starting weights, for the first time someone does an exercise.
+   Ratios of body weight for a set of about 10 reps for someone new to lifting (cautious: below published "untrained"
+   strength standards), then scaled for sex, age, experience and rep range, and rounded DOWN to real dumbbell,
+   kettlebell, plate and stack sizes. Body weight above a BMI of 27 isn't counted, because extra body fat doesn't add strength.
+   Columns: barbell total, each dumbbell, one dumbbell or kettlebell held in both hands or one arm, machine or cable stack. */
+const START_RATIO = {
+  'back-squat': [0.5, 0.12, 0.18], 'front-squat': [0.4, 0.12, 0.18], 'goblet-squat': [0, 0, 0.15], 'split-squat': [0.3, 0.08, 0.12],
+  'reverse-lunge': [0.3, 0.08, 0.12], 'walking-lunge': [0.3, 0.08, 0], 'lateral-lunge': [0, 0.06, 0.1], 'step-up': [0, 0.06, 0.1],
+  'leg-press': [0, 0, 0, 0.8], 'leg-extension': [0, 0, 0, 0.25], 'leg-curl': [0, 0, 0, 0.2], 'calf-raise': [0.4, 0.1, 0.15, 0.5],
+  rdl: [0.45, 0.12, 0.18], deadlift: [0.6, 0.15, 0.25], swing: [0, 0, 0.15], 'hip-thrust': [0.5, 0, 0.2, 0.5], 'glute-bridge': [0.4, 0, 0.15],
+  'bench-press': [0.4, 0.12, 0.12], 'incline-press': [0.32, 0.1, 0.1], 'chest-fly': [0, 0.04, 0, 0.15], 'overhead-press': [0.25, 0.08, 0.1],
+  'clean-press': [0, 0.07, 0.1], 'lateral-raise': [0, 0.03, 0, 0.08], 'triceps-ext': [0.15, 0.05, 0.1, 0.15], pulldown: [0, 0, 0, 0.35],
+  'straight-arm-pulldown': [0, 0, 0.1, 0.15], row: [0.35, 0.12, 0.12, 0.35], 'face-pull': [0, 0, 0, 0.1], 'rear-delt': [0, 0.03, 0, 0.1],
+  'high-pull': [0, 0, 0.12], snatch: [0, 0, 0.1], shrug: [0.5, 0.15], curl: [0.2, 0.06, 0, 0.12], carry: [0, 0.2, 0.2], halo: [0, 0, 0.06],
+  'get-up': [0, 0, 0.08], pallof: [0, 0, 0, 0.08]
+};
+const START_LOWER = ['back-squat', 'front-squat', 'goblet-squat', 'split-squat', 'reverse-lunge', 'walking-lunge', 'lateral-lunge', 'step-up', 'leg-press',
+  'leg-extension', 'leg-curl', 'calf-raise', 'rdl', 'deadlift', 'swing', 'hip-thrust', 'glute-bridge', 'carry'];
+const SIZES = { db: { us: [3, 5, 8, 10, 12, 15, 17.5, 20, 22.5, 25, 27.5, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80], kg: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36] },
+  kb: { us: [10, 15, 20, 25, 30, 35, 40, 45, 50, 53, 62, 70], kg: [4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48] } };
+// How the exercise is loaded: barbell, each dumbbell, one weight (dumbbell or kettlebell), or a machine or cable stack.
+function loadKind(p, e) {
+  const n = e[0].toLowerCase(), kbPlan = p.needs.some((o) => o.includes('kettlebell')) && !p.needs.some((o) => o.includes('dumbbells'));
+  if (/\bband\b|bands?\b|bodyweight|backpack|towel/.test(n)) return null;
+  if (isBarbell(p, e) || /barbell|ez-bar|ez bar|smith/.test(n)) return 'bar';
+  if (/cable|pulldown|machine|leg press|leg curl|leg extension|pushdown|face pull|pec deck|hack squat|pallof/.test(n)) return 'machine';
+  if (/kettlebell|\bkb\b/.test(n) || (kbPlan && !/dumbbell/.test(n))) return 'kb';
+  if (/goblet|one dumbbell|single dumbbell|dumbbell swing|halo/.test(n) || p.id === 'one-dumbbell') return 'one';
+  if (/dumbbell|\bdb\b/.test(n) || p.needs.some((o) => o.includes('dumbbells'))) return 'each';
+  return null;
+}
+function startWeight(p, e) {
+  const lib = libFor(e[0]), pr = S.profile || {};
+  if (!lib || !hasWeight(p, e) || !(pr.weightKg > 0)) return null;
+  const kind = loadKind(p, e), ratio = START_RATIO[lib.id];
+  if (!kind || !ratio) return null;
+  const r = ratio[{ bar: 0, each: 1, one: 2, kb: 2, machine: 3 }[kind]];
+  if (!r) return null;
+  const h = (pr.heightCm || 170) / 100, bw = Math.min(pr.weightKg, 27 * h * h);
+  const lower = START_LOWER.includes(lib.id), age = pr.age || 30;
+  const sexF = pr.sex === 'female' ? (lower ? 0.7 : 0.55) : 1;
+  const ageF = age < 40 ? 1 : age < 50 ? 0.92 : age < 60 ? 0.82 : age < 70 ? 0.72 : 0.62;
+  const expF = { new: 1, some: 1.35, exp: 1.7 }[pr.exp || 'new'] || 1;
+  const top = repTarget(e[2]) || 10, repF = top <= 6 ? 1.1 : top >= 15 ? 0.85 : 1;
+  const want = showW(bw * r * sexF * ageF * expF * repF, 2), U = wUnit();
+  if (kind === 'bar') {
+    const bar = us() ? 45 : 20, step = us() ? 5 : 2.5;
+    if (want < bar) return { v: bar, text: `the empty ${bar} ${U} bar (if that's too heavy, use dumbbells or a lighter bar)` };
+    const v = Math.floor(want / step) * step; return { v, text: `${v} ${U} on the bar (bar and plates)` };
+  }
+  if (kind === 'machine') { const step = us() ? 5 : 2.5, v = Math.max(us() ? 10 : 5, Math.floor(want / step) * step); return { v, text: `${v} ${U} on the stack` }; }
+  const list = SIZES[kind === 'kb' ? 'kb' : 'db'][us() ? 'us' : 'kg'], v = [...list].reverse().find((x) => x <= want * 1.05) || list[0];
+  return { v, text: kind === 'each' ? `${v} ${U} in each hand` : kind === 'kb' ? `a ${v} ${U} kettlebell` : `one ${v} ${U} dumbbell` };
+}
+// Plan page: a suggested start for exercises you haven't logged yet.
+const startLine = (p, e) => { if (lastSets(e[0])) return ''; const sw = startWeight(p, e); return sw ? `<div class="ex-start-l">Start around ${esc(sw.text)}</div>` : ''; };
 function lastSets(name) {
   const w = [...S.workouts].sort((a, b) => b.date.localeCompare(a.date)).find((x) => workoutEx(x).some((y) => y.n === name && y.reps.length));
   return w ? setsOf(workoutEx(w).find((y) => y.n === name)) : null;
@@ -4534,20 +5104,35 @@ function setVal(s, e, i, j, f, last) {
   return l && l.r != null ? String(l.r) : String(repTarget(e[2]) ?? '');
 }
 const hasWeight = (p, e) => !p.noLoad && !/ s$/.test(e[2]);
-/* Next-step suggestion from last time, one small step at a time: add reps until every set reaches the top of the range,
-   then add the smallest sensible weight jump (about 5% for lower body, 2.5% for upper body). */
+/* Next-step suggestion from last time, one small step at a time. Add reps until every set reaches the top of the range,
+   then go up to the next real weight, but only when that's a jump of about 10% or less and the last set wasn't rated
+   very hard. When the next dumbbell or kettlebell is a bigger jump, first build 2 extra reps on every set: once you have
+   them, you've earned the jump. A barbell always allows its smallest standard step (5 lb or 2.5 kg). */
 const LOWER_BODY = /squat|deadlift|lunge|leg press|leg curl|leg extension|hip thrust|glute|calf|step-up|rdl|split|swing|hinge/i;
+function lastRpe(name) {
+  const w = [...S.workouts].sort((a, b) => b.date.localeCompare(a.date)).find((x) => workoutEx(x).some((y) => y.n === name && y.reps.length));
+  const x = w && workoutEx(w).find((y) => y.n === name); return x && x.rpe ? +x.rpe : null;
+}
+function nextWeightUp(p, e, cur) {
+  const kind = loadKind(p, e);
+  if (kind === 'each' || kind === 'one' || kind === 'kb') { const list = SIZES[kind === 'kb' ? 'kb' : 'db'][us() ? 'us' : 'kg']; return list.find((x) => x > cur + 0.01) || null; }
+  return round(cur + (us() ? 5 : 2.5), 2);
+}
 function nextStep(p, e, last) {
   if (!last || !last.length) return '';
   const timed = / s$/.test(e[2]), nums = (String(e[2]).match(/\d+/g) || []).map(Number), top = nums.length ? Math.max(...nums.slice(0, 2)) : null;
   if (!top) return '';
   const allTop = last.length >= e[1] && last.every((x) => x.r >= top);
-  if (timed) return allTop ? `You held ${top} s on every set: try ${top + 5} s or the harder version.` : `Aim to hold the full ${top} s on every set.`;
+  if (timed) return allTop ? `You held ${top} s on every set: try ${top + 5} s next time, or the harder version.` : `Aim to hold the full ${top} s on every set.`;
   if (!allTop) return `Stay at this weight and aim for ${top} reps on every set, adding a rep at a time.`;
   const kg = last[0].kg;
   if (!hasWeight(p, e) || !kg) return `You hit ${top} reps on every set: add 1–2 reps or move to the harder version.`;
-  const inc = us() ? 5 : 2.5, cur = showW(kg), step = Math.max(inc, Math.round((cur * (LOWER_BODY.test(e[0]) ? 0.05 : 0.025)) / inc) * inc);
-  return `You hit ${top} reps on every set: go up to ${round(cur + step, 1)} ${wUnit()} and start again at the bottom of the rep range.`;
+  if ((lastRpe(e[0]) || 0) >= 9) return `You hit ${top} reps, but you rated it very hard. Stay at this weight until every set ends with about 2 reps left, then go up.`;
+  const cur = showW(kg), next = nextWeightUp(p, e, cur), kind = loadKind(p, e), U = wUnit();
+  if (!next) return `You hit ${top} reps on every set: slow the lowering to 3 seconds or add a set before going heavier.`;
+  const jump = (next - cur) / cur, big = jump > 0.1 && kind !== 'bar', earned = last.every((x) => x.r >= top + 2);
+  if (big && !earned) return `You hit ${top} reps on every set. The next weight up, ${next} ${U}, is a ${Math.round(jump * 100)}% jump, so first build to ${top + 2} reps on every set (or slow the lowering to 3 seconds). Once you get there, go up.`;
+  return `You hit ${big ? `${top + 2}+` : top} reps on every set: next time try ${next} ${U}${kind === 'each' ? ' in each hand' : ''} and start again at the bottom of the rep range.`;
 }
 // Plates for each side of a barbell: 45 lb / 20 kg bar, standard plates.
 const isBarbell = (p, e) => /barbell|bench press|back squat|front squat|deadlift|overhead press|bent-over row|pendlay/i.test(e[0]) && p.needs.some((o) => o.includes('barbell'));
@@ -4586,6 +5171,7 @@ function viewSession() {
         <div class="ex-name">${esc(e[0])}${(s.prs || []).includes(e[0]) ? ' <span class="tag tag-berry">New best!</span>' : ''}${libFor(e[0]) ? ` <a class="ex-how" href="#ex-${libFor(e[0]).id}">How to</a>` : ''}</div><div class="ex-cue">${e[1]} × ${esc(e[2])} · ${e[3] ? 'rest ' + e[3] + 's' : 'no timed rest'}${e[4] ? ' — ' + esc(e[4]) : libFor(e[0]) ? ' — ' + esc(libFor(e[0]).cues[0]) : ''}</div>
         ${last ? `<div class="ex-last">Last time: ${exLine({ reps: last.map((x) => x.r), kg: last.map((x) => x.kg), timed })}</div>` : ''}
         ${tip ? `<div class="ex-next"><b>Next step:</b> ${tip}</div>` : ''}
+        ${!last && wt && isNaN(w0) ? (() => { const sw = startWeight(p, e); return sw ? `<div class="ex-next ex-start"><b>Suggested start:</b> ${esc(sw.text)}. A cautious guess from your weight, age, sex and experience: after a light warm-up set, you should finish each set with 3–4 reps to spare. If not, go lighter. <button type="button" class="btn btn-sm" data-act="use-start" data-i="${i}" data-v="${sw.v}">Use ${sw.v} ${wUnit()}</button></div>` : ''; })() : ''}
         ${wt && isBarbell(p, e) ? `<div class="ex-plates" id="plates-${i}">${platesFor(w0)}</div>` : ''}
         <div class="srows ${wt ? '' : 'no-w'}"><div class="srow srow-h" aria-hidden="true"><span>Set</span>${wt ? `<span>${wUnit()}</span>` : ''}<span>${timed ? 'Seconds' : 'Reps'}</span></div>
         ${[...Array(e[1])].map((_, j) => { const k = i + '-' + j, lbl = `${e[0]} set ${j + 1}`;
@@ -4823,10 +5409,12 @@ COMMON_FOODS.forEach(([cat, name, portion, kcal, p, c, f, k, mic, alc]) => {
 });
 // FDA Daily Values used on food labels.
 const MICRO_DV = [['Fiber', 28, 'g'], ['Sodium', 2300, 'mg'], ['Potassium', 4700, 'mg'], ['Iron', 18, 'mg'], ['B12', 2.4, 'µg']];
-let RECIPE_MICRO = {'berry-overnight-oats': [10.5,414,578,3.4,1.2], 'spinach-feta-egg-muffins': [0.9,544,361,3.3,1.7], 'chicken-burrito-bowls': [11.7,711,1326,3.7,0.4], 'lemon-herb-salmon': [7.3,683,1537,3.3,4.5], 'turkey-black-bean-chili': [10.1,868,1044,5.5,1.2], 'tofu-peanut-stir-fry': [7.4,248,779,5.1,0.0], 'tuna-white-bean-salad': [7.7,887,1102,6.2,2.8], 'chocolate-pb-smoothie': [8.5,227,1002,3.1,0.6], 'banana-protein-pancakes': [5.6,1095,614,4.0,1.4], 'greek-chicken-quinoa-bowls': [5.2,719,1146,3.5,1.1], 'lentil-vegetable-soup': [8.2,558,710,4.0,0.0], 'beef-broccoli': [4.3,366,736,3.1,2.5], 'turkey-taco-lettuce-wraps': [4.7,667,826,3.1,1.6], 'shrimp-fajita-sheet-pan': [6.3,646,782,2.0,1.7], 'chickpea-spinach-curry': [14.4,863,768,5.5,0.0], 'pb-protein-bites': [4.3,54,284,2.0,0.1], 'cottage-cheese-parfait': [2.8,1383,373,0.9,0.9], 'steak-egg-skillet': [4.6,797,1194,5.2,2.6], 'green-shakshuka': [3.3,932,835,5.6,2.4], 'sage-turkey-patties': [1.1,610,504,3.4,1.6], 'savory-cottage-bowl': [1.5,1457,642,3.3,1.4], 'black-bean-egg-tacos': [10.1,746,711,4.8,1.5], 'tuna-stuffed-avocados': [10.7,670,1068,2.8,3.1], 'herb-chicken-avocado-salad': [8.7,678,1439,3.0,0.4], 'garlic-shrimp-zoodles': [2.3,782,1042,1.5,2.0], 'warm-lentil-egg-salad': [8.8,727,939,7.9,1.2], 'turkey-burger-lettuce-wraps': [4.4,544,805,3.3,1.5], 'herb-pork-tenderloin': [6.7,714,1377,4.3,0.9], 'garlic-butter-cod': [5.1,776,1115,2.7,1.6], 'chicken-cauliflower-traybake': [5.3,856,1135,4.4,1.4], 'turkey-white-bean-kale': [8.0,1016,1047,6.0,1.3], 'pesto-salmon-broccolini': [6.6,819,1384,3.9,5.7], 'yogurt-deviled-eggs': [0.1,342,172,1.8,1.0], 'chili-lime-edamame': [8.5,199,719,3.8,0.0], 'roast-turkey-rollups': [0.9,468,552,1.4,0.9], 'herby-yogurt-dip': [2.1,377,519,0.9,0.9], 'cocoa-almond-protein-shake': [8.3,778,562,3.3,0.6], 'smoked-salmon-scramble': [0.1,646,341,3.2,3.3], 'sweet-potato-turkey-hash': [5.7,905,1085,5.0,2.1], 'savory-oats-jammy-egg': [4.8,667,584,4.0,0.5], 'lemony-chicken-lentil-salad': [5.0,512,774,3.2,0.2], 'tuna-nicoise-plate': [8.4,1055,1498,6.4,3.7], 'avocado-chocolate-mousse': [7.7,155,514,2.0,0.0], 'cinnamon-baked-apples': [3.3,212,252,0.6,0.4], 'vanilla-chia-pudding': [9.3,202,296,1.9,0.5], 'almond-butter-cookies': [3.7,132,297,1.4,0.1], 'berry-yogurt-bark': [1.2,27,188,0.3,0.6], 'butter-basted-ribeye': [0.0,892,684,4.1,5.0], 'carnivore-steak-eggs': [0.0,1046,979,6.3,4.7], 'brown-butter-salmon': [0.0,750,620,0.6,5.5], 'beef-liver-burgers': [0.0,676,395,3.6,19.2], 'salt-roasted-chicken-thighs': [0.0,1065,456,1.6,0.9]}; // per serving, from tools/nutrition_audit.py
+let RECIPE_MICRO = {'berry-overnight-oats': [10.5,414,578,3.4,1.2], 'spinach-feta-egg-muffins': [0.9,544,361,3.3,1.7], 'chicken-burrito-bowls': [11.7,711,1326,3.7,0.4], 'lemon-herb-salmon': [7.3,683,1537,3.3,4.5], 'turkey-black-bean-chili': [10.1,868,1044,5.5,1.2], 'tofu-peanut-stir-fry': [7.4,248,779,5.1,0.0], 'tuna-white-bean-salad': [7.7,887,1102,6.2,2.8], 'chocolate-pb-smoothie': [8.5,227,1002,3.1,0.6], 'banana-protein-pancakes': [5.6,1095,614,4.0,1.4], 'greek-chicken-quinoa-bowls': [5.2,719,1146,3.5,1.1], 'lentil-vegetable-soup': [8.2,558,710,4.0,0.0], 'beef-broccoli': [4.3,366,736,3.1,2.5], 'turkey-taco-lettuce-wraps': [4.7,667,826,3.1,1.6], 'shrimp-fajita-sheet-pan': [6.3,646,782,2.0,1.7], 'chickpea-spinach-curry': [14.4,863,768,5.5,0.0], 'pb-protein-bites': [4.3,54,284,2.0,0.1], 'cottage-cheese-parfait': [2.8,1383,373,0.9,0.9], 'steak-egg-skillet': [4.6,797,1194,5.2,2.6], 'green-shakshuka': [3.3,932,835,5.6,2.4], 'sage-turkey-patties': [1.1,610,504,3.4,1.6], 'savory-cottage-bowl': [1.5,1457,642,3.3,1.4], 'black-bean-egg-tacos': [10.1,746,711,4.8,1.5], 'tuna-stuffed-avocados': [10.7,670,1068,2.8,3.1], 'herb-chicken-avocado-salad': [8.7,678,1439,3.0,0.4], 'garlic-shrimp-zoodles': [2.3,782,1042,1.5,2.0], 'warm-lentil-egg-salad': [8.8,727,939,7.9,1.2], 'turkey-burger-lettuce-wraps': [4.4,544,805,3.3,1.5], 'herb-pork-tenderloin': [6.7,714,1377,4.3,0.9], 'garlic-butter-cod': [5.1,776,1115,2.7,1.6], 'chicken-cauliflower-traybake': [5.3,856,1135,4.4,1.4], 'turkey-white-bean-kale': [8.0,1016,1047,6.0,1.3], 'pesto-salmon-broccolini': [6.6,819,1384,3.9,5.7], 'yogurt-deviled-eggs': [0.1,342,172,1.8,1.0], 'chili-lime-edamame': [8.5,199,719,3.8,0.0], 'roast-turkey-rollups': [0.9,468,552,1.4,0.9], 'herby-yogurt-dip': [2.1,377,519,0.9,0.9], 'cocoa-almond-protein-shake': [8.3,778,562,3.3,0.6], 'smoked-salmon-scramble': [0.1,646,341,3.2,3.3], 'sweet-potato-turkey-hash': [5.7,905,1085,5.0,2.1], 'savory-oats-jammy-egg': [4.8,331,464,3.5,0.5], 'lemony-chicken-lentil-salad': [5.0,512,774,3.2,0.2], 'tuna-nicoise-plate': [8.4,1055,1498,6.4,3.7], 'avocado-chocolate-mousse': [7.7,155,514,2.0,0.0], 'cinnamon-baked-apples': [3.3,212,252,0.6,0.4], 'vanilla-chia-pudding': [9.3,202,296,1.9,0.5], 'almond-butter-cookies': [3.7,132,297,1.4,0.1], 'berry-yogurt-bark': [1.2,27,188,0.3,0.6], 'butter-basted-ribeye': [0.0,892,684,4.1,5.0], 'carnivore-steak-eggs': [0.0,1046,979,6.3,4.7], 'brown-butter-salmon': [0.0,750,620,0.6,5.5], 'beef-liver-burgers': [0.0,676,395,3.6,19.2], 'salt-roasted-chicken-thighs': [0.0,1065,456,1.6,0.9], 'black-bean-sweet-potato-tacos': [14.9,614,1041,3.2,0.0], 'turmeric-tofu-scramble': [9.6,639,992,6.9,0.0], 'chickpea-quinoa-power-bowl': [15.8,582,662,5.0,0.0], 'red-lentil-coconut-dal': [12.0,710,1105,8.4,0.0], 'crispy-roasted-chickpeas': [9.3,545,144,1.4,0.0], 'apple-almond-butter-crunch': [7.2,585,494,1.8,0.0], 'hummus-veggie-plate': [7.3,454,340,2.0,0.0], 'chocolate-banana-nice-cream': [5.0,311,544,1.1,0.0], 'cinnamon-walnut-baked-pears': [6.3,30,281,0.8,0.1], 'butter-seared-pork-chops': [0.0,519,616,1.0,1.0], 'bone-broth-egg-drop-soup': [0.0,1775,526,2.7,0.9], 'korean-beef-rice-bowls': [2.4,304,683,3.7,2.5], 'thai-basil-chicken': [2.2,460,708,2.8,1.1], 'banana-oat-breakfast-cookies': [6.5,169,376,2.0,0.0], 'chicken-shawarma-plates': [1.9,622,716,2.7,1.3], 'salmon-avocado-rice-bowls': [10.5,369,1425,3.6,4.5]}; // per serving, from tools/nutrition_audit.py
 function microRow(list) {
   const withData = list.filter((m) => Array.isArray(m.mic));
   if (!list.length) return '';
+  // Nothing logged with micronutrient data yet: one short line instead of a grid of zeros.
+  if (!withData.length) return `<p class="muted" style="font-size:.8rem;margin:2px 0 8px">Fiber, sodium, potassium, iron and B12 show here for recipes, everyday meals and scanned foods. Foods you type in yourself don't include them.</p>`;
   const tot = [0, 0, 0, 0, 0];
   withData.forEach((m) => m.mic.forEach((v, i) => { tot[i] += (+v || 0) * (m.qty || 1); }));
   return `<div class="micros"><div class="micro-grid">${MICRO_DV.map(([n, dv, u], i) => { const pc = Math.round(tot[i] / dv * 100);
@@ -5134,7 +5722,8 @@ const AISLES = ['Produce', 'Meat & seafood', 'Dairy, eggs & tofu', 'Pantry & can
 function aisleOf(name, unit) {
   const n = name.toLowerCase();
   if (/lettuce/.test(n)) return 'Produce';
-  if (/frozen|\bice\b|corn kernels/.test(n)) return 'Frozen';
+  if (/frozen|\bice\b|corn kernels|edamame/.test(n)) return 'Frozen';
+  if (/\bpears?\b/.test(n)) return 'Produce';
   if (/\bsalt\b|black pepper|chili powder|cumin|paprika|dill|cinnamon|oregano|garlic powder|curry powder|baking powder|vanilla|cooking spray|sesame seeds|dried (sage|thyme|rosemary)|nutmeg|turmeric|mustard powder|pepper flakes/.test(n)) return 'Spices & baking';
   if (unit === 'can' || /tuna|oats|rice|quinoa|lentil|tortilla|broth|salsa|pico|peanut butter|honey|maple|monk fruit|coconut sugar|baking soda|tallow|soy sauce|vinegar|\boil\b|cornstarch|chia|flax|cocoa|protein powder|whey|collagen|arrowroot|aminos|stock|coconut milk|granola|chocolate|mustard|tahini|hemp seeds|almond butter|sliced almonds|pine nuts|walnuts|pecans|pumpkin seeds/.test(n)) return 'Pantry & canned';
   if (/chicken|turkey|salmon|shrimp|steak|beef|pork|cod\b/.test(n)) return 'Meat & seafood';
@@ -5185,7 +5774,7 @@ const itemQty = (it) => {
 };
 function shoppingText() {
   const items = shoppingItems(), sh = S.shopping;
-  const lines = ['Shopping list (Rep & Ration)', ''];
+  const lines = ['Shopping list (HEALTH-RAY)', ''];
   AISLES.forEach((a) => {
     const g = mergeUnits(items.filter((i) => i.aisle === a && !sh.checked[i.key] && !haveIt(i)));
     if (!g.length) return;
@@ -5275,6 +5864,9 @@ const PRICE_RULES = [
   [/lime/, { each: 1 }, 0.5, {}],
   [/lemon/, { each: 1, tbsp: 3, tsp: 9 }, 0.79, {}],
   [/banana/, { each: 1 }, 0.29, {}],
+  [/sweet potato/, { each: 1 }, 1.29, {}],
+  [/\bapples?\b/, { each: 1 }, 0.99, {}],
+  [/\bpears?\b/, { each: 1 }, 1.19, {}],
   [/bell pepper/, { each: 1, cup: 1 }, 1.29, {}],
   [/green onion/, { each: 6, cup: 1 }, 1.29, {}],
   [/red onion/, { each: 1, tbsp: 16 }, 1.19, {}],
@@ -5344,6 +5936,22 @@ const ORDER_SITES = [
   ['Amazon Fresh', (q) => `https://www.amazon.com/s?k=${q}&i=amazonfresh`, 'https://www.amazon.com/fresh', 'Amazon Fresh and Whole Foods delivery'],
   ['Kroger', (q) => `https://www.kroger.com/search?query=${q}`, 'https://www.kroger.com/', 'Kroger-family stores'],
   ['Target', (q) => `https://www.target.com/s?searchTerm=${q}`, 'https://www.target.com/c/grocery/-/N-5xt1a', 'Same-day delivery with Shipt']];
+// Optional: send the whole list to Instacart as a ready-to-shop page. Needs the small Supabase function in
+// mobile/supabase/functions/instacart-list (setup: docs/INSTACART.md). Paste its URL here; leave '' to turn it off.
+const INSTACART_FN = '';
+const IC_UNITS = { cup: 'cup', tbsp: 'tablespoon', tsp: 'teaspoon', oz: 'ounce', lb: 'pound', can: 'can', '': 'each', each: 'each', large: 'each' };
+// One shopping-list line in Instacart's format: a plain product name, the amount as text, and amounts it can match.
+function instacartItem(it) {
+  const name = shortName(it.name).replace(/^(fresh|plain|unsweetened|extra-virgin|cooked)\s+/i, '').trim();
+  const meas = (it.parts || [it]).filter((x) => x.qty != null && IC_UNITS[x.unit || ''])
+    .map((x) => ({ quantity: Math.max(0.01, Math.round((WHOLE_UNITS.includes(x.unit) ? Math.ceil(x.qty - 0.01) : x.qty) * 100) / 100), unit: IC_UNITS[x.unit || ''] }));
+  const amount = it.multi || (it.qty == null ? '' : itemQty(it));
+  return { name, display_text: amount ? `${amount} ${shortName(it.name)}` : shortName(it.name), ...(meas.length ? { line_item_measurements: meas } : {}) };
+}
+// Shopping-list names: the product first, with notes in brackets shown smaller underneath.
+const itemName = (n) => { const notes = (String(n).match(/\(([^)]*)\)/g) || []).map((x) => x.slice(1, -1)).join('; ');
+  return esc(shortName(n)) + (notes ? `<small class="item-note">${esc(notes)}</small>` : ''); };
+const isInstacartUrl = (u) => { try { const x = new URL(u); return x.protocol === 'https:' && /(^|\.)instacart\.(com|tools)$/.test(x.hostname); } catch (e) { return false; } };
 const money = (n) => '$' + n.toFixed(2);
 const distTxt = (km) => (S.units === 'us' ? `${km < 1.6 ? '<1' : round(km / 1.609, 1)} mi` : `${km < 1 ? '<1' : round(km, 1)} km`);
 const shortName = (n) => n.replace(/\s*\([^)]*\)/g, '');
@@ -5419,8 +6027,11 @@ function storesPanel() {
       <span><b>Order online</b><span class="muted"> · ${ORDER_SITES.map((x) => x[0]).join(', ')}</span></span><span class="fchev" aria-hidden="true"></span></button>
     ${orderOpen ? `<div class="order-body">
       <div class="seg" role="group" aria-label="Delivery service">${ORDER_SITES.map(([n], i) => `<button class="chip" data-act="order-site" data-i="${i}" aria-pressed="${i === si}">${n}</button>`).join('')}</div>
-      <p class="muted" style="font-size:.82rem;margin:8px 0 10px">${site[3]}. These services don't accept a whole list from other apps, so we copy your ${unchecked.length} remaining item${unchecked.length === 1 ? '' : 's'} for you to paste, or you can search them one at a time.</p>
-      <div class="row"><button class="btn btn-primary" data-act="order-go" data-i="${si}" ${unchecked.length ? '' : 'disabled'}>Copy list &amp; open ${site[0]}</button>
+      ${site[0] === 'Instacart' && INSTACART_FN
+        ? `<p class="muted" style="font-size:.82rem;margin:8px 0 10px">${site[3]}. Sends your ${unchecked.length} remaining item${unchecked.length === 1 ? '' : 's'} to Instacart as one list: pick a store there and add everything to your cart.</p>`
+        : `<p class="muted" style="font-size:.82rem;margin:8px 0 10px">${site[3]}. This service doesn't accept a whole list from other apps, so we copy your ${unchecked.length} remaining item${unchecked.length === 1 ? '' : 's'} for you to paste, or you can search them one at a time.</p>`}
+      <div class="row">${site[0] === 'Instacart' && INSTACART_FN ? `<button class="btn btn-primary" data-act="order-instacart" ${unchecked.length ? '' : 'disabled'}>Send list to Instacart</button><button class="btn" data-act="order-go" data-i="${si}" ${unchecked.length ? '' : 'disabled'}>Copy list instead</button>`
+        : `<button class="btn btn-primary" data-act="order-go" data-i="${si}" ${unchecked.length ? '' : 'disabled'}>Copy list &amp; open ${site[0]}</button>`}
         <button class="btn btn-ghost" data-act="order-items" aria-expanded="${orderItems}" ${unchecked.length ? '' : 'disabled'}>${orderItems ? 'Hide items' : 'Search item by item'}</button></div>
       ${orderItems ? `<ul class="list order-list">${unchecked.map((it) => `<li><span class="grow">${esc(shortName(it.name))}</span><a class="btn btn-sm btn-ghost" href="${site[1](encodeURIComponent(shortName(it.name)))}" target="_blank" rel="noopener" aria-label="Search ${esc(shortName(it.name))} on ${site[0]}">Search ↗</a></li>`).join('')}</ul>` : ''}
       ${unchecked.length ? '' : '<p class="muted">Everything is ticked off.</p>'}</div>` : ''}</div>`;
@@ -5579,7 +6190,7 @@ function viewShopping() {
     const g = mergeUnits(need.filter((i) => i.aisle === a));
     if (!g.length) return;
     groups += `<div class="shop-group"><h3>${a}</h3><ul class="shop-list">${g.map((i) => `<li><label><input type="checkbox" id="shop-${i.key}" data-shop="${i.keys.join('|')}" ${i.keys.every((k) => sh.checked[k]) ? 'checked' : ''}>
-      <span>${i.multi ? `<span class="q">${esc(i.multi)}</span>${esc(i.name)}` : i.qty == null ? `${esc(i.name)} <span class="muted">· as needed</span>` : `<span class="q">${esc(itemQty(i))}</span>${esc(i.name)}`}${i.orig ? ` <span class="muted">(instead of ${esc(i.orig)})</span>` : ''}${!i.multi && buyText(i) ? `<span class="buy">${esc(buyText(i))}</span>` : ''}<span class="from">${esc(i.from.join(' · '))}</span></span></label>
+      <span>${i.multi ? `<span class="q">${esc(i.multi)}</span>${itemName(i.name)}` : i.qty == null ? `${itemName(i.name)} <span class="muted">· as needed</span>` : `<span class="q">${esc(itemQty(i))}</span>${itemName(i.name)}`}${i.orig ? ` <span class="muted">(instead of ${esc(i.orig)})</span>` : ''}${!i.multi && buyText(i) ? `<span class="buy">${esc(buyText(i))}</span>` : ''}<span class="from">${esc(i.from.join(' · '))}</span></span></label>
       <button class="btn btn-ghost btn-sm have-btn" data-act="have" data-n="${esc(haveKey(i.orig || i.name))}" aria-label="I already have ${esc(i.name)}">Have it</button></li>`).join('')}</ul></div>`;
   });
   if (have.length) groups += `<details class="shop-group have-list"><summary>Already have (${mergeUnits(have).length})</summary><ul class="shop-list">${mergeUnits(have).map((i) => `<li><span class="grow muted">${esc(i.name)}</span><button class="btn btn-ghost btn-sm" data-act="have" data-n="${esc(haveKey(i.orig || i.name))}">Need it</button></li>`).join('')}</ul></details>`;
@@ -5620,11 +6231,15 @@ function shopAdd(id, servings) {
 let clearArmed = false;
 /* First run: units, about you, goal. Targets come from calcTargets, the same as Profile & goals. */
 let setupStep = 0;
+// Strength-training experience: used only to suggest cautious starting weights.
+const EXPERIENCE = [['new', 'New to lifting, or back after a long break'], ['some', 'Lifting regularly for 6 months to 2 years'], ['exp', 'Lifting regularly for more than 2 years']];
+const expField = (p) => `<label class="field">Strength training experience<select class="input" id="p-exp">${EXPERIENCE.map(([v, l]) => `<option value="${v}" ${(p.exp || 'new') === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+  <span class="muted" style="font-size:.8rem;font-weight:400">Used to suggest starting weights in workouts. If unsure, pick the first: it's the safest.</span></label>`;
 function viewSetup() {
   const p = S.profile, step = setupStep, dots = `<div class="setup-dots" aria-label="Step ${step + 1} of 3">${[0, 1, 2].map((i) => `<span class="${i <= step ? 'on' : ''}"></span>`).join('')}</div>`;
   const ft = Math.floor(p.heightCm / 2.54 / 12), inch = Math.round(p.heightCm / 2.54 - ft * 12);
   const acts = [[1.2, 'Mostly sitting'], [1.375, 'Light exercise 1–3 days a week'], [1.55, 'Moderate exercise 3–5 days'], [1.725, 'Hard training 6–7 days'], [1.9, 'Athlete or physical job']];
-  const body = step === 0 ? `<h1>Welcome to Rep &amp; Ration</h1><p class="muted">Three quick questions and you're set up. Everything stays on this device.</p>
+  const body = step === 0 ? `<h1>Welcome to HEALTH-RAY</h1><p class="muted">Three quick questions and you're set up. Everything stays on this device.</p>
       <h2>Which units do you use?</h2><div class="row setup-big">${[['us', 'US', 'lb, ft, oz'], ['metric', 'Metric', 'kg, cm, ml']].map(([u, l, d]) => `<button class="chip" data-act="setup-units" data-u="${u}" aria-pressed="${S.units === u}"><b>${l}</b> <span class="muted">${d}</span></button>`).join('')}</div>`
     : step === 1 ? `<h1>About you</h1><p class="muted">Used to estimate how much energy you burn. You can change it any time.</p>
       <form id="setup-form" class="stack" autocomplete="off"><label class="field">Your name (optional)<input class="input" id="s-name" value="${esc(activeProfile().name || '')}" maxlength="30"></label>
@@ -5634,6 +6249,7 @@ function viewSetup() {
           ${us() ? `<label class="field">Height ft<input class="input num" id="p-ft" type="number" min="3" max="8" value="${ft}" required></label><label class="field">in<input class="input num" id="p-in" type="number" min="0" max="11" value="${inch}" required></label>`
             : `<label class="field">Height (cm)<input class="input num" id="p-cm" type="number" min="100" max="250" value="${Math.round(p.heightCm)}" required></label>`}</div>
         <label class="field">How active are you?<select class="input" id="p-act">${acts.map((a) => `<option value="${a[0]}" ${p.activity === a[0] ? 'selected' : ''}>${a[1]}</option>`).join('')}</select></label>
+        ${expField(p)}
         <div class="row"><button class="btn btn-ghost" type="button" data-act="setup-step" data-v="0">Back</button><button class="btn btn-primary" type="submit">Next</button></div></form>`
     : `<h1>Your goal</h1><p class="muted">Pick one. We'll set calories, protein and water to match.</p>
       <div class="stack setup-big">${[['lose', 'Lose fat', 'A moderate deficit that protects muscle'], ['maintain', 'Maintain', 'Eat to stay where you are and get fitter'], ['gain', 'Build muscle', 'A small surplus to support strength training']].map(([g, l, d]) => `<button class="chip setup-goal" data-act="setup-goal" data-g="${g}" aria-pressed="${p.goal === g}"><b>${l}</b><span class="muted">${d}</span></button>`).join('')}</div>
@@ -5694,6 +6310,7 @@ function viewTargets() {
             : `<label class="field">Height (cm)<input class="input num" id="p-cm" type="number" min="100" max="250" value="${Math.round(p.heightCm)}" required></label>`}
         </div>
         <label class="field">Activity<select class="input" id="p-act">${acts.map((a) => `<option value="${a[0]}" ${p.activity === a[0] ? 'selected' : ''}>${a[1]}</option>`).join('')}</select></label>
+        ${expField(p)}
         <div class="row" role="group" aria-label="Goal"><span class="eyebrow" style="margin-right:6px">Goal</span>
           ${[['lose', 'Lose fat'], ['maintain', 'Maintain'], ['gain', 'Build muscle']].map((g) => `<button type="button" class="chip" data-act="goal" data-g="${g[0]}" aria-pressed="${p.goal === g[0]}">${g[1]}</button>`).join('')}</div>
         <div class="field">
@@ -6749,12 +7366,13 @@ function startById(type, id) {
 const readProfileData = (id) => { if (id === PROFILES.active) return S; try { return upgrade(JSON.parse(localStorage.getItem(keyFor(id)))); } catch (e) { return null; } };
 function makeBackup(scope) {
   const ids = scope === 'all' ? PROFILES.list.map((p) => p.id) : [PROFILES.active];
+  // 'rep-and-ration' is the backup file marker from before the rename; kept so older copies of the app can still read new backups.
   return { app: 'rep-and-ration', format: 1, schema: SCHEMA, exportedAt: new Date().toISOString(), scope,
     profiles: ids.map((id) => ({ id, name: (PROFILES.list.find((p) => p.id === id) || {}).name || '', data: readProfileData(id) })).filter((x) => x.data) };
 }
 let backupFallback = null, restorePending = null, backupScope = 'profile';
 function downloadBackup(scope) {
-  const b = makeBackup(scope), text = JSON.stringify(b, null, 1), name = `rep-and-ration-backup-${dayKey()}.json`;
+  const b = makeBackup(scope), text = JSON.stringify(b, null, 1), name = `healthray-backup-${dayKey()}.json`;
   try {
     const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
     const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
@@ -6850,7 +7468,7 @@ function viewSettings() {
   const chip = (k, v, label, pre = '') => `<button type="button" class="chip" data-act="pref" data-k="${k}" data-v="${v}" aria-pressed="${String(p[k]) === v}">${pre}${label}</button>`;
   const row = (title, desc, chips) => `<div class="set-row"><div><h3>${title}</h3><p class="muted">${desc}</p></div><div class="row" role="group" aria-label="${title}">${chips}</div></div>`;
   return `<div class="page-head"><div><div class="eyebrow">Make it yours</div><h1>Settings</h1>
-    <p class="muted">Choose how Rep &amp; Ration looks and behaves on this device. Changes apply straight away.</p></div></div>
+    <p class="muted">Choose how HEALTH-RAY looks and behaves on this device. Changes apply straight away.</p></div></div>
   <section class="panel" style="max-width:780px">
     <h2>Appearance</h2>
     ${row('Color scheme', 'Follow your device, or always use light or dark.', [['system', 'Match device'], ['light', 'Light'], ['dark', 'Dark']].map(([v, l]) => chip('theme', v, l)).join(''))}
@@ -6894,10 +7512,10 @@ const REPO = 'xSOSAxDEXx/Ray', APP_VERSION = '2026.10.31';
 const GUIDE = [
   ['today', 'Today', 'Your day at a glance: calories and protein left, water, today\'s workout and quick buttons for logging.', ['Tap a meal card or + to log food; tap the water glasses to add a glass.', 'The weekly ring shows workouts and active minutes toward your weekly goal.', 'Banners appear when there\'s something useful: a backup reminder, a suggested calorie target, or a plan session that\'s due.']],
   ['log', 'Daily log', 'Everything you ate, drank, lifted and weighed, day by day.', ['Search foods, recipes or your usual, or scan a barcode. Use “Everyday meals & drinks” for takeout, snacks, soda and alcohol.', 'Use − and + on an item to change portions, Edit to fix the numbers, and the heart to make it a favorite. Every change can be undone from the message at the bottom.', '“Same as yesterday” copies a whole meal in one tap. The arrows at the top move between days.', 'Log your weight here too; the trend powers the adaptive calorie target.']],
-  ['recipes', 'Recipes', 'Over 50 recipes with macros, allergens, cost per serving and swaps.', ['Filter by meal, diet (carnivore, gluten free, soy free, dairy free, nut free, budget) or favorites.', 'Open a recipe to scale servings, see micronutrients, add it to your log or meal plan, rate it and keep notes.', 'Add your own with “New recipe”; calories are worked out from protein, carbs and fat if you leave them blank.']],
+  ['recipes', 'Recipes', '68 recipes with macros, allergens, cost per serving and swaps.', ['Filter by meal, diet (carnivore, gluten free, soy free, dairy free, nut free, budget) or favorites.', 'Open a recipe to scale servings, see micronutrients, add it to your log or meal plan, rate it and keep notes.', 'Add your own with “New recipe”; calories are worked out from protein, carbs and fat if you leave them blank.']],
   ['mealplan', 'Meal plan', 'Plan a week or a whole month on a calendar.', ['Tap a day on the calendar to choose its recipes; colored dots show each meal\'s main protein. Switch to Week to see seven days at once.', '“Plan for” picks a week or the whole month for the tools: add to the shopping list, fill empty meals (Variety, Budget, Quick or Batch cook), set servings for all, or clear.', '“Same protein, less work” swaps planned lunches or dinners to one protein, rotating recipes or repeating one, so you buy in bulk and prep once. Undo puts things back.', 'Copy a day to tomorrow, the rest of the week or every same weekday. The summary line shows the estimated cost, proteins and ingredients for the range.', 'Turn on “Build from my meal plan” in the shopping list to fill it automatically.']],
   ['shopping', 'Shopping list', 'One combined list from the recipes you choose, with store prices and package sizes.', ['Add recipes, then tick items off as you shop. “Have it” hides things already in your pantry.', 'From Meal plan, “Add week (or month) to shopping list” adds a whole range at once.', 'Enter a zip code to find nearby supermarkets, sorted by estimated full-list price, lowest first. If the store directory is busy, use the Google or Apple Maps links instead.', 'Open stores in maps, order online, or share, email, text or print the list.']],
-  ['workouts', 'Workouts', '33 plans for gyms, homes and no equipment, plus a builder for your own.', ['Set your equipment once and plans you can\'t do are marked.', 'Start a session to get a timer, rest countdowns, a plate calculator, effort ratings and a “next step” suggestion based on last time.', 'While a workout is running, a “Workout in progress” bar with a timer shows on every page; tap Return to go back to it.', 'Share any plan as a link.']],
+  ['workouts', 'Workouts', '38 plans for gyms, homes and no equipment, plus a builder for your own.', ['Set your equipment once and plans you can\'t do are marked.', 'Start a session to get a timer, rest countdowns, a plate calculator, effort ratings and a “next step” suggestion based on last time.', 'While a workout is running, a “Workout in progress” bar with a timer shows on every page; tap Return to go back to it.', 'Share any plan as a link.']],
   ['exercises', 'Exercise library', 'Every movement in the plans, with how-to cues and easier or harder versions.', ['Search by name, muscle or equipment.', 'Each exercise has a looping cartoon demo under its form cues (Pause stops it; with reduced motion on, you see the key positions instead), lists the plans that use it and charts your best lifts over time.', 'Opened from “How to” during a workout, it has a “← Back to your workout” button.']],
   ['breathe', 'Breathe', 'Guided breathing from many traditions with a calm timer, tones and optional music.', ['Pick by goal: calm, focus, energy or sleep. Each exercise says where it comes from and how to do it.', 'New to it? The 7-day “Learn to breathe” course gives one short session a day.', 'Wim Hof-style and power breathing carry safety warnings: never do them in or near water, driving or standing.']],
   ['mind', 'Mind', 'Meditation, long-hold yoga and calisthenics holds, sleep sounds and daily brain habits.', ['Sessions run on the same calm timer as Breathe.', 'Tick off daily habits to build a streak; sleep sounds fade out on a timer.']],
@@ -6914,14 +7532,14 @@ function viewGuide() {
       <li>Log what you eat in the <a href="#log">Daily log</a>: search, tap your usual foods, scan a barcode, or pick an everyday meal or drink.</li>
       <li>Pick a plan in <a href="#workouts">Workouts</a> and start a session; it's saved to your log when you finish.</li>
       <li>Check <a href="#today">Today</a> each day and download a backup from <a href="#settings">Settings</a> every week or two.</li></ol>
-    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the Rep &amp; Ration name) to move between sections. It's grouped into Food, Training, Mind &amp; breath, Progress and You, with help links at the bottom. When a link takes you to another page, a <b>← Back to…</b> button returns you to where you were. Rep &amp; Ration works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
+    <p class="muted" style="font-size:.88rem">On a phone, the bar at the bottom takes you to Today, Log, Recipes and Workouts in one tap, and <b>More</b> opens every other section. On a computer, use the menu at the top (tap the HEALTH-RAY name). It's grouped into Food, Training, Mind &amp; breath, Progress and You, with help links at the bottom. When a link takes you to another page, a <b>← Back to…</b> button returns you to where you were. HEALTH-RAY works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
   <div class="grid" style="margin-top:16px">${GUIDE.map(([id, t, what, how]) => `<section class="panel span-6 guide-card"><div class="panel-head"><h2>${t}</h2><a class="btn btn-sm btn-ghost" href="#${id}">Open</a></div>
     <p>${esc(what)}</p><ul>${how.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}</div>
   <section class="panel stack" style="margin-top:16px"><h2>Help</h2><ul>
     <li><b>Guide</b> (this page): what each section does and how to use it.</li>
     <li><a href="#sources">Links &amp; facts</a>: the sources behind the numbers, how calories and macros are worked out, and what couldn't be fully verified.</li>
     <li><a href="#report">Report an issue</a>: something not working? It takes a minute and helps fix it for everyone.</li>
-    <li>Lost? Tap <b>← Back to…</b> at the top of a page to return to where you were, or open the menu from the Rep &amp; Ration name.</li></ul></section>`;
+    <li>Lost? Tap <b>← Back to…</b> at the top of a page to return to where you were, or open the menu from the HEALTH-RAY name.</li></ul></section>`;
 }
 
 /* Sources: what the app's numbers and methods are based on. Each link was checked when it was added (October 2026). */
@@ -7038,7 +7656,7 @@ function decodeShare(txt) {
 function myId() { if (!S.friends.me) { S.friends.me = uid().replace(/[^a-z0-9]/gi, '').slice(0, 12); save(); } return S.friends.me; }
 function shareLink(o, title) {
   const url = `${location.origin}${location.pathname}#cheer=${encodeShare({ n: myShareName(), i: myId(), x: dayKey(), ...o })}`, text = title;
-  if (navigator.share) navigator.share({ title: 'Rep & Ration', text, url }).catch(() => {});
+  if (navigator.share) navigator.share({ title: 'HEALTH-RAY', text, url }).catch(() => {});
   else { try { navigator.clipboard.writeText(`${text} ${url}`).then(() => toast('Link copied. Paste it into a text or chat.'), () => prompt('Copy this link', url)); } catch (err) { prompt('Copy this link', url); } }
 }
 function lastWorkoutShare() {
@@ -7048,7 +7666,7 @@ function lastWorkoutShare() {
 }
 function milestones() {
   const out = [], t = dayKey(), wk = S.workouts.filter((w) => w.date > addDays(t, -7));
-  if (S.workouts.length) out.push({ k: 'g', t: `${S.workouts.length} workout${S.workouts.length === 1 ? '' : 's'} logged`, d: 'Total sessions on Rep & Ration' });
+  if (S.workouts.length) out.push({ k: 'g', t: `${S.workouts.length} workout${S.workouts.length === 1 ? '' : 's'} logged`, d: 'Total sessions on HEALTH-RAY' });
   if (wk.length) out.push({ k: 'g', t: `${wk.length} workout${wk.length === 1 ? '' : 's'} this week`, d: `${wk.reduce((a, w) => a + w.minutes, 0)} active minutes${weekGoalHit(t) ? ' · weekly goal hit' : ''}` });
   const ws = S.weights.slice().sort((a, b) => (a.date < b.date ? -1 : 1));
   if (ws.length >= 2) {
@@ -7080,12 +7698,12 @@ function viewFriends() {
       ${ms.map((m, i) => `<div class="share-item"><div class="grow"><b>${esc(m.t)}</b><div class="muted">${esc(m.d)}</div></div><button class="btn btn-sm" data-act="share-ms" data-i="${i}">Share</button></div>`).join('')}
       ${favR.length ? `<div class="eyebrow">Favorite recipes</div>${favR.map((r) => `<div class="share-item"><div class="grow"><b>${esc(r.title)}</b><div class="muted">${r.per.kcal} kcal · ${r.per.p} g protein</div></div><button class="btn btn-sm" data-act="share-recipe" data-id="${r.id}">Share</button></div>`).join('')}` : ''}
       ${!last && !ms.length && !favR.length ? emptyState('heart', 'Finish a workout, log a few days or favorite a recipe, and you\'ll have something to share here.') : ''}
-      <div class="row"><button class="btn btn-sm btn-ghost" data-act="share-invite">Invite a friend to Rep &amp; Ration</button></div></section>
+      <div class="row"><button class="btn btn-sm btn-ghost" data-act="share-invite">Invite a friend to HEALTH-RAY</button></div></section>
     <section class="panel span-5 stack" aria-labelledby="h-friends"><h2 id="h-friends">Your friends</h2>
       ${F.list.length ? `<ul class="list">${F.list.map((f) => `<li><div class="grow"><b>${esc(f.name)}</b><div class="muted" style="font-size:.82rem">Added ${fmtDay(f.added)}</div></div>
         <button class="btn btn-sm" data-act="cheer-pick" data-id="f:${f.id}">Encourage</button><button class="btn btn-sm btn-ghost" data-act="friend-del" data-id="${f.id}" aria-label="Remove ${esc(f.name)}">✕</button>
         ${cheerFor === 'f:' + f.id ? cheerPicker('f:' + f.id) : ''}</li>`).join('')}</ul>`
-        : emptyState('heart', 'No friends yet. When someone sends you a Rep &amp; Ration link, open it to add them here.')}</section>
+        : emptyState('heart', 'No friends yet. When someone sends you a HEALTH-RAY link, open it to add them here.')}</section>
     <section class="panel span-12 stack" aria-labelledby="h-feed"><div class="panel-head"><h2 id="h-feed">Activity</h2>${F.feed.length ? '<button class="btn btn-sm btn-ghost" data-act="feed-clear">Clear</button>' : ''}</div>
       ${F.feed.length ? `<ul class="list feed">${F.feed.slice().reverse().slice(0, 50).map((f) => feedItem(f) + (cheerFor === f.id ? `<li>${cheerPicker(f.id)}</li>` : '')).join('')}</ul>` : emptyState('heart', 'Workouts, milestones and cheers your friends send you will show up here.')}</section>
   </div>
@@ -7133,7 +7751,7 @@ function sessBar() {
    or coming back from a page opened here (plan -> exercise -> plan) keeps the original origin. */
 const backFrom = {};
 let viaMenu = false;
-document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (a) viaMenu = !!a.closest('header, .foot-links'); }, true);
+document.addEventListener('click', (e) => { const a = e.target.closest('a[href^="#"]'); if (a) viaMenu = !!a.closest('header, .foot-links, #bnav'); }, true);
 const routeGroup = (h) => { const m = /^(recipe|plan|ex|breath|mind)-/.exec(h); return m ? (m[1] === 'mind' ? 'mindx' : m[1]) : h.startsWith('import-plan=') ? 'plan' : h.startsWith('cheer=') ? 'cheer' : h || 'today'; };
 const DETAIL_GROUPS = ['recipe', 'plan', 'ex', 'breath', 'mindx'];
 const NO_BACK = ['session', 'report', 'cheer', 'today'];
@@ -7169,7 +7787,7 @@ function backTop(h) {
 function renderView(keepScroll) {
   const h = (location.hash || '#today').slice(1);
   let html, tab;
-  if (S.setup === false) { app.innerHTML = viewSetup(); app.dataset.view = 'setup'; document.querySelectorAll('.tab').forEach((a) => a.removeAttribute('aria-current')); const cp = $('#cur-page'); if (cp) cp.textContent = 'Setup'; current = h; return; }
+  if (S.setup === false) { document.body.classList.remove('has-bnav'); app.innerHTML = viewSetup(); app.dataset.view = 'setup'; document.querySelectorAll('.tab').forEach((a) => a.removeAttribute('aria-current')); const cp = $('#cur-page'); if (cp) cp.textContent = 'Setup'; current = h; return; }
   trackBack(h);
   if (h === 'today' || h === '') { html = viewToday(); tab = 'today'; }
   else if (h === 'recipes') { html = viewRecipes(); tab = 'recipes'; }
@@ -7214,6 +7832,7 @@ function renderView(keepScroll) {
   if (!/^(recipe|plan)-(new|edit-)/.test(h)) { draft = null; draftFor = ''; }
   current = h;
   sessBar();
+  paintBnav(tab, h);
   if (h === 'session' && S.session && !ticker) { ticker = setInterval(tick, 250); }
   if (h === 'session') tick();
   demoStart();
@@ -7225,15 +7844,26 @@ window.addEventListener('error', onAppError);
 window.addEventListener('unhandledrejection', onAppError);
 document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.id === 'food-q') { e.preventDefault(); const f = $('#food-results .fres'); if (f) f.click(); return; } if (e.key === 'Escape') { const c = $('#celebrate'); if (c) c.remove(); else if ($('#calm')) closeCalm(); else if (!$('#site-menu').hidden) { setMenu(false); $('#menu-btn').focus(); } } });
 
+
+/* Phone tab bar */
+const BNAV_OF = { today: 'today', log: 'log', recipes: 'recipes', workouts: 'workouts', exercises: 'workouts' };
+function paintBnav(tab, h) {
+  const show = S.setup !== false && h !== 'session';
+  document.body.classList.toggle('has-bnav', show);
+  const on = BNAV_OF[tab] || '';
+  document.querySelectorAll('#bnav [data-b]').forEach((a) => { if (a.dataset.b === on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+}
+$('#bnav-more').addEventListener('click', (e) => { e.stopPropagation(); setMenu($('#site-menu').hidden); });
 /* Section menu, opened from the logo */
 function setMenu(open) {
   const btn = $('#menu-btn'), menu = $('#site-menu');
   menu.hidden = !open;
   btn.setAttribute('aria-expanded', String(open)); btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  const more = $('#bnav-more'); if (more) more.setAttribute('aria-expanded', String(open));
   if (open) (menu.querySelector('[aria-current]') || menu.querySelector('.tab')).focus();
 }
 $('#menu-btn').addEventListener('click', () => setMenu($('#site-menu').hidden));
-document.addEventListener('click', (e) => { if (!$('#site-menu').hidden && (e.target.closest('#site-menu .tab') || !e.target.closest('#site-menu, #menu-btn'))) setMenu(false); });
+document.addEventListener('click', (e) => { if (!$('#site-menu').hidden && (e.target.closest('#site-menu .tab') || !e.target.closest('#site-menu, #menu-btn, #bnav-more'))) setMenu(false); });
 window.addEventListener('hashchange', () => { stopCamera(); if (scan) scan = null; if ($('#calm')) closeCalm(); clearArmed = false; shopClearArmed = false; delArmed = false; mpClearArmed = false; render(false); });
 
 /* ---------- Actions ---------- */
@@ -7331,7 +7961,7 @@ document.addEventListener('click', (e) => {
   }
   else if (a === 'plan-share') {
     const url = `${location.origin}${location.pathname}#import-plan=${encodePlan(planById(b.dataset.id))}`, title = planById(b.dataset.id).title;
-    if (navigator.share) navigator.share({ title, text: `${title} on Rep & Ration`, url }).catch(() => {});
+    if (navigator.share) navigator.share({ title, text: `${title} on HEALTH-RAY`, url }).catch(() => {});
     else { try { navigator.clipboard.writeText(url).then(() => toast('Plan link copied'), () => prompt('Copy this link', url)); } catch (err) { prompt('Copy this link', url); } }
   }
   else if (a === 'plan-import') {
@@ -7340,6 +7970,7 @@ document.addEventListener('click', (e) => {
     S.customPlans.push({ id, ...p, gear: !p.needs.length ? 'None' : p.needs.some((o) => o.some((g) => ['barbell', 'cables', 'machines', 'treadmill', 'rower', 'bike', 'airbike', 'elliptical', 'stairs', 'skierg'].includes(g))) ? 'Gym' : 'Minimal' });
     syncCustom(); save(); toast('Plan saved to your plans'); location.hash = 'plan-' + id;
   }
+  else if (a === 'use-start') { const s = S.session; if (s) { s.loads = s.loads || {}; s.loads[+b.dataset.i] = b.dataset.v; save(); render(true); } }
   else if (a === 'rpe') { const s = S.session; s.rpe = s.rpe || {}; const i = +b.dataset.i, v = +b.dataset.v; s.rpe[i] = s.rpe[i] === v ? undefined : v; save(); render(true); }
   else if (a === 'cancel-session') {
     $('#cancel-wrap').innerHTML = `<span class="confirm"><span>Discard?</span><button class="btn btn-sm" data-act="cancel-yes">Yes</button><button class="btn btn-sm" data-act="cancel-no">No</button></span>`;
@@ -7399,7 +8030,7 @@ document.addEventListener('click', (e) => {
   else if (a === 'share-last') { const o = lastWorkoutShare(); if (o) shareLink(o, `${myShareName() || 'I'} finished ${o.t} (${o.d})`); }
   else if (a === 'share-ms') { const o = milestones()[+b.dataset.i]; if (o) shareLink(o, `${myShareName() || 'Milestone'}: ${o.t}`); }
   else if (a === 'share-recipe') { const r = RECIPES.find((x) => x.id === b.dataset.id); if (r) shareLink({ k: 'r', r: r.id, t: r.title, d: `${r.per.kcal} kcal · ${r.per.p} g protein a serving` }, `Try this recipe: ${r.title}`); }
-  else if (a === 'share-invite') { const url = `${location.origin}${location.pathname}`, text = 'Track food, workouts and breathing with me on Rep & Ration'; if (navigator.share) navigator.share({ title: 'Rep & Ration', text, url }).catch(() => {}); else { try { navigator.clipboard.writeText(`${text}: ${url}`).then(() => toast('Invite link copied')); } catch (err) { prompt('Copy this link', url); } } }
+  else if (a === 'share-invite') { const url = `${location.origin}${location.pathname}`, text = 'Track food, workouts and breathing with me on HEALTH-RAY'; if (navigator.share) navigator.share({ title: 'HEALTH-RAY', text, url }).catch(() => {}); else { try { navigator.clipboard.writeText(`${text}: ${url}`).then(() => toast('Invite link copied')); } catch (err) { prompt('Copy this link', url); } } }
   else if (a === 'friend-add') { const id = b.dataset.id; if (id && !S.friends.list.some((f) => f.id === id)) { S.friends.list.push({ id, name: b.dataset.n || 'A friend', added: dayKey() }); save(); toast(`${b.dataset.n || 'Friend'} added`); } render(true); }
   else if (a === 'friend-del') { const f = S.friends.list.find((x) => x.id === b.dataset.id); S.friends.list = S.friends.list.filter((x) => x.id !== b.dataset.id); save(); render(true); if (f) toast(`Removed ${f.name}`, () => { S.friends.list.push(f); save(); render(true); }); }
   else if (a === 'feed-clear') { const old = S.friends.feed; S.friends.feed = []; save(); render(true); toast('Activity cleared', () => { S.friends.feed = old; save(); render(true); }); }
@@ -7477,6 +8108,23 @@ document.addEventListener('click', (e) => {
   else if (a === 'order-open') { orderOpen = !orderOpen; render(true); }
   else if (a === 'order-site') { orderSite = +b.dataset.i; render(true); }
   else if (a === 'order-items') { orderItems = !orderItems; render(true); }
+  else if (a === 'order-instacart') {
+    // Open the tab straight from the tap (pop-up blockers allow that), then point it at the list once Instacart answers.
+    const w = window.open('', '_blank');
+    const items = priceItems().filter((it) => !S.shopping.checked[it.key] && !it.pantry).map(instacartItem);
+    b.disabled = true; toast('Sending your list to Instacart…');
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 15000);
+    fetch(INSTACART_FN, { method: 'POST', signal: ctl.signal, headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: 'HEALTH-RAY shopping list', items, linkback: location.origin + location.pathname + '#shopping' }) })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((d) => {
+        if (!isInstacartUrl(d && d.url)) throw new Error('bad link');
+        if (w) { w.opener = null; w.location.href = d.url; } else location.href = d.url;
+        toast('Your list is ready on Instacart');
+      })
+      .catch(() => { if (w) w.close(); toast("Couldn't reach Instacart. Try Copy list instead."); })
+      .finally(() => { clearTimeout(timer); b.disabled = false; });
+  }
   else if (a === 'order-go') {
     // Open the tab first (pop-up blockers allow it only straight from the tap), then copy.
     const site = ORDER_SITES[+b.dataset.i], w = window.open(site[2], '_blank', 'noopener');
@@ -7615,6 +8263,7 @@ function readProfile() {
   else if (!isNaN(num('p-cm'))) p.heightCm = num('p-cm');
   if ($('#p-sex')) p.sex = $('#p-sex').value;
   if ($('#p-act')) p.activity = parseFloat($('#p-act').value);
+  if ($('#p-exp')) p.exp = $('#p-exp').value;
   const water = num('p-water');
   const wk = num('p-wk'), mins = num('p-min');
   const tg = calcTargets(p);
@@ -7727,7 +8376,7 @@ document.addEventListener('change', (e) => {
       const r = readBackup(txt);
       if (!r) throw new Error('shape');
       restorePending = r; render(true); const box = $('.restore-box'); if (box) box.scrollIntoView({ block: 'center' });
-    }).catch(() => { toast("That file isn't a Rep & Ration backup"); t.value = ''; });
+    }).catch(() => { toast("That file isn't a HEALTH-RAY backup"); t.value = ''; });
   } else if (t.dataset.pname) {
     const pr = PROFILES.list.find((x) => x.id === t.dataset.pname); if (pr) { pr.name = t.value.trim().slice(0, 30); saveProfiles(); paintProfile(); }
   }

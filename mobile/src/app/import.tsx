@@ -17,7 +17,7 @@ export default function Import() {
     if (res.canceled || !res.assets[0]) return;
     try {
       const parsed = readBackup(await new File(res.assets[0].uri).text());
-      if (!parsed) { setMsg("That file isn't a Rep & Ration backup."); setFound(null); return; }
+      if (!parsed) { setMsg("That file isn't a HEALTH-RAY backup."); setFound(null); return; }
       setFound(parsed.profiles); setMsg('');
     } catch { setMsg("Couldn't read that file."); }
   };
