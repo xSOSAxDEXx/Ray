@@ -19,7 +19,8 @@ python3 -m http.server 8765        # serve the site; smoke.js expects this port 
 node tests/smoke.js                # Playwright: every page in VIEWS, 4 saved-data states, 375 and 1280 px
 node tests/library.js              # every plan exercise matches an exercise-library entry
 node tests/progression.js          # starting weights and next-step advice for sample people and past sets
-python3 tools/nutrition_audit.py   # recompute recipe macros from ingredients; flags anything more than 10% off
+node tests/version.js [base-ref]   # APP_VERSION matches sw.js CACHE; with a ref, CACHE was bumped if shipped files changed
+python3 tools/nutrition_audit.py   # recompute recipe macros from ingredients; flags anything more than 10% off (--check exits 1)
 python3 tools/apply_audit.py       # rewrites docs/recipe-macro-audit.md, fixes off recipes, refreshes RECIPE_MICRO
 ```
 
@@ -27,7 +28,9 @@ python3 tools/apply_audit.py       # rewrites docs/recipe-macro-audit.md, fixes 
 - There's no single-test filter. To smoke-test a new page, add its hash to `VIEWS` in `tests/smoke.js`.
 - Mobile (needs npm packages): `cd mobile && npm test`, `npm run typecheck`. Use `npx expo install` to add packages, never `npm install <pkg>`.
 
-When you change any shipped file, bump `CACHE` in `sw.js` (e.g. `healthray-v24` → `v25`).
+When you change any shipped file (`index.html`, `manifest.webmanifest`, `sw.js`, `icons/`), bump `CACHE` in `sw.js` and `APP_VERSION` in `index.html` together (e.g. `healthray-v25` and `v25` → `healthray-v26` and `v26`).
+
+CI (`.github/workflows/tests.yml`) runs all of the above on every PR and every push to `main`: the website job runs the version check against the PR's base, then the library, progression, nutrition (`--check`) and smoke tests; the mobile job runs `npm ci`, `npm test` and `npm run typecheck`.
 
 ## Architecture of `index.html`
 

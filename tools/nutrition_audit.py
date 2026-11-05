@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Recompute every recipe's nutrition from its ingredients and compare it with the numbers shown in the app.
 
-Run from the repo root:  python3 tools/nutrition_audit.py [--json]
+Run from the repo root:  python3 tools/nutrition_audit.py [--json | --check]   (--check exits 1 if any recipe needs fixing)
 
 Ingredient values are per 100 g, rounded from USDA FoodData Central (SR Legacy / Foundation Foods). They were entered
 from reference values, NOT downloaded (FoodData Central wasn't reachable from the build environment), so treat them as
@@ -197,3 +197,8 @@ if __name__ == '__main__':
         print(f"{x['id']:34s} shown {sh['kcal']:4d} kcal P{sh['p']:3d} C{sh['c']:3d} F{sh['f']:3d} | calc {c[0]:6.0f} P{c[1]:5.1f} C{c[2]:5.1f} F{c[3]:5.1f} ({d:+.0f}%){flag}")
         for m in x['missing']:
             print('     missing:', m)
+    if '--check' in sys.argv:  # used by CI: fail when a recipe's calories are more than 10% off. ("missing" lines are
+        # near-zero items such as ice, pepper or monk fruit that have no weight, so they're shown but don't fail.)
+        bad = [x['id'] for x in rows if abs(x['calc'][0] - x['shown']['kcal']) > x['shown']['kcal'] * 0.1]
+        print(f"{len(bad)} recipe(s) to fix: {', '.join(bad)}" if bad else f'All {len(rows)} recipes are within 10%.')
+        sys.exit(1 if bad else 0)

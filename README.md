@@ -109,7 +109,7 @@ Then visit http://localhost:8000.
 
 ## Testing
 
-Serve the folder (`python3 -m http.server 8765`), then run `node tests/smoke.js` (needs Playwright) `node tests/library.js` and `node tests/progression.js`. Mobile: `cd mobile && npm test`. The smoke test opens every page at phone and desktop width with fresh, old-format and damaged saved data, and fails if any page is blank, shows an error, or scrolls sideways. The progression test checks suggested starting weights and the next-step advice against sample people and past sets.
+Serve the folder (`python3 -m http.server 8765`), then run `node tests/smoke.js` (needs Playwright), `node tests/library.js`, `node tests/progression.js`, `node tests/version.js` and `python3 tools/nutrition_audit.py --check`. Mobile: `cd mobile && npm test` and `npm run typecheck`. GitHub Actions runs all of these on every pull request and every push to `main`. The smoke test opens every page at phone and desktop width with fresh, old-format and damaged saved data, and fails if any page is blank, shows an error, or scrolls sideways. The progression test checks suggested starting weights and the next-step advice against sample people and past sets.
 
 ## Deploy
 
@@ -117,7 +117,7 @@ Upload `index.html`, `manifest.webmanifest`, `sw.js` and the `icons/` folder to 
 
 ## Data
 
-Each visitor's entries are saved in their own browser (`localStorage` key `rep-ration-v1`; storage names keep the app's original name, Rep & Ration, so saved data survives the rename). Progress photos and recipe photos are shrunk to at most 1200px and stored in IndexedDB (`rep-ration-photos`), because they're too large for localStorage. Nothing is sent to a server, so data does not sync between devices. To move a log to another browser, use **Targets → Download backup**, then **Restore from backup** on the other device. Backups contain everything except photos. On the first visit the site shows clearly labeled example data, which can be cleared with one click.
+Each visitor's entries are saved in their own browser (`localStorage` key `rep-ration-v1`; storage names keep the app's original name, Rep & Ration, so saved data survives the rename). Progress photos and recipe photos are shrunk to at most 1200px and stored in IndexedDB (`rep-ration-photos`), because they're too large for localStorage. Nothing is sent to a server, so data does not sync between devices. To move a log to another browser, use **Targets → Download backup**, then **Restore from backup** on the other device. Backups contain everything except photos. On the first visit the site asks three quick setup questions; you can also look around with clearly labeled example data first, which can be cleared with one click.
 
 ## Editing content
 
