@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- BEGIN PAGE -->
-<title>Rep &amp; Ration</title>
+<title>HEALTH-RAY</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Recipes, workout plans and a daily tracker for food, water, weight and training.">
 <link rel="manifest" href="manifest.webmanifest">
@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Rep&amp;Ration">
+<meta name="apple-mobile-web-app-title" content="HEALTH-RAY">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -805,7 +805,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
       <span class="brand-mark" aria-hidden="true">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--on-accent)" stroke-width="2.4" stroke-linecap="round"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"/></svg>
       </span>
-      <span class="brand-name">Rep <span>&amp;</span> Ration</span>
+      <span class="brand-name">HEALTH<span>-</span>RAY</span>
       <svg class="menu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <span class="cur-page" id="cur-page"></span>
@@ -829,7 +829,7 @@ footer { border-top: 1px solid var(--line); padding-block: 22px 32px; font-size:
 
 <footer>
   <div class="wrap">
-    Rep &amp; Ration offers general guidance, not medical advice. Check with a doctor or registered dietitian before starting a new diet or training program, especially if you are pregnant or have a health condition. Your entries are saved only in this browser.
+    HEALTH-RAY offers general guidance, not medical advice. Check with a doctor or registered dietitian before starting a new diet or training program, especially if you are pregnant or have a health condition. Your entries are saved only in this browser.
     <nav class="foot-links" aria-label="Help"><a href="#guide">Guide</a> · <a href="#sources">Links &amp; facts</a> · <a href="#report">Report an issue</a></nav>
   </div>
 </footer>
@@ -3233,6 +3233,7 @@ const KG_LB = 2.20462, ML_OZ = 29.5735;
 /* ---------- State ---------- */
 /* Profiles: each person on this device has their own saved data. The first profile keeps the original key, so
    data saved before profiles existed is simply profile 1. */
+// Storage names keep the app's original name on purpose: renaming them would hide everyone's saved data.
 const BASE_KEY = 'rep-ration-v1', PKEY = 'rep-ration-profiles';
 const keyFor = (id) => (id === 'p1' ? BASE_KEY : `${BASE_KEY}:${id}`);
 function loadProfiles() {
@@ -4062,10 +4063,10 @@ function reminderIcs() {
   const [hh, mm] = r.time.split(':'), stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
   const txt = (s) => String(s).replace(/[\;,]/g, (c) => '\\' + c).replace(/\n/g, '\\n');
   const url = location.href.split('#')[0] + '#workouts';
-  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Rep & Ration//Workout reminders//EN', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
-    `UID:rep-ration-${uid()}@rep-ration`, `DTSTAMP:${stamp}`, `DTSTART:${k.replace(/-/g, '')}T${hh}${mm}00`, `DURATION:PT${plan.minutes}M`,
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//HEALTH-RAY//Workout reminders//EN', 'CALSCALE:GREGORIAN', 'BEGIN:VEVENT',
+    `UID:healthray-${uid()}@healthray`, `DTSTAMP:${stamp}`, `DTSTART:${k.replace(/-/g, '')}T${hh}${mm}00`, `DURATION:PT${plan.minutes}M`,
     `RRULE:FREQ=WEEKLY;BYDAY=${r.days.map((i) => DOW[i][0]).join(',')}`, `SUMMARY:${txt('Workout: ' + plan.title)}`,
-    `DESCRIPTION:${txt('Time to train! Open Rep & Ration to start your session: ' + url)}`, `URL:${url}`,
+    `DESCRIPTION:${txt('Time to train! Open HEALTH-RAY to start your session: ' + url)}`, `URL:${url}`,
     'BEGIN:VALARM', 'ACTION:DISPLAY', `TRIGGER:-PT${r.alert || 0}M`, `DESCRIPTION:${txt('Workout reminder: ' + plan.title)}`, 'END:VALARM',
     'END:VEVENT', 'END:VCALENDAR'].join('\r\n') + '\r\n';
 }
@@ -5185,7 +5186,7 @@ const itemQty = (it) => {
 };
 function shoppingText() {
   const items = shoppingItems(), sh = S.shopping;
-  const lines = ['Shopping list (Rep & Ration)', ''];
+  const lines = ['Shopping list (HEALTH-RAY)', ''];
   AISLES.forEach((a) => {
     const g = mergeUnits(items.filter((i) => i.aisle === a && !sh.checked[i.key] && !haveIt(i)));
     if (!g.length) return;
@@ -5624,7 +5625,7 @@ function viewSetup() {
   const p = S.profile, step = setupStep, dots = `<div class="setup-dots" aria-label="Step ${step + 1} of 3">${[0, 1, 2].map((i) => `<span class="${i <= step ? 'on' : ''}"></span>`).join('')}</div>`;
   const ft = Math.floor(p.heightCm / 2.54 / 12), inch = Math.round(p.heightCm / 2.54 - ft * 12);
   const acts = [[1.2, 'Mostly sitting'], [1.375, 'Light exercise 1–3 days a week'], [1.55, 'Moderate exercise 3–5 days'], [1.725, 'Hard training 6–7 days'], [1.9, 'Athlete or physical job']];
-  const body = step === 0 ? `<h1>Welcome to Rep &amp; Ration</h1><p class="muted">Three quick questions and you're set up. Everything stays on this device.</p>
+  const body = step === 0 ? `<h1>Welcome to HEALTH-RAY</h1><p class="muted">Three quick questions and you're set up. Everything stays on this device.</p>
       <h2>Which units do you use?</h2><div class="row setup-big">${[['us', 'US', 'lb, ft, oz'], ['metric', 'Metric', 'kg, cm, ml']].map(([u, l, d]) => `<button class="chip" data-act="setup-units" data-u="${u}" aria-pressed="${S.units === u}"><b>${l}</b> <span class="muted">${d}</span></button>`).join('')}</div>`
     : step === 1 ? `<h1>About you</h1><p class="muted">Used to estimate how much energy you burn. You can change it any time.</p>
       <form id="setup-form" class="stack" autocomplete="off"><label class="field">Your name (optional)<input class="input" id="s-name" value="${esc(activeProfile().name || '')}" maxlength="30"></label>
@@ -6749,12 +6750,13 @@ function startById(type, id) {
 const readProfileData = (id) => { if (id === PROFILES.active) return S; try { return upgrade(JSON.parse(localStorage.getItem(keyFor(id)))); } catch (e) { return null; } };
 function makeBackup(scope) {
   const ids = scope === 'all' ? PROFILES.list.map((p) => p.id) : [PROFILES.active];
+  // 'rep-and-ration' is the backup file marker from before the rename; kept so older copies of the app can still read new backups.
   return { app: 'rep-and-ration', format: 1, schema: SCHEMA, exportedAt: new Date().toISOString(), scope,
     profiles: ids.map((id) => ({ id, name: (PROFILES.list.find((p) => p.id === id) || {}).name || '', data: readProfileData(id) })).filter((x) => x.data) };
 }
 let backupFallback = null, restorePending = null, backupScope = 'profile';
 function downloadBackup(scope) {
-  const b = makeBackup(scope), text = JSON.stringify(b, null, 1), name = `rep-and-ration-backup-${dayKey()}.json`;
+  const b = makeBackup(scope), text = JSON.stringify(b, null, 1), name = `healthray-backup-${dayKey()}.json`;
   try {
     const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
     const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
@@ -6850,7 +6852,7 @@ function viewSettings() {
   const chip = (k, v, label, pre = '') => `<button type="button" class="chip" data-act="pref" data-k="${k}" data-v="${v}" aria-pressed="${String(p[k]) === v}">${pre}${label}</button>`;
   const row = (title, desc, chips) => `<div class="set-row"><div><h3>${title}</h3><p class="muted">${desc}</p></div><div class="row" role="group" aria-label="${title}">${chips}</div></div>`;
   return `<div class="page-head"><div><div class="eyebrow">Make it yours</div><h1>Settings</h1>
-    <p class="muted">Choose how Rep &amp; Ration looks and behaves on this device. Changes apply straight away.</p></div></div>
+    <p class="muted">Choose how HEALTH-RAY looks and behaves on this device. Changes apply straight away.</p></div></div>
   <section class="panel" style="max-width:780px">
     <h2>Appearance</h2>
     ${row('Color scheme', 'Follow your device, or always use light or dark.', [['system', 'Match device'], ['light', 'Light'], ['dark', 'Dark']].map(([v, l]) => chip('theme', v, l)).join(''))}
@@ -6914,14 +6916,14 @@ function viewGuide() {
       <li>Log what you eat in the <a href="#log">Daily log</a>: search, tap your usual foods, scan a barcode, or pick an everyday meal or drink.</li>
       <li>Pick a plan in <a href="#workouts">Workouts</a> and start a session; it's saved to your log when you finish.</li>
       <li>Check <a href="#today">Today</a> each day and download a backup from <a href="#settings">Settings</a> every week or two.</li></ol>
-    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the Rep &amp; Ration name) to move between sections. It's grouped into Food, Training, Mind &amp; breath, Progress and You, with help links at the bottom. When a link takes you to another page, a <b>← Back to…</b> button returns you to where you were. Rep &amp; Ration works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
+    <p class="muted" style="font-size:.88rem">Use the menu at the top (tap the HEALTH-RAY name) to move between sections. It's grouped into Food, Training, Mind &amp; breath, Progress and You, with help links at the bottom. When a link takes you to another page, a <b>← Back to…</b> button returns you to where you were. HEALTH-RAY works offline once it has loaded, and you can add it to your home screen from your browser's share menu.</p></section>
   <div class="grid" style="margin-top:16px">${GUIDE.map(([id, t, what, how]) => `<section class="panel span-6 guide-card"><div class="panel-head"><h2>${t}</h2><a class="btn btn-sm btn-ghost" href="#${id}">Open</a></div>
     <p>${esc(what)}</p><ul>${how.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}</div>
   <section class="panel stack" style="margin-top:16px"><h2>Help</h2><ul>
     <li><b>Guide</b> (this page): what each section does and how to use it.</li>
     <li><a href="#sources">Links &amp; facts</a>: the sources behind the numbers, how calories and macros are worked out, and what couldn't be fully verified.</li>
     <li><a href="#report">Report an issue</a>: something not working? It takes a minute and helps fix it for everyone.</li>
-    <li>Lost? Tap <b>← Back to…</b> at the top of a page to return to where you were, or open the menu from the Rep &amp; Ration name.</li></ul></section>`;
+    <li>Lost? Tap <b>← Back to…</b> at the top of a page to return to where you were, or open the menu from the HEALTH-RAY name.</li></ul></section>`;
 }
 
 /* Sources: what the app's numbers and methods are based on. Each link was checked when it was added (October 2026). */
@@ -7038,7 +7040,7 @@ function decodeShare(txt) {
 function myId() { if (!S.friends.me) { S.friends.me = uid().replace(/[^a-z0-9]/gi, '').slice(0, 12); save(); } return S.friends.me; }
 function shareLink(o, title) {
   const url = `${location.origin}${location.pathname}#cheer=${encodeShare({ n: myShareName(), i: myId(), x: dayKey(), ...o })}`, text = title;
-  if (navigator.share) navigator.share({ title: 'Rep & Ration', text, url }).catch(() => {});
+  if (navigator.share) navigator.share({ title: 'HEALTH-RAY', text, url }).catch(() => {});
   else { try { navigator.clipboard.writeText(`${text} ${url}`).then(() => toast('Link copied. Paste it into a text or chat.'), () => prompt('Copy this link', url)); } catch (err) { prompt('Copy this link', url); } }
 }
 function lastWorkoutShare() {
@@ -7048,7 +7050,7 @@ function lastWorkoutShare() {
 }
 function milestones() {
   const out = [], t = dayKey(), wk = S.workouts.filter((w) => w.date > addDays(t, -7));
-  if (S.workouts.length) out.push({ k: 'g', t: `${S.workouts.length} workout${S.workouts.length === 1 ? '' : 's'} logged`, d: 'Total sessions on Rep & Ration' });
+  if (S.workouts.length) out.push({ k: 'g', t: `${S.workouts.length} workout${S.workouts.length === 1 ? '' : 's'} logged`, d: 'Total sessions on HEALTH-RAY' });
   if (wk.length) out.push({ k: 'g', t: `${wk.length} workout${wk.length === 1 ? '' : 's'} this week`, d: `${wk.reduce((a, w) => a + w.minutes, 0)} active minutes${weekGoalHit(t) ? ' · weekly goal hit' : ''}` });
   const ws = S.weights.slice().sort((a, b) => (a.date < b.date ? -1 : 1));
   if (ws.length >= 2) {
@@ -7080,12 +7082,12 @@ function viewFriends() {
       ${ms.map((m, i) => `<div class="share-item"><div class="grow"><b>${esc(m.t)}</b><div class="muted">${esc(m.d)}</div></div><button class="btn btn-sm" data-act="share-ms" data-i="${i}">Share</button></div>`).join('')}
       ${favR.length ? `<div class="eyebrow">Favorite recipes</div>${favR.map((r) => `<div class="share-item"><div class="grow"><b>${esc(r.title)}</b><div class="muted">${r.per.kcal} kcal · ${r.per.p} g protein</div></div><button class="btn btn-sm" data-act="share-recipe" data-id="${r.id}">Share</button></div>`).join('')}` : ''}
       ${!last && !ms.length && !favR.length ? emptyState('heart', 'Finish a workout, log a few days or favorite a recipe, and you\'ll have something to share here.') : ''}
-      <div class="row"><button class="btn btn-sm btn-ghost" data-act="share-invite">Invite a friend to Rep &amp; Ration</button></div></section>
+      <div class="row"><button class="btn btn-sm btn-ghost" data-act="share-invite">Invite a friend to HEALTH-RAY</button></div></section>
     <section class="panel span-5 stack" aria-labelledby="h-friends"><h2 id="h-friends">Your friends</h2>
       ${F.list.length ? `<ul class="list">${F.list.map((f) => `<li><div class="grow"><b>${esc(f.name)}</b><div class="muted" style="font-size:.82rem">Added ${fmtDay(f.added)}</div></div>
         <button class="btn btn-sm" data-act="cheer-pick" data-id="f:${f.id}">Encourage</button><button class="btn btn-sm btn-ghost" data-act="friend-del" data-id="${f.id}" aria-label="Remove ${esc(f.name)}">✕</button>
         ${cheerFor === 'f:' + f.id ? cheerPicker('f:' + f.id) : ''}</li>`).join('')}</ul>`
-        : emptyState('heart', 'No friends yet. When someone sends you a Rep &amp; Ration link, open it to add them here.')}</section>
+        : emptyState('heart', 'No friends yet. When someone sends you a HEALTH-RAY link, open it to add them here.')}</section>
     <section class="panel span-12 stack" aria-labelledby="h-feed"><div class="panel-head"><h2 id="h-feed">Activity</h2>${F.feed.length ? '<button class="btn btn-sm btn-ghost" data-act="feed-clear">Clear</button>' : ''}</div>
       ${F.feed.length ? `<ul class="list feed">${F.feed.slice().reverse().slice(0, 50).map((f) => feedItem(f) + (cheerFor === f.id ? `<li>${cheerPicker(f.id)}</li>` : '')).join('')}</ul>` : emptyState('heart', 'Workouts, milestones and cheers your friends send you will show up here.')}</section>
   </div>
@@ -7331,7 +7333,7 @@ document.addEventListener('click', (e) => {
   }
   else if (a === 'plan-share') {
     const url = `${location.origin}${location.pathname}#import-plan=${encodePlan(planById(b.dataset.id))}`, title = planById(b.dataset.id).title;
-    if (navigator.share) navigator.share({ title, text: `${title} on Rep & Ration`, url }).catch(() => {});
+    if (navigator.share) navigator.share({ title, text: `${title} on HEALTH-RAY`, url }).catch(() => {});
     else { try { navigator.clipboard.writeText(url).then(() => toast('Plan link copied'), () => prompt('Copy this link', url)); } catch (err) { prompt('Copy this link', url); } }
   }
   else if (a === 'plan-import') {
@@ -7399,7 +7401,7 @@ document.addEventListener('click', (e) => {
   else if (a === 'share-last') { const o = lastWorkoutShare(); if (o) shareLink(o, `${myShareName() || 'I'} finished ${o.t} (${o.d})`); }
   else if (a === 'share-ms') { const o = milestones()[+b.dataset.i]; if (o) shareLink(o, `${myShareName() || 'Milestone'}: ${o.t}`); }
   else if (a === 'share-recipe') { const r = RECIPES.find((x) => x.id === b.dataset.id); if (r) shareLink({ k: 'r', r: r.id, t: r.title, d: `${r.per.kcal} kcal · ${r.per.p} g protein a serving` }, `Try this recipe: ${r.title}`); }
-  else if (a === 'share-invite') { const url = `${location.origin}${location.pathname}`, text = 'Track food, workouts and breathing with me on Rep & Ration'; if (navigator.share) navigator.share({ title: 'Rep & Ration', text, url }).catch(() => {}); else { try { navigator.clipboard.writeText(`${text}: ${url}`).then(() => toast('Invite link copied')); } catch (err) { prompt('Copy this link', url); } } }
+  else if (a === 'share-invite') { const url = `${location.origin}${location.pathname}`, text = 'Track food, workouts and breathing with me on HEALTH-RAY'; if (navigator.share) navigator.share({ title: 'HEALTH-RAY', text, url }).catch(() => {}); else { try { navigator.clipboard.writeText(`${text}: ${url}`).then(() => toast('Invite link copied')); } catch (err) { prompt('Copy this link', url); } } }
   else if (a === 'friend-add') { const id = b.dataset.id; if (id && !S.friends.list.some((f) => f.id === id)) { S.friends.list.push({ id, name: b.dataset.n || 'A friend', added: dayKey() }); save(); toast(`${b.dataset.n || 'Friend'} added`); } render(true); }
   else if (a === 'friend-del') { const f = S.friends.list.find((x) => x.id === b.dataset.id); S.friends.list = S.friends.list.filter((x) => x.id !== b.dataset.id); save(); render(true); if (f) toast(`Removed ${f.name}`, () => { S.friends.list.push(f); save(); render(true); }); }
   else if (a === 'feed-clear') { const old = S.friends.feed; S.friends.feed = []; save(); render(true); toast('Activity cleared', () => { S.friends.feed = old; save(); render(true); }); }
@@ -7727,7 +7729,7 @@ document.addEventListener('change', (e) => {
       const r = readBackup(txt);
       if (!r) throw new Error('shape');
       restorePending = r; render(true); const box = $('.restore-box'); if (box) box.scrollIntoView({ block: 'center' });
-    }).catch(() => { toast("That file isn't a Rep & Ration backup"); t.value = ''; });
+    }).catch(() => { toast("That file isn't a HEALTH-RAY backup"); t.value = ''; });
   } else if (t.dataset.pname) {
     const pr = PROFILES.list.find((x) => x.id === t.dataset.pname); if (pr) { pr.name = t.value.trim().slice(0, 30); saveProfiles(); paintProfile(); }
   }

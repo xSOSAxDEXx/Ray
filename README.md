@@ -1,4 +1,4 @@
-# Rep & Ration
+# HEALTH-RAY
 
 A diet and exercise website with recipes, workout plans and a daily tracker. It is one static file (`index.html`) and needs no server, build step or account.
 
@@ -95,7 +95,7 @@ Upload `index.html`, `manifest.webmanifest`, `sw.js` and the `icons/` folder to 
 
 ## Data
 
-Each visitor's entries are saved in their own browser (`localStorage` key `rep-ration-v1`). Progress photos and recipe photos are shrunk to at most 1200px and stored in IndexedDB (`rep-ration-photos`), because they're too large for localStorage. Nothing is sent to a server, so data does not sync between devices. To move a log to another browser, use **Targets → Download backup**, then **Restore from backup** on the other device. Backups contain everything except photos. On the first visit the site shows clearly labeled example data, which can be cleared with one click.
+Each visitor's entries are saved in their own browser (`localStorage` key `rep-ration-v1`; storage names keep the app's original name, Rep & Ration, so saved data survives the rename). Progress photos and recipe photos are shrunk to at most 1200px and stored in IndexedDB (`rep-ration-photos`), because they're too large for localStorage. Nothing is sent to a server, so data does not sync between devices. To move a log to another browser, use **Targets → Download backup**, then **Restore from backup** on the other device. Backups contain everything except photos. On the first visit the site shows clearly labeled example data, which can be cleared with one click.
 
 ## Editing content
 

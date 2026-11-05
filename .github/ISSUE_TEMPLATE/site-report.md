@@ -1,6 +1,6 @@
 ---
 name: Site report
-about: Report a bug, a wrong number or fact, or an idea for Rep & Ration
+about: Report a bug, a wrong number or fact, or an idea for HEALTH-RAY
 title: ''
 labels: site-report
 ---
