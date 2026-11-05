@@ -731,6 +731,8 @@ body.calm-open { overflow: hidden; }
 .shop-list .q { font-family: var(--f-mono); font-size: .9rem; margin-right: 6px; }
 .tip-safe { border-left: 4px solid var(--warn); }
 .safe-list { margin: 6px 0 6px; padding-left: 18px; display: grid; gap: 4px; font-size: .9rem; }
+.ex-start-l { font-size: .8rem; color: var(--accent); font-weight: 700; margin-top: 2px; }
+.ex-start .btn { margin-left: 6px; }
 .item-note { display: block; font-size: .78rem; color: var(--muted); line-height: 1.35; }
 .shop-list .from { display: block; font-size: .78rem; color: var(--muted); }
 .shop-list input:checked ~ span { color: var(--muted); text-decoration: line-through; }
@@ -1715,7 +1717,7 @@ const PLANS = [
     goal: 'Learn the main movement patterns and build a strength base.',
     schedule: 'Mon, Wed, Fri. Alternate days A and B (week 1: A-B-A, week 2: B-A-B).',
     warmup: '5 minutes of brisk walking or cycling, then one light set of the first exercise.',
-    progression: 'When you finish every set at the top of the rep range with 2 reps still in the tank, add 5 lb next session.',
+    progression: 'When you finish every set at the top of the rep range with 2 reps still in the tank, go up by the smallest step next session: 5 lb (2.5 kg) on squats and deadlifts, and the next dumbbell size on everything else. Go up at most once a week per exercise. If the next dumbbell is a big jump, add 2 reps to each set first.',
     days: [
       { name: 'Day A', focus: 'Squat · Push · Pull', ex: [
         ['Goblet squat', 3, '8–12', 90, 'Hold the dumbbell at your chest, sit between your heels, keep your chest tall.'],
@@ -1734,7 +1736,7 @@ const PLANS = [
     goal: 'Build strength and muscle with heavy compound lifts and targeted accessories.',
     schedule: 'Mon Upper 1, Tue Lower 1, Thu Upper 2, Fri Lower 2.',
     warmup: '5 minutes easy cardio, then 2–3 ramp-up sets on the first lift (empty bar, 50%, 75%).',
-    progression: 'Double progression: hit the top of the rep range on all sets, then add 5 lb (upper) or 10 lb (lower). Deload every 6th week at 60% volume.',
+    progression: 'Double progression: when you hit the top of the rep range on all sets with 1–2 reps left, add 2.5–5 lb (1–2.5 kg) to upper-body lifts or 5–10 lb (2.5–5 kg) to lower-body lifts. Deload every 6th week at 60% volume.',
     days: [
       { name: 'Upper 1', focus: 'Strength', ex: [
         ['Barbell bench press', 4, '6–8', 150, 'Feet planted, slight arch, touch the lower chest, press in a slight arc.'],
@@ -1935,7 +1937,7 @@ const PLANS = [
     goal: 'A complete strength program with nothing but a set of dumbbells: squat, hinge, push, pull and carry, three days a week.',
     schedule: '3 non-consecutive days a week, rotating A, B, C.',
     warmup: '5 minutes: 10 bodyweight squats, 10 hip hinges, 10 arm circles each way, then one light set of the first exercise.',
-    progression: 'Use a weight you could lift 2 more times at the end of each set. When you hit the top of the rep range on every set, go up one dumbbell size next time.',
+    progression: 'Use a weight you could lift 2 more times at the end of each set. When you hit the top of the rep range on every set, go up one dumbbell size next time. If that\'s more than about 10% heavier, add 2 reps to each set first.',
     days: [
       { name: 'Day A', focus: 'Squat & push', ex: [['Goblet squat', 3, '8–12', 90, ''], ['Dumbbell bench press', 3, '8–12', 90, 'Use a bench, or press from the floor.'], ['One-arm dumbbell row', 3, '10–12', 60, 'Each side.'], ['Dumbbell lateral raise', 2, '12–15', 45, ''], ['Front plank', 3, '30–45 s', 45, '']] },
       { name: 'Day B', focus: 'Hinge & pull', ex: [['Dumbbell Romanian deadlift', 3, '8–12', 90, ''], ['Bulgarian split squat (back foot on a chair)', 3, '8–10', 60, 'Each leg.'], ['Seated dumbbell shoulder press', 3, '8–12', 75, ''], ['Dumbbell curl', 2, '10–12', 45, ''], ['Suitcase carry', 3, '30–40 s', 45, 'Each side.']] },
@@ -1964,7 +1966,7 @@ const PLANS = [
     goal: 'Lift progressively heavier with a lower, upper and full-body day. Heavy-ish strength training builds muscle and supports bone density, which matters more with age.',
     schedule: '3 days a week. Pair with 1–2 walks or easy cardio days.',
     warmup: '5 minutes: glute bridges, bodyweight squats and band pull-aparts, then a light set of the first lift.',
-    progression: 'Most sets should end with 1–2 reps left. When every set reaches the top of the range, go up to the next dumbbell. Strength, not exhaustion, is the goal.',
+    progression: 'Most sets should end with 1–2 reps left. When every set reaches the top of the range, go up to the next dumbbell; if that\'s more than about 10% heavier, add 2 reps to each set first. Strength, not exhaustion, is the goal.',
     days: [
       { name: 'Lower', focus: 'Glutes & legs', ex: [['Goblet squat', 4, '6–10', 90, ''], ['Barbell hip thrust', 3, '8–12', 90, 'Use a dumbbell across your hips if you don\'t have a barbell.'], ['Dumbbell Romanian deadlift', 3, '8–10', 90, ''], ['Step-up onto a stair or step', 3, '8–10', 60, 'Each leg.'], ['Side plank', 2, '20–30 s', 45, 'Each side.']] },
       { name: 'Upper', focus: 'Back, shoulders & arms', ex: [['One-arm dumbbell row', 4, '8–12', 75, 'Each side.'], ['Dumbbell bench press', 3, '8–12', 75, ''], ['Seated dumbbell shoulder press', 3, '8–10', 75, ''], ['Band face pull', 3, '12–15', 45, 'Or rear-delt raises.'], ['Dumbbell curl', 2, '10–12', 45, '']] },
@@ -2058,7 +2060,7 @@ const PLANS = [
         ['Frog pump', 3, '20', 30, 'Soles together, knees out, squeeze your glutes hard at the top.'],
         ['Side-lying clamshell', 2, '15 / side', 30, 'Heels together; rotate the top knee up without rolling back.']] }
     ] },
-  { id: 'one-dumbbell', title: 'One-Dumbbell Full Body', diff: 2, muscles: ['Full body'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 3, minutes: 35, equipment: 'One dumbbell or kettlebell (15–35 lb)',
+  { id: 'one-dumbbell', title: 'One-Dumbbell Full Body', diff: 2, muscles: ['Full body'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 3, minutes: 35, equipment: 'One dumbbell or kettlebell. Start light: your suggested weight shows on each exercise.',
     goal: 'A complete strength routine that needs only a single weight, ideal for a small home gym or a hotel room.',
     schedule: '3 days a week (e.g. Mon, Wed, Fri). Alternate days A and B.',
     warmup: '3 minutes of light cardio, then 10 bodyweight squats, 10 push-ups (incline if needed) and 10 good mornings.',
@@ -2133,7 +2135,7 @@ const PLANS = [
         ['L-sit or tuck hold on chairs', 3, '15–20 s', 60, 'Press down hard, lift your knees or legs off the floor.']] }
     ] },
   /* Kettlebell-only HIIT, about 30 minutes including the warm-up. */
-  { id: 'kb-hiit-starter', title: 'Kettlebell HIIT Starter', diff: 2, muscles: ['Cardio', 'Full body'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 reps (about 8–24 kg / 18–53 lb)', noLoad: true,
+  { id: 'kb-hiit-starter', title: 'Kettlebell HIIT Starter', diff: 2, muscles: ['Cardio', 'Full body'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 smooth reps. Most beginners start around 6–12 kg (15–25 lb).', noLoad: true,
     goal: 'Learn the key kettlebell moves while getting your heart rate up. Short intervals with plenty of rest so form stays sharp.',
     schedule: '2–3 sessions a week on non-consecutive days, alternating sessions A and B.',
     warmup: '5 minutes: 10 halos each way, 10 prying goblet squats, 10 hip hinges with the bell, then 10 light swings.',
@@ -2152,7 +2154,7 @@ const PLANS = [
         ['Single-arm floor press (switch arms halfway)', 4, '30 s', 30, 'Lie on the floor; lower until your elbow touches, then press straight up.'],
         ['Dead bug holding the bell overhead', 4, '30 s', 60, 'Lower back pressed down; lower opposite leg slowly while the bell stays still.']] }
     ] },
-  { id: 'kb-hiit-burn', title: 'Kettlebell HIIT Burn', diff: 3, muscles: ['Cardio', 'Full body', 'Lower body & glutes'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 reps (about 8–24 kg / 18–53 lb)', noLoad: true,
+  { id: 'kb-hiit-burn', title: 'Kettlebell HIIT Burn', diff: 3, muscles: ['Cardio', 'Full body', 'Lower body & glutes'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 3, minutes: 30, equipment: 'One kettlebell you can swing for 20 smooth reps (often 8–16 kg / 18–35 lb).', noLoad: true,
     goal: 'A sweaty, swing-heavy session that builds power, conditioning and strong glutes and hamstrings.',
     schedule: '2–3 sessions a week on non-consecutive days, alternating sessions A and B.',
     warmup: '5 minutes: halos, prying goblet squats, 10 hip hinges, 2 sets of 10 swings building up the pace.',
@@ -2197,7 +2199,7 @@ const PLANS = [
     goal: 'Six-time Mr. Olympia Dorian Yates built his physique on brief, brutally hard sessions: a couple of warm-up sets, then one all-out working set per exercise taken to failure. Low volume, maximum effort and plenty of recovery. For experienced lifters only.',
     schedule: 'Four sessions spread over a 6-day cycle so each body part is trained once every 6 days, e.g. Day 1, Day 2, rest, Day 3, Day 4, rest. Never train the same muscle while it is still sore.',
     warmup: '5 minutes on a bike or rower. Then before each exercise’s working set, do 2–3 progressively heavier warm-up sets (about 15 reps at 50%, 10 at 70%, 4 at 85%), none close to failure. Only the working set is logged here.',
-    progression: 'Beat your logbook every session: one more rep or a little more weight on the working set. When you reach the top of the rep range, add 5 lb (2.5 kg). With a spotter, finish the hardest sets with 1–2 forced reps or a slow 4-second negative. If strength stalls two sessions in a row, add an extra rest day.',
+    progression: 'Beat your logbook every session: one more rep, or a little more weight on the working set. When you reach the top of the rep range, add the smallest step, 2.5–5 lb (1–2.5 kg). With a spotter, finish the hardest sets with 1–2 forced reps or a slow 4-second negative. If strength stalls two sessions in a row, add an extra rest day.',
     days: [
       { name: 'Day 1', focus: 'Shoulders · Traps · Triceps', ex: [
         ['Seated dumbbell or Smith-machine press', 1, '6–8', 180, 'Lower under control to ear level, press without locking out hard. Go to true failure.'],
@@ -2272,11 +2274,11 @@ const PLANS = [
         ['Seated calf raise', 2, '12–15', 60, 'Full range, no bouncing.']] }
     ] },
   { id: 'kb-swing-getup', title: 'Kettlebell Swing & Get-Up Daily', diff: 2, muscles: ['Full body', 'Core', 'Cardio'], gear: 'Minimal', needs: [['kettlebell']], perWeek: 5, minutes: 25,
-    equipment: 'One kettlebell. Many start around 16 kg (35 lb) for men and 8–12 kg (18–26 lb) for women.',
+    equipment: 'One kettlebell you can swing for 10 crisp reps and hold overhead safely. Your suggested start shows on each exercise.',
     goal: 'Inspired by Pavel Tsatsouline’s minimalist "Simple & Sinister" approach: two movements, the one-arm swing and the Turkish get-up, practised almost every day. Builds hip power, grip, shoulder stability and conditioning in under half an hour.',
     schedule: '5–6 days a week. Train fresh and never to exhaustion: it is practice, not a workout to survive. On low-energy days do the Easy day.',
     warmup: 'About 5 minutes, 3 rounds of: 5 prying goblet squats (sit deep and gently push your knees out), 5 hip bridges, and 5 halos each direction with a light bell.',
-    progression: 'Use the same bell until the work feels easy and smooth, then test yourself: 100 one-arm swings (10 sets of 10, alternating hands) inside 5 minutes and 10 get-ups (5 per side) inside 10 minutes. When you pass both tests, move up a bell size. Long-term targets often quoted: 32 kg for men and 24 kg for women ("Simple"), 48 kg and 32 kg ("Sinister").',
+    progression: 'Use the same bell until the work feels easy and smooth, then test yourself: 100 one-arm swings (10 sets of 10, alternating hands) inside 5 minutes and 10 get-ups (5 per side) inside 10 minutes. When you pass both tests, move up a bell size. The goals often quoted for this style of training (32 kg for men and 24 kg for women, then 48 and 32 kg) take most people years. Move up only when both tests feel smooth, never just to hit a number.',
     days: [
       { name: 'Standard day', focus: 'Swings · Get-ups', ex: [
         ['One-arm swing (alternate hands each set)', 10, '10', 30, 'Hike the bell back high between your legs, snap the hips so it floats to chest height. Arm is a rope; plank at the top.'],
@@ -2310,7 +2312,7 @@ const PLANS = [
     goal: 'Built around the habits longevity researcher David Sinclair describes: short, hard sessions that leave you out of breath, lifting to hold on to muscle as you age, and moving all day instead of sitting. Two brief strength days and one high-intensity interval day.',
     schedule: '3 sessions a week (e.g. Mon strength, Wed intervals, Fri strength). On every other day aim for 7,000–10,000 steps and break up long sitting with a standing desk or short walks.',
     warmup: '5 minutes: brisk walk or easy bike, then 10 bodyweight squats, 10 hip hinges and 10 arm circles each way.',
-    progression: 'Strength days: when you finish all sets at the top of the rep range, go heavier. Interval day: start with 6 rounds of 30 s hard / 90 s easy and work up to 8 rounds of 30 s hard / 60 s easy. Hard means you can’t talk.',
+    progression: 'Strength days: when you finish all sets at the top of the rep range, go up by the smallest weight step. Interval day: start with 6 rounds of 30 s hard / 90 s easy and work up to 8 rounds of 30 s hard / 60 s easy over several weeks. Hard means you can’t talk.',
     days: [
       { name: 'Strength A', focus: 'Squat · Push · Pull · Carry', ex: [
         ['Goblet squat', 3, '8–10', 90, 'Bell at your chest, sit between your heels, stand tall.'],
@@ -2332,7 +2334,7 @@ const PLANS = [
     goal: 'Inspired by how Paul Saladino describes staying fit: moving outdoors almost every day, with sprints, hikes and simple strength work, and starting each session with a mobility and activation routine. Pairs naturally with his "get morning sun, get your feet on the grass" habits.',
     schedule: '4 sessions a week: Strength, Sprints, Strength, Hike/Ruck. Get outside in the morning light for 10 minutes most days, barefoot on grass if you can.',
     warmup: 'Activation flow, 5–6 minutes: cat-cow ×8, world’s greatest stretch ×3 per side, glute bridges ×10, deep squat hold 30 s, band or arm pull-aparts ×15.',
-    progression: 'Strength: add a rep each week, then go heavier. Sprints: start at 6 × 60–70% effort and build to 8–10 near-max efforts over a month, always with full recovery. Ruck: add 5 lb (2 kg) or 10 minutes every other week.',
+    progression: 'Strength: add a rep each week, then go up by the smallest weight step. Sprints: start at 6 × 60–70% effort and build to 8–10 near-max efforts over 6–8 weeks, always with full recovery (sprinting too hard too soon is a common cause of hamstring strains). Ruck: add 5 lb (2 kg) or 10 minutes every other week, up to about 20% of your body weight.',
     days: [
       { name: 'Day 1', focus: 'Full-body strength', ex: [
         ['Kettlebell or dumbbell front squat', 4, '6–8', 90, 'Weight in the rack, elbows up, sit deep.'],
@@ -2360,7 +2362,7 @@ const PLANS = [
     goal: 'Get strong on the big three barbell lifts with a simple, proven beginner program: five sets of five, a little heavier every session.',
     schedule: 'Mon, Wed, Fri. Alternate A and B (week 1: A-B-A, week 2: B-A-B). Squat every session.',
     warmup: '5 minutes easy cardio, then ramp up on each lift: 2 sets of 5 with the empty bar, then 3, 2 and 1 reps at roughly 40%, 60% and 80% of your work weight.',
-    progression: 'Start light: about half of what you think you could lift for 5. Add 5 lb (2.5 kg) every session to the squat, bench, row and press, and 10 lb (5 kg) to the deadlift. If you miss 5×5 at a weight three sessions in a row, drop it by 10% and build back up.',
+    progression: 'Start light: about half of what you think you could lift for 5, or the suggested start on each lift. Add 5 lb (2.5 kg) a session to the squat and deadlift, and 5 lb (2.5 kg) every other session to the bench, row and press (with 1.25 lb or 0.5 kg fractional plates you can go up a little every session). If you\'re over 40 or recovering slowly, add weight once a week instead. If you miss 5×5 at a weight twice in a row, drop it by 10% and build back up.',
     days: [
       { name: 'Workout A', focus: 'Squat · Bench · Row', ex: [
         ['Barbell back squat', 5, '5', 180, 'Brace hard, sit down between your heels, hips to at least knee height, drive up through the whole foot.'],
@@ -2376,7 +2378,7 @@ const PLANS = [
     goal: 'A first gym program for anyone nervous about free weights: guided machines and cables that are easy to set up and safe to push.',
     schedule: '2–3 times a week with a rest day between. Alternate A and B.',
     warmup: '5 minutes on a bike or elliptical, then one light set of the first exercise.',
-    progression: 'Pick a weight you can lift 12 times with 2–3 reps left. When every set reaches 12, go up one pin on the stack (or 5 lb dumbbells) next time.',
+    progression: 'Pick a weight you can lift 12 times with 2–3 reps left. When every set reaches 12, go up one pin on the stack (or the next dumbbell size) next time.',
     days: [
       { name: 'Day A', focus: 'Legs · Push · Pull', ex: [
         ['Leg press', 3, '10–12', 90, 'Feet shoulder-width on the plate, lower until your hips start to tuck, press without locking your knees.'],
@@ -2416,7 +2418,7 @@ const PLANS = [
     goal: 'Single-leg strength, stronger calves and a steady core: the strength work that helps runners hold their form and stay injury-free.',
     schedule: '2 times a week, on easy-run days or rest days. Leave a day between this and your long run or hard intervals.',
     warmup: '5 minutes of easy jogging or brisk walking, then leg swings and 10 bodyweight squats.',
-    progression: 'Use a weight you could lift 3 more times. When every set feels easy, add 5 lb or slow the lowering to 3 seconds. Cut to one set of each during race week.',
+    progression: 'Use a weight you could lift 3 more times. When every set feels easy, go up to the next dumbbell if it\'s about 10% heavier or less; if it\'s a bigger jump, add 2 reps or slow the lowering to 3 seconds first. Cut to one set of each during race week.',
     days: [
       { name: 'Day A', focus: 'Single leg · Calves', ex: [
         ['Bulgarian split squat', 3, '8 / side', 75, 'Back foot on a bench, most of your weight on the front leg, knee tracking over the toes.'],
@@ -5014,7 +5016,7 @@ function viewPlan(id) {
       <div class="day-tabs" role="group" aria-label="Training days">${p.days.map((x, i) => `<button class="chip" data-act="plan-day" data-i="${i}" aria-pressed="${i === planDayTab}">${esc(x.name)}</button>`).join('')}</div>
       <div class="panel-head"><h2>${esc(d.name)} <span class="muted" style="font-weight:500">· ${esc(d.focus)}</span></h2></div>
       <div class="table-wrap"><table class="ex-table plan-ex"><thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Rest</th></tr></thead><tbody>
-        ${d.ex.map((e) => `<tr><td>${exLink(e[0])}${e[4] ? `<div class="ex-cue">${esc(e[4])}</div>` : libFor(e[0]) ? `<div class="ex-cue">${esc(libFor(e[0]).cues[0])}</div>` : ''}</td><td class="num" data-l="Sets">${e[1]}</td><td class="num" data-l="Reps">${esc(e[2])}</td><td class="num" data-l="Rest">${e[3] ? e[3] + 's' : '—'}</td></tr>`).join('')}
+        ${d.ex.map((e) => `<tr><td>${exLink(e[0])}${e[4] ? `<div class="ex-cue">${esc(e[4])}</div>` : libFor(e[0]) ? `<div class="ex-cue">${esc(libFor(e[0]).cues[0])}</div>` : ''}${startLine(p, e)}</td><td class="num" data-l="Sets">${e[1]}</td><td class="num" data-l="Reps">${esc(e[2])}</td><td class="num" data-l="Rest">${e[3] ? e[3] + 's' : '—'}</td></tr>`).join('')}
       </tbody></table></div>
       <div class="row" style="margin-top:16px"><button class="btn btn-berry" data-act="start" data-plan="${p.id}" data-day="${planDayTab}">Start ${esc(d.name)}</button></div>
     </section>
@@ -5034,6 +5036,62 @@ function viewPlan(id) {
 let restEnd = 0, ticker = null;
 /* Live session. Each set has its own weight and reps. A value you set carries forward to the later sets of that
    exercise until you change one of those too; untouched sets start from what you did last time (or the plan target). */
+/* Suggested starting weights, for the first time someone does an exercise.
+   Ratios of body weight for a set of about 10 reps for someone new to lifting (cautious: below published "untrained"
+   strength standards), then scaled for sex, age, experience and rep range, and rounded DOWN to real dumbbell,
+   kettlebell, plate and stack sizes. Body weight above a BMI of 27 isn't counted, because extra body fat doesn't add strength.
+   Columns: barbell total, each dumbbell, one dumbbell or kettlebell held in both hands or one arm, machine or cable stack. */
+const START_RATIO = {
+  'back-squat': [0.5, 0.12, 0.18], 'front-squat': [0.4, 0.12, 0.18], 'goblet-squat': [0, 0, 0.15], 'split-squat': [0.3, 0.08, 0.12],
+  'reverse-lunge': [0.3, 0.08, 0.12], 'walking-lunge': [0.3, 0.08, 0], 'lateral-lunge': [0, 0.06, 0.1], 'step-up': [0, 0.06, 0.1],
+  'leg-press': [0, 0, 0, 0.8], 'leg-extension': [0, 0, 0, 0.25], 'leg-curl': [0, 0, 0, 0.2], 'calf-raise': [0.4, 0.1, 0.15, 0.5],
+  rdl: [0.45, 0.12, 0.18], deadlift: [0.6, 0.15, 0.25], swing: [0, 0, 0.15], 'hip-thrust': [0.5, 0, 0.2, 0.5], 'glute-bridge': [0.4, 0, 0.15],
+  'bench-press': [0.4, 0.12, 0.12], 'incline-press': [0.32, 0.1, 0.1], 'chest-fly': [0, 0.04, 0, 0.15], 'overhead-press': [0.25, 0.08, 0.1],
+  'clean-press': [0, 0.07, 0.1], 'lateral-raise': [0, 0.03, 0, 0.08], 'triceps-ext': [0.15, 0.05, 0.1, 0.15], pulldown: [0, 0, 0, 0.35],
+  'straight-arm-pulldown': [0, 0, 0.1, 0.15], row: [0.35, 0.12, 0.12, 0.35], 'face-pull': [0, 0, 0, 0.1], 'rear-delt': [0, 0.03, 0, 0.1],
+  'high-pull': [0, 0, 0.12], snatch: [0, 0, 0.1], shrug: [0.5, 0.15], curl: [0.2, 0.06, 0, 0.12], carry: [0, 0.2, 0.2], halo: [0, 0, 0.06],
+  'get-up': [0, 0, 0.08], pallof: [0, 0, 0, 0.08]
+};
+const START_LOWER = ['back-squat', 'front-squat', 'goblet-squat', 'split-squat', 'reverse-lunge', 'walking-lunge', 'lateral-lunge', 'step-up', 'leg-press',
+  'leg-extension', 'leg-curl', 'calf-raise', 'rdl', 'deadlift', 'swing', 'hip-thrust', 'glute-bridge', 'carry'];
+const SIZES = { db: { us: [3, 5, 8, 10, 12, 15, 17.5, 20, 22.5, 25, 27.5, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80], kg: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36] },
+  kb: { us: [10, 15, 20, 25, 30, 35, 40, 45, 50, 53, 62, 70], kg: [4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48] } };
+// How the exercise is loaded: barbell, each dumbbell, one weight (dumbbell or kettlebell), or a machine or cable stack.
+function loadKind(p, e) {
+  const n = e[0].toLowerCase(), kbPlan = p.needs.some((o) => o.includes('kettlebell')) && !p.needs.some((o) => o.includes('dumbbells'));
+  if (/\bband\b|bands?\b|bodyweight|backpack|towel/.test(n)) return null;
+  if (isBarbell(p, e) || /barbell|ez-bar|ez bar|smith/.test(n)) return 'bar';
+  if (/cable|pulldown|machine|leg press|leg curl|leg extension|pushdown|face pull|pec deck|hack squat|pallof/.test(n)) return 'machine';
+  if (/kettlebell|\bkb\b/.test(n) || (kbPlan && !/dumbbell/.test(n))) return 'kb';
+  if (/goblet|one dumbbell|single dumbbell|dumbbell swing|halo/.test(n) || p.id === 'one-dumbbell') return 'one';
+  if (/dumbbell|\bdb\b/.test(n) || p.needs.some((o) => o.includes('dumbbells'))) return 'each';
+  return null;
+}
+function startWeight(p, e) {
+  const lib = libFor(e[0]), pr = S.profile || {};
+  if (!lib || !hasWeight(p, e) || !(pr.weightKg > 0)) return null;
+  const kind = loadKind(p, e), ratio = START_RATIO[lib.id];
+  if (!kind || !ratio) return null;
+  const r = ratio[{ bar: 0, each: 1, one: 2, kb: 2, machine: 3 }[kind]];
+  if (!r) return null;
+  const h = (pr.heightCm || 170) / 100, bw = Math.min(pr.weightKg, 27 * h * h);
+  const lower = START_LOWER.includes(lib.id), age = pr.age || 30;
+  const sexF = pr.sex === 'female' ? (lower ? 0.7 : 0.55) : 1;
+  const ageF = age < 40 ? 1 : age < 50 ? 0.92 : age < 60 ? 0.82 : age < 70 ? 0.72 : 0.62;
+  const expF = { new: 1, some: 1.35, exp: 1.7 }[pr.exp || 'new'] || 1;
+  const top = repTarget(e[2]) || 10, repF = top <= 6 ? 1.1 : top >= 15 ? 0.85 : 1;
+  const want = showW(bw * r * sexF * ageF * expF * repF, 2), U = wUnit();
+  if (kind === 'bar') {
+    const bar = us() ? 45 : 20, step = us() ? 5 : 2.5;
+    if (want < bar) return { v: bar, text: `the empty ${bar} ${U} bar (if that's too heavy, use dumbbells or a lighter bar)` };
+    const v = Math.floor(want / step) * step; return { v, text: `${v} ${U} on the bar (bar and plates)` };
+  }
+  if (kind === 'machine') { const step = us() ? 5 : 2.5, v = Math.max(us() ? 10 : 5, Math.floor(want / step) * step); return { v, text: `${v} ${U} on the stack` }; }
+  const list = SIZES[kind === 'kb' ? 'kb' : 'db'][us() ? 'us' : 'kg'], v = [...list].reverse().find((x) => x <= want * 1.05) || list[0];
+  return { v, text: kind === 'each' ? `${v} ${U} in each hand` : kind === 'kb' ? `a ${v} ${U} kettlebell` : `one ${v} ${U} dumbbell` };
+}
+// Plan page: a suggested start for exercises you haven't logged yet.
+const startLine = (p, e) => { if (lastSets(e[0])) return ''; const sw = startWeight(p, e); return sw ? `<div class="ex-start-l">Start around ${esc(sw.text)}</div>` : ''; };
 function lastSets(name) {
   const w = [...S.workouts].sort((a, b) => b.date.localeCompare(a.date)).find((x) => workoutEx(x).some((y) => y.n === name && y.reps.length));
   return w ? setsOf(workoutEx(w).find((y) => y.n === name)) : null;
@@ -5046,20 +5104,34 @@ function setVal(s, e, i, j, f, last) {
   return l && l.r != null ? String(l.r) : String(repTarget(e[2]) ?? '');
 }
 const hasWeight = (p, e) => !p.noLoad && !/ s$/.test(e[2]);
-/* Next-step suggestion from last time, one small step at a time: add reps until every set reaches the top of the range,
-   then add the smallest sensible weight jump (about 5% for lower body, 2.5% for upper body). */
+/* Next-step suggestion from last time, one small step at a time. Add reps until every set reaches the top of the range,
+   then go up to the next real weight, but only when that's a jump of about 10% or less and the last session wasn't rated
+   very hard. When the next dumbbell or plate is a bigger jump, build extra reps or slow the lowering first. */
 const LOWER_BODY = /squat|deadlift|lunge|leg press|leg curl|leg extension|hip thrust|glute|calf|step-up|rdl|split|swing|hinge/i;
+function lastRpe(name) {
+  const w = [...S.workouts].sort((a, b) => b.date.localeCompare(a.date)).find((x) => workoutEx(x).some((y) => y.n === name && y.reps.length));
+  const x = w && workoutEx(w).find((y) => y.n === name); return x && x.rpe ? +x.rpe : null;
+}
+function nextWeightUp(p, e, cur) {
+  const kind = loadKind(p, e);
+  if (kind === 'each' || kind === 'one' || kind === 'kb') { const list = SIZES[kind === 'kb' ? 'kb' : 'db'][us() ? 'us' : 'kg']; return list.find((x) => x > cur + 0.01) || null; }
+  return round(cur + (us() ? 5 : 2.5), 2);
+}
 function nextStep(p, e, last) {
   if (!last || !last.length) return '';
   const timed = / s$/.test(e[2]), nums = (String(e[2]).match(/\d+/g) || []).map(Number), top = nums.length ? Math.max(...nums.slice(0, 2)) : null;
   if (!top) return '';
   const allTop = last.length >= e[1] && last.every((x) => x.r >= top);
-  if (timed) return allTop ? `You held ${top} s on every set: try ${top + 5} s or the harder version.` : `Aim to hold the full ${top} s on every set.`;
+  if (timed) return allTop ? `You held ${top} s on every set: try ${top + 5} s next time, or the harder version.` : `Aim to hold the full ${top} s on every set.`;
   if (!allTop) return `Stay at this weight and aim for ${top} reps on every set, adding a rep at a time.`;
   const kg = last[0].kg;
   if (!hasWeight(p, e) || !kg) return `You hit ${top} reps on every set: add 1–2 reps or move to the harder version.`;
-  const inc = us() ? 5 : 2.5, cur = showW(kg), step = Math.max(inc, Math.round((cur * (LOWER_BODY.test(e[0]) ? 0.05 : 0.025)) / inc) * inc);
-  return `You hit ${top} reps on every set: go up to ${round(cur + step, 1)} ${wUnit()} and start again at the bottom of the rep range.`;
+  if ((lastRpe(e[0]) || 0) >= 9) return `You hit ${top} reps, but you rated it very hard. Stay at this weight until every set ends with about 2 reps left, then go up.`;
+  const cur = showW(kg), next = nextWeightUp(p, e, cur), kind = loadKind(p, e), U = wUnit();
+  if (!next) return `You hit ${top} reps on every set: slow the lowering to 3 seconds or add a set before going heavier.`;
+  const jump = (next - cur) / cur;
+  if (jump > 0.1) return `You hit ${top} reps on every set. The next weight up, ${next} ${U}, is a ${Math.round(jump * 100)}% jump, so first build to ${top + 2}–${top + 3} reps on every set or slow the lowering to 3 seconds${kind === 'bar' ? ` (or add ${us() ? '1.25 lb' : '0.5–1 kg'} fractional plates if you have them)` : ''}. Then go up.`;
+  return `You hit ${top} reps on every set: next time try ${next} ${U}${kind === 'each' ? ' in each hand' : ''} and start again at the bottom of the rep range.`;
 }
 // Plates for each side of a barbell: 45 lb / 20 kg bar, standard plates.
 const isBarbell = (p, e) => /barbell|bench press|back squat|front squat|deadlift|overhead press|bent-over row|pendlay/i.test(e[0]) && p.needs.some((o) => o.includes('barbell'));
@@ -5098,6 +5170,7 @@ function viewSession() {
         <div class="ex-name">${esc(e[0])}${(s.prs || []).includes(e[0]) ? ' <span class="tag tag-berry">New best!</span>' : ''}${libFor(e[0]) ? ` <a class="ex-how" href="#ex-${libFor(e[0]).id}">How to</a>` : ''}</div><div class="ex-cue">${e[1]} × ${esc(e[2])} · ${e[3] ? 'rest ' + e[3] + 's' : 'no timed rest'}${e[4] ? ' — ' + esc(e[4]) : libFor(e[0]) ? ' — ' + esc(libFor(e[0]).cues[0]) : ''}</div>
         ${last ? `<div class="ex-last">Last time: ${exLine({ reps: last.map((x) => x.r), kg: last.map((x) => x.kg), timed })}</div>` : ''}
         ${tip ? `<div class="ex-next"><b>Next step:</b> ${tip}</div>` : ''}
+        ${!last && wt && isNaN(w0) ? (() => { const sw = startWeight(p, e); return sw ? `<div class="ex-next ex-start"><b>Suggested start:</b> ${esc(sw.text)}. A cautious guess from your weight, age, sex and experience: after a light warm-up set, you should finish each set with 3–4 reps to spare. If not, go lighter. <button type="button" class="btn btn-sm" data-act="use-start" data-i="${i}" data-v="${sw.v}">Use ${sw.v} ${wUnit()}</button></div>` : ''; })() : ''}
         ${wt && isBarbell(p, e) ? `<div class="ex-plates" id="plates-${i}">${platesFor(w0)}</div>` : ''}
         <div class="srows ${wt ? '' : 'no-w'}"><div class="srow srow-h" aria-hidden="true"><span>Set</span>${wt ? `<span>${wUnit()}</span>` : ''}<span>${timed ? 'Seconds' : 'Reps'}</span></div>
         ${[...Array(e[1])].map((_, j) => { const k = i + '-' + j, lbl = `${e[0]} set ${j + 1}`;
@@ -6157,6 +6230,10 @@ function shopAdd(id, servings) {
 let clearArmed = false;
 /* First run: units, about you, goal. Targets come from calcTargets, the same as Profile & goals. */
 let setupStep = 0;
+// Strength-training experience: used only to suggest cautious starting weights.
+const EXPERIENCE = [['new', 'New to lifting, or back after a long break'], ['some', 'Lifting regularly for 6 months to 2 years'], ['exp', 'Lifting regularly for more than 2 years']];
+const expField = (p) => `<label class="field">Strength training experience<select class="input" id="p-exp">${EXPERIENCE.map(([v, l]) => `<option value="${v}" ${(p.exp || 'new') === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+  <span class="muted" style="font-size:.8rem;font-weight:400">Used to suggest starting weights in workouts. If unsure, pick the first: it's the safest.</span></label>`;
 function viewSetup() {
   const p = S.profile, step = setupStep, dots = `<div class="setup-dots" aria-label="Step ${step + 1} of 3">${[0, 1, 2].map((i) => `<span class="${i <= step ? 'on' : ''}"></span>`).join('')}</div>`;
   const ft = Math.floor(p.heightCm / 2.54 / 12), inch = Math.round(p.heightCm / 2.54 - ft * 12);
@@ -6171,6 +6248,7 @@ function viewSetup() {
           ${us() ? `<label class="field">Height ft<input class="input num" id="p-ft" type="number" min="3" max="8" value="${ft}" required></label><label class="field">in<input class="input num" id="p-in" type="number" min="0" max="11" value="${inch}" required></label>`
             : `<label class="field">Height (cm)<input class="input num" id="p-cm" type="number" min="100" max="250" value="${Math.round(p.heightCm)}" required></label>`}</div>
         <label class="field">How active are you?<select class="input" id="p-act">${acts.map((a) => `<option value="${a[0]}" ${p.activity === a[0] ? 'selected' : ''}>${a[1]}</option>`).join('')}</select></label>
+        ${expField(p)}
         <div class="row"><button class="btn btn-ghost" type="button" data-act="setup-step" data-v="0">Back</button><button class="btn btn-primary" type="submit">Next</button></div></form>`
     : `<h1>Your goal</h1><p class="muted">Pick one. We'll set calories, protein and water to match.</p>
       <div class="stack setup-big">${[['lose', 'Lose fat', 'A moderate deficit that protects muscle'], ['maintain', 'Maintain', 'Eat to stay where you are and get fitter'], ['gain', 'Build muscle', 'A small surplus to support strength training']].map(([g, l, d]) => `<button class="chip setup-goal" data-act="setup-goal" data-g="${g}" aria-pressed="${p.goal === g}"><b>${l}</b><span class="muted">${d}</span></button>`).join('')}</div>
@@ -6231,6 +6309,7 @@ function viewTargets() {
             : `<label class="field">Height (cm)<input class="input num" id="p-cm" type="number" min="100" max="250" value="${Math.round(p.heightCm)}" required></label>`}
         </div>
         <label class="field">Activity<select class="input" id="p-act">${acts.map((a) => `<option value="${a[0]}" ${p.activity === a[0] ? 'selected' : ''}>${a[1]}</option>`).join('')}</select></label>
+        ${expField(p)}
         <div class="row" role="group" aria-label="Goal"><span class="eyebrow" style="margin-right:6px">Goal</span>
           ${[['lose', 'Lose fat'], ['maintain', 'Maintain'], ['gain', 'Build muscle']].map((g) => `<button type="button" class="chip" data-act="goal" data-g="${g[0]}" aria-pressed="${p.goal === g[0]}">${g[1]}</button>`).join('')}</div>
         <div class="field">
@@ -7890,6 +7969,7 @@ document.addEventListener('click', (e) => {
     S.customPlans.push({ id, ...p, gear: !p.needs.length ? 'None' : p.needs.some((o) => o.some((g) => ['barbell', 'cables', 'machines', 'treadmill', 'rower', 'bike', 'airbike', 'elliptical', 'stairs', 'skierg'].includes(g))) ? 'Gym' : 'Minimal' });
     syncCustom(); save(); toast('Plan saved to your plans'); location.hash = 'plan-' + id;
   }
+  else if (a === 'use-start') { const s = S.session; if (s) { s.loads = s.loads || {}; s.loads[+b.dataset.i] = b.dataset.v; save(); render(true); } }
   else if (a === 'rpe') { const s = S.session; s.rpe = s.rpe || {}; const i = +b.dataset.i, v = +b.dataset.v; s.rpe[i] = s.rpe[i] === v ? undefined : v; save(); render(true); }
   else if (a === 'cancel-session') {
     $('#cancel-wrap').innerHTML = `<span class="confirm"><span>Discard?</span><button class="btn btn-sm" data-act="cancel-yes">Yes</button><button class="btn btn-sm" data-act="cancel-no">No</button></span>`;
@@ -8181,6 +8261,7 @@ function readProfile() {
   else if (!isNaN(num('p-cm'))) p.heightCm = num('p-cm');
   if ($('#p-sex')) p.sex = $('#p-sex').value;
   if ($('#p-act')) p.activity = parseFloat($('#p-act').value);
+  if ($('#p-exp')) p.exp = $('#p-exp').value;
   const water = num('p-water');
   const wk = num('p-wk'), mins = num('p-min');
   const tg = calcTargets(p);

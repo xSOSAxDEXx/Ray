@@ -81,6 +81,13 @@ On phones, a bar along the bottom of the screen reaches **Today, Log, Recipes an
 
 - **New logo:** a cartoon retro ray gun firing a heartbeat beam. The source art is `icons/logo-mark.svg`; `icons/icon.svg` and every PNG app icon (web, iPhone, Android adaptive and themed, Expo) are made from it.
 
+## Safety review (November 2026)
+
+- **Food safety:** every recipe method that cooks meat, fish or eggs states the FoodSafety.gov safe minimum temperature (poultry 165°F, ground meat 160°F, steaks, chops and fish 145°F, shrimp until opaque). Each such recipe shows a **Food safety** box with those temperatures, a warning when yolks are served soft, a cold-smoked salmon note for higher-risk groups, and microwave guidance. It's worked out from the ingredients, so your own recipes get it too.
+- **Allergens:** fixed "butter lettuce" being counted as milk, and recipes now list ingredients to **check the label** on (dark chocolate, protein powder, broth, oats, corn tortillas, coconut, and parmesan rennet on vegetarian recipes). Vegetarian recipes no longer offer collagen or bone broth.
+- **Suggested starting weights:** the first time you do a weighted exercise, plans and live sessions suggest a cautious starting weight from your body weight, height, sex, age and **strength training experience** (a new question in setup and Profile & goals). It's rounded down to real dumbbell, kettlebell, plate and stack sizes, and the **Use** button fills it in.
+- **Gentler progression:** the in-session "next step" never suggests a jump of more than about 10%. If the next dumbbell or plate is bigger than that, it suggests more reps or slower lowering first, and it holds the weight if you rated the last session 9 or 10 out of 10. Plan progression rules were made more conservative (Foundations, Upper/Lower, Barbell 5×5, Yates HIT, Animal-Based Athlete, Runners, and the dumbbell plans).
+
 ## Use it on your phone
 
 Open https://xsosaxdex.github.io/Ray/ on your phone, then add it to your home screen. It gets its own icon, opens full-screen without the browser bar, and works offline once it has been opened.
