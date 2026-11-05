@@ -27,7 +27,7 @@ python3 tools/apply_audit.py       # rewrites docs/recipe-macro-audit.md, fixes 
 - There's no single-test filter. To smoke-test a new page, add its hash to `VIEWS` in `tests/smoke.js`.
 - Mobile (needs npm packages): `cd mobile && npm test`, `npm run typecheck`. Use `npx expo install` to add packages, never `npm install <pkg>`.
 
-When you change any shipped file, bump `CACHE` in `sw.js` (e.g. `healthray-v23` → `v24`).
+When you change any shipped file, bump `CACHE` in `sw.js` (e.g. `healthray-v24` → `v25`).
 
 ## Architecture of `index.html`
 
@@ -79,7 +79,8 @@ The recipe standards are in the README's "Editing content" section and are enfor
 - full-fat dairy;
 - arrowroot, not cornstarch;
 - coconut aminos, not soy;
-- unflavored whey only.
+- unflavored whey only;
+- no refined sugar: sweeten with fruit, pure monk fruit, a little coconut sugar, or small amounts of raw honey or pure maple syrup. "Sugar free" recipes use none of these. Honey triggers a "no honey under age 1" line in the food-safety box.
 
 Other rules:
 - **Tags:** "Sugar free", "Whole foods" and "Minimally processed" have defined meanings. "High protein" needs at least 10 g per serving. Vegetarian recipes must not use collagen or bone broth.
