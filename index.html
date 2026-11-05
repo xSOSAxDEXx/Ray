@@ -4814,7 +4814,7 @@ function safetyOf(r, m) {
   const kinds = SAFE_RULES.filter(([, re, , not]) => ings.some((n) => re.test(n) && !(not && not.test(n))));
   const out = kinds.map((k) => k[2]);
   if (!out.length && !ings.some((n) => /smoked salmon|\bhoney\b/.test(n))) return '';
-  const soft = /runny|jammy|softly set|soft-boil|to your liking|6½ minutes|cook 7 minutes/.test(steps) || /runny|jammy/.test((r.blurb || '').toLowerCase());
+  const soft = /runny|jammy|softly set|soft-boil|to your liking|6½ minutes|(boiling|simmering) water and cook [5-7] minutes/.test(steps) || /runny|jammy/.test((r.blurb || '').toLowerCase());
   const risk = 'If you are pregnant, older, cooking for young children or have a weakened immune system';
   if (kinds.some((k) => k[0] === 'egg') && soft) out.push(`This recipe cooks the yolks soft. ${risk}, use pasteurized eggs or cook the eggs until the yolks are firm.`);
   if (ings.some((n) => /smoked salmon/.test(n))) out.push(`Cold-smoked salmon is eaten without cooking and can carry Listeria. ${risk}, leave it out or heat it until steaming (165°F / 74°C).`);
@@ -5105,8 +5105,9 @@ function setVal(s, e, i, j, f, last) {
 }
 const hasWeight = (p, e) => !p.noLoad && !/ s$/.test(e[2]);
 /* Next-step suggestion from last time, one small step at a time. Add reps until every set reaches the top of the range,
-   then go up to the next real weight, but only when that's a jump of about 10% or less and the last session wasn't rated
-   very hard. When the next dumbbell or plate is a bigger jump, build extra reps or slow the lowering first. */
+   then go up to the next real weight, but only when that's a jump of about 10% or less and the last set wasn't rated
+   very hard. When the next dumbbell or kettlebell is a bigger jump, first build 2 extra reps on every set: once you have
+   them, you've earned the jump. A barbell always allows its smallest standard step (5 lb or 2.5 kg). */
 const LOWER_BODY = /squat|deadlift|lunge|leg press|leg curl|leg extension|hip thrust|glute|calf|step-up|rdl|split|swing|hinge/i;
 function lastRpe(name) {
   const w = [...S.workouts].sort((a, b) => b.date.localeCompare(a.date)).find((x) => workoutEx(x).some((y) => y.n === name && y.reps.length));
@@ -5129,9 +5130,9 @@ function nextStep(p, e, last) {
   if ((lastRpe(e[0]) || 0) >= 9) return `You hit ${top} reps, but you rated it very hard. Stay at this weight until every set ends with about 2 reps left, then go up.`;
   const cur = showW(kg), next = nextWeightUp(p, e, cur), kind = loadKind(p, e), U = wUnit();
   if (!next) return `You hit ${top} reps on every set: slow the lowering to 3 seconds or add a set before going heavier.`;
-  const jump = (next - cur) / cur;
-  if (jump > 0.1) return `You hit ${top} reps on every set. The next weight up, ${next} ${U}, is a ${Math.round(jump * 100)}% jump, so first build to ${top + 2}–${top + 3} reps on every set or slow the lowering to 3 seconds${kind === 'bar' ? ` (or add ${us() ? '1.25 lb' : '0.5–1 kg'} fractional plates if you have them)` : ''}. Then go up.`;
-  return `You hit ${top} reps on every set: next time try ${next} ${U}${kind === 'each' ? ' in each hand' : ''} and start again at the bottom of the rep range.`;
+  const jump = (next - cur) / cur, big = jump > 0.1 && kind !== 'bar', earned = last.every((x) => x.r >= top + 2);
+  if (big && !earned) return `You hit ${top} reps on every set. The next weight up, ${next} ${U}, is a ${Math.round(jump * 100)}% jump, so first build to ${top + 2} reps on every set (or slow the lowering to 3 seconds). Once you get there, go up.`;
+  return `You hit ${big ? `${top + 2}+` : top} reps on every set: next time try ${next} ${U}${kind === 'each' ? ' in each hand' : ''} and start again at the bottom of the rep range.`;
 }
 // Plates for each side of a barbell: 45 lb / 20 kg bar, standard plates.
 const isBarbell = (p, e) => /barbell|bench press|back squat|front squat|deadlift|overhead press|bent-over row|pendlay/i.test(e[0]) && p.needs.some((o) => o.includes('barbell'));
@@ -8112,7 +8113,8 @@ document.addEventListener('click', (e) => {
     const w = window.open('', '_blank');
     const items = priceItems().filter((it) => !S.shopping.checked[it.key] && !it.pantry).map(instacartItem);
     b.disabled = true; toast('Sending your list to Instacart…');
-    fetch(INSTACART_FN, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 15000);
+    fetch(INSTACART_FN, { method: 'POST', signal: ctl.signal, headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: 'HEALTH-RAY shopping list', items, linkback: location.origin + location.pathname + '#shopping' }) })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((d) => {
@@ -8121,7 +8123,7 @@ document.addEventListener('click', (e) => {
         toast('Your list is ready on Instacart');
       })
       .catch(() => { if (w) w.close(); toast("Couldn't reach Instacart. Try Copy list instead."); })
-      .finally(() => { b.disabled = false; });
+      .finally(() => { clearTimeout(timer); b.disabled = false; });
   }
   else if (a === 'order-go') {
     // Open the tab first (pop-up blockers allow it only straight from the tap), then copy.

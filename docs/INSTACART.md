@@ -45,7 +45,7 @@ supabase functions deploy instacart-list --no-verify-jwt
 ```
 
 - `YOUR_PROJECT_REF` is the short code in your Supabase dashboard URL (`supabase.com/dashboard/project/<this part>`).
-- `ALLOWED_ORIGINS` means only your website can use the function. Add more sites separated by commas, for example `https://xsosaxdex.github.io,http://localhost:8000` while testing locally.
+- `ALLOWED_ORIGINS` is required: it means only your website can use the function, and without it the function turns every request away. Add more sites separated by commas, for example `https://xsosaxdex.github.io,http://localhost:8000` while testing locally.
 - `--no-verify-jwt` lets visitors use it without a HEALTH-RAY account. The allowed-sites check and the 150-item limit keep it from being misused.
 
 When you get a production key, run these two lines and deploy again:
@@ -73,6 +73,7 @@ The website shows "Couldn't reach Instacart. Try Copy list instead." and closes 
 | Message in the logs or browser | Fix |
 |---|---|
 | `INSTACART_API_KEY is not set` | Run the `supabase secrets set INSTACART_API_KEY=…` line again, then deploy. |
+| `ALLOWED_ORIGINS is not set` | Run the `supabase secrets set ALLOWED_ORIGINS=…` line, then deploy. |
 | `This site is not allowed` | Add your site's address to `ALLOWED_ORIGINS` exactly as it appears in the browser bar (no trailing slash). |
 | `Instacart answered 401` | The key is wrong, or it's a production key without `INSTACART_ENV=production` (or the other way round). |
 

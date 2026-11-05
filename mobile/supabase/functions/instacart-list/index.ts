@@ -6,7 +6,10 @@
 // Secrets (set with `supabase secrets set NAME=value`):
 //   INSTACART_API_KEY  required. Your key from the Instacart Developer Platform.
 //   INSTACART_ENV      optional. "production" once Instacart approves you; anything else uses their test server.
-//   ALLOWED_ORIGINS    optional. Comma-separated sites allowed to call this, e.g. https://xsosaxdex.github.io
+//   ALLOWED_ORIGINS    required. Comma-separated sites allowed to call this, e.g. https://xsosaxdex.github.io
+//                      Without it the function refuses every request, so nobody else can spend your Instacart quota.
+//                      (This stops other websites. It can't stop someone faking the Origin header from a script, which
+//                      is why the item limits below exist too.)
 //
 // Instacart API: POST /idp/v1/products/products_link (docs.instacart.com/developer_platform_api).
 
@@ -23,9 +26,8 @@ type LineItem = { name: string; display_text?: string; line_item_measurements?: 
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max) : '');
 
 function cors(origin: string): Record<string, string> {
-  const ok = !ALLOWED.length || ALLOWED.includes(origin);
   return {
-    'Access-Control-Allow-Origin': ok && origin ? origin : ALLOWED[0] ?? '*',
+    'Access-Control-Allow-Origin': ALLOWED.includes(origin) ? origin : ALLOWED[0] ?? 'null',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'content-type',
     Vary: 'Origin',
@@ -58,19 +60,21 @@ Deno.serve(async (req) => {
   const headers = cors(origin);
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers });
   if (req.method !== 'POST') return reply({ error: 'Use POST.' }, 405, headers);
-  if (ALLOWED.length && !ALLOWED.includes(origin)) return reply({ error: 'This site is not allowed to use the list service.' }, 403, headers);
+  if (!ALLOWED.length) return reply({ error: 'ALLOWED_ORIGINS is not set.' }, 500, headers);
+  if (!ALLOWED.includes(origin)) return reply({ error: 'This site is not allowed to use the list service.' }, 403, headers);
   if (!KEY) return reply({ error: 'INSTACART_API_KEY is not set.' }, 500, headers);
 
-  let body: Record<string, unknown>;
-  try { body = await req.json(); } catch { return reply({ error: 'Send the list as JSON.' }, 400, headers); }
+  let raw: unknown;
+  try { raw = await req.json(); } catch { return reply({ error: 'Send the list as JSON.' }, 400, headers); }
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return reply({ error: 'Send the list as a JSON object.' }, 400, headers);
+  const body = raw as Record<string, unknown>;
   const items = Array.isArray(body.items) ? body.items.slice(0, MAX_ITEMS) : [];
   const line_items = items.map(lineItem).filter((x): x is LineItem => !!x);
   if (!line_items.length) return reply({ error: 'The list is empty.' }, 400, headers);
 
-  // Instacart shows a "back to" button to this page. Only accept a link to an allowed site (or any https page when
-  // no sites are listed).
+  // Instacart shows a "back to" button to this page. Only accept a link to an allowed site.
   const back = text(body.linkback, 300);
-  const backOk = /^https:\/\//.test(back) && (!ALLOWED.length || ALLOWED.some((o) => back.startsWith(o + '/')));
+  const backOk = /^https:\/\//.test(back) && ALLOWED.some((o) => back.startsWith(o + '/'));
 
   const payload = {
     title: text(body.title, 100) || 'HEALTH-RAY shopping list',

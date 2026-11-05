@@ -86,7 +86,7 @@ On phones, a bar along the bottom of the screen reaches **Today, Log, Recipes an
 - **Food safety:** every recipe method that cooks meat, fish or eggs states the FoodSafety.gov safe minimum temperature (poultry 165°F, ground meat 160°F, steaks, chops and fish 145°F, shrimp until opaque). Each such recipe shows a **Food safety** box with those temperatures, a warning when yolks are served soft, a cold-smoked salmon note for higher-risk groups, and microwave guidance. It's worked out from the ingredients, so your own recipes get it too.
 - **Allergens:** fixed "butter lettuce" being counted as milk, and recipes now list ingredients to **check the label** on (dark chocolate, protein powder, broth, oats, corn tortillas, coconut, and parmesan rennet on vegetarian recipes). Vegetarian recipes no longer offer collagen or bone broth.
 - **Suggested starting weights:** the first time you do a weighted exercise, plans and live sessions suggest a cautious starting weight from your body weight, height, sex, age and **strength training experience** (a new question in setup and Profile & goals). It's rounded down to real dumbbell, kettlebell, plate and stack sizes, and the **Use** button fills it in.
-- **Gentler progression:** the in-session "next step" never suggests a jump of more than about 10%. If the next dumbbell or plate is bigger than that, it suggests more reps or slower lowering first, and it holds the weight if you rated the last session 9 or 10 out of 10. Plan progression rules were made more conservative (Foundations, Upper/Lower, Barbell 5×5, Yates HIT, Animal-Based Athlete, Runners, and the dumbbell plans).
+- **Gentler progression:** the in-session "next step" goes up about 10% at a time where real weights allow it. If the next dumbbell or kettlebell is bigger than that, it asks for 2 extra reps on every set first, then suggests the jump once you've earned it. A barbell always moves up by its smallest step (5 lb or 2.5 kg). It holds the weight if you rated the last set of that exercise 9 or 10 out of 10. Plan progression rules were made more conservative (Foundations, Upper/Lower, Barbell 5×5, Yates HIT, Animal-Based Athlete, Runners, and the dumbbell plans).
 
 ## Use it on your phone
 
@@ -109,7 +109,7 @@ Then visit http://localhost:8000.
 
 ## Testing
 
-Serve the folder (`python3 -m http.server 8765`), then run `node tests/smoke.js` (needs Playwright) and `node tests/library.js`. Mobile: `cd mobile && npm test`. It opens every page at phone and desktop width with fresh, old-format and damaged saved data, and fails if any page is blank, shows an error, or scrolls sideways.
+Serve the folder (`python3 -m http.server 8765`), then run `node tests/smoke.js` (needs Playwright) `node tests/library.js` and `node tests/progression.js`. Mobile: `cd mobile && npm test`. The smoke test opens every page at phone and desktop width with fresh, old-format and damaged saved data, and fails if any page is blank, shows an error, or scrolls sideways. The progression test checks suggested starting weights and the next-step advice against sample people and past sets.
 
 ## Deploy
 
