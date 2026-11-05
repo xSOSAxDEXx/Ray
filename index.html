@@ -2354,6 +2354,103 @@ const PLANS = [
         ['Hike or ruck (weighted backpack)', 1, '2700 s', 0, '45 minutes or more at a pace where you can still talk. Hills are a bonus.'],
         ['Hip flexor stretch', 2, '45 s', 15, 'Each side, squeeze the back glute.'],
         ['Dead hang', 3, '30 s', 45, 'Relax the shoulders and decompress the spine.']] }
+    ] },
+  { id: 'barbell-5x5', title: 'Barbell Basics 5×5', diff: 2, muscles: ['Full body'], gear: 'Gym', needs: [['barbell'], ['bench']], perWeek: 3, minutes: 50,
+    equipment: 'Barbell, squat rack, bench and plates',
+    goal: 'Get strong on the big three barbell lifts with a simple, proven beginner program: five sets of five, a little heavier every session.',
+    schedule: 'Mon, Wed, Fri. Alternate A and B (week 1: A-B-A, week 2: B-A-B). Squat every session.',
+    warmup: '5 minutes easy cardio, then ramp up on each lift: 2 sets of 5 with the empty bar, then 3, 2 and 1 reps at roughly 40%, 60% and 80% of your work weight.',
+    progression: 'Start light: about half of what you think you could lift for 5. Add 5 lb (2.5 kg) every session to the squat, bench, row and press, and 10 lb (5 kg) to the deadlift. If you miss 5×5 at a weight three sessions in a row, drop it by 10% and build back up.',
+    days: [
+      { name: 'Workout A', focus: 'Squat · Bench · Row', ex: [
+        ['Barbell back squat', 5, '5', 180, 'Brace hard, sit down between your heels, hips to at least knee height, drive up through the whole foot.'],
+        ['Barbell bench press', 5, '5', 180, 'Shoulder blades squeezed and down, bar to the lower chest, feet pushing into the floor.'],
+        ['Barbell bent-over row', 5, '5', 120, 'Hinge to about 45°, flat back, pull the bar to your belly button and lower it under control.']] },
+      { name: 'Workout B', focus: 'Squat · Press · Deadlift', ex: [
+        ['Barbell back squat', 5, '5', 180, 'Same depth every rep. Leave the weight the same if a rep goes ugly.'],
+        ['Standing overhead press', 5, '5', 180, 'Glutes tight, ribs down, press the bar in a straight line and push your head through at the top.'],
+        ['Conventional deadlift', 1, '5', 180, 'Bar over mid-foot, take the slack out before you pull, push the floor away, stand tall without leaning back.']] }
+    ] },
+  { id: 'machine-starter', title: 'Gym Machine Starter', diff: 1, muscles: ['Full body'], gear: 'Gym', needs: [['machines'], ['cables'], ['dumbbells'], ['bench']], perWeek: 2, minutes: 40,
+    equipment: 'Leg machines, cable station, dumbbells and a bench',
+    goal: 'A first gym program for anyone nervous about free weights: guided machines and cables that are easy to set up and safe to push.',
+    schedule: '2–3 times a week with a rest day between. Alternate A and B.',
+    warmup: '5 minutes on a bike or elliptical, then one light set of the first exercise.',
+    progression: 'Pick a weight you can lift 12 times with 2–3 reps left. When every set reaches 12, go up one pin on the stack (or 5 lb dumbbells) next time.',
+    days: [
+      { name: 'Day A', focus: 'Legs · Push · Pull', ex: [
+        ['Leg press', 3, '10–12', 90, 'Feet shoulder-width on the plate, lower until your hips start to tuck, press without locking your knees.'],
+        ['Dumbbell bench press', 3, '10–12', 90, 'Lower the dumbbells to the sides of your chest, then press up and slightly together.'],
+        ['Lat pulldown', 3, '10–12', 75, 'Sit tall, pull the bar to your upper chest, lead with your elbows.'],
+        ['Lying leg curl', 2, '12', 60, 'Hips pressed into the pad, curl all the way, lower slowly.'],
+        ['Pallof press', 2, '10 / side', 45, 'Stand side-on to the cable, press it straight out and don\'t let it turn you.']] },
+      { name: 'Day B', focus: 'Legs · Shoulders · Back', ex: [
+        ['Leg extension', 3, '12', 60, 'Line your knee up with the machine\'s pivot, straighten fully, pause, lower slowly.'],
+        ['Seated dumbbell shoulder press', 3, '10–12', 90, 'Back against the bench, press straight up without arching.'],
+        ['Seated cable row', 3, '10–12', 75, 'Chest tall, pull the handle to your stomach and squeeze your shoulder blades.'],
+        ['Machine chest fly', 2, '12', 60, 'Soft elbows, bring the handles together in a hugging arc.'],
+        ['Standing calf raise', 2, '15', 45, 'Full stretch at the bottom, pause at the top.'],
+        ['Front plank', 2, '30 s', 45, 'Straight line from head to heels, squeeze your glutes.']] }
+    ] },
+  { id: 'first-pullup', title: 'First Pull-Up Program', diff: 2, muscles: ['Upper body', 'Core'], gear: 'Minimal', needs: [['pullup']], perWeek: 3, minutes: 25,
+    equipment: 'Pull-up bar; a resistance band helps',
+    goal: 'Go from zero to your first full pull-up, then to sets of five, with hangs, negatives and assisted reps.',
+    schedule: 'Mon, Wed, Fri. Alternate A and B. Most people get their first rep in 6–10 weeks.',
+    warmup: 'Arm circles, 10 band pull-aparts or wall slides, and a 15-second dead hang.',
+    progression: 'Negatives: work up to 3 sets of 3 that each take 5 seconds to lower. Then test one full pull-up at the start of Workout A every week. Once you get one, do singles with a minute rest (aim for 5), then build to sets of 2–3.',
+    days: [
+      { name: 'Workout A', focus: 'Hang · Assisted · Negatives', ex: [
+        ['Dead hang', 3, '20–30 s', 60, 'Full grip, shoulders slightly pulled down, breathe.'],
+        ['Band-assisted pull-up', 4, '5', 90, 'Loop a band over the bar under one knee or foot. Use a lighter band as you get stronger.'],
+        ['Negative pull-up (5-second lower)', 3, '3', 120, 'Jump or step to the top with your chin over the bar, then lower as slowly as you can.'],
+        ['Hollow body hold', 3, '20 s', 45, 'Lower back pressed down, arms and legs long. Tuck your knees to make it easier.']] },
+      { name: 'Workout B', focus: 'Shoulders · Rows · Holds', ex: [
+        ['Scapular pull-up', 3, '8', 60, 'From a dead hang, pull your shoulders down without bending your elbows, then relax.'],
+        ['Chin-up hold at the top', 3, '10–20 s', 90, 'Step up so your chin is over the bar, then hold. Palms facing you.'],
+        ['Inverted row under a sturdy table or bar', 3, '8–10', 60, 'Body straight, pull your chest up to the edge. Bend your knees to make it easier.'],
+        ['Superman', 3, '10', 45, 'Lift your chest and legs together, pause for a breath at the top.'],
+        ['Dead bug', 3, '8 / side', 45, 'Lower back stays pressed to the floor.']] }
+    ] },
+  { id: 'runner-strength', title: 'Strength for Runners', diff: 2, muscles: ['Lower body & glutes', 'Core'], gear: 'Minimal', needs: [['dumbbells', 'kettlebell']], perWeek: 2, minutes: 30,
+    equipment: 'A pair of dumbbells or one kettlebell, a bench or step',
+    goal: 'Single-leg strength, stronger calves and a steady core: the strength work that helps runners hold their form and stay injury-free.',
+    schedule: '2 times a week, on easy-run days or rest days. Leave a day between this and your long run or hard intervals.',
+    warmup: '5 minutes of easy jogging or brisk walking, then leg swings and 10 bodyweight squats.',
+    progression: 'Use a weight you could lift 3 more times. When every set feels easy, add 5 lb or slow the lowering to 3 seconds. Cut to one set of each during race week.',
+    days: [
+      { name: 'Day A', focus: 'Single leg · Calves', ex: [
+        ['Bulgarian split squat', 3, '8 / side', 75, 'Back foot on a bench, most of your weight on the front leg, knee tracking over the toes.'],
+        ['Single-leg Romanian deadlift', 3, '8 / side', 60, 'Hinge on one leg with a long back, hips square to the floor.'],
+        ['Step-up', 3, '10 / side', 60, 'Drive through the top foot; don\'t push off the bottom one.'],
+        ['Standing calf raise', 3, '15 / side', 45, 'One leg at a time on a step: full stretch, rise high, lower over 2 seconds.'],
+        ['Side plank', 3, '30 s / side', 30, 'Hips high, straight line from head to feet.']] },
+      { name: 'Day B', focus: 'Hips · Hamstrings · Core', ex: [
+        ['Goblet squat', 3, '10', 75, 'Sit between your heels, chest tall.'],
+        ['Single-leg glute bridge', 3, '12 / side', 45, 'Push through the heel, keep your hips level.'],
+        ['Lateral lunge', 3, '8 / side', 60, 'Step wide, sit back into one hip, keep the other leg straight.'],
+        ['Nordic curl (assisted)', 3, '4–6', 90, 'Anchor your feet, lower your body forward as slowly as you can, catch yourself with your hands.'],
+        ['Pallof press', 2, '10 / side', 45, 'Resist the band or cable trying to twist you.']] }
+    ] },
+  { id: 'desk-reset', title: 'Desk Worker Reset', diff: 1, muscles: ['Mobility', 'Core'], gear: 'None', needs: [], perWeek: 5, minutes: 12, noLoad: true,
+    equipment: 'None (a wall and a chair)',
+    goal: 'Undo hours of sitting: open the hips, chest and upper back, wake up the glutes and core, in 12 minutes you can do next to your desk.',
+    schedule: 'Most workdays. Do the morning routine before work and the afternoon one as a break, or pick one.',
+    warmup: 'Stand up, roll your shoulders 10 times each way and take 5 slow, deep breaths.',
+    progression: 'Move slowly and stay pain-free. When it feels easy, hold each stretch 10 seconds longer or add a round.',
+    days: [
+      { name: 'Morning', focus: 'Spine · Hips · Glutes', ex: [
+        ['Cat-cow', 2, '8 slow reps', 15, 'Round your back as you breathe out, arch gently as you breathe in.'],
+        ['Open book stretch', 2, '6 / side', 15, 'Lie on your side, knees bent, and rotate your top arm open to the floor behind you.'],
+        ['Glute bridge', 2, '12', 30, 'Squeeze your glutes at the top for a second.'],
+        ['Bird dog', 2, '6 / side', 30, 'Reach long through the opposite hand and foot without twisting your hips.'],
+        ['Deep squat hold', 2, '30 s', 30, 'Hold onto a desk or doorframe if you need to. Heels down, chest up.']] },
+      { name: 'Afternoon', focus: 'Chest · Shoulders · Legs', ex: [
+        ['Wall slides', 2, '10', 15, 'Back and arms against the wall, slide your arms up without letting them come away.'],
+        ["World's greatest stretch", 2, '4 / side', 15, 'Lunge forward, put the same-side elbow toward the floor, then rotate that arm to the ceiling.'],
+        ['Hip flexor stretch', 2, '30 s / side', 15, 'Half kneel, squeeze the back glute and shift your hips forward gently.'],
+        ['Wall push-up', 2, '12', 30, 'Body in one straight line, chest to the wall.'],
+        ['Sit-to-stand', 2, '10', 30, 'Stand up from your chair without using your hands, then sit down slowly.'],
+        ["Child's pose", 1, '45 s', 0, 'Knees wide, arms long, breathe into your back.']] }
     ] }
 ];
 
@@ -2985,7 +3082,8 @@ const PLAN_MET = { foundations: 3.5, 'upper-lower': 5, 'home-circuit': 6, 'push-
   'legs-glutes-home': 4.5, 'one-dumbbell': 4.5, 'band-upper': 4, 'hiit-conditioning': 8, 'bodyweight-advanced': 6, 'kb-hiit-starter': 7, 'kb-hiit-burn': 8.5, 'kb-hiit-inferno': 9.5,
   'yates-hit': 6, 'yates-classic': 6, 'kb-swing-getup': 8, 'kb-press-ladders': 6, 'longevity-strength-hiit': 5.5, 'animal-based-athlete': 6.5,
   'zone2-base': 5, 'rower-intervals': 7, 'bike-sprints': 8.5, 'treadmill-incline': 6, 'jump-rope': 9, 'low-impact-cardio': 5.5,
-  'dumbbell-home-strength': 5, '5k-to-10k': 8, 'express-20': 6, 'womens-strength': 5, 'strong-steady': 3 };
+  'dumbbell-home-strength': 5, '5k-to-10k': 8, 'express-20': 6, 'womens-strength': 5, 'strong-steady': 3,
+  'barbell-5x5': 5, 'machine-starter': 3.5, 'first-pullup': 3.8, 'runner-strength': 4.5, 'desk-reset': 2.5 };
 PLANS.forEach((p) => { p.met = PLAN_MET[p.id]; });
 // [id, label, group]
 const EQUIPMENT = [['dumbbells', 'Dumbbells', 's'], ['kettlebell', 'Kettlebell', 's'], ['bench', 'Weight bench', 's'], ['bands', 'Resistance bands', 's'],
@@ -7295,10 +7393,10 @@ const REPO = 'xSOSAxDEXx/Ray', APP_VERSION = '2026.10.31';
 const GUIDE = [
   ['today', 'Today', 'Your day at a glance: calories and protein left, water, today\'s workout and quick buttons for logging.', ['Tap a meal card or + to log food; tap the water glasses to add a glass.', 'The weekly ring shows workouts and active minutes toward your weekly goal.', 'Banners appear when there\'s something useful: a backup reminder, a suggested calorie target, or a plan session that\'s due.']],
   ['log', 'Daily log', 'Everything you ate, drank, lifted and weighed, day by day.', ['Search foods, recipes or your usual, or scan a barcode. Use “Everyday meals & drinks” for takeout, snacks, soda and alcohol.', 'Use − and + on an item to change portions, Edit to fix the numbers, and the heart to make it a favorite. Every change can be undone from the message at the bottom.', '“Same as yesterday” copies a whole meal in one tap. The arrows at the top move between days.', 'Log your weight here too; the trend powers the adaptive calorie target.']],
-  ['recipes', 'Recipes', 'Over 50 recipes with macros, allergens, cost per serving and swaps.', ['Filter by meal, diet (carnivore, gluten free, soy free, dairy free, nut free, budget) or favorites.', 'Open a recipe to scale servings, see micronutrients, add it to your log or meal plan, rate it and keep notes.', 'Add your own with “New recipe”; calories are worked out from protein, carbs and fat if you leave them blank.']],
+  ['recipes', 'Recipes', '68 recipes with macros, allergens, cost per serving and swaps.', ['Filter by meal, diet (carnivore, gluten free, soy free, dairy free, nut free, budget) or favorites.', 'Open a recipe to scale servings, see micronutrients, add it to your log or meal plan, rate it and keep notes.', 'Add your own with “New recipe”; calories are worked out from protein, carbs and fat if you leave them blank.']],
   ['mealplan', 'Meal plan', 'Plan a week or a whole month on a calendar.', ['Tap a day on the calendar to choose its recipes; colored dots show each meal\'s main protein. Switch to Week to see seven days at once.', '“Plan for” picks a week or the whole month for the tools: add to the shopping list, fill empty meals (Variety, Budget, Quick or Batch cook), set servings for all, or clear.', '“Same protein, less work” swaps planned lunches or dinners to one protein, rotating recipes or repeating one, so you buy in bulk and prep once. Undo puts things back.', 'Copy a day to tomorrow, the rest of the week or every same weekday. The summary line shows the estimated cost, proteins and ingredients for the range.', 'Turn on “Build from my meal plan” in the shopping list to fill it automatically.']],
   ['shopping', 'Shopping list', 'One combined list from the recipes you choose, with store prices and package sizes.', ['Add recipes, then tick items off as you shop. “Have it” hides things already in your pantry.', 'From Meal plan, “Add week (or month) to shopping list” adds a whole range at once.', 'Enter a zip code to find nearby supermarkets, sorted by estimated full-list price, lowest first. If the store directory is busy, use the Google or Apple Maps links instead.', 'Open stores in maps, order online, or share, email, text or print the list.']],
-  ['workouts', 'Workouts', '33 plans for gyms, homes and no equipment, plus a builder for your own.', ['Set your equipment once and plans you can\'t do are marked.', 'Start a session to get a timer, rest countdowns, a plate calculator, effort ratings and a “next step” suggestion based on last time.', 'While a workout is running, a “Workout in progress” bar with a timer shows on every page; tap Return to go back to it.', 'Share any plan as a link.']],
+  ['workouts', 'Workouts', '38 plans for gyms, homes and no equipment, plus a builder for your own.', ['Set your equipment once and plans you can\'t do are marked.', 'Start a session to get a timer, rest countdowns, a plate calculator, effort ratings and a “next step” suggestion based on last time.', 'While a workout is running, a “Workout in progress” bar with a timer shows on every page; tap Return to go back to it.', 'Share any plan as a link.']],
   ['exercises', 'Exercise library', 'Every movement in the plans, with how-to cues and easier or harder versions.', ['Search by name, muscle or equipment.', 'Each exercise has a looping cartoon demo under its form cues (Pause stops it; with reduced motion on, you see the key positions instead), lists the plans that use it and charts your best lifts over time.', 'Opened from “How to” during a workout, it has a “← Back to your workout” button.']],
   ['breathe', 'Breathe', 'Guided breathing from many traditions with a calm timer, tones and optional music.', ['Pick by goal: calm, focus, energy or sleep. Each exercise says where it comes from and how to do it.', 'New to it? The 7-day “Learn to breathe” course gives one short session a day.', 'Wim Hof-style and power breathing carry safety warnings: never do them in or near water, driving or standing.']],
   ['mind', 'Mind', 'Meditation, long-hold yoga and calisthenics holds, sleep sounds and daily brain habits.', ['Sessions run on the same calm timer as Breathe.', 'Tick off daily habits to build a streak; sleep sounds fade out on a timer.']],
