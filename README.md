@@ -66,6 +66,10 @@ A diet and exercise website with recipes, workout plans and a daily tracker. It 
 - **Back to where you were:** when a link inside a page opens another page (a recipe from the meal plan, a plan from Today, a page from the Guide), it shows a "← Back to …" button. Menu navigation starts fresh.
 - **Back to your workout:** a "Workout in progress · Return" bar shows on every page while a session runs, and an exercise's how-to page opened from a workout has a "Back to your workout" button.
 
+## Phone tab bar
+
+On phones, a bar along the bottom of the screen reaches **Today, Log, Recipes and Workouts** in one tap, and **More** opens the full section menu. It hides during a live workout and on the first-run setup.
+
 ## Use it on your phone
 
 Open https://xsosaxdex.github.io/Ray/ on your phone, then add it to your home screen. It gets its own icon, opens full-screen without the browser bar, and works offline once it has been opened.
