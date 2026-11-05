@@ -17,7 +17,7 @@ A diet and exercise website with recipes, workout plans and a daily tracker. It 
 | **Body & weight** | Body measurements (waist, hips, chest, arm, thigh, neck) with trend cards, an estimated body fat % (US Navy tape method), and progress photos with a side-by-side before/after view |
 | **Charts & records** | Built from your workout log: workouts, active time, calories burned, total weight lifted and new personal bests for 1 week up to 1 year, all time or custom dates, with ‹ › to step back through earlier periods, compared with the period before. Weekly bars against your goal with a streak count. Per-exercise strength charts (weight used and estimated 1-rep max, or reps for bodyweight moves) and a personal records table. Cardio trends (session length and time spent working). Weight trend plus estimated lean vs fat mass from your measurements, to show muscle gain |
 | **Profile & goals** | Calorie and macro calculator (Mifflin-St Jeor) using consensus targets: a deficit of at most 500 kcal or 20%, protein of 1.6–2.0 g/kg of a goal-range weight, fat at 30%, and a water goal from your weight and activity, with a "How these are set" note comparing the Saladino and Sinclair views. Goal setting, a **weekly training goal** (workouts and active minutes per week, shown on Today and in Charts & records), a default serving size (2 people unless changed) used by recipes, the shopping list and the meal planner, US/metric units, backup and restore, clear data |
-| **Settings** | Color scheme (match device, light or dark), accent color, text size, celebrations on or off, units, and sound for breathing and mind sessions (music on or off, track or shuffle, music and tone volume, vibration). Every section is reached from a menu that opens when you tap the barbell logo |
+| **Settings** | Color scheme (match device, light or dark), accent color, text size, celebrations on or off, units, and sound for breathing and mind sessions (music on or off, track or shuffle, music and tone volume, vibration). Every section is reached from a menu that opens when you tap the ray gun logo |
 
 ## Added in the roadmap update
 
@@ -78,6 +78,8 @@ On phones, a bar along the bottom of the screen reaches **Today, Log, Recipes an
 - **Easier-to-read shopping list:** notes in brackets ("about 30 g; no sweeteners") show as a small line under the item.
 
 - **5 new workout plans (38 in all):** Barbell Basics 5×5 (a classic beginner barbell program), Gym Machine Starter (for anyone new to the gym), First Pull-Up Program (hangs, negatives and assisted reps to your first pull-up), Strength for Runners (single-leg, calf and core work) and Desk Worker Reset (12-minute mobility routines for long sitting days). Every exercise links to the exercise library and its demo.
+
+- **New logo:** a cartoon retro ray gun firing a heartbeat beam. The source art is `icons/logo-mark.svg`; `icons/icon.svg` and every PNG app icon (web, iPhone, Android adaptive and themed, Expo) are made from it.
 
 ## Use it on your phone
 
