@@ -74,6 +74,9 @@ On phones, a bar along the bottom of the screen reaches **Today, Log, Recipes an
 
 - **16 new recipes (68 in all):** more vegan meals (black bean & sweet potato tacos, tofu scramble, chickpea power bowls, red lentil dal, banana oat breakfast cookies), snacks (roasted chickpeas, hummus plate, apple & almond butter), desserts (chocolate banana nice cream, baked pears), carnivore (butter-seared pork chops, bone broth egg drop soup) and international dinners and lunches (Korean beef bowls, Thai basil chicken, chicken shawarma plates, salmon rice bowls). Every one has stovetop, oven, air fryer and microwave methods where they work, and nutrition calculated by `tools/nutrition_audit.py`.
 
+- **Send the list to Instacart:** with a small Supabase function holding your Instacart API key, **Order online → Instacart → Send list to Instacart** puts every remaining item on one Instacart page, ready to add to a cart at a nearby store. Off until you set it up; see `docs/INSTACART.md`.
+- **Easier-to-read shopping list:** notes in brackets ("about 30 g; no sweeteners") show as a small line under the item.
+
 ## Use it on your phone
 
 Open https://xsosaxdex.github.io/Ray/ on your phone, then add it to your home screen. It gets its own icon, opens full-screen without the browser bar, and works offline once it has been opened.

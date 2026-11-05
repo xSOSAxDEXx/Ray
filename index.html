@@ -729,6 +729,7 @@ body.calm-open { overflow: hidden; }
 .shop-list label { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; padding: 9px 0; cursor: pointer; align-items: baseline; }
 .shop-list input { accent-color: var(--accent); transform: translateY(2px); width: 20px; height: 20px; flex: none; }
 .shop-list .q { font-family: var(--f-mono); font-size: .9rem; margin-right: 6px; }
+.item-note { display: block; font-size: .78rem; color: var(--muted); line-height: 1.35; }
 .shop-list .from { display: block; font-size: .78rem; color: var(--muted); }
 .shop-list input:checked ~ span { color: var(--muted); text-decoration: line-through; }
 .shop-recipes li { gap: 10px; }
@@ -5724,6 +5725,22 @@ const ORDER_SITES = [
   ['Amazon Fresh', (q) => `https://www.amazon.com/s?k=${q}&i=amazonfresh`, 'https://www.amazon.com/fresh', 'Amazon Fresh and Whole Foods delivery'],
   ['Kroger', (q) => `https://www.kroger.com/search?query=${q}`, 'https://www.kroger.com/', 'Kroger-family stores'],
   ['Target', (q) => `https://www.target.com/s?searchTerm=${q}`, 'https://www.target.com/c/grocery/-/N-5xt1a', 'Same-day delivery with Shipt']];
+// Optional: send the whole list to Instacart as a ready-to-shop page. Needs the small Supabase function in
+// mobile/supabase/functions/instacart-list (setup: docs/INSTACART.md). Paste its URL here; leave '' to turn it off.
+const INSTACART_FN = '';
+const IC_UNITS = { cup: 'cup', tbsp: 'tablespoon', tsp: 'teaspoon', oz: 'ounce', lb: 'pound', can: 'can', '': 'each', each: 'each', large: 'each' };
+// One shopping-list line in Instacart's format: a plain product name, the amount as text, and amounts it can match.
+function instacartItem(it) {
+  const name = shortName(it.name).replace(/^(fresh|plain|unsweetened|extra-virgin|cooked)\s+/i, '').trim();
+  const meas = (it.parts || [it]).filter((x) => x.qty != null && IC_UNITS[x.unit || ''])
+    .map((x) => ({ quantity: Math.max(0.01, Math.round((WHOLE_UNITS.includes(x.unit) ? Math.ceil(x.qty - 0.01) : x.qty) * 100) / 100), unit: IC_UNITS[x.unit || ''] }));
+  const amount = it.multi || (it.qty == null ? '' : itemQty(it));
+  return { name, display_text: amount ? `${amount} ${shortName(it.name)}` : shortName(it.name), ...(meas.length ? { line_item_measurements: meas } : {}) };
+}
+// Shopping-list names: the product first, with notes in brackets shown smaller underneath.
+const itemName = (n) => { const notes = (String(n).match(/\(([^)]*)\)/g) || []).map((x) => x.slice(1, -1)).join('; ');
+  return esc(shortName(n)) + (notes ? `<small class="item-note">${esc(notes)}</small>` : ''); };
+const isInstacartUrl = (u) => { try { const x = new URL(u); return x.protocol === 'https:' && /(^|\.)instacart\.(com|tools)$/.test(x.hostname); } catch (e) { return false; } };
 const money = (n) => '$' + n.toFixed(2);
 const distTxt = (km) => (S.units === 'us' ? `${km < 1.6 ? '<1' : round(km / 1.609, 1)} mi` : `${km < 1 ? '<1' : round(km, 1)} km`);
 const shortName = (n) => n.replace(/\s*\([^)]*\)/g, '');
@@ -5799,8 +5816,11 @@ function storesPanel() {
       <span><b>Order online</b><span class="muted"> · ${ORDER_SITES.map((x) => x[0]).join(', ')}</span></span><span class="fchev" aria-hidden="true"></span></button>
     ${orderOpen ? `<div class="order-body">
       <div class="seg" role="group" aria-label="Delivery service">${ORDER_SITES.map(([n], i) => `<button class="chip" data-act="order-site" data-i="${i}" aria-pressed="${i === si}">${n}</button>`).join('')}</div>
-      <p class="muted" style="font-size:.82rem;margin:8px 0 10px">${site[3]}. These services don't accept a whole list from other apps, so we copy your ${unchecked.length} remaining item${unchecked.length === 1 ? '' : 's'} for you to paste, or you can search them one at a time.</p>
-      <div class="row"><button class="btn btn-primary" data-act="order-go" data-i="${si}" ${unchecked.length ? '' : 'disabled'}>Copy list &amp; open ${site[0]}</button>
+      ${site[0] === 'Instacart' && INSTACART_FN
+        ? `<p class="muted" style="font-size:.82rem;margin:8px 0 10px">${site[3]}. Sends your ${unchecked.length} remaining item${unchecked.length === 1 ? '' : 's'} to Instacart as one list: pick a store there and add everything to your cart.</p>`
+        : `<p class="muted" style="font-size:.82rem;margin:8px 0 10px">${site[3]}. This service doesn't accept a whole list from other apps, so we copy your ${unchecked.length} remaining item${unchecked.length === 1 ? '' : 's'} for you to paste, or you can search them one at a time.</p>`}
+      <div class="row">${site[0] === 'Instacart' && INSTACART_FN ? `<button class="btn btn-primary" data-act="order-instacart" ${unchecked.length ? '' : 'disabled'}>Send list to Instacart</button><button class="btn" data-act="order-go" data-i="${si}" ${unchecked.length ? '' : 'disabled'}>Copy list instead</button>`
+        : `<button class="btn btn-primary" data-act="order-go" data-i="${si}" ${unchecked.length ? '' : 'disabled'}>Copy list &amp; open ${site[0]}</button>`}
         <button class="btn btn-ghost" data-act="order-items" aria-expanded="${orderItems}" ${unchecked.length ? '' : 'disabled'}>${orderItems ? 'Hide items' : 'Search item by item'}</button></div>
       ${orderItems ? `<ul class="list order-list">${unchecked.map((it) => `<li><span class="grow">${esc(shortName(it.name))}</span><a class="btn btn-sm btn-ghost" href="${site[1](encodeURIComponent(shortName(it.name)))}" target="_blank" rel="noopener" aria-label="Search ${esc(shortName(it.name))} on ${site[0]}">Search ↗</a></li>`).join('')}</ul>` : ''}
       ${unchecked.length ? '' : '<p class="muted">Everything is ticked off.</p>'}</div>` : ''}</div>`;
@@ -5959,7 +5979,7 @@ function viewShopping() {
     const g = mergeUnits(need.filter((i) => i.aisle === a));
     if (!g.length) return;
     groups += `<div class="shop-group"><h3>${a}</h3><ul class="shop-list">${g.map((i) => `<li><label><input type="checkbox" id="shop-${i.key}" data-shop="${i.keys.join('|')}" ${i.keys.every((k) => sh.checked[k]) ? 'checked' : ''}>
-      <span>${i.multi ? `<span class="q">${esc(i.multi)}</span>${esc(i.name)}` : i.qty == null ? `${esc(i.name)} <span class="muted">· as needed</span>` : `<span class="q">${esc(itemQty(i))}</span>${esc(i.name)}`}${i.orig ? ` <span class="muted">(instead of ${esc(i.orig)})</span>` : ''}${!i.multi && buyText(i) ? `<span class="buy">${esc(buyText(i))}</span>` : ''}<span class="from">${esc(i.from.join(' · '))}</span></span></label>
+      <span>${i.multi ? `<span class="q">${esc(i.multi)}</span>${itemName(i.name)}` : i.qty == null ? `${itemName(i.name)} <span class="muted">· as needed</span>` : `<span class="q">${esc(itemQty(i))}</span>${itemName(i.name)}`}${i.orig ? ` <span class="muted">(instead of ${esc(i.orig)})</span>` : ''}${!i.multi && buyText(i) ? `<span class="buy">${esc(buyText(i))}</span>` : ''}<span class="from">${esc(i.from.join(' · '))}</span></span></label>
       <button class="btn btn-ghost btn-sm have-btn" data-act="have" data-n="${esc(haveKey(i.orig || i.name))}" aria-label="I already have ${esc(i.name)}">Have it</button></li>`).join('')}</ul></div>`;
   });
   if (have.length) groups += `<details class="shop-group have-list"><summary>Already have (${mergeUnits(have).length})</summary><ul class="shop-list">${mergeUnits(have).map((i) => `<li><span class="grow muted">${esc(i.name)}</span><button class="btn btn-ghost btn-sm" data-act="have" data-n="${esc(haveKey(i.orig || i.name))}">Need it</button></li>`).join('')}</ul></details>`;
@@ -7870,6 +7890,22 @@ document.addEventListener('click', (e) => {
   else if (a === 'order-open') { orderOpen = !orderOpen; render(true); }
   else if (a === 'order-site') { orderSite = +b.dataset.i; render(true); }
   else if (a === 'order-items') { orderItems = !orderItems; render(true); }
+  else if (a === 'order-instacart') {
+    // Open the tab straight from the tap (pop-up blockers allow that), then point it at the list once Instacart answers.
+    const w = window.open('', '_blank');
+    const items = priceItems().filter((it) => !S.shopping.checked[it.key] && !it.pantry).map(instacartItem);
+    b.disabled = true; toast('Sending your list to Instacart…');
+    fetch(INSTACART_FN, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: 'HEALTH-RAY shopping list', items, linkback: location.origin + location.pathname + '#shopping' }) })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((d) => {
+        if (!isInstacartUrl(d && d.url)) throw new Error('bad link');
+        if (w) { w.opener = null; w.location.href = d.url; } else location.href = d.url;
+        toast('Your list is ready on Instacart');
+      })
+      .catch(() => { if (w) w.close(); toast("Couldn't reach Instacart. Try Copy list instead."); })
+      .finally(() => { b.disabled = false; });
+  }
   else if (a === 'order-go') {
     // Open the tab first (pop-up blockers allow it only straight from the tap), then copy.
     const site = ORDER_SITES[+b.dataset.i], w = window.open(site[2], '_blank', 'noopener');
