@@ -872,7 +872,7 @@ const RECIPES = [
     per: { kcal: 430, p: 29, c: 48, f: 13, fiber: 9, sugar: 9 },
     blurb: 'A no-cook breakfast you mix in five minutes the night before. Whole-milk Greek yogurt and a clean, unflavored whey push it to about 30 g of protein.',
     ingredients: [[1, 'cup', 'rolled oats'], [1, 'cup', 'plain whole-milk Greek yogurt'], [0.75, 'cup', 'unsweetened almond milk (just almonds and water) or whole milk'],
-      [2, 'tbsp', 'chia seeds'], [1, 'scoop', 'unflavored grass-fed whey or collagen (about 30 g; no sweeteners or gums)'], [1, 'tsp', 'vanilla extract'], [1, 'cup', 'mixed berries, fresh or frozen'],
+      [2, 'tbsp', 'chia seeds'], [1, 'scoop', 'unflavored grass-fed whey (about 30 g; no sweeteners or gums; collagen isn\'t vegetarian)'], [1, 'tsp', 'vanilla extract'], [1, 'cup', 'mixed berries, fresh or frozen'],
       [null, '', 'pure monk fruit sweetener to taste, or 1 tsp coconut sugar (optional)'], [null, '', 'pinch of salt and cinnamon']],
     steps: ['In a bowl, whisk the protein powder into the almond milk until no lumps remain.',
       'Stir in the Greek yogurt, oats, chia seeds, sweetener (if using), vanilla, salt and cinnamon. The berries add most of the sweetness.',
@@ -1070,7 +1070,7 @@ const RECIPES = [
     per: { kcal: 253, p: 12, c: 15, f: 16, fiber: 5, sugar: 1 },
     blurb: 'Twelve no-bake bites. Two make a serving: a quick snack before training or a better dessert.',
     ingredients: [[1, 'cup', 'rolled oats'], [0.5, 'cup', 'natural peanut butter'], [3, 'tbsp', 'pure monk fruit syrup (no erythritol), or 2 tbsp coconut sugar + 1 tbsp water'],
-      [1, 'scoop', 'unflavored grass-fed whey or collagen (about 30 g; no sweeteners or gums)'], [1, 'tsp', 'vanilla extract'], [2, 'tbsp', 'ground flaxseed'], [1.5, 'oz', '85% dark chocolate, finely chopped']],
+      [1, 'scoop', 'unflavored grass-fed whey (about 30 g; no sweeteners or gums; collagen isn\'t vegetarian)'], [1, 'tsp', 'vanilla extract'], [2, 'tbsp', 'ground flaxseed'], [1.5, 'oz', '85% dark chocolate, finely chopped']],
     steps: ['Stir the peanut butter and monk fruit syrup together in a bowl until smooth. Warm 15 seconds in the microwave if stiff.',
       'Add the oats, protein powder, flaxseed and chopped chocolate. Mix until evenly combined. If the mix is too dry to roll, add 1–2 tbsp milk.',
       'If the mixture is crumbly, add water a teaspoon at a time until it holds together when squeezed.',
@@ -1359,16 +1359,16 @@ const RECIPES = [
       'Stir in the spinach until wilted. Make 4 wells, crack an egg into each, cover and cook 4–5 minutes until the whites are set.'],
     tip: 'Make the hash (without eggs) on Sunday; reheat a portion in a pan and fry fresh eggs on top each morning.' },
   { id: 'savory-oats-jammy-egg', title: 'Savory Oats with Greens & a Jammy Egg', meal: 'Breakfast', how: 'stove',
-    tags: ['Vegetarian', 'High protein', 'Sugar free', 'Minimally processed'], prep: 5, cook: 10, servings: 1,
-    per: { kcal: 336, p: 24, c: 29, f: 14, fiber: 5, sugar: 1 },
+    tags: ['Vegetarian', 'Sugar free', 'Minimally processed'], prep: 5, cook: 10, servings: 1,
+    per: { kcal: 305, p: 14, c: 32, f: 13, fiber: 5, sugar: 1 },
     blurb: 'Oats cooked in broth like a risotto, with spinach, parmesan and a soft-boiled egg. Proof that oatmeal doesn\'t have to be sweet.',
-    ingredients: [[0.5, 'cup', 'rolled oats'], [1, 'cup', 'bone broth or water'], [1, 'cup', 'baby spinach'], [1, 'tbsp', 'grated parmesan'], [1, '', 'egg'],
+    ingredients: [[0.5, 'cup', 'rolled oats'], [1, 'cup', 'vegetable stock or water'], [1, 'cup', 'baby spinach'], [1, 'tbsp', 'grated parmesan'], [1, '', 'egg'],
       [1, 'tsp', 'olive oil'], [null, '', 'black pepper and red pepper flakes to taste']],
     steps: ['Lower the egg into simmering water and cook 6½ minutes, then cool it in cold water and peel.',
-      'Meanwhile simmer the oats in the broth for about 5 minutes, stirring, until creamy.',
+      'Meanwhile simmer the oats in the stock for about 5 minutes, stirring, until creamy.',
       'Stir in the spinach until it wilts, then the parmesan.',
       'Spoon into a bowl, drizzle with the oil, add pepper and flakes, and top with the halved egg.'],
-    tip: 'With bone broth this is about 24 g of protein; with water it\'s about 14 g. Use certified gluten-free oats if you avoid gluten.' },
+    tip: 'If you eat meat, cooking the oats in bone broth adds about 10 g of protein. Use certified gluten-free oats if you avoid gluten.' },
   { id: 'lemony-chicken-lentil-salad', title: 'Lemony Chicken & Lentil Salad', meal: 'Lunch', how: 'stove',
     tags: ['High protein', 'Sugar free', 'Whole foods', 'Minimally processed', 'Meal prep'], prep: 15, cook: 25, servings: 4,
     per: { kcal: 334, p: 29, c: 26, f: 13, fiber: 7, sugar: 3 },
@@ -1442,7 +1442,7 @@ const RECIPES = [
       'Cool 10 minutes on the tray before moving.'],
     tip: 'Press a square of 85% dark chocolate into each cookie straight from the oven for a chocolate version (check the label for soy lecithin if you avoid soy).' },
   { id: 'berry-yogurt-bark', title: 'Frozen Berry Yogurt Bark', meal: 'Dessert', how: 'none',
-    tags: ['Vegetarian', 'High protein', 'Whole foods', 'Minimally processed', 'Low carb', 'No cook', 'Meal prep'], prep: 10, cook: 0, extra: 'Freeze 2 h', servings: 6,
+    tags: ['Vegetarian', 'Whole foods', 'Minimally processed', 'Low carb', 'No cook', 'Meal prep'], prep: 10, cook: 0, extra: 'Freeze 2 h', servings: 6,
     per: { kcal: 112, p: 8, c: 7, f: 6, fiber: 1, sugar: 4 },
     blurb: 'Thick Greek yogurt frozen in a thin sheet with berries and pistachios, then snapped into pieces. Cold, crunchy and barely sweet.',
     ingredients: [[2, 'cup', 'plain whole-milk Greek yogurt'], [1, 'tsp', 'vanilla extract'], [null, '', 'pure monk fruit sweetener, to taste (optional)'],
@@ -4754,12 +4754,23 @@ function ingList(r) {
    Worked out from each recipe's ingredients and steps, so your own recipes get them too. */
 // The major US allergens (FDA's nine). Coconut is no longer treated as a tree nut by FDA (2025 guidance).
 const ALLERGENS = [
-  ['Milk', /yogurt|\bmilk\b|cheese|feta|cheddar|parmesan|mozzarella|cottage|\bbutter\b|ghee|cream|kefir|whey/, /almond milk|coconut milk|oat milk|peanut butter|almond butter|nut butter|cocoa butter|or water/],
+  ['Milk', /yogurt|\bmilk\b|cheese|feta|cheddar|parmesan|mozzarella|cottage|\bbutter\b|ghee|cream|kefir|whey/, /almond milk|coconut milk|oat milk|peanut butter|almond butter|nut butter|cocoa butter|butter lettuce|butternut|butter beans|or water/],
   ['Egg', /\beggs?\b|mayo/], ['Fish', /salmon|tuna|cod\b|sardine|anchov|\bfish\b/], ['Shellfish', /shrimp|prawn|crab|lobster|scallop|mussel|clam/],
   ['Tree nuts', /almond|walnut|pecan|cashew|pistachio|pine nut|hazelnut|macadamia|brazil nut/], ['Peanuts', /peanut/],
   ['Wheat', /\bwheat|\bflour\b|bread|panko|pasta|noodle|couscous|bulgur|farro|seitan|spelt|semolina|soy sauce|pita|cracker/, /(almond|coconut|chickpea|cassava|tapioca) flour/],
   ['Soy', /\bsoy|tofu|tempeh|edamame|miso|tamari|natto/], ['Sesame', /sesame|tahini/]
 ];
+// Ingredients that often contain an allergen their name doesn't show. Listed as "check the label", not as definite allergens.
+const ALLERGEN_CHECKS = [[/dark chocolate|chocolate chips/, 'dark chocolate (often contains milk and soy)'],
+  [/protein powder|whey|collagen/, 'protein powder (some contain soy, milk or are made in a facility with nuts)'],
+  [/broth|stock/, 'broth or stock (some contain wheat, soy or milk)'], [/\boats?\b/, 'oats (often processed alongside wheat)'],
+  [/corn tortilla/, 'corn tortillas (some are made with wheat)'], [/pesto/, 'store-bought pesto (usually contains milk and tree nuts)'],
+  [/granola/, 'granola (often contains nuts, wheat or soy)'], [/parmesan/, 'parmesan (traditional Parmigiano-Reggiano is made with animal rennet; look for a vegetarian one)'], [/coconut/, 'coconut (no longer a tree nut under FDA rules, but some people with tree-nut allergies react to it)']];
+function allergenChecks(r) {
+  const ings = (r.ingredients || []).map((i) => String(i[2] || '').toLowerCase());
+  const veg = (r.tags || []).includes('Vegetarian');
+  return [...new Set(ALLERGEN_CHECKS.filter(([re, note]) => ings.some((n) => re.test(n)) && (veg || !/rennet/.test(note))).map((x) => x[1]))];
+}
 function allergensOf(r) {
   const ings = (r.ingredients || []).map((i) => String(i[2] || '').toLowerCase());
   return ALLERGENS.filter(([, yes, not]) => ings.some((n) => yes.test(not ? n.replace(not, '') : n))).map((a) => a[0]);
@@ -4848,7 +4859,7 @@ function recipeInfo(r, m) {
   const eq = equipmentOf(r, m), sw = swapsOf(r), note = S.recipeNotes[r.id] || {};
   return `<section class="panel span-12 rinfo" aria-label="Recipe details">
     <div class="rinfo-grid">
-      <div><div class="eyebrow">Allergens</div><p>${r.allergens.length ? r.allergens.map((a) => `<span class="tag tag-allergen">${a}</span>`).join(' ') : 'None of the 9 major allergens'}</p></div>
+      <div><div class="eyebrow">Allergens</div><p>${r.allergens.length ? r.allergens.map((a) => `<span class="tag tag-allergen">${a}</span>`).join(' ') : 'None of the 9 major allergens'}</p>${allergenChecks(r).length ? `<p class="muted" style="font-size:.82rem;margin-top:6px"><b>Check the label:</b> ${allergenChecks(r).map(esc).join('; ')}.</p>` : ''}<p class="muted" style="font-size:.76rem;margin-top:4px">Worked out from the ingredient names. With a severe allergy, always read the labels of what you buy.</p></div>
       <div><div class="eyebrow">Cost</div><p><b class="num">~${money(r.cost)}</b> a serving <span class="muted">(estimate, typical US prices)</span></p></div>
       <div><div class="eyebrow">Equipment</div><p>${eq.length ? eq.map(esc).join(' · ') : 'Bowl and spoon'}</p></div>
       <div><div class="eyebrow">Storage</div><p>${storageOf(r)}</p></div>
@@ -5324,7 +5335,7 @@ COMMON_FOODS.forEach(([cat, name, portion, kcal, p, c, f, k, mic, alc]) => {
 });
 // FDA Daily Values used on food labels.
 const MICRO_DV = [['Fiber', 28, 'g'], ['Sodium', 2300, 'mg'], ['Potassium', 4700, 'mg'], ['Iron', 18, 'mg'], ['B12', 2.4, 'µg']];
-let RECIPE_MICRO = {'berry-overnight-oats': [10.5,414,578,3.4,1.2], 'spinach-feta-egg-muffins': [0.9,544,361,3.3,1.7], 'chicken-burrito-bowls': [11.7,711,1326,3.7,0.4], 'lemon-herb-salmon': [7.3,683,1537,3.3,4.5], 'turkey-black-bean-chili': [10.1,868,1044,5.5,1.2], 'tofu-peanut-stir-fry': [7.4,248,779,5.1,0.0], 'tuna-white-bean-salad': [7.7,887,1102,6.2,2.8], 'chocolate-pb-smoothie': [8.5,227,1002,3.1,0.6], 'banana-protein-pancakes': [5.6,1095,614,4.0,1.4], 'greek-chicken-quinoa-bowls': [5.2,719,1146,3.5,1.1], 'lentil-vegetable-soup': [8.2,558,710,4.0,0.0], 'beef-broccoli': [4.3,366,736,3.1,2.5], 'turkey-taco-lettuce-wraps': [4.7,667,826,3.1,1.6], 'shrimp-fajita-sheet-pan': [6.3,646,782,2.0,1.7], 'chickpea-spinach-curry': [14.4,863,768,5.5,0.0], 'pb-protein-bites': [4.3,54,284,2.0,0.1], 'cottage-cheese-parfait': [2.8,1383,373,0.9,0.9], 'steak-egg-skillet': [4.6,797,1194,5.2,2.6], 'green-shakshuka': [3.3,932,835,5.6,2.4], 'sage-turkey-patties': [1.1,610,504,3.4,1.6], 'savory-cottage-bowl': [1.5,1457,642,3.3,1.4], 'black-bean-egg-tacos': [10.1,746,711,4.8,1.5], 'tuna-stuffed-avocados': [10.7,670,1068,2.8,3.1], 'herb-chicken-avocado-salad': [8.7,678,1439,3.0,0.4], 'garlic-shrimp-zoodles': [2.3,782,1042,1.5,2.0], 'warm-lentil-egg-salad': [8.8,727,939,7.9,1.2], 'turkey-burger-lettuce-wraps': [4.4,544,805,3.3,1.5], 'herb-pork-tenderloin': [6.7,714,1377,4.3,0.9], 'garlic-butter-cod': [5.1,776,1115,2.7,1.6], 'chicken-cauliflower-traybake': [5.3,856,1135,4.4,1.4], 'turkey-white-bean-kale': [8.0,1016,1047,6.0,1.3], 'pesto-salmon-broccolini': [6.6,819,1384,3.9,5.7], 'yogurt-deviled-eggs': [0.1,342,172,1.8,1.0], 'chili-lime-edamame': [8.5,199,719,3.8,0.0], 'roast-turkey-rollups': [0.9,468,552,1.4,0.9], 'herby-yogurt-dip': [2.1,377,519,0.9,0.9], 'cocoa-almond-protein-shake': [8.3,778,562,3.3,0.6], 'smoked-salmon-scramble': [0.1,646,341,3.2,3.3], 'sweet-potato-turkey-hash': [5.7,905,1085,5.0,2.1], 'savory-oats-jammy-egg': [4.8,667,584,4.0,0.5], 'lemony-chicken-lentil-salad': [5.0,512,774,3.2,0.2], 'tuna-nicoise-plate': [8.4,1055,1498,6.4,3.7], 'avocado-chocolate-mousse': [7.7,155,514,2.0,0.0], 'cinnamon-baked-apples': [3.3,212,252,0.6,0.4], 'vanilla-chia-pudding': [9.3,202,296,1.9,0.5], 'almond-butter-cookies': [3.7,132,297,1.4,0.1], 'berry-yogurt-bark': [1.2,27,188,0.3,0.6], 'butter-basted-ribeye': [0.0,892,684,4.1,5.0], 'carnivore-steak-eggs': [0.0,1046,979,6.3,4.7], 'brown-butter-salmon': [0.0,750,620,0.6,5.5], 'beef-liver-burgers': [0.0,676,395,3.6,19.2], 'salt-roasted-chicken-thighs': [0.0,1065,456,1.6,0.9], 'black-bean-sweet-potato-tacos': [14.9,614,1041,3.2,0.0], 'turmeric-tofu-scramble': [9.6,639,992,6.9,0.0], 'chickpea-quinoa-power-bowl': [15.8,582,662,5.0,0.0], 'red-lentil-coconut-dal': [12.0,710,1105,8.4,0.0], 'crispy-roasted-chickpeas': [9.3,545,144,1.4,0.0], 'apple-almond-butter-crunch': [7.2,585,494,1.8,0.0], 'hummus-veggie-plate': [7.3,454,340,2.0,0.0], 'chocolate-banana-nice-cream': [5.0,311,544,1.1,0.0], 'cinnamon-walnut-baked-pears': [6.3,30,281,0.8,0.1], 'butter-seared-pork-chops': [0.0,519,616,1.0,1.0], 'bone-broth-egg-drop-soup': [0.0,1775,526,2.7,0.9], 'korean-beef-rice-bowls': [2.4,304,683,3.7,2.5], 'thai-basil-chicken': [2.2,460,708,2.8,1.1], 'banana-oat-breakfast-cookies': [6.5,169,376,2.0,0.0], 'chicken-shawarma-plates': [1.9,622,716,2.7,1.3], 'salmon-avocado-rice-bowls': [10.5,369,1425,3.6,4.5]}; // per serving, from tools/nutrition_audit.py
+let RECIPE_MICRO = {'berry-overnight-oats': [10.5,414,578,3.4,1.2], 'spinach-feta-egg-muffins': [0.9,544,361,3.3,1.7], 'chicken-burrito-bowls': [11.7,711,1326,3.7,0.4], 'lemon-herb-salmon': [7.3,683,1537,3.3,4.5], 'turkey-black-bean-chili': [10.1,868,1044,5.5,1.2], 'tofu-peanut-stir-fry': [7.4,248,779,5.1,0.0], 'tuna-white-bean-salad': [7.7,887,1102,6.2,2.8], 'chocolate-pb-smoothie': [8.5,227,1002,3.1,0.6], 'banana-protein-pancakes': [5.6,1095,614,4.0,1.4], 'greek-chicken-quinoa-bowls': [5.2,719,1146,3.5,1.1], 'lentil-vegetable-soup': [8.2,558,710,4.0,0.0], 'beef-broccoli': [4.3,366,736,3.1,2.5], 'turkey-taco-lettuce-wraps': [4.7,667,826,3.1,1.6], 'shrimp-fajita-sheet-pan': [6.3,646,782,2.0,1.7], 'chickpea-spinach-curry': [14.4,863,768,5.5,0.0], 'pb-protein-bites': [4.3,54,284,2.0,0.1], 'cottage-cheese-parfait': [2.8,1383,373,0.9,0.9], 'steak-egg-skillet': [4.6,797,1194,5.2,2.6], 'green-shakshuka': [3.3,932,835,5.6,2.4], 'sage-turkey-patties': [1.1,610,504,3.4,1.6], 'savory-cottage-bowl': [1.5,1457,642,3.3,1.4], 'black-bean-egg-tacos': [10.1,746,711,4.8,1.5], 'tuna-stuffed-avocados': [10.7,670,1068,2.8,3.1], 'herb-chicken-avocado-salad': [8.7,678,1439,3.0,0.4], 'garlic-shrimp-zoodles': [2.3,782,1042,1.5,2.0], 'warm-lentil-egg-salad': [8.8,727,939,7.9,1.2], 'turkey-burger-lettuce-wraps': [4.4,544,805,3.3,1.5], 'herb-pork-tenderloin': [6.7,714,1377,4.3,0.9], 'garlic-butter-cod': [5.1,776,1115,2.7,1.6], 'chicken-cauliflower-traybake': [5.3,856,1135,4.4,1.4], 'turkey-white-bean-kale': [8.0,1016,1047,6.0,1.3], 'pesto-salmon-broccolini': [6.6,819,1384,3.9,5.7], 'yogurt-deviled-eggs': [0.1,342,172,1.8,1.0], 'chili-lime-edamame': [8.5,199,719,3.8,0.0], 'roast-turkey-rollups': [0.9,468,552,1.4,0.9], 'herby-yogurt-dip': [2.1,377,519,0.9,0.9], 'cocoa-almond-protein-shake': [8.3,778,562,3.3,0.6], 'smoked-salmon-scramble': [0.1,646,341,3.2,3.3], 'sweet-potato-turkey-hash': [5.7,905,1085,5.0,2.1], 'savory-oats-jammy-egg': [4.8,331,464,3.5,0.5], 'lemony-chicken-lentil-salad': [5.0,512,774,3.2,0.2], 'tuna-nicoise-plate': [8.4,1055,1498,6.4,3.7], 'avocado-chocolate-mousse': [7.7,155,514,2.0,0.0], 'cinnamon-baked-apples': [3.3,212,252,0.6,0.4], 'vanilla-chia-pudding': [9.3,202,296,1.9,0.5], 'almond-butter-cookies': [3.7,132,297,1.4,0.1], 'berry-yogurt-bark': [1.2,27,188,0.3,0.6], 'butter-basted-ribeye': [0.0,892,684,4.1,5.0], 'carnivore-steak-eggs': [0.0,1046,979,6.3,4.7], 'brown-butter-salmon': [0.0,750,620,0.6,5.5], 'beef-liver-burgers': [0.0,676,395,3.6,19.2], 'salt-roasted-chicken-thighs': [0.0,1065,456,1.6,0.9], 'black-bean-sweet-potato-tacos': [14.9,614,1041,3.2,0.0], 'turmeric-tofu-scramble': [9.6,639,992,6.9,0.0], 'chickpea-quinoa-power-bowl': [15.8,582,662,5.0,0.0], 'red-lentil-coconut-dal': [12.0,710,1105,8.4,0.0], 'crispy-roasted-chickpeas': [9.3,545,144,1.4,0.0], 'apple-almond-butter-crunch': [7.2,585,494,1.8,0.0], 'hummus-veggie-plate': [7.3,454,340,2.0,0.0], 'chocolate-banana-nice-cream': [5.0,311,544,1.1,0.0], 'cinnamon-walnut-baked-pears': [6.3,30,281,0.8,0.1], 'butter-seared-pork-chops': [0.0,519,616,1.0,1.0], 'bone-broth-egg-drop-soup': [0.0,1775,526,2.7,0.9], 'korean-beef-rice-bowls': [2.4,304,683,3.7,2.5], 'thai-basil-chicken': [2.2,460,708,2.8,1.1], 'banana-oat-breakfast-cookies': [6.5,169,376,2.0,0.0], 'chicken-shawarma-plates': [1.9,622,716,2.7,1.3], 'salmon-avocado-rice-bowls': [10.5,369,1425,3.6,4.5]}; // per serving, from tools/nutrition_audit.py
 function microRow(list) {
   const withData = list.filter((m) => Array.isArray(m.mic));
   if (!list.length) return '';

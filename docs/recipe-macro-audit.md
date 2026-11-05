@@ -56,3 +56,8 @@ These were written for HEALTH-RAY and calculated with the same tool, so their nu
 | Banana Oat Breakfast Cookies | 270 / 9 / 29 / 15 |
 | Sheet-Pan Chicken Shawarma Plates | 457 / 41 / 31 / 18 |
 | Glazed Salmon & Avocado Rice Bowls | 722 / 44 / 54 / 38 |
+
+## November 2026: safety review
+
+- Savory Oats with Greens & a Jammy Egg now uses vegetable stock instead of bone broth, so it is truly vegetarian. Protein drops from 24 g to 14 g a serving, and it no longer carries the High protein tag.
+- Berry Protein Overnight Oats and Peanut Butter Protein Bites now call for whey only (collagen comes from animal bones and skin, so it isn't vegetarian). Nutrition is unchanged.
