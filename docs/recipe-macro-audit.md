@@ -33,3 +33,26 @@ All other recipes were within 10%. Micronutrients per serving (fiber, sodium, po
 - Branded items vary: protein powder, broth, canned beans (sodium), smoked salmon and olives (sodium), coconut aminos.
 - Optional or to-taste ingredients (sweetener, garnish, pepper) are not counted.
 - Values are per serving as written; changing the servings scales them.
+
+## November 2026: 16 new recipes
+
+These were written for HEALTH-RAY and calculated with the same tool, so their numbers match the ingredient list exactly. Three ingredients were added to the tool's table (pears, boneless pork chops, 90% lean ground beef), also as reference values to verify.
+
+| Recipe | kcal / P / C / F per serving |
+|---|---|
+| Black Bean & Sweet Potato Tacos | 385 / 10 / 67 / 11 |
+| Turmeric Tofu Scramble | 442 / 37 / 16 / 30 |
+| Crispy Chickpea & Quinoa Power Bowls | 456 / 18 / 64 / 16 |
+| Red Lentil Coconut Dal | 553 / 24 / 82 / 17 |
+| Crispy Roasted Chickpeas | 213 / 9 / 28 / 8 |
+| Apple Slices with Almond Butter & Hemp | 297 / 9 / 30 / 19 |
+| Classic Hummus & Veggie Plate | 240 / 7 / 23 / 15 |
+| Chocolate Banana Nice Cream | 165 / 4 / 30 / 6 |
+| Cinnamon Walnut Baked Pears | 209 / 4 / 30 / 10 |
+| Butter-Seared Pork Chops | 452 / 35 / 0 / 34 |
+| Bone Broth Egg Drop Soup | 336 / 33 / 3 / 21 |
+| Korean-Style Beef Rice Bowls | 435 / 27 / 44 / 16 |
+| Thai Basil Chicken | 454 / 42 / 40 / 13 |
+| Banana Oat Breakfast Cookies | 270 / 9 / 29 / 15 |
+| Sheet-Pan Chicken Shawarma Plates | 457 / 41 / 31 / 18 |
+| Glazed Salmon & Avocado Rice Bowls | 722 / 44 / 54 / 38 |
